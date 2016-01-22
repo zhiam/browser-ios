@@ -96,7 +96,7 @@ class HttpsEverywhere {
                 }
 
                 for rule in rules {
-                    guard let props = rule["$"] as? NSDictionary,  from = props["from"] as? String,  to =  props["to"] as? String  else { return nil }
+                    guard let props = rule["$"] as? NSDictionary, from = props["from"] as? String, to = props["to"] as? String else { return nil }
                     let regex = try NSRegularExpression(pattern: from, options: [])
                     let url = regex.stringByReplacingMatchesInString(schemeAndHost, options: [], range: NSMakeRange(0, schemeAndHost.characters.count), withTemplate: to)
 
