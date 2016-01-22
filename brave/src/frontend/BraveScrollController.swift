@@ -221,7 +221,8 @@ private extension BraveScrollController {
         return y
     }
 
-    func animateToolbarsWithOffsets(animated animated: Bool, duration: NSTimeInterval, headerOffset: CGFloat,
+    // Currently only has handling for the show toolbars case.
+    private func animateToolbarsWithOffsets(animated animated: Bool, duration: NSTimeInterval, headerOffset: CGFloat,
         footerOffset: CGFloat, alpha: CGFloat, completion: ((finished: Bool) -> Void)?) {
 
             let animation: () -> Void = {
@@ -234,6 +235,7 @@ private extension BraveScrollController {
                 // TODO this code is only being used to show toolbars, so right now hard-code for that case, obviously if/when hide is added, update the code to support that
                 let webView = getApp().browserViewController.webViewContainer
                 webView.layer.transform = CATransform3DIdentity
+                self.scrollView?.contentOffset.y += UIConstants.ToolbarHeight
             }
 
             // Reset the scroll direction now that it is handled
