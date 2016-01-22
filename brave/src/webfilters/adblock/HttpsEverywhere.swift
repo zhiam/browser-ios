@@ -61,7 +61,7 @@ class HttpsEverywhere {
         targetsLoader.loadData()
     }
 
-    func applyRedirectRuleForIds(ids: [Int], schemeAndHost: String) -> String? {
+    private func applyRedirectRuleForIds(ids: [Int], schemeAndHost: String) -> String? {
         guard let db = db else { return nil }
         let table = Table("rulesets")
         let contents = Expression<String>("contents")
@@ -120,7 +120,7 @@ class HttpsEverywhere {
         return nil
     }
 
-    func mapDomainToIdForLookup(domain: String) -> [Int] {
+    private func mapDomainToIdForLookup(domain: String) -> [Int] {
         var resultIds = [Int]()
         let parts = domain.characters.split(".")
         for i in 0..<(parts.count - 1) {
@@ -135,9 +135,14 @@ class HttpsEverywhere {
     }
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
+        if !isEnabled {
+            return nil
+        }
+
         guard let _url = NSURL(string: stripLocalhostWebServer(url.absoluteString)), host = _url.host else {
             return nil
         }
+
         let scheme = _url.scheme
 
         let ids = mapDomainToIdForLookup(host)

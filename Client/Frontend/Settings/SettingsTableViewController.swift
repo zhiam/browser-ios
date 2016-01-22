@@ -781,6 +781,7 @@ class SettingsTableViewController: UITableViewController {
         generalSettings += [
             BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
             BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
+            BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
             BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyIsToolbarHidingEnabled , defaultValue: true, titleText: "Hide toolbar when scrolling", statusText: nil, settingDidChange:  { value in BraveScrollController.hideShowToolbarEnabled = value })
 //          BoolSetting(prefs: prefs, prefKey: "•forcescrollslow•", defaultValue: false, titleText: "Debug: Force slow scrolling", statusText: "Takes effect on new tab.", settingDidChange: {
 //            value in
