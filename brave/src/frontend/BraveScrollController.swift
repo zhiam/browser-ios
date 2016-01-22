@@ -235,7 +235,9 @@ private extension BraveScrollController {
                 // TODO this code is only being used to show toolbars, so right now hard-code for that case, obviously if/when hide is added, update the code to support that
                 let webView = getApp().browserViewController.webViewContainer
                 webView.layer.transform = CATransform3DIdentity
-                self.scrollView?.contentOffset.y += UIConstants.ToolbarHeight
+                if self.contentOffset.y > UIConstants.ToolbarHeight {
+                    self.scrollView?.contentOffset.y += UIConstants.ToolbarHeight
+                }
             }
 
             // Reset the scroll direction now that it is handled
