@@ -26,6 +26,7 @@ class URLProtocol: NSURLProtocol {
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
+        // TODO handle https redirect loop
         if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
             let newRequest = cloneRequest(request)
             newRequest.URL = redirectedUrl
