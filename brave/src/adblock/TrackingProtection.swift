@@ -64,11 +64,11 @@ class TrackingProtection {
 }
 
 extension TrackingProtection: NetworkDataFileLoaderDelegate {
-    func setDataFile(data: NSData?) {
+    func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?) {
         parser.setDataFile(data)
     }
 
-    func hasDataFile() -> Bool {
+    func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
         return parser.hasDataFile()
     }
 }

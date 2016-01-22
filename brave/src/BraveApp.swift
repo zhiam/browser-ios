@@ -111,6 +111,7 @@ class BraveApp {
         #endif
         AdBlocker.singleton.networkFileLoader.loadData()
         TrackingProtection.singleton.networkFileLoader.loadData()
+        HttpsEverywhere.singleton.loadData()
     }
 
     // This can only be checked ONCE, the flag is cleared after this.

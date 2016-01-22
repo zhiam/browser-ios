@@ -134,11 +134,11 @@ class AdBlocker {
 }
 
 extension AdBlocker: NetworkDataFileLoaderDelegate {
-    func setDataFile(data: NSData?) {
+    func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?) {
         AdBlockCppFilter.singleton().setAdblockDataFile(data)
     }
 
-    func hasDataFile() -> Bool {
+    func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
         return AdBlockCppFilter.singleton().hasAdblockDataFile()
     }
 }

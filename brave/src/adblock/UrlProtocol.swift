@@ -26,10 +26,15 @@ class URLProtocol: NSURLProtocol {
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
+        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
+            let newRequest = cloneRequest(request)
+            newRequest.URL = redirectedUrl
+            return newRequest
+        }
         return request
     }
 
-    override func startLoading() {
+    private class func cloneRequest(request: NSURLRequest) -> NSMutableURLRequest {
         // Reportedly not safe to use built-in cloning methods: http://openradar.appspot.com/11596316
         let newRequest = NSMutableURLRequest(URL: request.URL!, cachePolicy: request.cachePolicy, timeoutInterval: request.timeoutInterval)
         newRequest.allHTTPHeaderFields = request.allHTTPHeaderFields
@@ -42,7 +47,11 @@ class URLProtocol: NSURLProtocol {
         if let b = request.HTTPBody {
             newRequest.HTTPBody = b
         }
+        return newRequest
+    }
 
+    override func startLoading() {
+        let newRequest = URLProtocol.cloneRequest(request)
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
         self.connection = NSURLConnection(request: newRequest, delegate: self)
 
