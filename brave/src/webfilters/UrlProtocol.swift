@@ -18,6 +18,12 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
+        #if !TEST
+        delay(0) { // calls closure on main thread
+            BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
+        }
+        #endif
+
         if NSURLProtocol.propertyForKey(markerRequestHandled, inRequest: request) != nil {
             return false
         }

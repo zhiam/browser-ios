@@ -268,6 +268,23 @@ class BraveWebView: UIWebView {
         LegacyUserContentController.injectJsIntoAllFrames(self, script: js)
     }
 
+    var locationChangedPeriodicCheckRunning = false
+    func setFlagToCheckIfLocationChanged() {
+        if self.locationChangedPeriodicCheckRunning {
+            return
+        }
+        self.locationChangedPeriodicCheckRunning = true
+        // delay to coalesce repeated calls to this function, calling js is a heavy operation
+        delay(0.5) {
+            self.locationChangedPeriodicCheckRunning = false
+            guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = self.URL?.absoluteString else { return }
+
+            if !currentUrl.hasPrefix(location) {
+                self.URL = NSURL(string: location)
+                self.kvoBroadcast()
+            }
+        }
+    }
 }
 
 extension BraveWebView: UIWebViewDelegate {
