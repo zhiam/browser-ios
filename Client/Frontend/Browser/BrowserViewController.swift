@@ -541,6 +541,19 @@ class BrowserViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
 
+    func resetBrowserChrome() {
+        // animate and reset transform for browser chrome
+        urlBar.updateAlphaForSubviews(1)
+
+        [header,
+            footer,
+            readerModeBar,
+            footerBackdrop,
+            headerBackdrop].forEach { view in
+                view?.transform = CGAffineTransformIdentity
+        }
+    }
+
     override func updateViewConstraints() {
         super.updateViewConstraints()
 
@@ -917,8 +930,21 @@ class BrowserViewController: UIViewController {
             self.navigationToolbar.updateBookmarkStatus(bookmarked)
         }
     }
+    // Mark: Opening New Tabs
+
+    @available(iOS 9, *)
+    func switchToPrivacyMode(isPrivate isPrivate: Bool ){
+        applyTheme(isPrivate ? Theme.PrivateMode : Theme.NormalMode)
+
+        let tabTrayController = self.tabTrayController ?? TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
+        if tabTrayController.privateMode != isPrivate {
+            tabTrayController.changePrivacyMode(isPrivate)
+        }
+        self.tabTrayController = tabTrayController
+    }
 
     func switchToTabForURLOrOpen(url: NSURL) {
+        popToBrowser()
         if let tab = tabManager.getTabForURL(url) {
             tabManager.selectTab(tab)
         } else {
@@ -942,19 +968,31 @@ class BrowserViewController: UIViewController {
         } else {
             request = nil
         }
-        let tabTrayController = self.tabTrayController ?? TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
-        tabTrayController.changePrivacyMode(isPrivate)
-        self.tabTrayController = tabTrayController
+        switchToPrivacyMode(isPrivate: isPrivate)
         tabManager.addTabAndSelect(request, isPrivate: isPrivate)
     }
 
     @available(iOS 9, *)
     func openBlankNewTabAndFocus(isPrivate isPrivate: Bool = false) {
+        popToBrowser()
         openURLInNewTab(nil, isPrivate: isPrivate)
         urlBar.browserLocationViewDidTapLocation(urlBar.locationView)
     }
 
-  #if !BRAVE // TODO hookup when adding desktop AU
+    private func popToBrowser() {
+        guard let currentViewController = navigationController?.topViewController where currentViewController != self else {
+            return
+        }
+        if let presentedViewController = currentViewController.presentedViewController {
+            presentedViewController.dismissViewControllerAnimated(true, completion: nil)
+        }
+        navigationController?.popToViewController(self, animated: false)
+        resetBrowserChrome()
+    }
+
+    // Mark: User Agent Spoofing
+
+    #if !BRAVE // TODO hookup when adding desktop AU
     private func resetSpoofedUserAgentIfRequired(webView: WKWebView, newURL: NSURL) {
         guard #available(iOS 9.0, *) else {
             return
@@ -979,7 +1017,7 @@ class BrowserViewController: UIViewController {
     private func presentActivityViewController(url: NSURL, tab: Browser? = nil, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
         var activities = [UIActivity]()
 
-        let findInPageActivity = FindInPageActivity() {
+        let findInPageActivity = FindInPageActivity() { [unowned self] in
             self.updateFindInPageVisibility(visible: true)
         }
         activities.append(findInPageActivity)
@@ -987,7 +1025,7 @@ class BrowserViewController: UIViewController {
         #if !BRAVE
         if #available(iOS 9.0, *) {
             if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active {
-                let requestDesktopSiteActivity = RequestDesktopSiteActivity(requestMobileSite: tab.desktopSite) {
+                let requestDesktopSiteActivity = RequestDesktopSiteActivity(requestMobileSite: tab.desktopSite) { [unowned tab] in
                     tab.toggleDesktopSite()
                 }
                 activities.append(requestDesktopSiteActivity)
@@ -997,7 +1035,7 @@ class BrowserViewController: UIViewController {
 
         let helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
 
-        let controller = helper.createActivityViewController({
+        let controller = helper.createActivityViewController({ [unowned self] in
             // We don't know what share action the user has chosen so we simply always
             // update the toolbar and reader mode bar to reflect the latest status.
             if let tab = tab {
@@ -1400,6 +1438,12 @@ extension BrowserViewController: BrowserDelegate {
         findInPageHelper.delegate = self
         browser.addHelper(findInPageHelper, name: FindInPageHelper.name())
 
+        let openURL = {(url: NSURL) -> Void in
+            self.switchToTabForURLOrOpen(url)
+        }
+        let spotlightHelper = SpotlightHelper(browser: browser, openURL: openURL)
+        browser.addHelper(spotlightHelper, name: SpotlightHelper.name())
+
       #if BRAVE
         let pageUnload = BravePageUnloadHelper(browser: browser)
         pageUnload.delegate = self
@@ -1647,6 +1691,10 @@ extension BrowserViewController: TabManagerDelegate {
                 // When this happens, the URL is nil, so try restoring the page upon selection.
                 tab.reload()
             }
+        }
+
+        if let selected = selected, previous = previous where selected.isPrivate != previous.isPrivate {
+            updateTabCountUsingTabManager(tabManager)
         }
 
         removeAllBars()
@@ -2062,8 +2110,16 @@ extension BrowserViewController: WKUIDelegate {
             return
         }
 
-        if let url = error.userInfo["NSErrorFailingURLKey"] as? NSURL {
+        if let url = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
             ErrorPageHelper().showPage(error, forUrl: url, inWebView: webView)
+
+            // If the local web server isn't working for some reason (Firefox cellular data is
+            // disabled in settings, for example), we'll fail to load the session restore URL.
+            // We rely on loading that page to get the restore callback to reset the restoring
+            // flag, so if we fail to load that page, reset it here.
+            if AboutUtils.getAboutComponent(url) == "sessionrestore" {
+                tabManager.tabs.filter { $0.webView == webView }.first?.restoring = false
+            }
         }
     }
 
@@ -2326,6 +2382,7 @@ extension BrowserViewController: ReaderModeBarViewDelegate {
                 if let url = ReaderModeUtils.decodeURL(url) {
                     profile.readingList?.createRecordWithURL(url.absoluteString, title: tab.title ?? "", addedBy: UIDevice.currentDevice().name) // TODO Check result, can this fail?
                     readerModeBar.added = true
+                    readerModeBar.unread = true
                 }
             }
 
@@ -2334,6 +2391,7 @@ extension BrowserViewController: ReaderModeBarViewDelegate {
                 if let successValue = result.successValue, record = successValue {
                     profile.readingList?.deleteRecord(record) // TODO Check result, can this fail?
                     readerModeBar.added = false
+                    readerModeBar.unread = false
                 }
             }
         }
@@ -2372,7 +2430,7 @@ extension BrowserViewController: IntroViewControllerDelegate {
         // Show the settings page if we have already signed in. If we haven't then show the signin page
         let vcToPresent: UIViewController
         if profile.hasAccount() {
-            let settingsTableViewController = SettingsTableViewController()
+            let settingsTableViewController = AppSettingsTableViewController()
             settingsTableViewController.profile = profile
             settingsTableViewController.tabManager = tabManager
             vcToPresent = settingsTableViewController
@@ -2611,16 +2669,7 @@ extension BrowserViewController: TabTrayDelegate {
     // This function animates and resets the browser chrome transforms when
     // the tab tray dismisses.
     func tabTrayDidDismiss(tabTray: TabTrayController) {
-        // animate and reset transform for browser chrome
-        urlBar.updateAlphaForSubviews(1)
-
-        [header,
-            footer,
-            readerModeBar,
-            footerBackdrop,
-            headerBackdrop].forEach { view in
-                view?.transform = CGAffineTransformIdentity
-        }
+        resetBrowserChrome()
     }
 
     func tabTrayDidAddBookmark(tab: Browser) {

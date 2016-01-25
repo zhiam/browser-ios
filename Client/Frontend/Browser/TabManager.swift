@@ -146,6 +146,15 @@ class TabManager : NSObject {
         return nil
     }
 
+    func getTabFor(url: NSURL) -> Browser? {
+        for tab in tabs {
+            if (tab.webView?.URL == url) {
+                return tab
+            }
+        }
+        return nil
+    }
+
     func selectTab(tab: Browser?) {
         assert(NSThread.isMainThread())
 
@@ -357,8 +366,7 @@ class TabManager : NSObject {
     }
 
     func getTabForURL(url: NSURL) -> Browser? {
-        guard let index = (tabs.indexOf { $0.url == url }) else { return nil }
-        return tabs[index]
+        return tabs.filter { $0.webView?.URL == url } .first
     }
 
     func storeChanges() {
@@ -463,15 +471,22 @@ extension TabManager {
         return NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent("tabsState.archive").path!
     }
 
-    static func tabsToRestore() -> [SavedTab]? {
+    static func tabArchiveData() -> NSData? {
         let tabStateArchivePath = tabsStateArchivePath()
         if NSFileManager.defaultManager().fileExistsAtPath(tabStateArchivePath) {
-            if let data = NSData(contentsOfFile: tabStateArchivePath) {
-                let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
-                return unarchiver.decodeObjectForKey("tabs") as? [SavedTab]
-            }
+            return NSData(contentsOfFile: tabStateArchivePath)
+        } else {
+            return nil
         }
-        return nil
+    }
+
+    static func tabsToRestore() -> [SavedTab]? {
+        if let tabData = tabArchiveData() {
+            let unarchiver = NSKeyedUnarchiver(forReadingWithData: tabData)
+            return unarchiver.decodeObjectForKey("tabs") as? [SavedTab]
+        } else {
+            return nil
+        }
     }
 
     private func preserveTabsInternal() {

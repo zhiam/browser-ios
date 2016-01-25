@@ -310,11 +310,14 @@ class Browser: NSObject, BrowserWebViewDelegate {
 
     func reload() {
         if #available(iOS 9.0, *) {
-            webView?.customUserAgent = desktopSite ? UserAgent.desktopUserAgent() : nil
+            let userAgent: String? = desktopSite ? UserAgent.desktopUserAgent() : nil
+            if (userAgent ?? "") != webView?.customUserAgent,
+               let currentItem = webView?.backForwardList.currentItem
+            {
+                webView?.customUserAgent = userAgent
 
-            if let currentItem = webView?.backForwardList.currentItem where currentItem.URL != currentItem.initialURL {
                 // Reload the initial URL to avoid UA specific redirection
-                loadRequest(NSURLRequest(URL: currentItem.initialURL, cachePolicy: .ReloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 60))
+                loadRequest(NSURLRequest(URL: currentItem.initialURL, cachePolicy: .ReloadIgnoringLocalCacheData, timeoutInterval: 60))
                 return
             }
         }
@@ -462,5 +465,12 @@ private class BrowserWebView: WKWebView, MenuHelperInterface {
             let selection = result as? String ?? ""
             self.delegate?.browserWebView(self, didSelectFindInPageForSelection: selection)
         }
+    }
+
+    private override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
+        // The find-in-page selection menu only appears if the webview is the first responder.
+        becomeFirstResponder()
+
+        return super.hitTest(point, withEvent: event)
     }
 }

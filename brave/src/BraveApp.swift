@@ -69,10 +69,12 @@ class BraveApp {
         NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
             selector: "memoryWarning:", name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
 
+        #if !TEST
         //  these quiet the logging from the core of fx ios
         GCDWebServer.setLogLevel(5)
         Logger.syncLogger.setup(.None)
         Logger.browserLogger.setup(.None)
+        #endif
 
         #if DEBUG
             NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
@@ -147,16 +149,26 @@ class BraveApp {
         return NSUserDefaults(suiteName: "group.com.brave.ios.browser")
     }
 
-    class func getPref(pref: String) -> AnyObject? {
-        return getPrefs()?.objectForKey(NSUserDefaultsPrefs.prefixWithDotForBrave + pref)
+    class func getPref(var pref: String) -> AnyObject? {
+        #if !TEST
+            pref = NSUserDefaultsPrefs.prefixWithDotForBrave + pref
+        #endif
+
+        return getPrefs()?.objectForKey(pref)
     }
 
-    class func setPref(val: AnyObject, forKey: String) {
-        getPrefs()?.setObject(val, forKey: NSUserDefaultsPrefs.prefixWithDotForBrave + forKey)
+    class func setPref(val: AnyObject, var forKey: String) {
+        #if !TEST
+            forKey = NSUserDefaultsPrefs.prefixWithDotForBrave + forKey
+        #endif
+        getPrefs()?.setObject(val, forKey: forKey)
     }
 
-    class func removePref(pref: String) {
-        getPrefs()?.removeObjectForKey(NSUserDefaultsPrefs.prefixWithDotForBrave + pref)
+    class func removePref(var pref: String) {
+        #if !TEST
+            pref = NSUserDefaultsPrefs.prefixWithDotForBrave + pref
+        #endif
+        getPrefs()?.removeObjectForKey(pref)
     }
 
     #if DEBUG

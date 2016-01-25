@@ -38,7 +38,11 @@ class WebViewBackForwardList {
 
     private func isSpecial(_url: NSURL?) -> Bool {
         guard let url = _url else { return false }
+        #if !TEST
         return url.absoluteString.rangeOfString(WebServer.sharedInstance.base) != nil
+        #else
+        return false
+        #endif
     }
 
     func update(webview: UIWebView) {

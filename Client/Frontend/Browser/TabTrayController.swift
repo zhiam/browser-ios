@@ -467,7 +467,7 @@ class TabTrayController: UIViewController {
 // MARK: Selectors
 
     func SELdidClickSettingsItem() {
-        let settingsTableViewController = SettingsTableViewController()
+        let settingsTableViewController = BraveSettingsView()
         settingsTableViewController.profile = profile
         settingsTableViewController.tabManager = tabManager
         settingsTableViewController.settingsDelegate = self
