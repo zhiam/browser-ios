@@ -126,8 +126,9 @@ removals = ['MOZ_PRODUCT_NAME',
 
 pbxHeaderSection =[] # save this and restore it later
 pbxHeaderSection_parsing = False
+out_lines = []
+prev_line = None
 infile = open(proj_file, 'r')
-outfile = open(tmp_proj_file, 'w')
 line = infile.readline()
 while line:
     if 'PBXHeadersBuildPhase section' in line:
@@ -136,7 +137,13 @@ while line:
     if pbxHeaderSection_parsing:
         pbxHeaderSection.append(line)
 
-    if '/* Embed App Extensions */' in line:
+    if any(x in line for x in ['/* SendTo */', '/* ShareTo */', '/* ViewLater */']) and 'PBXTargetDependency' in prev_line:
+        # delete prev 2 lines, skip the next 2
+        out_lines.pop()
+        out_lines.pop()
+        infile.readline()
+        line = infile.readline()
+    elif '/* Embed App Extensions */' in line:
         # TODO use mod_pbxproj for this
         # There are 2 entries for embed app extensions. The first is one-line, so skip writing it out.
         # The 2nd is a multi-line block bounded by '= {' and '};'
@@ -146,18 +153,23 @@ while line:
                 if '};' in line:
                     break
     elif 'SystemCapabilities = {' in line:
-        outfile.write(' DevelopmentTeam = KL8N8XSYF4;\n')
-        outfile.write(line)
+        out_lines.append(' DevelopmentTeam = KL8N8XSYF4;\n')
+        out_lines.append(line)
     elif 'CODE_SIGN_ENTITLEMENTS' in line:
-        outfile.write(' CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;\n')
+        out_lines.append(' CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;\n')
     elif 'Breakpad.framework' in line and not line.rstrip().endswith('= {'):
         pass
     elif not any(substring in line for substring in removals):
-        outfile.write(line)
+        out_lines.append(line)
 
+    prev_line = line
     line = infile.readline()
 
 infile.close()
+
+outfile = open(tmp_proj_file, 'w')
+for line in out_lines:
+  outfile.write("%s\n" % line)
 outfile.close()
 from shutil import move
 move(tmp_proj_file, proj_file)
