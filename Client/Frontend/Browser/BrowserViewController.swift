@@ -521,7 +521,7 @@ class BrowserViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         log.debug("BVC viewDidAppear.")
-        presentIntroViewController()
+        //presentIntroViewController()
         log.debug("BVC intro presented.")
         self.webViewContainerToolbar.hidden = false
 
