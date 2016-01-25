@@ -77,8 +77,6 @@ class BraveApp {
         #endif
 
         #if DEBUG
-            NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
-                selector: "prefsChanged_verifySuiteNameIsOk:", name: NSUserDefaultsDidChangeNotification, object: nil)
             #if !TEST
                 if BraveUX.DebugShowBorders {
                     UIView.bordersOn()
@@ -146,7 +144,8 @@ class BraveApp {
         #if !TEST
             assert(NSUserDefaultsPrefs.prefixWithDotForBrave.characters.count > 0)
         #endif
-        return NSUserDefaults(suiteName: "group.com.brave.ios.browser")
+        let bundle = NSBundle.mainBundle().bundleIdentifier
+        return NSUserDefaults(suiteName: bundle)
     }
 
     class func getPref(var pref: String) -> AnyObject? {
@@ -170,18 +169,6 @@ class BraveApp {
         #endif
         getPrefs()?.removeObjectForKey(pref)
     }
-
-    #if DEBUG
-    // do a debug only verification that using the correct name for getting the defaults
-    @objc func prefsChanged_verifySuiteNameIsOk(info: NSNotification) {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSUserDefaultsDidChangeNotification, object: nil)
-        let defaults = info.object as! NSUserDefaults
-        let defaults2 = NSUserDefaults(suiteName: "group.com.brave.ios.browser")
-        assert(defaults.dictionaryRepresentation().elementsEqual(defaults2!.dictionaryRepresentation(), isEquivalent: { (a:(String, AnyObject), b:(String, AnyObject)) -> Bool in
-            return a.1 as? String == b.1 as? String
-        }))
-    }
-    #endif
 
     static func showErrorAlert(title title: String,  error: String) {
         UIAlertView(title: title, message: error, delegate: nil, cancelButtonTitle: "Close").show()
