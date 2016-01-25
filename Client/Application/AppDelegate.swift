@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var rootViewController: UINavigationController!
     weak var profile: BrowserProfile?
     var tabManager: TabManager!
+    var adjustIntegration: AdjustIntegration?
 
     weak var application: UIApplication?
     var launchOptions: [NSObject: AnyObject]?
@@ -131,6 +132,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let localNotification = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
             viewURLInNewTab(localNotification)
         }
+        
+        adjustIntegration = AdjustIntegration(profile: profile)
 
         log.debug("Done with setting up the application.")
 
@@ -171,14 +174,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.profile = p
         return p
     }
-
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         var shouldPerformAdditionalDelegateHandling = true
 
         log.debug("Did finish launching.")
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-            AdjustIntegration.sharedInstance.triggerApplicationDidFinishLaunchingWithOptions(launchOptions)
-        }
+        
+        log.debug("Setting up Adjust")
+        self.adjustIntegration?.triggerApplicationDidFinishLaunchingWithOptions(launchOptions)
+        
         log.debug("Making window key and visible…")
         self.window!.makeKeyAndVisible()
 
@@ -230,6 +234,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
 
+    func application(application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: String) -> Bool {
+        return extensionPointIdentifier != UIApplicationKeyboardExtensionPointIdentifier
+    }
+
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
     // Eventually we'll sync in response to notifications.
     func applicationDidBecomeActive(application: UIApplication) {
@@ -245,7 +253,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // handle quick actions is available
         if #available(iOS 9, *) {
-            var quickActions = QuickActions.sharedInstance
+            let quickActions = QuickActions.sharedInstance
             if let shortcut = quickActions.launchedShortcutItem {
                 // dispatch asynchronously so that BVC is all set up for handling new tabs
                 // when we try and open them
@@ -352,10 +360,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let tabStateDebugData = TabManager.tabRestorationDebugInfo().dataUsingEncoding(NSUTF8StringEncoding) {
                     mailComposeViewController.addAttachmentData(tabStateDebugData, mimeType: "text/plain", fileName: "tabState.txt")
                 }
+
+                if let tabStateData = TabManager.tabArchiveData() {
+                    mailComposeViewController.addAttachmentData(tabStateData, mimeType: "application/octet-stream", fileName: "tabsState.archive")
+                }
             }
 
             self.window?.rootViewController?.presentViewController(mailComposeViewController, animated: true, completion: nil)
         }
+    }
+
+    func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+        if let url = userActivity.webpageURL {
+            browserViewController.switchToTabForURLOrOpen(url)
+            return true
+        }
+        return false
     }
 
     private func viewURLInNewTab(notification: UILocalNotification) {

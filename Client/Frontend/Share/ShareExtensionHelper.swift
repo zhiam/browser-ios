@@ -8,8 +8,9 @@ import Shared
 private let log = Logger.browserLogger
 
 class ShareExtensionHelper: NSObject {
+    private weak var selectedTab: Browser?
+
     private let selectedURL: NSURL
-    private let selectedTab: Browser?
     private var onePasswordExtensionItem: NSExtensionItem!
     private let activities: [UIActivity]
 
@@ -30,8 +31,6 @@ class ShareExtensionHelper: NSObject {
         if let tab = selectedTab {
             activityItems.append(BrowserPrintPageRenderer(browser: tab))
         }
-
-        activityItems.append(selectedURL)
 
         if let title = selectedTab?.title {
             activityItems.append(TitleActivityItemProvider(title: title))

@@ -367,11 +367,101 @@ class LoginManagerTests: KIFTestCase {
         closeLoginManager()
     }
 
+    func testLoginListShowsNoResults() {
+        openLoginManager()
+
+        tester().waitForViewWithAccessibilityLabel("a0@email.com, http://a0.com")
+
+        // Find something that doesn't exist
+        tester().tapViewWithAccessibilityLabel("Enter Search Mode")
+        tester().enterTextIntoCurrentFirstResponder("asdfasdf")
+        tester().waitForViewWithAccessibilityLabel("No logins found")
+
+        tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("")
+
+        // Erase search and make sure we see results instead
+        tester().waitForViewWithAccessibilityLabel("a0@email.com, http://a0.com")
+
+        closeLoginManager()
+    }
+
     private func countOfRowsInTableView(tableView: UITableView) -> Int {
         var count = 0
         (0..<tableView.numberOfSections).forEach { section in
             count += tableView.numberOfRowsInSection(section)
         }
         return count
+    }
+
+    /**
+     This requires the software keyboard to display. Make sure 'Connect Hardware Keyboard' is off during testing.
+     */
+    func testEditingDetailUsingReturnForNavigation() {
+        openLoginManager()
+
+        tester().waitForViewWithAccessibilityLabel("a0@email.com, http://a0.com")
+        tester().tapViewWithAccessibilityLabel("a0@email.com, http://a0.com")
+
+        tester().waitForViewWithAccessibilityLabel("password")
+
+        let list = tester().waitForViewWithAccessibilityIdentifier("Login Detail List") as! UITableView
+
+        tester().tapViewWithAccessibilityLabel("Edit")
+
+        // Check that we've selected the username field
+        var firstResponder = UIApplication.sharedApplication().keyWindow?.firstResponder()
+        let usernameCell = list.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0)) as! LoginTableViewCell
+        let usernameField = usernameCell.descriptionLabel
+
+        XCTAssertEqual(usernameField, firstResponder)
+        tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("changedusername")
+        tester().tapViewWithAccessibilityLabel("Next")
+
+        firstResponder = UIApplication.sharedApplication().keyWindow?.firstResponder()
+        let passwordCell = list.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 0)) as! LoginTableViewCell
+        let passwordField = passwordCell.descriptionLabel
+
+        // Check that we've navigated to the password field upon return and that the password is no longer displaying as dots
+        XCTAssertEqual(passwordField, firstResponder)
+        XCTAssertFalse(passwordField.secureTextEntry)
+
+        tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("changedpassword")
+        tester().tapViewWithAccessibilityLabel("Done")
+
+        // Go back and find the changed login
+        tester().tapViewWithAccessibilityLabel("Back")
+        tester().tapViewWithAccessibilityLabel("Enter Search Mode")
+        tester().enterTextIntoCurrentFirstResponder("changedusername")
+
+        let loginsList = tester().waitForViewWithAccessibilityIdentifier("Login List") as! UITableView
+        XCTAssertEqual(loginsList.numberOfRowsInSection(0), 1)
+
+        closeLoginManager()
+    }
+
+    func testDeleteLoginFromDetailScreen() {
+
+        openLoginManager()
+
+        var list = tester().waitForViewWithAccessibilityIdentifier("Login List") as! UITableView
+        var firstRow = list.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! LoginTableViewCell
+        XCTAssertEqual(firstRow.descriptionLabel.text, "http://a0.com")
+
+        tester().waitForViewWithAccessibilityLabel("a0@email.com, http://a0.com")
+        tester().tapViewWithAccessibilityLabel("a0@email.com, http://a0.com")
+        tester().tapViewWithAccessibilityLabel("Delete")
+
+        // Verify that we are looking at the non-synced alert dialog
+        tester().waitForViewWithAccessibilityLabel("Are you sure?")
+        tester().waitForViewWithAccessibilityLabel("Logins will be permanently removed.")
+
+        tester().tapViewWithAccessibilityLabel("Delete")
+        tester().waitForAnimationsToFinish()
+
+        list = tester().waitForViewWithAccessibilityIdentifier("Login List") as! UITableView
+        firstRow = list.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! LoginTableViewCell
+        XCTAssertEqual(firstRow.descriptionLabel.text, "http://a1.com")
+
+        closeLoginManager()
     }
 }
