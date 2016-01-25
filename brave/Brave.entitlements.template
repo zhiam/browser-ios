@@ -6,7 +6,7 @@
 	<array/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)$app_id</string>
+		<string>$(AppIdentifierPrefix)BUNDLE_ID_PLACEHOLDER</string>
 	</array>
 </dict>
 </plist>

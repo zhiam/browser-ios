@@ -142,10 +142,10 @@ class BraveApp {
 
     class func getPrefs() -> NSUserDefaults? {
         #if !TEST
+            // The prefs are namespaced with 'profile.', find a better way to expose this from fx
             assert(NSUserDefaultsPrefs.prefixWithDotForBrave.characters.count > 0)
         #endif
-        let bundle = NSBundle.mainBundle().bundleIdentifier
-        return NSUserDefaults(suiteName: bundle)
+        return NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())
     }
 
     class func getPref(var pref: String) -> AnyObject? {

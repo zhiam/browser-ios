@@ -3,11 +3,12 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "./build-id.xcconfig"
+#include "./.bundle-id.xcconfig"
 
 MOZ_BUNDLE_DISPLAY_NAME = Brave
 MOZ_PRODUCT_NAME = Brave
 MOZ_APP_ID = braveios@brave.com
-MOZ_BUNDLE_ID = com.brave.ios.browser.$(MOZ_PRODUCT_NAME)
+MOZ_BUNDLE_ID = $(CUSTOM_BUNDLE_ID).$(MOZ_PRODUCT_NAME)
 
 // App Version
 MOZ_VERSION = 0.7

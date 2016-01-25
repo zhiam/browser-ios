@@ -23,12 +23,17 @@ try:
     key_path = os.path.expanduser('~/.brave-fabric-keys')
     with open(key_path) as f:
       fabric_keys = [x.strip() for x in f.readlines()]
-    os.system("sed -e 's/FABRIC_KEY_REMOVED/fabric_keys[0]/' ../Client/Info.plist.template > ../Client/Info.plist")
+    os.system("sed -e 's/FABRIC_KEY_REMOVED/" + fabric_keys[0] + "/' ../Client/Info.plist.template > ../Client/Info.plist")
     os.system("> xcconfig/.fabric-override.xcconfig")
 except:
     print 'no fabric keys'
     os.system("\\cp -f ../Client/Info.plist.template ../Client/Info.plist")
     os.system("echo 'OTHER_SWIFT_FLAGS = -DBRAVE -DDEBUG -DNO_FABRIC' > xcconfig/.fabric-override.xcconfig")
+
+
+bundle_id = open("xcconfig/.bundle-id.xcconfig").readline().rstrip()
+bundle_id = bundle_id[bundle_id.find('=') + 1:].strip()
+os.system("sed -i '' -e 's/BUNDLE-ID-PLACEHOLDER/" + bundle_id + "/' ../Client/Info.plist")
 
 def modpbxproj():
     from mod_pbxproj import XcodeProject, PBXBuildFile
@@ -109,11 +114,11 @@ def modpbxproj():
         build_settings = i.data['buildSettings']
         if 'PRODUCT_BUNDLE_IDENTIFIER' in build_settings:
             if 'PRODUCT_NAME' in build_settings and 'Client' in build_settings['PRODUCT_NAME']:
-                build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.brave.ios.browser'
+                build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = bundle_id
             else:
-                build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.brave.ios.browser.$(PRODUCT_NAME)'
+                build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = bundle_id + '.$(PRODUCT_NAME)'
         elif 'INFOPLIST_FILE' in build_settings:
-            build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.brave.ios.browser.$(PRODUCT_NAME)'
+            build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = bundle_id + '.$(PRODUCT_NAME)'
     project.save()
 
 # Do manual removal/replacement in cases where it is easy to do without mod_pbxproj
@@ -152,9 +157,6 @@ while line:
                 line = infile.readline()
                 if '};' in line:
                     break
-    elif 'SystemCapabilities = {' in line:
-        out_lines.append(' DevelopmentTeam = KL8N8XSYF4;\n')
-        out_lines.append(line)
     elif 'CODE_SIGN_ENTITLEMENTS' in line:
         out_lines.append(' CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;\n')
     elif 'Breakpad.framework' in line and not line.rstrip().endswith('= {'):
