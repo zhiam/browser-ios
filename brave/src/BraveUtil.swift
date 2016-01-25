@@ -28,7 +28,13 @@ extension NSURL {
 
 // Firefox has uses urls of the form  http://localhost:6571/errors/error.html?url=http%3A//news.google.ca/ to populate the browser history, and load+redirect using GCDWebServer
 func stripLocalhostWebServer(url: String) -> String {
-    return url.regexReplacePattern(".+error\\.html\\?url=http", with: "http")
+    let token = "errors/error.html?url="
+    let range = url.rangeOfString(token)
+    if let range = range {
+        return url.substringFromIndex(range.endIndex)
+    } else {
+        return url
+    }
 }
 
 func stripGenericSubdomainPrefixFromUrl(url: String) -> String {

@@ -102,10 +102,6 @@ class AdBlocker {
 
         domain = stripLocalhostWebServer(domain)
 
-        if let host = url.host where host.contains(domain) {
-            return false
-        }
-
         if isWhitelistedUrl(url.absoluteString, forMainDocDomain: domain) {
             return false
         }
