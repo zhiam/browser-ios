@@ -40,7 +40,7 @@ public class DefaultSuggestedSites {
             title: NSLocalizedString("Seach DuckDuckGo", comment: "Tile title for DDG")
         ),
         SuggestedSiteData(
-            url: "https://www.wikipedia.com",
+            url: "https://www.wikipedia.org",
             bgColor: "e6e6e6",
             imageUrl: "asset://suggestedsites_wiki",
             faviconUrl: "asset://braveLogo",
