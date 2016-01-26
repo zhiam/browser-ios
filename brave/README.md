@@ -9,11 +9,11 @@ Run setup in brave/ (this dir)
 ./setup.sh
 ```
 
-### Building to your own device (vs the sim) has a few different steps [User device build](USER-DEPLOYING.md)
-
 Open Client.xcodeproj
 
 build Client or ClientNoTests
+
+#### Note: building to your own device (vs the sim) has a few different steps, [see user device build](USER-DEPLOYING.md)
 
 ## Updating Code 
 
