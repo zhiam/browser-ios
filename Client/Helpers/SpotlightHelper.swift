@@ -47,9 +47,9 @@ class SpotlightHelper: NSObject {
     }
 
     func update(pageContent: [String: String], forURL url: NSURL) {
-        #if BRAVE
+        if !url.scheme.startsWith("http") {
             return
-        #endif
+        }
 
         var activity: NSUserActivity
         if let currentActivity = self.activity where currentActivity.webpageURL == url {
