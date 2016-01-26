@@ -445,14 +445,14 @@ class BrowserViewController: UIViewController {
         log.debug("BVC viewWillAppear.")
         super.viewWillAppear(animated)
         log.debug("BVC super.viewWillAppear done.")
-
+#if ENABLE_INTRO_SCREEN
         // On iPhone, if we are about to show the On-Boarding, blank out the browser so that it does
         // not flash before we present. This change of alpha also participates in the animation when
         // the intro view is dismissed.
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
             self.view.alpha = (profile.prefs.intForKey(IntroViewControllerSeenProfileKey) != nil) ? 1.0 : 0.0
         }
-
+#endif
 #if !BRAVE
         if activeCrashReporter?.previouslyCrashed ?? false {
             log.debug("Previously crashed.")
@@ -521,7 +521,11 @@ class BrowserViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         log.debug("BVC viewDidAppear.")
-        //presentIntroViewController()
+
+#if ENABLE_INTRO_SCREEN
+        presentIntroViewController()
+#endif
+
         log.debug("BVC intro presented.")
         self.webViewContainerToolbar.hidden = false
 
