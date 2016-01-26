@@ -309,8 +309,11 @@ extension BraveWebView: UIWebViewDelegate {
 
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
-        if AboutUtils.isAboutHomeURL(request.URL) {
+
+        if AboutUtils.isAboutURL(request.URL) {
             progress.completeProgress()
+            print(request)
+            return true
         }
 
         if let url = request.URL where url.absoluteString.contains(specialStopLoadUrl) {
