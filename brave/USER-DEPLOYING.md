@@ -5,14 +5,14 @@ You will need:
 - an [Apple Developer account](https://developer.apple.com) for iOS
 - an [iOS certificate](https://developer.apple.com/account/ios/certificate/certificateList.action)
 - to plug your device into your Mac
-- to run these three commands:
-
-    ./checkout.sh
-    (cd brave; ./setup.sh com.bundle.app)
-    open Client.xcodeproj
-    and Run
-
-The first time `Xcode` builds, 
+- and run these three commands:
+```
+./checkout.sh
+(cd brave; ./setup.sh com.bundle.app)
+open Client.xcodeproj
+```
+    
+Now Run in `Xcode`. The first time `Xcode` builds, 
 you may see this dialog:
 
 <img src='brave/docs/images/failed-to-sign.png' />
