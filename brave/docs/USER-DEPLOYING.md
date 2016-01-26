@@ -15,7 +15,7 @@ open Client.xcodeproj
 Now Run in `Xcode`. The first time `Xcode` builds, 
 you may see this dialog:
 
-<img src='docs/images/failed-to-sign.png' />
+<img src='images/failed-to-sign.png' />
 
 If so, please click `Fix Issue` and then click `Choose`.
 If `Xcode` recovers,
