@@ -13,7 +13,7 @@ Open Client.xcodeproj
 
 build Client or ClientNoTests
 
-#### Note: building to your own device (vs the sim) has a few different steps, [see user device build](USER-DEPLOYING.md)
+#### Note: building to your own device (vs the sim) has a few different steps, [see user device build](docs/USER-DEPLOYING.md)
 
 ## Updating Code 
 
