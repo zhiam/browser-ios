@@ -1,10 +1,10 @@
 [[ -e setup.sh  ]] || { echo 'setup.sh must be run from brave directory'; exit 1; }
 
-echo "Tip: add your app id as an arg, like ./setup.sh org.foo.myapp"
-
 app_id=${1:-com.brave.ios.browser}
 echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/.bundle-id.xcconfig
 if [  -z $1 ] ; then
+  echo "Tip: add your app id as an arg, like ./setup.sh org.foo.myapp"
+
   echo DevelopmentTeam = KL8N8XSYF4 >> xcconfig/.bundle-id.xcconfig
 fi
 
