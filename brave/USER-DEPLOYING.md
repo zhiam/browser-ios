@@ -1,4 +1,4 @@
-# tl;dr: How to deploy the Brave iOS Browser on your own device
+# How to deploy the Brave iOS Browser on your own device
 
 You will need:
 
@@ -10,9 +10,7 @@ You will need:
     ./checkout.sh
     (cd brave; ./setup.sh com.bundle.app)
     open Client.xcodeproj
-
-- to tell `Xcode` to `Product > Build` (&#8984;B)
-- to tell `Xcode` to `Product > Run` (&#8984;R)
+    and Run
 
 The first time `Xcode` builds, 
 you may see this dialog:
