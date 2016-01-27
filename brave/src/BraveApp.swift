@@ -105,13 +105,16 @@ class BraveApp {
             dispatch_get_main_queue(), {
                 BraveApp.removePref(kAppBootingIncompleteFlag)
         })
-        #if !TEST
-            BraveScrollController.hideShowToolbarEnabled = BraveApp.getPref(BraveUX.PrefKeyIsToolbarHidingEnabled) as? Bool ?? true
 
-        #endif
         AdBlocker.singleton.networkFileLoader.loadData()
         TrackingProtection.singleton.networkFileLoader.loadData()
         HttpsEverywhere.singleton.loadData()
+
+        #if !TEST
+            BraveScrollController.hideShowToolbarEnabled = BraveApp.getPref(BraveUX.PrefKeyIsToolbarHidingEnabled) as? Bool ?? true
+
+            CookieSetting.setup()
+        #endif
     }
 
     // This can only be checked ONCE, the flag is cleared after this.

@@ -1,11 +1,13 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 import Crashlytics
+import Shared
 
 class BraveSettingsView : AppSettingsTableViewController {
 
     var debugToggleItemToTriggerCrashCount = 0
 
     override func generateSettings() -> [SettingSection] {
-        var settings = [SettingSection]()
 
         let prefs = profile.prefs
         let generalSettings = [
@@ -27,18 +29,9 @@ class BraveSettingsView : AppSettingsTableViewController {
                 } else {
                     self.debugToggleItemToTriggerCrashCount++
                 }
-            })
-       ]
-
-
-        var privacySettings = [Setting]()
-        privacySettings += [
-            BoolSetting(prefs: prefs, prefKey: "crashreports.send.always", defaultValue: false,
-                titleText: NSLocalizedString("Send Crash Reports", comment: "Setting to enable the sending of crash reports"),
-                settingDidChange: { configureActiveCrashReporter($0) }),
-            PrivacyPolicySetting()
+            }),
+            CookieSetting(settings: self)
         ]
-
 
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
@@ -52,7 +45,6 @@ class BraveSettingsView : AppSettingsTableViewController {
                 VersionSetting(settings: self),
             ])
         ]
-        
         return settings
     }
 }
@@ -65,3 +57,77 @@ extension BraveSettingsView : UIAlertViewDelegate {
         Crashlytics.sharedInstance().crash()
     }
 }
+
+// Opens the search settings pane
+class CookieSetting: Setting, PicklistSettingDelegate {
+    let profile: Profile
+
+    static var prefAcceptCookies = "acceptCookiesPref"
+
+    let heading = "Accept Cookies"
+    override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
+
+    override var style: UITableViewCellStyle { return .Value1 }
+
+    override var status: NSAttributedString {
+        let prefs = profile.prefs
+        let current = prefs.intForKey(CookieSetting.prefAcceptCookies) ?? 0
+        return NSAttributedString(string: CookieSetting.getOption(Int(current)))
+    }
+
+    static func getOptions() -> [String] {
+        return ["Only from main document domain", "Always", "Never"]
+    }
+
+    static func checkIndexOk(index: Int) -> Bool {
+        let options = getOptions()
+        return 0..<options.count ~= index
+    }
+
+    static func getOption(index: Int) -> String {
+        let options = getOptions()
+        return checkIndexOk(index) ? options[index] : options[0]
+    }
+
+    static func indexToPolicy(index: UInt) -> NSHTTPCookieAcceptPolicy {
+        switch index {
+        case 1:
+            return NSHTTPCookieAcceptPolicy.Always
+        case 2:
+            return NSHTTPCookieAcceptPolicy.Never
+        default:
+            return NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain
+        }
+    }
+
+    static func setup() {
+        let current = BraveApp.getPref(CookieSetting.prefAcceptCookies) as? Int ?? 0
+        NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(current))
+
+    }
+
+    init(settings: SettingsTableViewController) {
+        self.profile = settings.profile
+        super.init(title: NSAttributedString(string: heading, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]))
+    }
+
+    override func onClick(navigationController: UINavigationController?) {
+        let viewController = PicklistSetting(options: CookieSetting.getOptions(), title: heading)
+        navigationController?.pushViewController(viewController, animated: true)
+        viewController.delegate = self
+    }
+
+    func picklistSetting(setting: PicklistSetting, pickedIndex: Int) {
+//        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+//        for cookie in storage.cookies! {
+//            storage.deleteCookie(cookie)
+//        }
+//        NSUserDefaults.standardUserDefaults().synchronize()
+
+        let prefs = profile.prefs
+        prefs.setInt(Int32(pickedIndex), forKey: CookieSetting.prefAcceptCookies)
+        NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(pickedIndex))
+    }
+
+}
+
