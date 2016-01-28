@@ -18,7 +18,7 @@ Open Client.xcodeproj
 
 build Client or ClientNoTests
 
-#### Note: building to your own device (vs the sim) has a few different steps, [see user device build](brave/docs/USER-DEPLOYING.md)
+#### Note: building your own ad-hoc builds is supported [see user device build](brave/docs/USER-DEPLOYING.md)
 
 ## Updating Code 
 
