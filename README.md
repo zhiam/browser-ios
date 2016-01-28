@@ -1,107 +1,70 @@
-# Brave iOS Browser: see readme in [brave dir](brave/README.md)
+# Brave iOS Browser 
 
-Firefox for iOS
-===============
+Brave is based on Firefox iOS, most of the Brave-specific code is in the [brave dir](brave/)
 
-Download on the [App Store](https://itunes.apple.com/app/firefox-web-browser/id989804926).
+These steps should be sufficient to build, but if you need more info, refer to the the [Firefox iOS readme](https://github.com/mozilla/firefox-ios/blob/master/README.md)
 
-This branch
------------
+## Setup
 
-This branch is targeting iOS 9, uses Swift 2.0, and is slated to become v1.1 and later. See the __v1.0__ branch if you're doing work for a 1.0.\* release.
+Do firefox setup by running checkout.sh
 
-Please make sure you aim your pull requests in the right direction.
+Run setup in brave/
+```
+cd brave
+./setup.sh
+```
 
-Getting involved
-----------------
+Open Client.xcodeproj
 
-We encourage you to participate in this open source project. We love Pull Requests, Bug Reports, ideas, (security) code reviews or any kind of positive contribution. Please read the [Community Participation Guidelines](https://www.mozilla.org/en-US/about/governance/policies/participation/).
+build Client or ClientNoTests
 
-* IRC:            [#mobile](https://wiki.mozilla.org/IRC) for general discussion and [#mobistatus](https://wiki.mozilla.org/IRC) for team status updates.
-* Mailing list:   [mobile-firefox-dev@mozilla.org](https://mail.mozilla.org/listinfo/mobile-firefox-dev).
-* Bugs:           [File a new bug](https://bugzilla.mozilla.org/enter_bug.cgi?bug_file_loc=http%3A%2F%2F&bug_ignored=0&op_sys=iOS%20&product=Firefox%20for%20iOS&rep_platform=All) • [Existing bugs](https://bugzilla.mozilla.org/describecomponents.cgi?product=Firefox%20for%20iOS)
+#### Note: building to your own device (vs the sim) has a few different steps, [see user device build](docs/USER-DEPLOYING.md)
 
-This is a work in progress on some early ideas.  Don't get too attached to this code. Tomorrow everything will be different.
+## Updating Code 
 
-Likewise, the design and UX is still in flux. Don't get attached to them. They will change tomorrow!
-https://mozilla.invisionapp.com/share/HA254M642#/screens/63057282?maintainScrollPosition=false
+After a git pull (i.e. updating from the remote) run
 
-*GitHub issues are enabled* on this repository, but we encourage you to file a bug (see above). We'll accept issues to track work items that don't yet have a pull request, and also as an early funnel for bug reports, but Bugzilla is the source of truth for lots of good reasons — issues will be shifted into Bugzilla, and pull requests need a bug number.
+``` ./brave-proj.py ```
 
-Building the code
------------------
+The Xcode project is generated, so local changes won't persist. And if files are added/removed after updating, your project won't be in sync unless the above command is run. 
 
-> __As of August 28, 2015, this project requires Xcode 7 beta 6.__
+## Crash reporting using Fabric
 
-1. Install the latest [Xcode developer tools](https://developer.apple.com/xcode/downloads/) from Apple.
-1. Install [Carthage](https://github.com/Carthage/Carthage#installing-carthage).
-1. Clone the repository:
+To enable, add ~/.brave-fabric-keys with 2 lines, the API key and build secret. Re-run ./brave-proj.py and the project will be generated to use Fabric and Crashlytics frameworks.
 
-  ```shell
-  git clone https://github.com/mozilla/firefox-ios
-  ```
+## Tests
 
-1. Pull in the project dependencies:
+Run Product>Test in Xcode to do so. Not all Firefox tests are passing yet.
 
-  ```shell
-  cd firefox-ios
-  sh ./checkout.sh
-  ```
+## Contribution Notes
 
-1. Open `Client.xcodeproj` in Xcode.
-1. Build the `Client` scheme in Xcode.
+Most of the code is in the brave/ directory. The primary design goal has been to preserve easy merging from Firefox iOS upstream, so hopefully code changes outside of that dir are minimal.
 
-It is possible to use [App Code](https://www.jetbrains.com/objc/download/) instead of Xcode, but you will still require the Xcode developer tools.
+To find changes outside of brave/, look for #if BRAVE / #if !BRAVE (#if/#else/#endif is supported by Swift).
 
-## Contributor guidelines
+## Provisioning Profiles
 
-### Creating a pull request
-* All pull requests must be associated with a specific bug in [Bugzilla](https://bugzilla.mozilla.org/).
- * If a bug corresponding to the fix does not yet exist, please [file it](https://bugzilla.mozilla.org/enter_bug.cgi?op_sys=iOS&product=Firefox%20for%20iOS&rep_platform=All).
- * You'll need to be logged in to create/update bugs, but note that Bugzilla allows you to sign in with your GitHub account.
-* Use the bug number/title as the name of pull request. For example, a pull request for [bug 1135920](https://bugzilla.mozilla.org/show_bug.cgi?id=1135920) would be titled "Bug 1135920 - Create a top sites panel".
-* Finally, upload an attachment to the bug pointing to the GitHub pull request.
- 1. Click <b>Add an attachment</b>.
- 2. Next to <b>File</b>, click <b>Paste text as attachment</b>.
- 3. Paste the URL of the GitHub pull request.
- 4. Enter "Pull request" as the description.
- 5. Finally, flag the pull request for review. Set the <b>review</b> field to "?", then enter the name of the person you'd like to review your patch. If you don't know whom to add as the reviewer, click <b>suggested reviewers</b> and select a name from the dropdown list.
+Do not use 'Xcode managed profiles', there is no advantage to this, and debugging problems with that system is a dead end due to lack of transparency in that system. 
 
-<b>Pro tip: To simplify the attachment step, install the [Github Bugzilla Tweaks](https://github.com/autonome/Github-Bugzilla-Tweaks) addon. This will add a button that takes care of the first four attachment steps for you.</b>
+```brave/build-system/profiles``` has some handy scripts to download the adhoc or developer profiles and install them.
 
-### Swift style
-* Swift code should generally follow the conventions listed at https://github.com/raywenderlich/swift-style-guide.
-  * Exception: we use 4-space indentation instead of 2.
+## JS Tips
 
-### Whitespace
-* New code should not contain any trailing whitespace.
-* We recommend enabling both the "Automatically trim trailing whitespace" and "Including whitespace-only lines" preferences in Xcode (under Text Editing).
-* <code>git rebase --whitespace=fix</code> can also be used to remove whitespace from your commits before issuing a pull request.
+For anyone working with JS in iOS native, I recommend running and debugging your JS in an attached JS console. (Not using an edit/compile/debug cycle in Xcode). When you run from Xcode any iOS web view in the simulator (or attached device), you can then attach from Safari desktop (the Develop menu), and you get a JS console to work in. 
 
-### Commits
-* Each commit should have a single clear purpose. If a commit contains multiple unrelated changes, those changes should be split into separate commits.
-* If a commit requires another commit to build properly, those commits should be squashed.
-* Follow-up commits for any review comments should be squashed. Do not include "Fixed PR comments", merge commits, or other "temporary" commits in pull requests.
+We have various JS interpreters available: UIWebView, JavaScriptCore, and WKWebView.
 
-Adding new dependencies with Carthage
--------------------------------------
+The first is required if we are running JS on the web page, since we are using UIWebView. JavaScriptCore is a stand-alone JS engine that I believe is more up-to-date than UIWebView's. WKWebView will have the most modern JS engine, but requires instantiating a WKWebView for this purpose, which we would prefer to avoid as that is a heavy approach. UIWebView's JS engine is a few years old, and is quite primitive.
 
-Notes from Stefan:
+None of these are comparable to Safari iOS's JS engine, which is highly up-to-date in its capabilities but is not available to us.
 
-Usually Carthage is used to compile frameworks and then include the (compiled) binary frameworks in your app. When you do this, the frameworks do not need to be signed by Carthage. Instead, at the end of building the your application, xcode will simply sign all the embedded resources, frameworks included. So as long as signing works for your app, it will work for frameworks imported with Carthage.
+## Release Builds
 
-But, because not all Carthage dependencies can be compiled to frameworks yet, we currently include them as source. This means they become dependent projects of our application, which in turn means that they are built *and signed* individually as part of the build process of our app.
+```brave/build-system/build-archive.sh``` does everything. When that completes, the Fabric app detects a new archive and asks to distribute to testers.
 
-Now this is where it gets tricky. Because code signing on iOS can get really tedious to get right. Small mistakes in dependent projects can turn into issues about code signing identities, missing provisioning profiles, etc.
+## Misc Tips
 
-For example:
-
-If a dependent project has a team identifier set, Xcode will complain that it cannot find signin identities of that team. It is best to set the team to None.
-
-If a dependent project is configured to use a Distribution Code Signing Identity for a Release build, Xcode will complain that such a profile is not available. (Since we only have development profiles on our workstations). It is best to configure both Debug and Release Build Configurations to use the automatic "iPhone Developer" Code Signing Identity. This will pick the right thing on your local build.
-
-Most of this is fixable and can be reported upstream.
-
-If you add a new dependency, ping @st3fan and he'll make sure things work correctly on our integration (xcode server) and dogfood builders.
-
-A command exists to make adding dependencies less painful: `./update.sh`.
+Go to the Brave app folder for the most recently run simulator:
+```
+cd ~/Library/Developer/CoreSimulator/Devices && cd `ls -t | head -1` && cd data/Containers/Data/Application && cd `find . -iname "*brave*" | head -1 | xargs -I{} dirname {}`
+```
