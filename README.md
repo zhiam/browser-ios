@@ -6,15 +6,12 @@ These steps should be sufficient to build, but if you need more info, refer to t
 
 ## Setup
 
-Do firefox setup by running checkout.sh
-
-Run setup in brave/
+Do the following commands:
 ```
-cd brave
-./setup.sh
+./checkout.sh
+(cd brave && ./setup.sh)
+open Client.xcodeproj
 ```
-
-Open Client.xcodeproj
 
 build Client or ClientNoTests
 
