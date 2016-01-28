@@ -1,11 +1,13 @@
-# How to deploy the Brave iOS Browser on your own device
+# Ad-hoc deploy the Brave iOS Browser  
+
+For making your own builds that can be deployed to devices not directly plugged in, follow these steps.
 
 You will need:
 
 - an [Apple Developer account](https://developer.apple.com) for iOS
 - an [iOS certificate](https://developer.apple.com/account/ios/certificate/certificateList.action)
 - to plug your device into your Mac
-- and run these three commands:
+- and run these three commands (note the argument to setup.sh with your own app id):
 ```
 ./checkout.sh
 (cd brave; ./setup.sh com.bundle.app)
