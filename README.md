@@ -42,7 +42,9 @@ Most of the code is in the brave/ directory. The primary design goal has been to
 
 To find changes outside of brave/, look for #if BRAVE / #if !BRAVE (#if/#else/#endif is supported by Swift).
 
-## Provisioning Profiles
+## Provisioning Profiles using a Team account
+
+(This section doesn't apply to individual developer accounts, Xcode managed profiles seem to work fine in that case.)
 
 Do not use 'Xcode managed profiles', there is no advantage to this, and debugging problems with that system is a dead end due to lack of transparency in that system. 
 
