@@ -5,7 +5,7 @@ import XCTest
 @testable import Client
 import Shared
 
-class WebViewLoadTest: XCTestCase {
+class HttpsEverywhereTest: XCTestCase {
     override func setUp() {
         super.setUp()
     }
