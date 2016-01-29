@@ -113,6 +113,7 @@ class BraveApp {
         #if !TEST
             BraveScrollController.hideShowToolbarEnabled = BraveApp.getPref(BraveUX.PrefKeyIsToolbarHidingEnabled) as? Bool ?? true
 
+            PrivateBrowsing.singleton.startupCheckForPublicCookiesFileToRestore()
             CookieSetting.setup()
         #endif
     }

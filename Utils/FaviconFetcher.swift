@@ -168,7 +168,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
                 fav = Favicon(url: url.absoluteString,
                     type: icon.type)
 
-                if let img = img {
+                if let img = img where !PrivateBrowsing.singleton.isOn {
                     fav.width = Int(img.size.width)
                     fav.height = Int(img.size.height)
                     profile.favicons.addFavicon(fav, forSite: site)
