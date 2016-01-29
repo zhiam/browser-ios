@@ -3,6 +3,7 @@ import SQLite
 private let _singleton = HttpsEverywhere()
 
 class HttpsEverywhere {
+    static let kNotificationDataLoaded = "kNotificationDataLoaded"
     static let prefKeyHttpsEverywhereOn = "braveHttpsEverywhere"
     static let dataVersion = "5.1.2"
     var isEnabled = true
@@ -135,22 +136,32 @@ class HttpsEverywhere {
     }
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
-        if !isEnabled {
+        if !isEnabled || url.scheme.startsWith("https") {
             return nil
         }
 
-        guard let _url = NSURL(string: stripLocalhostWebServer(url.absoluteString)), host = _url.host else {
+        guard let url = NSURL(string: stripLocalhostWebServer(url.absoluteString)), host = url.host else {
             return nil
         }
 
-        let scheme = _url.scheme
+        let scheme = url.scheme
 
         let ids = mapDomainToIdForLookup(host)
         if ids.count < 1 {
             return nil
         }
-        guard let newHost = applyRedirectRuleForIds(ids, schemeAndHost: scheme + "://" + host + "/") else { return url }
-        return NSURL(string: newHost + "/" + (_url.path ?? ""))
+
+        guard var newHost = applyRedirectRuleForIds(ids, schemeAndHost: scheme + "://" + host) else { return nil }
+        if newHost.characters.split(".").count < 3 {
+            // https://thestar.com/ fails but https://www.thestar.com/ is ok
+            newHost = newHost.stringByReplacingOccurrencesOfString("https://", withString: "https://www.")
+        }
+
+        var newUrl = NSURL(string: newHost)
+        if let path = url.path {
+            newUrl = newUrl?.URLByAppendingPathComponent(path)
+        }
+        return newUrl
     }
 }
 
@@ -167,6 +178,10 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
             }
         } else if loader === rulesetsLoader {
             loadSqlDb()
+        }
+
+        if domainToIdMapping != nil && db != nil {
+            NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
         }
     }
 
