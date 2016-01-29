@@ -18,20 +18,28 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
-        #if !TEST
-        delay(0) { // calls closure on main thread
-            BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
-        }
-        #endif
-
         if NSURLProtocol.propertyForKey(markerRequestHandled, inRequest: request) != nil {
             return false
         }
 
-        return TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)
+        #if !TEST
+            delay(0) { // calls closure on main thread
+                BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
+            }
+        #endif
+        
+        return true
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
+
+        if (TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)) {
+            let newRequest = cloneRequest(request)
+            // the minimum I can return without a crash is this url. NSURL() or NSURL("") will crash.
+            newRequest.URL = NSURL(string:"https://")
+            return newRequest
+        }
+
         // TODO handle https redirect loop
         if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
             let newRequest = cloneRequest(request)
@@ -61,18 +69,6 @@ class URLProtocol: NSURLProtocol {
         let newRequest = URLProtocol.cloneRequest(request)
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
         self.connection = NSURLConnection(request: newRequest, delegate: self)
-
-
-        // To block the load nicely, return an empty result to the client.
-        // Nice => UIWebView's isLoading property gets set to false
-        // Not nice => isLoading stays true while page waits for blocked items that never arrive
-
-        // IIRC expectedContentLength of 0 is buggy (can't find the reference now).
-        guard let url = request.URL else { return }
-        let response = NSURLResponse(URL: url, MIMEType: "text/html", expectedContentLength: 1, textEncodingName: "utf-8")
-        client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
-        client?.URLProtocol(self, didLoadData: NSData())
-        client?.URLProtocolDidFinishLoading(self)
     }
 
     override func stopLoading() {
@@ -83,10 +79,8 @@ class URLProtocol: NSURLProtocol {
     }
 
     // MARK: NSURLConnection
-
     func connection(connection: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
         self.client!.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
-
         self.response = response
         self.mutableData = NSMutableData()
     }
