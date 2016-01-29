@@ -32,7 +32,6 @@ class URLProtocol: NSURLProtocol {
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-
         if (TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)) {
             let newRequest = cloneRequest(request)
             // the minimum I can return without a crash is this url. NSURL() or NSURL("") will crash.
@@ -44,6 +43,9 @@ class URLProtocol: NSURLProtocol {
         if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
             let newRequest = cloneRequest(request)
             newRequest.URL = redirectedUrl
+#if DEBUG
+            print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
+#endif
             return newRequest
         }
         return request
@@ -83,6 +85,14 @@ class URLProtocol: NSURLProtocol {
         self.client!.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
         self.response = response
         self.mutableData = NSMutableData()
+    }
+
+    func connection(connection: NSURLConnection, willSendRequest request: NSURLRequest, redirectResponse response: NSURLResponse?) -> NSURLRequest?
+    {
+        if let response = response {
+            client?.URLProtocol(self, wasRedirectedToRequest: request, redirectResponse: response)
+        }
+        return request
     }
 
     func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
