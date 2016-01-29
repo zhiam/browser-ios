@@ -144,6 +144,7 @@ class HttpsEverywhere {
             return nil
         }
 
+
         let scheme = url.scheme
 
         let ids = mapDomainToIdForLookup(host)
@@ -161,6 +162,18 @@ class HttpsEverywhere {
         if let path = url.path {
             newUrl = newUrl?.URLByAppendingPathComponent(path)
         }
+
+        //
+        let ignoredlist = [
+            "m.slashdot.org" // see https://github.com/brave/browser-ios/issues/104
+        ]
+        for item in ignoredlist {
+            if url.absoluteString.contains(item) || newHost.contains(item) {
+                return nil
+            }
+        }
+
+
         return newUrl
     }
 }
