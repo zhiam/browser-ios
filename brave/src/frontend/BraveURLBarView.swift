@@ -26,8 +26,14 @@ class BraveURLBarView : URLBarView {
         var theme = Theme()
         theme.URLFontColor = BraveUX.LocationBarTextColor_URLBaseComponent
         theme.hostFontColor = BraveUX.LocationBarTextColor_URLHostComponent
-        theme.backgroundColor = BraveUX.LocationBarNormalModeBackgroundColor_NonPrivateMode
+        theme.backgroundColor = BraveUX.LocationBarBackgroundColor
         BrowserLocationViewUX.Themes[Theme.NormalMode] = theme
+
+        theme = Theme()
+        theme.URLFontColor = BraveUX.LocationBarTextColor_URLBaseComponent
+        theme.hostFontColor = BraveUX.LocationBarTextColor_URLHostComponent
+        theme.backgroundColor = BraveUX.LocationBarBackgroundColor_PrivateMode
+        BrowserLocationViewUX.Themes[Theme.PrivateMode] = theme
 
         theme = Theme()
         theme.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor
@@ -36,13 +42,28 @@ class BraveURLBarView : URLBarView {
         ToolbarTextField.Themes[Theme.NormalMode] = theme
 
         theme = Theme()
+        theme.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor_Private
+        theme.textColor = BraveUX.LocationBarEditModeTextColor_Private
+        theme.highlightColor = BraveUX.AutocompleteTextFieldHighlightColor
+        ToolbarTextField.Themes[Theme.PrivateMode] = theme
+
+        theme = Theme()
         theme.borderColor = BraveUX.TextFieldBorderColor_NoFocus
         theme.activeBorderColor = BraveUX.TextFieldBorderColor_HasFocus
         theme.tintColor = URLBarViewUX.ProgressTintColor
         theme.textColor = BraveUX.LocationBarTextColor
         theme.buttonTintColor = BraveUX.ActionButtonTintColor
         URLBarViewUX.Themes[Theme.NormalMode] = theme
+    }
 
+    override func applyTheme(themeName: String) {
+        super.applyTheme(themeName)
+        if themeName == Theme.NormalMode {
+            backgroundColor = BraveUX.LocationBarBackgroundColor
+        }
+        if themeName == Theme.PrivateMode {
+            backgroundColor = BraveUX.LocationBarBackgroundColor_PrivateMode
+        }
     }
 
     override func updateAlphaForSubviews(alpha: CGFloat) {
@@ -92,7 +113,6 @@ class BraveURLBarView : URLBarView {
         }
 
         self.stopReloadButton.hidden = true
-
         progressBar.hidden = true
         bookmarkButton.hidden = true
     }
@@ -107,10 +127,9 @@ class BraveURLBarView : URLBarView {
         //self.leftSidePanelButton.alpha = inOverlayMode ? 0 : 1
         super.transitionToOverlay(didCancel)
         bookmarkButton.hidden = true
+        locationView.alpha = 0.0
 
-        locationTextField?.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor
-        locationTextField?.alpha = 1.0
-        locationView.backgroundColor = locationTextField?.backgroundColor
+        locationView.superview?.backgroundColor = locationTextField?.backgroundColor
     }
 
     override func leaveOverlayMode(didCancel cancel: Bool) {
@@ -119,8 +138,7 @@ class BraveURLBarView : URLBarView {
         }
 
         super.leaveOverlayMode(didCancel: cancel)
-        locationView.backgroundColor = BraveUX.LocationBarNormalModeBackgroundColor_NonPrivateMode
-
+        locationView.alpha = 1.0
     }
 
     override func updateConstraints() {
@@ -128,9 +146,6 @@ class BraveURLBarView : URLBarView {
 
         curveShape.hidden = true
         bookmarkButton.hidden = true
-
-        // In edit mode you can see bits of the locationView underneath at the left edge
-        locationView.braveProgressView.hidden = inOverlayMode
 
         // TODO : remove this entirely
         progressBar.hidden = true

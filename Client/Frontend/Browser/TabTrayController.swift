@@ -282,6 +282,12 @@ class TabTrayController: UIViewController {
         button.accessibilityLabel = PrivateModeStrings.toggleAccessibilityLabel
         button.accessibilityHint = PrivateModeStrings.toggleAccessibilityHint
         button.accessibilityValue = self.privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
+
+        if PrivateBrowsing.singleton.isOn {
+            button.backgroundColor = UIColor.whiteColor()
+            button.layer.cornerRadius = 4.0
+            button.selected = true
+        }
         return button
     }()
 

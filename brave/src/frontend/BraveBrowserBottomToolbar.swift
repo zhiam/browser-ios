@@ -102,6 +102,11 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func applyTheme(themeName: String) {
+        super.applyTheme(themeName)
+        tabsButton.applyTheme(themeName)
+    }
+
     class func updateTabCountDuplicatedButton(count: Int, animated: Bool) {
         guard let instance = BraveBrowserBottomToolbar.currentInstance else { return }
         tabsCount = count

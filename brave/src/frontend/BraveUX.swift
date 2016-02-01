@@ -29,8 +29,13 @@ struct BraveUX {
 
     static let LocationBarTextColor = UIColor(white: 255/255.0, alpha: 1)
     static let LocationBarEditModeBackgroundColor = UIColor(white: 242/255.0, alpha: 1.0)
-    static let LocationBarNormalModeBackgroundColor_NonPrivateMode = UIColor(white: 200/255.0, alpha: 0.3)
     static let LocationBarEditModeTextColor = UIColor(white: 0/255.0, alpha: 1)
+
+    static let LocationBarBackgroundColor = UIColor(white: 200/255.0, alpha: 0.3)
+    static let LocationBarBackgroundColor_PrivateMode = UIColor.blackColor()
+
+    static let LocationBarEditModeBackgroundColor_Private = UIColor(white: 0/255.0, alpha: 1.0)
+    static let LocationBarEditModeTextColor_Private = UIColor(white: 242/255.0, alpha: 1)
 
     // Interesting: compontents of the url can be colored differently: http://www.foo.com
     // Base: http://www and Host: foo.com
