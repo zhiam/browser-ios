@@ -152,11 +152,7 @@ class HttpsEverywhere {
             return nil
         }
 
-        guard var newHost = applyRedirectRuleForIds(ids, schemeAndHost: scheme + "://" + host) else { return nil }
-        if newHost.characters.split(".").count < 3 {
-            // https://thestar.com/ fails but https://www.thestar.com/ is ok
-            newHost = newHost.stringByReplacingOccurrencesOfString("https://", withString: "https://www.")
-        }
+        guard let newHost = applyRedirectRuleForIds(ids, schemeAndHost: scheme + "://" + host) else { return nil }
 
         var newUrl = NSURL(string: newHost)
         if let path = url.path {
