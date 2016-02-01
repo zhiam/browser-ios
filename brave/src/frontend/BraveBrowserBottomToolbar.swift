@@ -27,7 +27,7 @@ extension UIImage{
 }
 
 class BraveBrowserBottomToolbar : BrowserToolbar {
-    static var tabsCount = 0
+    static var tabsCount = 1
 
     lazy var tabsButton: TabsButton = {
         let tabsButton = TabsButton()
@@ -41,7 +41,6 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
     lazy var addTabButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "add")
-        //TODO button.setImage(UIImage(named: "backPressed"), forState: .Highlighted)
         //.accessibilityLabel = NSLocalizedString("Back", comment: "Accessibility Label for the browser toolbar Back button")
         button.addTarget(self, action: "onClickAddTab", forControlEvents: UIControlEvents.TouchUpInside)
 
