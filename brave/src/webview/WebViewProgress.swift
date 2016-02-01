@@ -26,7 +26,7 @@ public class WebViewProgress
     TODO figure this out. http://thestar.com exhibits this sometimes.
     Possibly a bug in UIWebView with load completion, but hard to repro, a reload of a page always seems to complete. */
     private class LoadingObserver : NSObject {
-        private let webView: BraveWebView
+        private weak var webView: BraveWebView?
         private var timer: NSTimer?
 
         init(webView:BraveWebView) {
@@ -36,19 +36,21 @@ public class WebViewProgress
         }
 
         @objc func delayedCompletionCheck() {
-            if webView.loading || webView.estimatedProgress > 0.99 {
-                return
-            }
+            delay(0.01) { // ensure closure is on main thread
+                if (self.webView?.loading ?? false) || self.webView?.estimatedProgress > 0.99 {
+                    return
+                }
 
-            let readyState = webView.stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
-            if readyState == "loaded" || readyState == "complete" {
-                webView.progress.completeProgress()
+                let readyState = self.webView?.stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
+                if readyState == "loaded" || readyState == "complete" {
+                    self.webView?.progress.completeProgress()
+                }
             }
         }
 
         @objc override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
             if let path = keyPath where path == "loading" {
-                if !webView.loading && webView.estimatedProgress < 1.0 {
+                if !(webView?.loading ?? false) && webView?.estimatedProgress < 1.0 {
                     timer?.invalidate()
                     timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "delayedCompletionCheck", userInfo: nil, repeats: false)
                 } else {
