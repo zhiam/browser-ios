@@ -255,7 +255,7 @@ class TabTrayController: UIViewController {
 
     private(set) internal var privateMode: Bool = false {
         didSet {
-#if !BRAVE
+#if !NO_PRIVATE_MODE
             if #available(iOS 9, *) {
                 togglePrivateMode.selected = privateMode
                 togglePrivateMode.accessibilityValue = privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
@@ -269,15 +269,25 @@ class TabTrayController: UIViewController {
     private var tabsToDisplay: [Browser] {
         return self.privateMode ? tabManager.privateTabs : tabManager.normalTabs
     }
-#if !BRAVE
+#if !NO_PRIVATE_MODE
     @available(iOS 9, *)
-    lazy var togglePrivateMode: ToggleButton = {
-        let button = ToggleButton()
-        button.setImage(UIImage(named: "smallPrivateMask"), forState: UIControlState.Normal)
+    lazy var togglePrivateMode: UIButton = {
+        let button = UIButton()
+        button.setTitle(NSLocalizedString("Private", comment: "Private button title"), forState: .Normal)
+        button.setTitleColor(UIColor.blackColor(), forState: .Selected)
+        button.setTitleColor(UIColor(white: 179/255.0, alpha: 1.0), forState: .Normal)
+        button.titleLabel!.font = UIFont.systemFontOfSize(button.titleLabel!.font.pointSize + 2)
+        button.contentEdgeInsets = UIEdgeInsetsMake(0, 4 /* left */, 0, 4 /* right */)
         button.addTarget(self, action: "SELdidTogglePrivateMode", forControlEvents: .TouchUpInside)
         button.accessibilityLabel = PrivateModeStrings.toggleAccessibilityLabel
         button.accessibilityHint = PrivateModeStrings.toggleAccessibilityHint
         button.accessibilityValue = self.privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
+
+        if PrivateBrowsing.singleton.isOn {
+            button.backgroundColor = UIColor.whiteColor()
+            button.layer.cornerRadius = 4.0
+            button.selected = true
+        }
         return button
     }()
 
@@ -298,14 +308,14 @@ class TabTrayController: UIViewController {
         return delegate
     }()
 
-    #if BRAVE
+#if BRAVE
     override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
         super.dismissViewControllerAnimated(flag, completion:completion)
         UIView.animateWithDuration(0.2) {
             getApp().browserViewController.view.alpha = 1.0
         }
     }
-    #endif
+#endif
 
     init(tabManager: TabManager, profile: Profile) {
         self.tabManager = tabManager
@@ -392,12 +402,12 @@ class TabTrayController: UIViewController {
         view.addSubview(settingsButton)
 
         makeConstraints()
-#if !BRAVE
+#if !NO_PRIVATE_MODE
         if #available(iOS 9, *) {
             view.addSubview(togglePrivateMode)
             togglePrivateMode.snp_makeConstraints { make in
                 make.right.equalTo(addTabButton.snp_left).offset(-10)
-                make.size.equalTo(UIConstants.ToolbarHeight)
+                //make.height.equalTo(UIConstants.ToolbarHeight)
                 make.centerY.equalTo(self.navBar)
             }
 
@@ -481,7 +491,7 @@ class TabTrayController: UIViewController {
     func SELdidClickAddTab() {
         openNewTab()
     }
-  #if !BRAVE
+  #if !NO_PRIVATE_MODE
     @available(iOS 9, *)
     func SELdidTapLearnMore() {
         let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
@@ -508,6 +518,18 @@ class TabTrayController: UIViewController {
         }
 
         privateMode = !privateMode
+#if BRAVE
+        if privateMode {
+            PrivateBrowsing.singleton.enter()
+            togglePrivateMode.backgroundColor = UIColor.whiteColor()
+            togglePrivateMode.layer.cornerRadius = 4.0
+        } else {
+            self.togglePrivateMode.backgroundColor = UIColor.clearColor()
+            tabManager.removeAllPrivateTabsAndNotify(false)
+            PrivateBrowsing.singleton.exit()
+        }
+        togglePrivateMode.selected = privateMode
+#else
         // If we are exiting private mode and we have the close private tabs option selected, make sure
         // we clear out all of the private tabs
         if !privateMode && profile.prefs.boolForKey("settings.closePrivateTabs") ?? false {
@@ -515,6 +537,8 @@ class TabTrayController: UIViewController {
         }
 
         togglePrivateMode.setSelected(privateMode, animated: true)
+#endif
+
         collectionView.layoutSubviews()
 
         let toView: UIView
@@ -554,7 +578,7 @@ class TabTrayController: UIViewController {
 
     @available(iOS 9, *)
     func changePrivacyMode(isPrivate: Bool) {
-#if !BRAVE
+#if !NO_PRIVATE_MODE
         if isPrivate != privateMode {
             guard let _ = collectionView else {
                 privateMode = isPrivate
@@ -566,7 +590,7 @@ class TabTrayController: UIViewController {
     }
 
     private func openNewTab(request: NSURLRequest? = nil) {
-#if !BRAVE
+#if !NO_PRIVATE_MODE
         if #available(iOS 9, *) {
             if privateMode {
                 emptyPrivateTabsView.hidden = true
@@ -577,7 +601,7 @@ class TabTrayController: UIViewController {
         // until after its insert animation finishes.
         self.collectionView.performBatchUpdates({ _ in
             var tab: Browser
-#if !BRAVE
+#if !NO_PRIVATE_MODE
             if #available(iOS 9, *) {
                 tab = self.tabManager.addTab(request, isPrivate: self.privateMode)
             } else {
@@ -679,7 +703,7 @@ extension TabTrayController: TabManagerDelegate {
             }
             self.collectionView.reloadItemsAtIndexPaths(offscreenIndexPaths)
         }
-#if !BRAVE
+#if !NO_PRIVATE_MODE
         if #available(iOS 9, *) {
             if privateTabsAreEmpty() {
                 emptyPrivateTabsView.alpha = 1
@@ -942,11 +966,12 @@ private class EmptyPrivateTabsView: UIView {
         return button
     }()
 
+#if !BRAVE
     private var iconImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "largePrivateMask"))
         return imageView
     }()
-
+#endif
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -957,16 +982,12 @@ private class EmptyPrivateTabsView: UIView {
 
         addSubview(titleLabel)
         addSubview(descriptionLabel)
+#if !BRAVE
         addSubview(iconImageView)
         addSubview(learnMoreButton)
-
+#endif
         titleLabel.snp_makeConstraints { make in
             make.center.equalTo(self)
-        }
-
-        iconImageView.snp_makeConstraints { make in
-            make.bottom.equalTo(titleLabel.snp_top).offset(-EmptyPrivateTabsViewUX.TextMargin)
-            make.centerX.equalTo(self)
         }
 
         descriptionLabel.snp_makeConstraints { make in
@@ -974,10 +995,17 @@ private class EmptyPrivateTabsView: UIView {
             make.centerX.equalTo(self)
         }
 
+#if !BRAVE
+        iconImageView.snp_makeConstraints { make in
+            make.bottom.equalTo(titleLabel.snp_top).offset(-EmptyPrivateTabsViewUX.TextMargin)
+            make.centerX.equalTo(self)
+        }
+
         learnMoreButton.snp_makeConstraints { (make) -> Void in
             make.top.equalTo(descriptionLabel.snp_bottom).offset(EmptyPrivateTabsViewUX.LearnMoreMargin)
             make.centerX.equalTo(self)
         }
+#endif
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -62,7 +62,7 @@ extension BraveSettingsView : UIAlertViewDelegate {
 class CookieSetting: Setting, PicklistSettingDelegate {
     let profile: Profile
 
-    static var prefAcceptCookies = "acceptCookiesPref"
+    static var prefAcceptCookies = "braveAcceptCookiesPref"
 
     let heading = "Accept Cookies"
     override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
@@ -103,7 +103,6 @@ class CookieSetting: Setting, PicklistSettingDelegate {
     static func setup() {
         let current = BraveApp.getPref(CookieSetting.prefAcceptCookies) as? Int ?? 0
         NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(current))
-
     }
 
     init(settings: SettingsTableViewController) {

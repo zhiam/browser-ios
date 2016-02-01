@@ -454,15 +454,26 @@ extension TabManager {
             self.screenshotUUID = coder.decodeObjectForKey("screenshotUUID") as? NSUUID
             self.isSelected = coder.decodeBoolForKey("isSelected")
             self.title = coder.decodeObjectForKey("title") as? String
+#if !BRAVE
             self.isPrivate = coder.decodeBoolForKey("isPrivate")
+#else
+            self.isPrivate = false // On app start, no private tabs
+#endif
         }
 
         func encodeWithCoder(coder: NSCoder) {
+#if BRAVE
+            if (isPrivate) { // seems more private to not write private tab info to disk
+                return
+            }
+#endif
             coder.encodeObject(sessionData, forKey: "sessionData")
             coder.encodeObject(screenshotUUID, forKey: "screenshotUUID")
             coder.encodeBool(isSelected, forKey: "isSelected")
             coder.encodeObject(title, forKey: "title")
+#if !BRAVE
             coder.encodeBool(isPrivate, forKey: "isPrivate")
+#endif
         }
     }
 
