@@ -12,6 +12,10 @@ public struct SupportUtils {
     /// The resulting NSURL will include the app version, operating system and locale code. For example, a topic
     /// "cheese" will be turned into a link that looks like https://support.mozilla.org/1/mobile/2.0/iOS/en-US/cheese
     public static func URLForTopic(topic: String) -> NSURL? {
+#if BRAVE
+        // TODO direct these to brave support site
+        return nil
+#endif
         guard let escapedTopic = topic.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLPathAllowedCharacterSet()),
                 languageIdentifier = NSLocale.preferredLanguages().first else {
             return nil
