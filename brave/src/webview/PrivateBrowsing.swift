@@ -90,13 +90,13 @@ class PrivateBrowsing {
         }
 
         NSUserDefaults.standardUserDefaults().synchronize()
-        nonprivateCookies = [NSHTTPCookie: Bool]()
 
         cookiesFileDiskOperation(.DeletePublicBackup)
 
         for cookie in nonprivateCookies {
             storage.setCookie(cookie.0)
         }
+        nonprivateCookies = [NSHTTPCookie: Bool]()
     }
 
     @objc func cookiesChanged(info: NSNotification) {
