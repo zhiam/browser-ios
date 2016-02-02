@@ -71,12 +71,15 @@ class MainSidePanelViewController : UIViewController {
 
         bookmarksButton.setImage(UIImage(named: "bookmarklist"), forState: .Normal)
         bookmarksButton.addTarget(self, action: "showBookmarks", forControlEvents: .TouchUpInside)
+        bookmarksButton.accessibilityLabel = NSLocalizedString("Show Bookmarks", comment: "Button to show the bookmarks list")
 
         historyButton.setImage(UIImage(named: "history"), forState: .Normal)
         historyButton.addTarget(self, action: "showHistory", forControlEvents: .TouchUpInside)
+        historyButton.accessibilityLabel = NSLocalizedString("Show History", comment: "Button to show the history list")
 
         addBookmarkButton.addTarget(self, action: "addBookmark", forControlEvents: .TouchUpInside)
         addBookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
+        addBookmarkButton.accessibilityLabel = NSLocalizedString("Add Bookmark", comment: "Button to add a bookmark")
 
         bookmarksButton.tintColor = BraveUX.ActionButtonTintColor
         historyButton.tintColor = BraveUX.ActionButtonTintColor

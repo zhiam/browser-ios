@@ -41,8 +41,9 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
     }
 
     private func clearPrivateData(clearables: Set<Clearable>) {
-        let webView = tester().waitForViewWithAccessibilityLabel("Web content") as! WKWebView
-        let lastTabLabel = webView.title!.isEmpty ? "home" : webView.title!
+        let webView = tester().waitForViewWithAccessibilityLabel("Web content") as! UIWebView
+
+        let lastTabLabel = webView.stringByEvaluatingJavaScriptFromString("document.title") ?? "home"
 
         openClearPrivateDataDialog()
 
@@ -162,7 +163,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("\(url)\n")
         tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
 
-        let webView = tester().waitForViewWithAccessibilityLabel("Web content") as! WKWebView
+        let webView = tester().waitForViewWithAccessibilityLabel("Web content") as! UIWebView
 
         // Set and verify a dummy cookie value.
         setCookies(webView, cookie: "foo=bar")
@@ -195,7 +196,7 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("\(url)\n")
         tester().waitForWebViewElementWithAccessibilityLabel("Cache test")
 
-        let webView = tester().waitForViewWithAccessibilityLabel("Web content") as! WKWebView
+        let webView = tester().waitForViewWithAccessibilityLabel("Web content") as! UIWebView
         let requests = cachedServer.requests
 
         // Verify that clearing non-cache items will keep the page in the cache.
@@ -209,22 +210,21 @@ class ClearPrivateDataTests: KIFTestCase, UITextFieldDelegate {
         XCTAssertEqual(cachedServer.requests, requests + 1)
     }
 
-    private func setCookies(webView: WKWebView, cookie: String) {
+    private func setCookies(webView: UIWebView, cookie: String) {
         let expectation = expectationWithDescription("Set cookie")
-        webView.evaluateJavaScript("document.cookie = \"\(cookie)\"; localStorage.cookie = \"\(cookie)\"; sessionStorage.cookie = \"\(cookie)\";") { result, _ in
-            expectation.fulfill()
-        }
+        webView.stringByEvaluatingJavaScriptFromString("document.cookie = \"\(cookie)\"; localStorage.cookie = \"\(cookie)\"; sessionStorage.cookie = \"\(cookie)\";")
+        expectation.fulfill()
         waitForExpectationsWithTimeout(10, handler: nil)
     }
 
-    private func getCookies(webView: WKWebView) -> (cookie: String, localStorage: String?, sessionStorage: String?) {
+    private func getCookies(webView: UIWebView) -> (cookie: String, localStorage: String?, sessionStorage: String?) {
         var cookie: (String, String?, String?)!
         let expectation = expectationWithDescription("Got cookie")
-        webView.evaluateJavaScript("JSON.stringify([document.cookie, localStorage.cookie, sessionStorage.cookie])") { result, _ in
-            let cookies = JSON.parse(result as! String).asArray!
-            cookie = (cookies[0].asString!, cookies[1].asString, cookies[2].asString)
-            expectation.fulfill()
-        }
+        let result = webView.stringByEvaluatingJavaScriptFromString("JSON.stringify([document.cookie, localStorage.cookie, sessionStorage.cookie])")
+        XCTAssert(result != nil)
+        let cookies = JSON.parse(result!).asArray!
+        cookie = (cookies[0].asString!, cookies[1].asString, cookies[2].asString)
+        expectation.fulfill()
         waitForExpectationsWithTimeout(10, handler: nil)
         return cookie
     }

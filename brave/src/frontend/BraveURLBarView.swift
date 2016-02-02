@@ -19,6 +19,7 @@ class BraveURLBarView : URLBarView {
 
         leftSidePanelButton.addTarget(self, action: "SELdidClickLeftSlideOut", forControlEvents: UIControlEvents.TouchUpInside)
         leftSidePanelButton.setImage(UIImage(named: "listpanel"), forState: .Normal)
+        leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
 
         ToolbarTextField.appearance().clearButtonTintColor = nil

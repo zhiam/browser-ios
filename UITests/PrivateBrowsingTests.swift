@@ -24,38 +24,40 @@ class PrivateBrowsingTests: KIFTestCase {
     func testPrivateTabDoesntTrackHistory() {
         // First navigate to a normal tab and see that it tracks
         let url1 = "\(webRoot)/numberedPage.html?page=1"
-        tester().tapViewWithAccessibilityIdentifier("url")
-        tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("\(url1)\n")
-        tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
-        tester().waitForTimeInterval(3)
+        func enterUrl() {
+            tester().tapViewWithAccessibilityIdentifier("url")
+            tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("\(url1)\n")
+            tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
+            tester().waitForTimeInterval(2)
+        }
 
-        tester().tapViewWithAccessibilityIdentifier("url")
-        tester().tapViewWithAccessibilityLabel("History")
+        func checkHistory() {
+            tester().tapViewWithAccessibilityLabel("Bookmarks and History Panel")
+            tester().tapViewWithAccessibilityLabel("Show History")
+            var tableView = tester().waitForViewWithAccessibilityIdentifier("History List") as! UITableView
+            XCTAssertEqual(tableView.numberOfRowsInSection(0), 1)
+            tester().tapScreenAtPoint(CGPoint(x:260 + 50, y:10))
+            tester().waitForTimeInterval(1)
+            tester().waitForViewWithAccessibilityLabel("Show Tabs")
+        }
 
-        var tableView = tester().waitForViewWithAccessibilityIdentifier("History List") as! UITableView
-        XCTAssertEqual(tableView.numberOfRowsInSection(0), 1)
-        tester().tapViewWithAccessibilityLabel("Cancel")
+        enterUrl()
+        checkHistory()
 
         // Then try doing the same thing for a private tab
         tester().tapViewWithAccessibilityLabel("Show Tabs")
         tester().tapViewWithAccessibilityLabel("Private Mode")
         tester().tapViewWithAccessibilityLabel("Add Tab")
-        tester().tapViewWithAccessibilityIdentifier("url")
 
-        tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("\(url1)\n")
-        tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
-
-        tester().tapViewWithAccessibilityIdentifier("url")
-        tester().tapViewWithAccessibilityLabel("History")
-
-        tableView = tester().waitForViewWithAccessibilityIdentifier("History List") as! UITableView
-        XCTAssertEqual(tableView.numberOfRowsInSection(0), 1)
+        enterUrl()
+        checkHistory()
 
         // Exit private mode
-        tester().tapViewWithAccessibilityLabel("Cancel")
         tester().tapViewWithAccessibilityLabel("Show Tabs")
         tester().tapViewWithAccessibilityLabel("Private Mode")
         tester().tapViewWithAccessibilityLabel("Page 1")
+
+        checkHistory()
     }
 
     func testTabCountShowsOnlyNormalOrPrivateTabCount() {

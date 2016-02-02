@@ -120,9 +120,9 @@ extension KIFUITestActor {
         var stepResult = KIFTestStepResult.Wait
 
         let escaped = text.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-        webView.evaluateJavaScript("KIFHelper.enterTextIntoInputWithName(\"\(escaped)\", \"\(inputName)\");") { success, _ in
-            stepResult = (success as! Bool) ? KIFTestStepResult.Success : KIFTestStepResult.Failure
-        }
+        let success = webView.stringByEvaluatingJavaScriptFromString("KIFHelper.enterTextIntoInputWithName(\"\(escaped)\", \"\(inputName)\");")
+
+        stepResult = (success == "true") ? KIFTestStepResult.Success : KIFTestStepResult.Failure
 
         runBlock { error in
             if stepResult == KIFTestStepResult.Failure {
@@ -140,9 +140,8 @@ extension KIFUITestActor {
         var stepResult = KIFTestStepResult.Wait
 
         let escaped = text.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-        webView.evaluateJavaScript("KIFHelper.tapElementWithAccessibilityLabel(\"\(escaped)\")") { success, _ in
-            stepResult = (success as! Bool) ? KIFTestStepResult.Success : KIFTestStepResult.Failure
-        }
+        let success = webView.stringByEvaluatingJavaScriptFromString("KIFHelper.tapElementWithAccessibilityLabel(\"\(escaped)\")")
+        stepResult = (success == "true") ? KIFTestStepResult.Success : KIFTestStepResult.Failure
 
         runBlock { error in
             if stepResult == KIFTestStepResult.Failure {
@@ -161,18 +160,16 @@ extension KIFUITestActor {
         var found = false
 
         let escaped = text.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-        webView.evaluateJavaScript("KIFHelper.hasElementWithAccessibilityLabel(\"\(escaped)\")") { success, _ in
-            found = success as? Bool ?? false
-            stepResult = KIFTestStepResult.Success
-        }
-
+        let success = webView.stringByEvaluatingJavaScriptFromString("KIFHelper.hasElementWithAccessibilityLabel(\"\(escaped)\")")
+        stepResult = (success == "true") ? KIFTestStepResult.Success : KIFTestStepResult.Failure
+        found = success == "true"
         runBlock { _ in return stepResult }
 
         return found
     }
 
-    private func getWebViewWithKIFHelper() -> WKWebView {
-        let webView = waitForViewWithAccessibilityLabel("Web content") as! WKWebView
+    private func getWebViewWithKIFHelper() -> UIWebView {
+        let webView = waitForViewWithAccessibilityLabel("Web content") as! UIWebView
 
         // Wait for the web view to stop loading.
         runBlock { _ in
@@ -181,15 +178,15 @@ extension KIFUITestActor {
 
         var stepResult = KIFTestStepResult.Wait
 
-        webView.evaluateJavaScript("typeof KIFHelper") { result, _ in
-            if result as! String == "undefined" {
+        var result = webView.stringByEvaluatingJavaScriptFromString("typeof KIFHelper")
+        if result == "undefined" {
                 let bundle = NSBundle(forClass: NavigationTests.self)
                 let path = bundle.pathForResource("KIFHelper", ofType: "js")!
                 let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding)
-                webView.evaluateJavaScript(source as String, completionHandler: nil)
-            }
-            stepResult = KIFTestStepResult.Success
+                webView.stringByEvaluatingJavaScriptFromString(source as String)
         }
+
+        stepResult = KIFTestStepResult.Success
 
         runBlock { _ in return stepResult }
 
