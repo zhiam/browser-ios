@@ -31,7 +31,7 @@ class HttpsEverywhereTest: XCTestCase {
             return
         }
 
-        let urls = ["thestar.com", "www.th  estar.com", "apple.com", "xkcd.com"]
+        let urls = ["thestar.com", "www.thestar.com", "apple.com", "xkcd.com"]
 
         for url in urls {
             let redirected = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!)
