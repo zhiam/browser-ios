@@ -35,7 +35,7 @@ static CTPParser parser;
         return NO;
     }
 
-    if (!parser.matchesTracker(url.UTF8String)) {
+    if (!parser.matchesTracker(mainDoc.UTF8String, url.UTF8String)) {
         return NO;
     }
 

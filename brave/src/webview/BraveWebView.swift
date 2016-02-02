@@ -110,6 +110,10 @@ class BraveWebView: UIWebView {
         commonInit()
     }
 
+    deinit {
+        removeObserver(progress.loadingObserver!, forKeyPath: progress.loadingObserver!.kvoLoading)
+    }
+
     let internalProgressStartedNotification = "WebProgressStartedNotification"
     let internalProgressChangedNotification = "WebProgressEstimateChangedNotification"
     let internalProgressFinishedNotification = "WebProgressFinishedNotification" // Not usable

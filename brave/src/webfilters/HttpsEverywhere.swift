@@ -36,6 +36,10 @@ class HttpsEverywhere {
     }
 
     func updateEnabledState() {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         let obj = BraveApp.getPref(HttpsEverywhere.prefKeyHttpsEverywhereOn)
         isEnabled = obj as? Bool ?? true
     }
@@ -45,6 +49,10 @@ class HttpsEverywhere {
     }
 
     func loadSqlDb() {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         guard let path = rulesetsLoader.pathToExistingDataOnDisk() else { return }
         do {
             db = try Connection(path)
@@ -54,6 +62,10 @@ class HttpsEverywhere {
     }
 
     func loadData() {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         if let _ = rulesetsLoader.pathToExistingDataOnDisk() {
           loadSqlDb()
         } else {
@@ -124,6 +136,9 @@ class HttpsEverywhere {
     private func mapDomainToIdForLookup(domain: String) -> [Int] {
         var resultIds = [Int]()
         let parts = domain.characters.split(".")
+        if parts.count < 1 {
+            return resultIds
+        }
         for i in 0..<(parts.count - 1) {
             let slice = Array(parts[i..<parts.count]).joinWithSeparator(".".characters)
             let prefix = (i > 0) ? "*" : ""
@@ -136,6 +151,10 @@ class HttpsEverywhere {
     }
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         if !isEnabled || url.scheme.startsWith("https") {
             return nil
         }
@@ -176,6 +195,10 @@ class HttpsEverywhere {
 
 extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
     func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         guard let data = data else { return }
 
         if loader === targetsLoader {

@@ -25,14 +25,16 @@ public class WebViewProgress
     using a timer. The only problem with this is that there is yet more code for load detection, sigh.
     TODO figure this out. http://thestar.com exhibits this sometimes.
     Possibly a bug in UIWebView with load completion, but hard to repro, a reload of a page always seems to complete. */
-    private class LoadingObserver : NSObject {
+    class LoadingObserver : NSObject {
         private weak var webView: BraveWebView?
         private var timer: NSTimer?
+
+        let kvoLoading = "loading"
 
         init(webView:BraveWebView) {
             self.webView = webView
             super.init()
-            webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
+            webView.addObserver(self, forKeyPath: kvoLoading, options: .New, context: nil)
         }
 
         @objc func delayedCompletionCheck() {
@@ -59,7 +61,7 @@ public class WebViewProgress
             }
         }
     }
-    private var loadingObserver: LoadingObserver?
+    var loadingObserver: LoadingObserver?
 
     init(parent: BraveWebView) {
         webView = parent
