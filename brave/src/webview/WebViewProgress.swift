@@ -38,25 +38,24 @@ public class WebViewProgress
         }
 
         @objc func delayedCompletionCheck() {
-            delay(0.01) { // ensure closure is on main thread
-                if (self.webView?.loading ?? false) || self.webView?.estimatedProgress > 0.99 {
-                    return
-                }
+            if (webView?.loading ?? false) || webView?.estimatedProgress > 0.99 {
+                return
+            }
 
-                let readyState = self.webView?.stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
-                if readyState == "loaded" || readyState == "complete" {
-                    self.webView?.progress.completeProgress()
-                }
+            let readyState = webView?.stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
+            if readyState == "loaded" || readyState == "complete" {
+                webView?.progress.completeProgress()
             }
         }
 
         @objc override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-            if let path = keyPath where path == "loading" {
-                if !(webView?.loading ?? false) && webView?.estimatedProgress < 1.0 {
-                    timer?.invalidate()
-                    timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "delayedCompletionCheck", userInfo: nil, repeats: false)
+            guard let path = keyPath where path == "loading" else { return }
+            delay(0) { // ensure closure is on main thread
+                if !(self.webView?.loading ?? true) && self.webView?.estimatedProgress < 1.0 {
+                    self.timer?.invalidate()
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "delayedCompletionCheck", userInfo: nil, repeats: false)
                 } else {
-                    timer?.invalidate()
+                    self.timer?.invalidate()
                 }
             }
         }
