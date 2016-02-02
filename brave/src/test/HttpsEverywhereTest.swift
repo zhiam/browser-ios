@@ -5,6 +5,8 @@ import XCTest
 @testable import Client
 import Shared
 
+// This fails due to the swift compiler: false casting of AnyObjects to XCUIElement, then the objects won't cast to their proper types
+
 class HttpsEverywhereTest: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -29,7 +31,7 @@ class HttpsEverywhereTest: XCTestCase {
             return
         }
 
-        let urls = ["thestar.com", "www.thestar.com", "apple.com", "xkcd.com"]
+        let urls = ["thestar.com", "www.th  estar.com", "apple.com", "xkcd.com"]
 
         for url in urls {
             let redirected = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!)

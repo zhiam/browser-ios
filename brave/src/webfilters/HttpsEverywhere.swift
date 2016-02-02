@@ -159,7 +159,11 @@ class HttpsEverywhere {
             return nil
         }
 
-        guard let url = NSURL(string: stripLocalhostWebServer(url.absoluteString)), host = url.host else {
+        var str = stripLocalhostWebServer(url.absoluteString)
+        if str.hasSuffix("/") {
+            str = String(str.characters.dropLast())
+        }
+        guard let url = NSURL(string: str), host = url.host else {
             return nil
         }
 
@@ -212,8 +216,25 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
             loadSqlDb()
         }
 
+
+#if DEBUG
+        // Build in test cases, swift compiler is mangling the test cases in HttpsEverywhere.swift and they are failing (false casting of AnyObjects to XCUIElement)
+        // One test is to ensure the files load <1 min, the other is to ensure the redirection happens as expected
+        delay(60) {
+            assert(self.domainToIdMapping != nil && self.db != nil)
+        }
+#endif
+
         if domainToIdMapping != nil && db != nil {
             NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
+
+#if DEBUG
+            let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
+            for url in urls {
+                let redirected = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!)
+                assert(redirected != nil && redirected!.scheme.startsWith("https"), "failed:" + url)
+            }
+#endif
         }
     }
 
