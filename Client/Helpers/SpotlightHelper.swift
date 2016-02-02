@@ -1,17 +1,17 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
-* License, v. 2.0. If a copy of the MPL was not distributed with this
-* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Foundation
-import Shared
-import CoreSpotlight
-import WebKit
+ import Foundation
+ import Shared
+ import CoreSpotlight
+ import WebKit
 
 
-private let log = Logger.browserLogger
-private let browsingActivityType: String = "org.mozilla.ios.firefox.browsing"
+ private let log = Logger.browserLogger
+ private let browsingActivityType: String = "org.mozilla.ios.firefox.browsing"
 
-class SpotlightHelper: NSObject {
+ class SpotlightHelper: NSObject {
     private(set) var activity: NSUserActivity? {
         willSet {
             activity?.invalidate()
@@ -50,6 +50,10 @@ class SpotlightHelper: NSObject {
         if !url.scheme.startsWith("http") {
             return
         }
+        
+        if AboutUtils.isAboutURL(url) || url.scheme == "about" {
+            return
+        }
 
         var activity: NSUserActivity
         if let currentActivity = self.activity where currentActivity.webpageURL == url {
@@ -69,17 +73,17 @@ class SpotlightHelper: NSObject {
                 activity.contentAttributeSet = attrs
                 activity.eligibleForSearch = true
 
-                // We can't be certain that the favicon isn't already available.
-                // If it is, for this URL, then update the activity with the favicon now.
-                if let image = thumbnailImage where urlForThumbnail == url {
-                    updateImage(image, forURL: url)
-                }
             }
         }
-        activity.becomeCurrent()
+
+        // We can't be certain that the favicon isn't already available.
+        // If it is, for this URL, then update the activity with the favicon now.
+        if urlForThumbnail == url {
+            updateImage(thumbnailImage, forURL: url)
+        }
     }
 
-    func updateImage(image: UIImage, forURL url: NSURL) {
+    func updateImage(image: UIImage? = nil, forURL url: NSURL) {
         guard let currentActivity = self.activity where currentActivity.webpageURL == url else {
             // We've got a favicon, but not for this URL.
             // Let's store it until we can get the title and description.
@@ -89,10 +93,14 @@ class SpotlightHelper: NSObject {
         }
 
         if #available(iOS 9.0, *) {
-            activity?.contentAttributeSet?.thumbnailData = UIImagePNGRepresentation(image)
+            if let image = image {
+                activity?.contentAttributeSet?.thumbnailData = UIImagePNGRepresentation(image)
+            }
         }
         urlForThumbnail = nil
         thumbnailImage = nil
+
+        becomeCurrent()
     }
 
     func becomeCurrent() {
@@ -102,17 +110,17 @@ class SpotlightHelper: NSObject {
     func createUserActivity() -> NSUserActivity {
         return NSUserActivity(activityType: browsingActivityType)
     }
-}
+ }
 
-extension SpotlightHelper: NSUserActivityDelegate {
+ extension SpotlightHelper: NSUserActivityDelegate {
     @objc func userActivityWasContinued(userActivity: NSUserActivity) {
         if let url = userActivity.webpageURL {
             createNewTab?(url: url)
         }
     }
-}
+ }
 
-extension SpotlightHelper: BrowserHelper {
+ extension SpotlightHelper: BrowserHelper {
     static func name() -> String {
         return "SpotlightHelper"
     }
@@ -128,4 +136,4 @@ extension SpotlightHelper: BrowserHelper {
                 update(payload, forURL: url)
         }
     }
-}
+ }
