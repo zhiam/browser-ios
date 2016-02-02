@@ -311,9 +311,7 @@ extension BraveWebView: UIWebViewDelegate {
     }
 
 
-
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
-
         if AboutUtils.isAboutURL(request.URL) {
             progress.completeProgress()
             print(request)
@@ -408,7 +406,9 @@ extension BraveWebView: UIWebViewDelegate {
                 error?.code == NSURLErrorServerCertificateHasUnknownRoot    ||
                 error?.code == NSURLErrorServerCertificateNotYetValid)
             {
-                let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(URL?.absoluteString) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
+                let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? "bad url"
+
+                let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(errorUrl) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
                     handler in
                     self.stopLoading()
@@ -421,7 +421,7 @@ extension BraveWebView: UIWebViewDelegate {
                 alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.Default) {
                     handler in
                     self.loadingUnvalidatedHTTPSPage = true;
-                    if let url = self.URL {
+                    if let url = NSURL(string: errorUrl) {
                         self.loadRequest(NSURLRequest(URL: url))
                     }
                 })
