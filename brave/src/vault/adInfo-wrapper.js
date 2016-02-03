@@ -25,7 +25,7 @@ function _brave_replaceDivWithNewContent(replacerObject) {
     console.log('------tag name: ' + node.tagName);
     if (node.tagName === 'IFRAME') {
       node.srcdoc = frameSrc;
-      node.sandbox = 'allow-scripts';
+      node.sandbox = 'allow-scripts allow-popups';
     } else {
       while (node.firstChild) {
         node.removeChild(node.firstChild);
@@ -37,7 +37,7 @@ function _brave_replaceDivWithNewContent(replacerObject) {
       iframe.style.width = width + 'px';
       iframe.style.height = height + 'px';
       iframe.srcdoc = frameSrc;
-      iframe.sandbox = 'allow-scripts';
+      iframe.sandbox = 'allow-scripts allow-popups';
       node.appendChild(iframe);
     }
   } else {
