@@ -3,6 +3,6 @@
   "dependencies": {
     "abp-filter-parser-cpp": "1.1.5",
     "node-gyp": "^3.2.1",
-    "tracking-protection": ""
+    "tracking-protection": "1.1.1"
   }
 }
