@@ -255,7 +255,7 @@ class TabTrayController: UIViewController {
 
     private(set) internal var privateMode: Bool = false {
         didSet {
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
             if #available(iOS 9, *) {
                 togglePrivateMode.selected = privateMode
                 togglePrivateMode.accessibilityValue = privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
@@ -269,7 +269,7 @@ class TabTrayController: UIViewController {
     private var tabsToDisplay: [Browser] {
         return self.privateMode ? tabManager.privateTabs : tabManager.normalTabs
     }
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
     @available(iOS 9, *)
     lazy var togglePrivateMode: UIButton = {
         let button = UIButton()
@@ -402,7 +402,7 @@ class TabTrayController: UIViewController {
         view.addSubview(settingsButton)
 
         makeConstraints()
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
         if #available(iOS 9, *) {
             view.addSubview(togglePrivateMode)
             togglePrivateMode.snp_makeConstraints { make in
@@ -491,7 +491,7 @@ class TabTrayController: UIViewController {
     func SELdidClickAddTab() {
         openNewTab()
     }
-  #if !NO_PRIVATE_MODE
+  #if BRAVE_PRIVATE_MODE
     @available(iOS 9, *)
     func SELdidTapLearnMore() {
         let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
@@ -578,7 +578,7 @@ class TabTrayController: UIViewController {
 
     @available(iOS 9, *)
     func changePrivacyMode(isPrivate: Bool) {
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
         if isPrivate != privateMode {
             guard let _ = collectionView else {
                 privateMode = isPrivate
@@ -590,7 +590,7 @@ class TabTrayController: UIViewController {
     }
 
     private func openNewTab(request: NSURLRequest? = nil) {
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
         if #available(iOS 9, *) {
             if privateMode {
                 emptyPrivateTabsView.hidden = true
@@ -601,7 +601,7 @@ class TabTrayController: UIViewController {
         // until after its insert animation finishes.
         self.collectionView.performBatchUpdates({ _ in
             var tab: Browser
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
             if #available(iOS 9, *) {
                 tab = self.tabManager.addTab(request, isPrivate: self.privateMode)
             } else {
@@ -703,7 +703,7 @@ extension TabTrayController: TabManagerDelegate {
             }
             self.collectionView.reloadItemsAtIndexPaths(offscreenIndexPaths)
         }
-#if !NO_PRIVATE_MODE
+#if BRAVE_PRIVATE_MODE
         if #available(iOS 9, *) {
             if privateTabsAreEmpty() {
                 emptyPrivateTabsView.alpha = 1
