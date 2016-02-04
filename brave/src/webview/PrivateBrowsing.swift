@@ -12,7 +12,8 @@ class PrivateBrowsing {
     var nonprivateCookies = [NSHTTPCookie: Bool]()
 
     // On startup we are no longer in private mode, if there is a .public cookies file, it means app was killed in private mode, so restore the cookies file
-    func startupCheckForPublicCookiesFileToRestore() {
+    func startupCheckIfKilledWhileInPBMode() {
+        webkitDirLocker(lock: false)
         cookiesFileDiskOperation(.Restore)
     }
 
@@ -22,10 +23,24 @@ class PrivateBrowsing {
         case DeletePublicBackup
     }
 
+    // GeolocationSites.plist cannot be blocked any other way than locking the filesystem so that webkit can't write it out
+    // TODO: after unlocking, verify that sites from PB are not in the written out GeolocationSites.plist, based on manual testing this
+    // doesn't seem to be the case, but more rigourous test cases are needed
+    private func webkitDirLocker(lock lock: Bool) {
+        let fm = NSFileManager.defaultManager()
+        let baseDir = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)[0]
+        let webkitDir = baseDir + "/WebKit"
+        do {
+            try fm.setAttributes([NSFilePosixPermissions: (lock ? 000 : 755)], ofItemAtPath: webkitDir)
+        } catch {
+            print(error)
+        }
+    }
+
     private func cookiesFileDiskOperation(let type: MoveCookies) {
         let fm = NSFileManager.defaultManager()
-        let documentsDir = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        let cookiesDir = documentsDir + "/../Library/Cookies"
+        let baseDir = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)[0]
+        let cookiesDir = baseDir + "/Cookies"
         let originSuffix = type == .SavePublicBackup ? "cookies" : ".public"
 
         do {
@@ -70,6 +85,8 @@ class PrivateBrowsing {
         }
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "cookiesChanged:", name: NSHTTPCookieManagerCookiesChangedNotification, object: nil)
+
+        webkitDirLocker(lock: true)
     }
 
     func exit() {
@@ -78,6 +95,8 @@ class PrivateBrowsing {
         }
 
         isOn = false
+
+        webkitDirLocker(lock: false)
 
         BraveApp.setupCacheDefaults()
         NSNotificationCenter.defaultCenter().removeObserver(self)
