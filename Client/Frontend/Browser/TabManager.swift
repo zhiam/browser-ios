@@ -117,12 +117,12 @@ class TabManager : NSObject {
         self.navDelegate.insert(delegate)
     }
 
-    var count: Int {
+    var tabCount: Int {
         return tabs.count
     }
 
     var selectedTab: Browser? {
-        if !(0..<count ~= _selectedIndex) {
+        if !(0..<tabCount ~= _selectedIndex) {
             return nil
         }
 
@@ -287,26 +287,26 @@ class TabManager : NSObject {
         // If the removed tab was selected, find the new tab to select.
         if tab === selectedTab {
             let index = getIndex(tab)
-            if index + 1 < count {
+            if index + 1 < tabCount {
                 selectTab(tabs[index + 1])
             } else if index - 1 >= 0 {
                 selectTab(tabs[index - 1])
             } else {
-                assert(count == 1, "Removing last tab")
+                assert(tabCount == 1, "Removing last tab")
                 selectTab(nil)
             }
         }
 
-        let prevCount = count
+        let prevCount = tabCount
         var removedIndex = -1
-        for i in 0..<count {
+        for i in 0..<tabCount {
             if tabs[i] === tab {
                 tabs.removeAtIndex(i)
                 removedIndex = i
                 break
             }
         }
-        assert(count == prevCount - 1, "Tab removed")
+        assert(tabCount == prevCount - 1, "Tab removed")
 
 
         #if BRAVE
@@ -355,7 +355,7 @@ class TabManager : NSObject {
     }
 
     func getIndex(tab: Browser) -> Int {
-        for i in 0..<count {
+        for i in 0..<tabCount {
             if tabs[i] === tab {
                 return i
             }
@@ -601,7 +601,7 @@ extension TabManager {
     func restoreTabs() {
         isRestoring = true
 
-        if count == 0 && !AppConstants.IsRunningTest && !DebugSettingsBundleOptions.skipSessionRestore {
+        if tabCount == 0 && !AppConstants.IsRunningTest && !DebugSettingsBundleOptions.skipSessionRestore {
             // This is wrapped in an Objective-C @try/@catch handler because NSKeyedUnarchiver may throw exceptions which Swift cannot handle
             let _ = Try(
                 `withTry`: { () -> Void in
@@ -613,7 +613,7 @@ extension TabManager {
             )
         }
 
-        if count == 0 {
+        if tabCount == 0 {
             let tab = addTab()
             selectTab(tab)
         }

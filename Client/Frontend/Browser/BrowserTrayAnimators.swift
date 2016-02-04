@@ -279,7 +279,7 @@ private func shouldDisplayFooterForBVC(bvc: BrowserViewController) -> Bool {
 }
 
 private func toggleWebViewVisibility(show show: Bool, usingTabManager tabManager: TabManager) {
-    for i in 0..<tabManager.count {
+    for i in 0..<tabManager.tabCount {
         if let tab = tabManager[i] {
             tab.webView?.hidden = !show
         }
