@@ -600,7 +600,7 @@ class TabTrayController: UIViewController {
         // We're only doing one update here, but using a batch update lets us delay selecting the tab
         // until after its insert animation finishes.
         self.collectionView.performBatchUpdates({ _ in
-            var tab: Browser
+            var tab: Browser?
 #if BRAVE_PRIVATE_MODE
             if #available(iOS 9, *) {
                 tab = self.tabManager.addTab(request, isPrivate: self.privateMode)
@@ -610,7 +610,9 @@ class TabTrayController: UIViewController {
 #else
             tab = self.tabManager.addTab(request)
 #endif
-            self.tabManager.selectTab(tab)
+            if let tab = tab {
+                self.tabManager.selectTab(tab)
+            }
         }, completion: { finished in
             if finished {
                 #if BRAVE

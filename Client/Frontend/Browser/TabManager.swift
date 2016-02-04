@@ -9,6 +9,8 @@ import Shared
 
 private let log = Logger.browserLogger
 
+let kMaxTabs = 9
+
 protocol TabManagerDelegate: class {
     func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?, previous: Browser?)
     func tabManager(tabManager: TabManager, didCreateTab tab: Browser)
@@ -187,25 +189,29 @@ class TabManager : NSObject {
     }
 
     @available(iOS 9, *)
-    func addTab(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser {
+    func addTab(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser? {
         return self.addTab(request, configuration: configuration, flushToDisk: true, zombie: false, isPrivate: isPrivate)
     }
 
     @available(iOS 9, *)
-    func addTabAndSelect(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser {
-        let tab = addTab(request, configuration: configuration, isPrivate: isPrivate)
+    func addTabAndSelect(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser? {
+        guard let tab = addTab(request, configuration: configuration, isPrivate: isPrivate) else { return nil }
         selectTab(tab)
         return tab
     }
 
-    func addTabAndSelect(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil) -> Browser {
-        let tab = addTab(request, configuration: configuration)
+    func addTabAndSelect(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil) -> Browser? {
+        guard let tab = addTab(request, configuration: configuration) else { return nil }
         selectTab(tab)
         return tab
     }
 
     // This method is duplicated to hide the flushToDisk option from consumers.
-    func addTab(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil) -> Browser {
+    func addTab(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil) -> Browser? {
+        if tabCount >= kMaxTabs {
+            print("Max tab count reached")
+            return nil
+        }
         return self.addTab(request, configuration: configuration, flushToDisk: true, zombie: false)
     }
 
