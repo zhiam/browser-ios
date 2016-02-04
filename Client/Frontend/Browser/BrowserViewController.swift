@@ -1786,10 +1786,14 @@ extension BrowserViewController: TabManagerDelegate {
 
 extension BrowserViewController: WKNavigationDelegate {
     func webView(webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
+#if !BRAVE
         if tabManager.selectedTab?.webView !== webView {
             return
         }
-
+#else
+        // remove the open in overlay view if it is present
+        removeOpenInView()
+#endif
         updateFindInPageVisibility(visible: false)
 
         // If we are going to navigate to a new page, hide the reader mode button. Unless we
@@ -1801,8 +1805,6 @@ extension BrowserViewController: WKNavigationDelegate {
                 hideReaderModeBar(animated: false)
             }
 
-            // remove the open in overlay view if it is present
-            removeOpenInView()
         }
     }
 
