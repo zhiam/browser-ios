@@ -2498,10 +2498,12 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         var dialogTitle: String?
         actionSheetController.view.tag = BraveWebView.kContextMenuBlockNavigation
 
+        let maxTabsReached = getApp().tabManager.tabCount >= kMaxTabs
+
         if let url = elements.link, currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString
             let isPrivate = currentTab.isPrivate
-            if !isPrivate {
+            if !isPrivate && !maxTabsReached {
                 let newTabTitle = NSLocalizedString("Open In New Tab", comment: "Context menu item for opening a link in a new tab")
                 let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
                     actionSheetController.view.tag = 0 // BRAVE: clear this to allow navigation
