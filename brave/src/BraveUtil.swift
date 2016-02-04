@@ -28,9 +28,11 @@ extension NSURL {
 
 // Firefox has uses urls of the form  http://localhost:6571/errors/error.html?url=http%3A//news.google.ca/ to populate the browser history, and load+redirect using GCDWebServer
 func stripLocalhostWebServer(url: String) -> String {
+#if !TEST // TODO fix up the fact lots of code isn't available in the test suite, this is just an additional check, so for testing the rest of the code will work fine
     if !url.startsWith(WebServer.sharedInstance.base) {
         return url
     }
+#endif
     // I think the ones prefixed with the following are the only ones of concern. There is also about/sessionrestore urls, not sure if we need to look at those
     let token = "errors/error.html?url="
     let range = url.rangeOfString(token)
