@@ -85,7 +85,7 @@ class BraveWebView: UIWebView {
             //      scrollView.decelerationRate = UIScrollViewDecelerationRateFast
             //    }
         #endif
-        setupSwipeGesture()
+
     }
 
     func internalProgressNotification(notification: NSNotification) {
@@ -227,31 +227,6 @@ class BraveWebView: UIWebView {
 
     class func isTopFrameRequest(request:NSURLRequest) -> Bool {
         return request.URL == request.mainDocumentURL
-    }
-
-    func setupSwipeGesture() {
-        let right = UISwipeGestureRecognizer(target: self, action: "swipeRight:")
-        right.direction = .Right
-        let left = UISwipeGestureRecognizer(target: self, action: "swipeLeft:")
-        left.direction = .Left
-
-        left.requireGestureRecognizerToFail(right)
-        right.requireGestureRecognizerToFail(left)
-
-        addGestureRecognizer(right)
-        addGestureRecognizer(left)
-    }
-
-    @objc func swipeRight(gesture: UISwipeGestureRecognizer) {
-        if canGoBack {
-            goBack()
-        }
-    }
-
-    @objc func swipeLeft(gesture: UISwipeGestureRecognizer) {
-        if canGoForward {
-            goForward()
-        }
     }
 
     // Long press context menu text selection overriding
