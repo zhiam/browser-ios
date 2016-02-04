@@ -406,7 +406,11 @@ extension BraveWebView: UIWebViewDelegate {
                 error?.code == NSURLErrorServerCertificateHasUnknownRoot    ||
                 error?.code == NSURLErrorServerCertificateNotYetValid)
             {
-                let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? "bad url"
+                let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? ""
+                if errorUrl.characters.count < 1 {
+                    BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
+                    return
+                }
 
                 let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(errorUrl) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
