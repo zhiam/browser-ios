@@ -198,6 +198,31 @@ class HttpsEverywhere {
 }
 
 extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
+    // Build in test cases, swift compiler is mangling the test cases in HttpsEverywhereTests.swift and they are failing. The compiler is falsely casting  AnyObjects to XCUIElement, which then breaks the runtime tests, I don't have time to look at this further ATM.
+    private func runtimeDebugOnlyTestDomainsRedirected() {
+#if DEBUG
+        if HttpsEverywhere.singleton.isEnabled {
+            let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
+            for url in urls {
+                guard let _ =  HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!) else {
+                    BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
+                    return
+                }
+            }
+        }
+#endif
+    }
+
+    private func runtimeDebugOnlyTestVerifyResourcesLoaded() {
+#if DEBUG
+        delay(60) {
+            if self.domainToIdMapping == nil && self.db == nil {
+                BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
+            }
+        }
+#endif
+    }
+
     func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
         // synchronize code from this point on.
         objc_sync_enter(self)
@@ -216,29 +241,11 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
             loadSqlDb()
         }
 
-
-#if DEBUG
-        // Build in test cases, swift compiler is mangling the test cases in HttpsEverywhere.swift and they are failing (false casting of AnyObjects to XCUIElement)
-        // One test is to ensure the files load <1 min, the other is to ensure the redirection happens as expected
-        delay(60) {
-            BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
-        }
-#endif
+        runtimeDebugOnlyTestVerifyResourcesLoaded()
 
         if domainToIdMapping != nil && db != nil {
             NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
-
-#if DEBUG
-            if HttpsEverywhere.singleton.isEnabled {
-                    let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
-                    for url in urls {
-                        guard let _ =  HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!) else {
-                            BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
-                            return
-                        }
-                    }
-            }
-#endif
+            runtimeDebugOnlyTestDomainsRedirected()
         }
     }
 
