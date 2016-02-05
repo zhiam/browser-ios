@@ -20,7 +20,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     let tabTitleViewContainer = UIView()
     let tabTitleView = UILabel()
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -52,6 +51,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         addBookmarkButton.addTarget(self, action: "addBookmark", forControlEvents: .TouchUpInside)
         addBookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
+        addBookmarkButton.setImage(UIImage(named: "bookmarkMarked"), forState: .Selected)
         addBookmarkButton.accessibilityLabel = NSLocalizedString("Add Bookmark", comment: "Button to add a bookmark")
 
         bookmarksButton.tintColor = BraveUX.ActionButtonTintColor
@@ -66,7 +66,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         bookmarks.view.hidden = false
 
         containerView.bringSubviewToFront(topButtonsView)
-
     }
 
     func addBookmark() {
@@ -220,6 +219,9 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         }
     }
 
+    func updateBookmarkStatus(isBookmarked: Bool) {
+        addBookmarkButton.selected = isBookmarked
+    }
 }
 
 

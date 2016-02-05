@@ -178,6 +178,9 @@ class BraveTopViewController : UIViewController {
         panel.showPanel(panel.view.hidden, parentSideConstraints: [leftConstraint!, rightConstraint!])
     }
 
+    func updateBookmarkStatus(isBookmarked: Bool) {
+        mainSidePanel.updateBookmarkStatus(isBookmarked)
+    }
 }
 
 extension BraveTopViewController : HomePanelDelegate {
