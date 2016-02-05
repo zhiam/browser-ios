@@ -150,7 +150,6 @@ class BraveTopViewController : UIViewController {
     let SEL_onClickBraveButton = "onClickBraveButton:"
     func onClickBraveButton(notification: NSNotification) {
         guard let button = notification.object as? UIButton else { return }
-        button.selected = !button.selected
         BraveApp.areAllBraveFiltersBypassed = button.selected
         BraveApp.getCurrentWebView()?.reload()
         #if RIGHTPANEL
