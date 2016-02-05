@@ -14,13 +14,6 @@ class BraveSettingsView : AppSettingsTableViewController {
         let prefs = profile.prefs
         let generalSettings = [
             SearchSetting(settings: self),
-//            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
-//                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
-//            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
-//                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
-            BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
-            BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
-            BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
             BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyIsToolbarHidingEnabled , defaultValue: true, titleText: "Hide toolbar when scrolling", statusText: nil, settingDidChange:  { value in
                 BraveScrollController.hideShowToolbarEnabled = value
 
@@ -31,18 +24,26 @@ class BraveSettingsView : AppSettingsTableViewController {
                 } else {
                     self.debugToggleItemToTriggerCrashCount++
                 }
-            }),
-            CookieSetting(settings: self)
+            })
+//            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
+//                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
+//            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
+//                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
         ]
 
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
-                ShowIntroductionSetting(settings: self),
-                //SendFeedbackSetting(),
-                //SendAnonymousUsageDataSetting(prefs: prefs, delegate: settingsDelegate),
-                //OpenSupportPageSetting(delegate: settingsDelegate),
-                ]),
+            SettingSection(title: NSAttributedString(string: NSLocalizedString("Site Protections", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
+                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
+                BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
+                BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
+                CookieSetting(settings: self)]),
+//            SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
+//                ShowIntroductionSetting(settings: self),
+//                //SendFeedbackSetting(),
+//                //SendAnonymousUsageDataSetting(prefs: prefs, delegate: settingsDelegate),
+//                //OpenSupportPageSetting(delegate: settingsDelegate),
+//                ]),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
                 VersionSetting(settings: self),
             ])

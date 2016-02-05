@@ -248,16 +248,16 @@ class SettingsTableViewController: UITableViewController {
 
         tableView.separatorColor = UIConstants.TableViewSeparatorColor
         tableView.backgroundColor = UIConstants.TableViewHeaderBackgroundColor
-    }
-
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
 
         settings = generateSettings()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELsyncDidChangeState", name: NotificationProfileDidStartSyncing, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELsyncDidChangeState", name: NotificationProfileDidFinishSyncing, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELfirefoxAccountDidChange", name: NotificationFirefoxAccountChanged, object: nil)
+    }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
 
         tableView.reloadData()
     }
