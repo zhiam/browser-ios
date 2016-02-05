@@ -1,10 +1,9 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Storage
+import SnapKit
 
-class MainSidePanelViewController : UIViewController {
-
-    var browser:BrowserViewController?
+class MainSidePanelViewController : SidePanelBaseViewController {
 
     let bookmarks = BookmarksPanel()
     let history = HistoryPanel()
@@ -21,35 +20,9 @@ class MainSidePanelViewController : UIViewController {
     let tabTitleViewContainer = UIView()
     let tabTitleView = UILabel()
 
-    // Wrap everything in a UIScrollView the view animation will not try to shrink the view
-    // add subviews to containerView not self.view
-    let containerView = UIView()
-
-    override func loadView() {
-        self.view = UIScrollView(frame: UIScreen.mainScreen().bounds)
-    }
-
-    func viewAsScrollView() -> UIScrollView {
-        return self.view as! UIScrollView
-    }
-
-    func setupContainerViewSize() {
-        containerView.frame = CGRectMake(0, 0, CGFloat(BraveUX.WidthOfSlideOut), self.view.frame.height)
-        viewAsScrollView().contentSize = CGSizeMake(containerView.frame.width, containerView.frame.height)
-    }
-
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        setupContainerViewSize()
-    }
-
 
     override func viewDidLoad() {
-        viewAsScrollView().scrollEnabled = false
-
-        view.addSubview(containerView)
-        setupContainerViewSize()
-        containerView.backgroundColor = UIColor(white: 77/255.0, alpha: 1.0)
+        super.viewDidLoad()
 
         tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
         tabTitleView.textColor = self.view.tintColor
@@ -93,7 +66,7 @@ class MainSidePanelViewController : UIViewController {
         bookmarks.view.hidden = false
 
         containerView.bringSubviewToFront(topButtonsView)
-        view.hidden = true
+
     }
 
     func addBookmark() {
@@ -110,7 +83,7 @@ class MainSidePanelViewController : UIViewController {
         }
     }
 
-    func setupConstraints() {
+    override func setupConstraints() {
         topButtonsView.snp_remakeConstraints {
             make in
             make.top.equalTo(containerView).offset(spaceForStatusBar())
@@ -187,60 +160,13 @@ class MainSidePanelViewController : UIViewController {
         }
     }
 
-    func spaceForStatusBar() -> Double {
-        let spacer = BraveApp.isIPhoneLandscape() ? 0.0 : 20.0
-        return spacer
-    }
-
-    func verticalBottomPositionMainToolbar() -> Double {
-        return Double(UIConstants.ToolbarHeight) + spaceForStatusBar()
-    }
-
-    private func show(showing: Bool) {
-        if (showing) {
-            view.hidden = false
-            bookmarks.tableView.backgroundColor = BraveUX.BackgroundColorForBookmarksHistoryAndTopSites
-            history.tableView.backgroundColor = bookmarks.tableView.backgroundColor
-            setupConstraints()
-        }
-        view.layoutIfNeeded()
-
-        let width = showing ? BraveUX.WidthOfSlideOut : 0
-        let animation = {
-            guard let superview = self.view.superview else { return }
-            self.view.snp_remakeConstraints {
-                make in
-                make.bottom.left.top.equalTo(superview)
-                make.width.equalTo(width)
-            }
-            superview.layoutIfNeeded()
-
-            guard let topVC = getApp().rootViewController.visibleViewController else { return }
-            topVC.setNeedsStatusBarAppearanceUpdate()
-        }
-
-        var percentComplete = Double(view.frame.width) / Double(BraveUX.WidthOfSlideOut)
-        if showing {
-            percentComplete = 1.0 - percentComplete
-        }
-        let duration = 0.2 * percentComplete
-        UIView.animateWithDuration(duration, animations: animation)
-        if (!showing) { // for reasons unknown, wheh put in a animation completion block, this is called immediately
-            delay(duration) { self.view.hidden = true }
-        }
-    }
-
-    func showAndSetDelegate(showing: Bool, delegate: HomePanelDelegate?) {
-        if (showing) {
-            bookmarks.homePanelDelegate = delegate
+    override func setHomePanelDelegate(delegate: HomePanelDelegate?) {
+        bookmarks.homePanelDelegate = delegate
+        history.homePanelDelegate = delegate
+        if (delegate != nil) {
             bookmarks.reloadData()
-            history.homePanelDelegate = delegate
             history.reloadData()
-        } else {
-            bookmarks.homePanelDelegate = nil
-            history.homePanelDelegate = nil
         }
-        show(showing)
     }
 
     var loc = CGFloat(-1)
@@ -259,9 +185,10 @@ class MainSidePanelViewController : UIViewController {
             
             let shouldShow = view.frame.width / CGFloat(BraveUX.WidthOfSlideOut) > CGFloat(BraveUX.PanelClosingThresholdWhenDragging)
             if shouldShow {
-                show(true)
+                showPanel(true)
             } else {
-                showAndSetDelegate(false, delegate: nil)
+                setHomePanelDelegate(nil)
+                showPanel(false)
             }
         }
         
@@ -292,6 +219,7 @@ class MainSidePanelViewController : UIViewController {
             break
         }
     }
+
 }
 
 

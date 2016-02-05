@@ -9,18 +9,26 @@ class BraveURLBarView : URLBarView {
 
     private static weak var currentInstance: BraveURLBarView?
     lazy var leftSidePanelButton = { return UIButton() }()
+    lazy var rightSidePanelButton = { return UIButton() }()
+
     override func commonInit() {
         BraveURLBarView.currentInstance = self
         locationContainer.layer.cornerRadius = CGFloat(BraveUX.TextFieldCornerRadius)
         curveShape = HideCurveView()
 
         addSubview(leftSidePanelButton)
+        addSubview(rightSidePanelButton)
         super.commonInit()
 
         leftSidePanelButton.addTarget(self, action: "SELdidClickLeftSlideOut", forControlEvents: UIControlEvents.TouchUpInside)
         leftSidePanelButton.setImage(UIImage(named: "listpanel"), forState: .Normal)
         leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
+
+        rightSidePanelButton.addTarget(self, action: "SELdidClickRightSlideOut", forControlEvents: UIControlEvents.TouchUpInside)
+        rightSidePanelButton.setImage(UIImage(named: "bravePanelButton"), forState: .Normal)
+        rightSidePanelButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
+        rightSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
 
         ToolbarTextField.appearance().clearButtonTintColor = nil
 
@@ -76,6 +84,10 @@ class BraveURLBarView : URLBarView {
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLeftSlideOutClicked, object: nil)
     }
 
+    func SELdidClickRightSlideOut() {
+        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationRightSlideOutClicked, object: nil)
+    }
+
     override func updateTabCount(count: Int, animated: Bool = true) {
         super.updateTabCount(count, animated: toolbarIsShowing)
         BraveBrowserBottomToolbar.updateTabCountDuplicatedButton(count, animated: animated)
@@ -93,9 +105,9 @@ class BraveURLBarView : URLBarView {
                 return [leftSidePanelButton, locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, leftSidePanelButton, locationView, shareButton, tabsButton]
+                    return [backButton, forwardButton, leftSidePanelButton, locationView, rightSidePanelButton, shareButton, tabsButton]
                 } else {
-                    return [leftSidePanelButton, locationView, progressBar]
+                    return [leftSidePanelButton, locationView, rightSidePanelButton, progressBar]
                 }
             }
         }
@@ -106,7 +118,7 @@ class BraveURLBarView : URLBarView {
 
     override func updateViewsForOverlayModeAndToolbarChanges() {
         super.updateViewsForOverlayModeAndToolbarChanges()
-        //self. leftSidePanelButton .hidden = false
+
         if !self.toolbarIsShowing {
             self.tabsButton.hidden = true
         } else {
@@ -125,7 +137,6 @@ class BraveURLBarView : URLBarView {
     }
 
     override func transitionToOverlay(didCancel: Bool = false) {
-        //self.leftSidePanelButton.alpha = inOverlayMode ? 0 : 1
         super.transitionToOverlay(didCancel)
         bookmarkButton.hidden = true
         locationView.alpha = 0.0
@@ -173,10 +184,10 @@ class BraveURLBarView : URLBarView {
                 if self.toolbarIsShowing {
                     // Firefox is not referring to the bottom toolbar, it is asking is this class showing more tool buttons
                     make.leading.equalTo(self.leftSidePanelButton.snp_trailing)
-                    make.trailing.equalTo(self.shareButton.snp_leading)
+                    make.trailing.equalTo(self).inset(UIConstants.ToolbarHeight * 3)
                 } else {
-                    make.left.equalTo(self.leftSidePanelButton.snp_right)
-                    make.right.equalTo(self).offset(-5)
+                    make.left.equalTo(self).inset(UIConstants.ToolbarHeight)
+                    make.right.equalTo(self).inset(UIConstants.ToolbarHeight)
                 }
 
                 make.height.equalTo(URLBarViewUX.LocationHeight)
@@ -189,10 +200,16 @@ class BraveURLBarView : URLBarView {
                     make.centerY.equalTo(self)
                     make.size.equalTo(UIConstants.ToolbarHeight)
                 } else {
-                    make.left.equalTo(self)
+                    make.left.equalTo(self).inset(8)
                     make.centerY.equalTo(self)
                     make.size.lessThanOrEqualTo(UIConstants.ToolbarHeight)
                 }
+            }
+
+            rightSidePanelButton.snp_remakeConstraints { make in
+                make.left.equalTo(self.locationContainer.snp_right)
+                make.centerY.equalTo(self)
+                make.size.equalTo(UIConstants.ToolbarHeight)
             }
         }
     }
@@ -226,7 +243,7 @@ class BraveURLBarView : URLBarView {
         }
 
         shareButton.snp_remakeConstraints { make in
-            make.right.equalTo(self.tabsButton.snp_left)
+            make.right.equalTo(self.tabsButton.snp_left).offset(-6)
             make.centerY.equalTo(self)
             make.width.equalTo(UIConstants.ToolbarHeight)
         }

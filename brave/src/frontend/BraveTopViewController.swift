@@ -2,18 +2,24 @@
 
 import Shared
 import Storage
+import SnapKit
 
 let kNotificationLeftSlideOutClicked = "kNotificationLeftSlideOutClicked"
+let kNotificationRightSlideOutClicked = "kNotificationRightSlideOutClicked"
 
 class BraveTopViewController : UIViewController {
     var browser:BraveBrowserViewController
     var mainSidePanel:MainSidePanelViewController
+    var rightSidePanel:BraveRightSidePanelViewController
 
     var clickDetectionView = UIButton()
+    var leftConstraint: Constraint? = nil
+    var rightConstraint: Constraint? = nil
 
     init(browser:BraveBrowserViewController) {
         self.browser = browser
         mainSidePanel = MainSidePanelViewController()
+        rightSidePanel = BraveRightSidePanelViewController()
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -35,6 +41,7 @@ class BraveTopViewController : UIViewController {
 
         addVC(browser)
         addVC(mainSidePanel)
+        addVC(rightSidePanel)
 
         mainSidePanel.view.snp_makeConstraints {
             make in
@@ -42,25 +49,37 @@ class BraveTopViewController : UIViewController {
             make.width.equalTo(0)
         }
 
+        rightSidePanel.view.snp_makeConstraints {
+            make in
+            make.bottom.right.top.equalTo(view)
+            make.width.equalTo(0)
+        }
+        
 
         //    clickDetectionView.layer.shadowColor = UIColor.redColor().CGColor
         //    clickDetectionView.layer.shadowOffset = CGSizeMake(-4, 0)
         //    clickDetectionView.layer.shadowOpacity = 0.7
         //    clickDetectionView.layer.shadowRadius = 8.0
 
-        clickDetectionView.backgroundColor = UIColor(white: 100/255, alpha: 0.05)
+        clickDetectionView.backgroundColor = UIColor(white: 100/255, alpha: 0.1)
 
         setupBrowserConstraints(useTopLayoutGuide: true)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "leftSlideOutClicked:", name: kNotificationLeftSlideOutClicked, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rightSlideOutClicked:", name: kNotificationRightSlideOutClicked, object: nil)
 
-        clickDetectionView.addTarget(self, action: "dismissSlideOut", forControlEvents: UIControlEvents.TouchUpInside)
+        clickDetectionView.addTarget(self, action: "dismissAllSidePanels:", forControlEvents: UIControlEvents.TouchUpInside)
 
         mainSidePanel.browser = browser
     }
 
-    func dismissSlideOut() {
-        toggleLeftPanel()
+    @objc func dismissAllSidePanels(button: UIButton) {
+        if leftPanelShowing() {
+            togglePanel(mainSidePanel)
+        }
+        if rightPanelShowing() {
+            togglePanel(rightSidePanel)
+        }
     }
 
     private func setupBrowserConstraints(useTopLayoutGuide useTopLayoutGuide: Bool) {
@@ -72,17 +91,26 @@ class BraveTopViewController : UIViewController {
             } else {
                 make.top.equalTo(view).inset(20)
             }
-            make.left.equalTo(mainSidePanel.view.snp_right)
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                make.width.equalTo(view.snp_width)
+             //   make.width.equalTo(view.snp_width)
             } else {
                 make.right.equalTo(view)
             }
+            leftConstraint = make.left.equalTo(view).constraint
+            rightConstraint = make.right.equalTo(view).constraint
         }
     }
 
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
+    }
+
+    func leftPanelShowing() -> Bool {
+        return mainSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
+    }
+
+    func rightPanelShowing() -> Bool {
+        return rightSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
     }
 
     override func prefersStatusBarHidden() -> Bool {
@@ -94,21 +122,24 @@ class BraveTopViewController : UIViewController {
             return true
         }
 
-        return mainSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
+        return leftPanelShowing() || rightPanelShowing()
     }
 
     func leftSlideOutClicked(_:NSNotification) {
-        toggleLeftPanel()
+        togglePanel(mainSidePanel)
     }
 
+    func rightSlideOutClicked(_:NSNotification) {
+        togglePanel(rightSidePanel)
+    }
 
     func specialTouchEventHandling(touchPoint: CGPoint, phase: UITouchPhase ) {
-        mainSidePanel.onTouchToHide(touchPoint, phase: phase)
+   //     mainSidePanel.onTouchToHide(touchPoint, phase: phase)
     }
 
-    func toggleLeftPanel() {
+    func togglePanel(panel: SidePanelBaseViewController) {
         clickDetectionView.removeFromSuperview()
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && mainSidePanel.view.hidden {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && panel.view.hidden {
             view.addSubview(clickDetectionView)
             clickDetectionView.snp_remakeConstraints {
                 make in
@@ -116,8 +147,10 @@ class BraveTopViewController : UIViewController {
             }
             clickDetectionView.layoutIfNeeded()
         }
-        mainSidePanel.showAndSetDelegate(mainSidePanel.view.hidden, delegate:self)
+        panel.setHomePanelDelegate(self)
+        panel.showPanel(panel.view.hidden, parentSideConstraints: [leftConstraint!, rightConstraint!])
     }
+
 }
 
 extension BraveTopViewController : HomePanelDelegate {
@@ -127,6 +160,6 @@ extension BraveTopViewController : HomePanelDelegate {
         print("selected \(url)")
         browser.urlBar.leaveOverlayMode()
         browser.tabManager.selectedTab?.loadRequest(NSURLRequest(URL: url))
-        toggleLeftPanel()
+        togglePanel(mainSidePanel)
     }
 }
