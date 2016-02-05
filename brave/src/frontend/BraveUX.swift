@@ -18,6 +18,8 @@ struct BraveUX {
     static let BackgroundColorForBookmarksHistoryAndTopSites = UIColor(white: 242/255.0, alpha: 1.0)
 
     static let BraveButtonMessageInUrlBarColor = UIColor.orangeColor()
+    static let BraveButtonMessageInUrlBarShowTime = 0.4
+    static let BraveButtonMessageInUrlBarFadeTime = 0.4
 
     // debug settings
     //  static var IsToolbarHidingOff = false
