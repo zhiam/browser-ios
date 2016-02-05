@@ -84,6 +84,7 @@ class BraveTopViewController : UIViewController {
     @objc func dismissAllSidePanels(button: UIButton) {
         if leftPanelShowing() {
             togglePanel(mainSidePanel)
+            leftSidePanelButton?.selected = false
         }
         #if RIGHTPANEL
         if rightPanelShowing() {
@@ -143,7 +144,9 @@ class BraveTopViewController : UIViewController {
     }
 
     let SEL_onClickLeftSlideOut = "onClickLeftSlideOut:"
+    var leftSidePanelButton: UIButton?
     func onClickLeftSlideOut(notification: NSNotification) {
+        leftSidePanelButton = notification.object as? UIButton
         togglePanel(mainSidePanel)
     }
 

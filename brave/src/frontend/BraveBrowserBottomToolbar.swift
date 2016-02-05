@@ -57,6 +57,9 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         return button
     }()
 
+    var leftSpacer = UIView()
+    var rightSpacer = UIView()
+
     private weak var clonedTabsButton: TabsButton?
     var tabsContainer = UIView()
 
@@ -83,6 +86,11 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         bringSubviewToFront(forwardButton)
 
         addSubview(addTabButton)
+
+        addSubview(leftSpacer)
+        addSubview(rightSpacer)
+        rightSpacer.userInteractionEnabled = false
+        leftSpacer.userInteractionEnabled = false
 
         if let img = forwardButton.imageView?.image {
             forwardButton.setImage(img.alpha(BraveUX.BackForwardDisabledButtonAlpha), forState: .Disabled)
@@ -135,57 +143,37 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
         stopReloadButton.hidden = true
 
-        var backButtonWidth = backButton.imageView?.image?.size.width ?? 0
-        var forwardButtonWidth = backButton.imageView?.image?.size.width ?? 0
-
         func common(make: ConstraintMaker, bottomInset: Int = 0) {
             make.top.equalTo(self)
             make.bottom.equalTo(self).inset(bottomInset)
+            make.width.equalTo(self).dividedBy(5)
         }
-
-        func commonButtonsToRightOfBackForward(make: ConstraintMaker, bottomInset: Int = 0) {
-            common(make, bottomInset: bottomInset)
-
-            let bounds = UIScreen.mainScreen().bounds
-            let w = min(bounds.width, bounds.height)
-
-            make.width.equalTo((w - backButtonWidth - forwardButtonWidth - BraveUX.BackForwardButtonLeftOffset) /
-                CGFloat(BraveUX.BottomToolbarNumberButtonsToRightOfBackForward))
-        }
-
-//        backForwardUnderlay.snp_remakeConstraints { make in
-//            common(make)
-//            make.left.equalTo(backButton.snp_left)
-//            make.right.equalTo(forwardButton.snp_right)
-//        }
 
         backButton.snp_remakeConstraints { make in
             common(make)
-            make.left.equalTo(self).offset(BraveUX.BackForwardButtonLeftOffset).priorityLow()
-            make.width.equalTo(backButtonWidth)
+            make.left.equalTo(self)
         }
 
         forwardButton.snp_remakeConstraints { make in
             common(make)
-            make.left.equalTo(self.backButton.snp_right)
-            make.width.equalTo(forwardButtonWidth)
+            make.left.equalTo(backButton.snp_right)
         }
 
         shareButton.snp_remakeConstraints { make in
-            commonButtonsToRightOfBackForward(make)
-            make.left.equalTo(self.forwardButton.snp_right)
+            common(make)
+            make.centerX.equalTo(self)
         }
-        
-        tabsContainer.snp_remakeConstraints { make in
-            commonButtonsToRightOfBackForward(make, bottomInset: 1)
-            make.left.equalTo(self.addTabButton.snp_right)
-        }
-        
+
         addTabButton.snp_remakeConstraints { make in
-            commonButtonsToRightOfBackForward(make)
-            make.left.equalTo(self.shareButton.snp_right)
+            common(make)
+            make.left.equalTo(shareButton.snp_right)
         }
-        
+
+        tabsContainer.snp_remakeConstraints { make in
+            common(make)
+            make.right.equalTo(self)
+        }
+
         tabsButton.snp_remakeConstraints { make in
             make.center.equalTo(tabsContainer)
             make.top.equalTo(tabsContainer)

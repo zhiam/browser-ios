@@ -22,6 +22,7 @@ class BraveURLBarView : URLBarView {
 
         leftSidePanelButton.addTarget(self, action: NSSelectorFromString(SEL_onClickLeftSlideOut), forControlEvents: UIControlEvents.TouchUpInside)
         leftSidePanelButton.setImage(UIImage(named: "listpanel"), forState: .Normal)
+        leftSidePanelButton.setImage(UIImage(named: "listpanel_down"), forState: .Selected)
         leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
 
@@ -83,6 +84,7 @@ class BraveURLBarView : URLBarView {
 
     let SEL_onClickLeftSlideOut = "onClickLeftSlideOut"
     func onClickLeftSlideOut() {
+        leftSidePanelButton.selected = !leftSidePanelButton.selected
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLeftSlideOutClicked, object: leftSidePanelButton)
     }
 
@@ -151,6 +153,7 @@ class BraveURLBarView : URLBarView {
         super.prepareOverlayAnimation()
         progressBar.hidden = true
         bookmarkButton.hidden = true
+        braveButton.hidden = true
     }
 
     override func transitionToOverlay(didCancel: Bool = false) {
@@ -168,6 +171,11 @@ class BraveURLBarView : URLBarView {
 
         super.leaveOverlayMode(didCancel: cancel)
         locationView.alpha = 1.0
+
+        // The orange brave button sliding in looks odd, lets fade it in in-place
+        braveButton.alpha = 0
+        braveButton.hidden = false
+        UIView.animateWithDuration(0.3, animations: { self.braveButton.alpha = 1.0 })
     }
 
     override func updateConstraints() {
@@ -260,7 +268,7 @@ class BraveURLBarView : URLBarView {
         }
 
         shareButton.snp_remakeConstraints { make in
-            make.right.equalTo(self.tabsButton.snp_left).offset(-6)
+            make.right.equalTo(self.tabsButton.snp_left).offset(0)
             make.centerY.equalTo(self)
             make.width.equalTo(UIConstants.ToolbarHeight)
         }
