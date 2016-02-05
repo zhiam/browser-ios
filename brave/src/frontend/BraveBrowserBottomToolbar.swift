@@ -62,7 +62,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
     private static weak var currentInstance: BraveBrowserBottomToolbar?
 
-    let backForwardUnderlay = UIImageView(image: UIImage(named: "backForwardUnderlay"))
+    //let backForwardUnderlay = UIImageView(image: UIImage(named: "backForwardUnderlay"))
 
     override init(frame: CGRect) {
 
@@ -75,9 +75,9 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
         tabsContainer.addSubview(tabsButton)
         addSubview(tabsContainer)
-        addSubview(backForwardUnderlay)
+        //addSubview(backForwardUnderlay)
 
-        backForwardUnderlay.alpha = BraveUX.BackForwardEnabledButtonAlpha
+        //backForwardUnderlay.alpha = BraveUX.BackForwardEnabledButtonAlpha
 
         bringSubviewToFront(backButton)
         bringSubviewToFront(forwardButton)
@@ -153,11 +153,11 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
                 CGFloat(BraveUX.BottomToolbarNumberButtonsToRightOfBackForward))
         }
 
-        backForwardUnderlay.snp_remakeConstraints { make in
-            common(make)
-            make.left.equalTo(backButton.snp_left)
-            make.right.equalTo(forwardButton.snp_right)
-        }
+//        backForwardUnderlay.snp_remakeConstraints { make in
+//            common(make)
+//            make.left.equalTo(backButton.snp_left)
+//            make.right.equalTo(forwardButton.snp_right)
+//        }
 
         backButton.snp_remakeConstraints { make in
             common(make)
