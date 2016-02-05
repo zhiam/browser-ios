@@ -24,6 +24,8 @@ class BraveApp {
     // If app runs for this long, clear the saved pref that indicates it is safe to restore tabs
     static let kDelayBeforeDecidingAppHasBootedOk = (Int64(NSEC_PER_SEC) * 10) // 10 sec
 
+    static var areAllBraveFiltersBypassed = false
+
     class var singleton: BraveApp {
         return _singleton
     }

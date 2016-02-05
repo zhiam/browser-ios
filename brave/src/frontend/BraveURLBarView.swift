@@ -9,7 +9,7 @@ class BraveURLBarView : URLBarView {
 
     private static weak var currentInstance: BraveURLBarView?
     lazy var leftSidePanelButton = { return UIButton() }()
-    lazy var rightSidePanelButton = { return UIButton() }()
+    lazy var braveButton = { return UIButton() }()
 
     override func commonInit() {
         BraveURLBarView.currentInstance = self
@@ -17,18 +17,19 @@ class BraveURLBarView : URLBarView {
         curveShape = HideCurveView()
 
         addSubview(leftSidePanelButton)
-        addSubview(rightSidePanelButton)
+        addSubview(braveButton)
         super.commonInit()
 
-        leftSidePanelButton.addTarget(self, action: "SELdidClickLeftSlideOut", forControlEvents: UIControlEvents.TouchUpInside)
+        leftSidePanelButton.addTarget(self, action: NSSelectorFromString(SEL_onClickLeftSlideOut), forControlEvents: UIControlEvents.TouchUpInside)
         leftSidePanelButton.setImage(UIImage(named: "listpanel"), forState: .Normal)
         leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
 
-        rightSidePanelButton.addTarget(self, action: "SELdidClickRightSlideOut", forControlEvents: UIControlEvents.TouchUpInside)
-        rightSidePanelButton.setImage(UIImage(named: "bravePanelButton"), forState: .Normal)
-        rightSidePanelButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
-        rightSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
+        braveButton.addTarget(self, action: NSSelectorFromString(SEL_onClickBraveButton) , forControlEvents: UIControlEvents.TouchUpInside)
+        braveButton.setImage(UIImage(named: "bravePanelButton"), forState: .Normal)
+        braveButton.setImage(UIImage(named: "bravePanelButtonOff"), forState: .Selected)
+        braveButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
+        braveButton.tintColor = BraveUX.ActionButtonTintColor
 
         ToolbarTextField.appearance().clearButtonTintColor = nil
 
@@ -80,12 +81,14 @@ class BraveURLBarView : URLBarView {
         self.superview?.alpha = alpha
     }
 
-    func SELdidClickLeftSlideOut() {
-        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLeftSlideOutClicked, object: nil)
+    let SEL_onClickLeftSlideOut = "onClickLeftSlideOut"
+    func onClickLeftSlideOut() {
+        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLeftSlideOutClicked, object: leftSidePanelButton)
     }
 
-    func SELdidClickRightSlideOut() {
-        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationRightSlideOutClicked, object: nil)
+    let SEL_onClickBraveButton = "onClickBraveButton"
+    func onClickBraveButton() {
+        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationBraveButtonClicked, object: braveButton)
     }
 
     override func updateTabCount(count: Int, animated: Bool = true) {
@@ -105,9 +108,9 @@ class BraveURLBarView : URLBarView {
                 return [leftSidePanelButton, locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, leftSidePanelButton, locationView, rightSidePanelButton, shareButton, tabsButton]
+                    return [backButton, forwardButton, leftSidePanelButton, locationView, braveButton, shareButton, tabsButton]
                 } else {
-                    return [leftSidePanelButton, locationView, rightSidePanelButton, progressBar]
+                    return [leftSidePanelButton, locationView, braveButton, progressBar]
                 }
             }
         }
@@ -206,7 +209,7 @@ class BraveURLBarView : URLBarView {
                 }
             }
 
-            rightSidePanelButton.snp_remakeConstraints { make in
+            braveButton.snp_remakeConstraints { make in
                 make.left.equalTo(self.locationContainer.snp_right)
                 make.centerY.equalTo(self)
                 make.size.equalTo(UIConstants.ToolbarHeight)

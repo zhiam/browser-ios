@@ -13,6 +13,10 @@ class URLProtocol: NSURLProtocol {
     var response: NSURLResponse!
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
+        if (BraveApp.areAllBraveFiltersBypassed) {
+            return false
+        }
+
         //print("Request #\(requestCount++): URL = \(request.URL?.absoluteString)")
         if let scheme = request.URL?.scheme where !scheme.startsWith("http") {
             return false
