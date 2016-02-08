@@ -44,7 +44,7 @@ public class WebViewProgress
 
             let readyState = webView?.stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
             if readyState == "loaded" || readyState == "complete" {
-                webView?.progress.completeProgress()
+                webView?.progress?.completeProgress()
             }
         }
 

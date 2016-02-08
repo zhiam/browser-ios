@@ -37,7 +37,7 @@ class BraveWebView: UIWebView {
     weak var UIDelegate: WKUIDelegate?
     lazy var configuration: BraveWebViewConfiguration = { return BraveWebViewConfiguration(webView: self) }()
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
-    lazy var progress: WebViewProgress = { return WebViewProgress(parent: self) }()
+    var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
 
     var estimatedProgress: Double = 0
@@ -72,6 +72,8 @@ class BraveWebView: UIWebView {
     }
 
     private func commonInit() {
+        progress = WebViewProgress(parent: self)
+
         delegate = self
         scalesPageToFit = true
 
@@ -111,7 +113,9 @@ class BraveWebView: UIWebView {
     }
 
     deinit {
-        removeObserver(progress.loadingObserver!, forKeyPath: progress.loadingObserver!.kvoLoading)
+        if let obs = progress?.loadingObserver {
+            removeObserver(obs, forKeyPath: obs.kvoLoading)
+        }
     }
 
     let internalProgressStartedNotification = "WebProgressStartedNotification"
@@ -170,14 +174,14 @@ class BraveWebView: UIWebView {
     }
 
     func reloadFromOrigin() {
-        progress.setProgress(0.3)
+        progress?.setProgress(0.3)
         self.reload()
     }
 
     override func stopLoading() {
         super.stopLoading()
         loadRequest(NSURLRequest(URL: NSURL(string: specialStopLoadUrl)!))
-        self.progress.reset()
+        self.progress?.reset()
     }
 
     private func convertStringToDictionary(text: String?) -> [String:AnyObject]? {
@@ -288,13 +292,13 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
         if AboutUtils.isAboutURL(request.URL) {
-            progress.completeProgress()
+            progress?.completeProgress()
             print(request)
             return true
         }
 
         if let url = request.URL where url.absoluteString.contains(specialStopLoadUrl) {
-            progress.completeProgress()
+            progress?.completeProgress()
             return false
         }
 
@@ -311,11 +315,11 @@ extension BraveWebView: UIWebViewDelegate {
             return false
         }
 
-        var result = progress.shouldStartLoadWithRequest(request, navigationType: navigationType)
-        if !result {
+        if let progressCheck = progress?.shouldStartLoadWithRequest(request, navigationType: navigationType) where !progressCheck {
             return false
         }
 
+        var result = true
         if let nd = navigationDelegate {
             let action:LegacyNavigationAction =
             LegacyNavigationAction(type: convertNavActionToWKType(navigationType), request: request)
@@ -345,7 +349,7 @@ extension BraveWebView: UIWebViewDelegate {
         if let nd = navigationDelegate {
             nd.webView?(nullWebView, didStartProvisionalNavigation: nullWKNavigation)
         }
-        progress.webViewDidStartLoad()
+        progress?.webViewDidStartLoad()
         kvoBroadcast([KVOStrings.kvoLoading])
 
         #if !TEST
@@ -365,7 +369,7 @@ extension BraveWebView: UIWebViewDelegate {
             item.title = title
         }
 
-        progress.webViewDidFinishLoad(documentReadyState: readyState)
+        progress?.webViewDidFinishLoad(documentReadyState: readyState)
 
         kvoBroadcast()
     }
@@ -419,7 +423,7 @@ extension BraveWebView: UIWebViewDelegate {
                 withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
         }
         print("didFailLoadWithError: \(error)")
-        progress.didFailLoadWithError()
+        progress?.didFailLoadWithError()
         kvoBroadcast()
     }
 }

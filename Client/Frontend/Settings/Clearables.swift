@@ -63,38 +63,28 @@ struct ClearableErrorType: MaybeErrorType {
 // Clear the web cache. Note, this has to close all open tabs in order to ensure the data
 // cached in them isn't flushed to disk.
 class CacheClearable: Clearable {
-    let tabManager: TabManager
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-    }
 
     var label: String {
         return NSLocalizedString("Cache", tableName: "ClearPrivateData", comment: "Settings item for clearing the cache")
     }
 
     func clear() -> Success {
-        if #available(iOS 9.0, *) {
-            let dataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
-            WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(dataTypes, modifiedSince: NSDate.distantPast(), completionHandler: {})
-        } else {
-            // First ensure we close all open tabs first.
-            tabManager.removeAll()
+        getApp().tabManager.removeAll()
 
-            // Reset the process pool to ensure no cached data is written back
-            tabManager.resetProcessPool()
+        NSURLCache.sharedURLCache().memoryCapacity = 0;
+        NSURLCache.sharedURLCache().diskCapacity = 0;
+        // Remove the basic cache.
+        NSURLCache.sharedURLCache().removeAllCachedResponses()
 
-            // Remove the basic cache.
-            NSURLCache.sharedURLCache().removeAllCachedResponses()
-
-            // Now let's finish up by destroying our Cache directory.
-            do {
-                try deleteLibraryFolderContents("Caches")
-            } catch {
-                return deferMaybe(ClearableErrorType(err: error))
-            }
+        // Now let's finish up by destroying our Cache directory.
+        do {
+            try deleteLibraryFolderContents("Caches")
+        } catch {
+            return deferMaybe(ClearableErrorType(err: error))
         }
 
-        log.debug("CacheClearable succeeded.")
+        BraveApp.setupCacheDefaults()
+
         return succeed()
     }
 }
@@ -109,7 +99,7 @@ private func deleteLibraryFolderContents(folder: String) throws {
             try manager.removeItemAtURL(dir.URLByAppendingPathComponent(content))
         } catch where ((error as NSError).userInfo[NSUnderlyingErrorKey] as? NSError)?.code == Int(EPERM) {
             // "Not permitted". We ignore this.
-            log.debug("Couldn't delete some library contents.")
+            BraveApp.showErrorAlert(title: "Error clearing data", error: "Unable to fully clear data from disk.")
         }
     }
 }
@@ -155,40 +145,31 @@ class SiteDataClearable: Clearable {
 
 // Remove all cookies stored by the site. This includes localStorage, sessionStorage, and WebSQL/IndexedDB.
 class CookiesClearable: Clearable {
-    let tabManager: TabManager
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-    }
 
     var label: String {
         return NSLocalizedString("Cookies", tableName: "ClearPrivateData", comment: "Settings item for clearing cookies")
     }
 
     func clear() -> Success {
-        if #available(iOS 9.0, *) {
-            let dataTypes = Set([WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage, WKWebsiteDataTypeSessionStorage, WKWebsiteDataTypeWebSQLDatabases, WKWebsiteDataTypeIndexedDBDatabases])
-            WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(dataTypes, modifiedSince: NSDate.distantPast(), completionHandler: {})
-        } else {
-            // First close all tabs to make sure they aren't holding anything in memory.
-            tabManager.removeAll()
+        getApp().tabManager.removeAll()
 
-            // Now we wipe the system cookie store (for our app).
-            let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-            if let cookies = storage.cookies {
-                for cookie in cookies {
-                    storage.deleteCookie(cookie)
-                }
-            }
+        NSUserDefaults.standardUserDefaults().synchronize()
 
-            // And just to be safe, we also wipe the Cookies directory.
-            do {
-                try deleteLibraryFolderContents("Cookies")
-            } catch {
-                return deferMaybe(ClearableErrorType(err: error))
+        // Now we wipe the system cookie store (for our app).
+        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        if let cookies = storage.cookies {
+            for cookie in cookies {
+                storage.deleteCookie(cookie)
             }
         }
+        NSUserDefaults.standardUserDefaults().synchronize()
 
-        log.debug("CookiesClearable succeeded.")
+        // And just to be safe, we also wipe the Cookies directory.
+        do {
+            try deleteLibraryFolderContents("Cookies")
+        } catch {
+            return deferMaybe(ClearableErrorType(err: error))
+        }
         return succeed()
     }
 }

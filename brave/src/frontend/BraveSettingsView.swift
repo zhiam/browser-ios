@@ -30,9 +30,12 @@ class BraveSettingsView : AppSettingsTableViewController {
 //            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
 //                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
         ]
-
+        
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
+            SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
+                [ClearPrivateDataSetting(settings: self)]
+            ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Site Protections", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
                 [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
                 BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
@@ -122,16 +125,39 @@ class CookieSetting: Setting, PicklistSettingDelegate {
     }
 
     func picklistSetting(setting: PicklistSetting, pickedIndex: Int) {
-//        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-//        for cookie in storage.cookies! {
-//            storage.deleteCookie(cookie)
-//        }
-//        NSUserDefaults.standardUserDefaults().synchronize()
-
         let prefs = profile.prefs
         prefs.setInt(Int32(pickedIndex), forKey: CookieSetting.prefAcceptCookies)
         NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(pickedIndex))
     }
-
 }
+
+// Clear all stored passwords. This will clear SQLite storage and the system shared credential storage.
+class PasswordsClearable: Clearable {
+    let profile: Profile
+    init(profile: Profile) {
+        self.profile = profile
+    }
+
+    var label: String {
+        return NSLocalizedString("Saved Logins", tableName: "ClearPrivateData", comment: "Settings item for clearing passwords and login data")
+    }
+
+    func clear() -> Success {
+        // Clear our storage
+        return profile.logins.removeAll() >>== { res in
+            let storage = NSURLCredentialStorage.sharedCredentialStorage()
+            let credentials = storage.allCredentials
+            for (space, credentials) in credentials {
+                for (_, credential) in credentials {
+                    storage.removeCredential(credential, forProtectionSpace: space)
+                }
+            }
+            return succeed()
+        }
+    }
+}
+
+
+
+
 
