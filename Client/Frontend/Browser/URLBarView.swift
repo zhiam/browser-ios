@@ -18,7 +18,7 @@ struct URLBarViewUX {
     static let LocationHeight = 28
     static let LocationContentOffset: CGFloat = 8
     static let TextFieldCornerRadius: CGFloat = 3
-    static let TextFieldBorderWidth: CGFloat = 1
+    static let TextFieldBorderWidth: CGFloat = 0 // BRAVE mod
     // offset from edge of tabs button
     static let URLBarCurveOffset: CGFloat = 14
     static let URLBarCurveOffsetLeft: CGFloat = -10
