@@ -237,7 +237,7 @@ class SettingsTableViewController: UITableViewController {
     weak var settingsDelegate: SettingsDelegate?
 
     var profile: Profile!
-    var tabManager: TabManager!
+    //var tabManager: TabManager!
 
     override func viewDidLoad() {
         super.viewDidLoad()

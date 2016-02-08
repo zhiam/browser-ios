@@ -5,12 +5,12 @@ import Shared
 // TODO this is just for development, figure out what to do with this setting
 class VaultAddressSetting: Setting {
   let prefs: Prefs
-  let tabManager: TabManager!
+  //let tabManager: TabManager!
 
 
   init(settings: SettingsTableViewController) {
     self.prefs = settings.profile.prefs
-    self.tabManager = settings.tabManager
+    //self.tabManager = settings.tabManager
     let title = NSLocalizedString("Vault Address", comment: " ")
     let attributes = [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]
     super.init(title: NSAttributedString(string: title, attributes: attributes))

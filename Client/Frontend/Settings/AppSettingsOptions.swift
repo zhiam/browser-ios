@@ -453,13 +453,13 @@ class SearchSetting: Setting {
 
 class LoginsSetting: Setting {
     let profile: Profile
-    var tabManager: TabManager!
+    //var tabManager: TabManager!
 
     override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
 
     init(settings: SettingsTableViewController, delegate: SettingsDelegate?) {
         self.profile = settings.profile
-        self.tabManager = settings.tabManager
+        //self.tabManager = settings.tabManager
 
         let loginsTitle = NSLocalizedString("Logins", comment: "Label used as an item in Settings. When touched, the user will be navigated to the Logins/Password manager.")
         super.init(title: NSAttributedString(string: loginsTitle, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]),
@@ -475,13 +475,13 @@ class LoginsSetting: Setting {
 
 class TouchIDPasscodeSetting: Setting {
     let profile: Profile
-    var tabManager: TabManager!
+    //var tabManager: TabManager!
 
     override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
 
     init(settings: SettingsTableViewController, delegate: SettingsDelegate? = nil) {
         self.profile = settings.profile
-        self.tabManager = settings.tabManager
+        //self.tabManager = settings.tabManager
 
         let title = NSLocalizedString("Touch ID & Passcode", tableName: "AuthenticationManager", comment: "Title for Touch ID/Passcode settings option")
         super.init(title: NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]),
@@ -497,13 +497,13 @@ class TouchIDPasscodeSetting: Setting {
 
 class ClearPrivateDataSetting: Setting {
     let profile: Profile
-    var tabManager: TabManager!
+    //var tabManager: TabManager!
 
     override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
 
     init(settings: SettingsTableViewController) {
         self.profile = settings.profile
-        self.tabManager = settings.tabManager
+        //self.tabManager = settings.tabManager
 
         let clearTitle = NSLocalizedString("Clear Private Data", comment: "Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data.")
         super.init(title: NSAttributedString(string: clearTitle, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]))
@@ -512,7 +512,7 @@ class ClearPrivateDataSetting: Setting {
     override func onClick(navigationController: UINavigationController?) {
         let viewController = ClearPrivateDataTableViewController()
         viewController.profile = profile
-        viewController.tabManager = tabManager
+        //viewController.tabManager = tabManager
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

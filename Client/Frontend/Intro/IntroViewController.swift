@@ -56,7 +56,9 @@ let IntroViewControllerSeenProfileKey = "IntroViewControllerSeen"
 
 protocol IntroViewControllerDelegate: class {
     func introViewControllerDidFinish(introViewController: IntroViewController)
+    #if !BRAVE
     func introViewControllerDidRequestToLogin(introViewController: IntroViewController)
+    #endif
 }
 
 class IntroViewController: UIViewController, UIScrollViewDelegate {
@@ -269,7 +271,9 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     }
 
     func SELlogin() {
+        #if !BRAVE
 		delegate?.introViewControllerDidRequestToLogin(self)
+        #endif
     }
 
     private var accessibilityScrollStatus: String {

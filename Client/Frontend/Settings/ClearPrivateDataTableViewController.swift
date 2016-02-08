@@ -20,17 +20,18 @@ class ClearPrivateDataTableViewController: UITableViewController {
     private var clearButton: UITableViewCell?
 
     var profile: Profile!
-    var tabManager: TabManager!
+    var tabManager: TabManager?
 
     private typealias DefaultCheckedState = Bool
 
     private lazy var clearables: [(clearable: Clearable, checked: DefaultCheckedState)] = {
-        return [
-            (HistoryClearable(profile: self.profile), true),
-            (CacheClearable(tabManager: self.tabManager), true),
-            (CookiesClearable(tabManager: self.tabManager), true),
-            (SiteDataClearable(tabManager: self.tabManager), true),
-        ]
+        return []
+//        return [
+//            (HistoryClearable(profile: self.profile), true),
+//            (CacheClearable(tabManager: self.tabManager), true),
+//            (CookiesClearable(tabManager: self.tabManager), true),
+//            (SiteDataClearable(tabManager: self.tabManager), true),
+//        ]
     }()
 
     private lazy var toggles: [Bool] = {

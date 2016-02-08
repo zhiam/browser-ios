@@ -1622,11 +1622,15 @@ extension BrowserViewController: HomePanelViewControllerDelegate {
     }
 
     func homePanelViewControllerDidRequestToCreateAccount(homePanelViewController: HomePanelViewController) {
+        #if !BRAVE
         presentSignInViewController() // TODO UX Right now the flow for sign in and create account is the same
+        #endif
     }
 
     func homePanelViewControllerDidRequestToSignIn(homePanelViewController: HomePanelViewController) {
+        #if !BRAVE
         presentSignInViewController() // TODO UX Right now the flow for sign in and create account is the same
+        #endif
     }
 }
 
@@ -2418,6 +2422,7 @@ extension BrowserViewController: IntroViewControllerDelegate {
         }
     }
 
+    #if !BRAVE
     func presentSignInViewController() {
         // Show the settings page if we have already signed in. If we haven't then show the signin page
         let vcToPresent: UIViewController
@@ -2448,6 +2453,7 @@ extension BrowserViewController: IntroViewControllerDelegate {
             self.presentSignInViewController()
         })
     }
+    #endif
 }
 
 extension BrowserViewController: FxAContentViewControllerDelegate {

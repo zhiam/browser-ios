@@ -374,9 +374,9 @@ class TabTrayController: UIViewController {
         updateAddTabEnabledState()
 
         settingsButton = UIButton()
-        settingsButton.setImage(UIImage(named: "settings"), forState: .Normal)
-        settingsButton.addTarget(self, action: "SELdidClickSettingsItem", forControlEvents: .TouchUpInside)
-        settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button in the Tab Tray.")
+//        settingsButton.setImage(UIImage(named: "settings"), forState: .Normal)
+//        settingsButton.addTarget(self, action: "SELdidClickSettingsItem", forControlEvents: .TouchUpInside)
+//        settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button in the Tab Tray.")
 
         let flowLayout = TabTrayCollectionViewLayout()
         collectionView = UICollectionView(frame: view.frame, collectionViewLayout: flowLayout)
@@ -477,17 +477,17 @@ class TabTrayController: UIViewController {
 
 // MARK: Selectors
 
-    func SELdidClickSettingsItem() {
-        let settingsTableViewController = BraveSettingsView()
-        settingsTableViewController.profile = profile
-        settingsTableViewController.tabManager = tabManager
-        settingsTableViewController.settingsDelegate = self
-
-        let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
-        controller.popoverDelegate = self
-		controller.modalPresentationStyle = UIModalPresentationStyle.FormSheet
-        presentViewController(controller, animated: true, completion: nil)
-    }
+//    func SELdidClickSettingsItem() {
+//        let settingsTableViewController = BraveSettingsView()
+//        settingsTableViewController.profile = profile
+//        settingsTableViewController.tabManager = tabManager
+//        settingsTableViewController.settingsDelegate = self
+//
+//        let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
+//        controller.popoverDelegate = self
+//		controller.modalPresentationStyle = UIModalPresentationStyle.FormSheet
+//        presentViewController(controller, animated: true, completion: nil)
+//    }
 
     func SELdidClickAddTab() {
         openNewTab()
