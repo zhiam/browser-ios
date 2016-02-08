@@ -96,25 +96,30 @@ class AdBlocker {
         }
 
         guard let url = request.URL,
-            var domain = request.mainDocumentURL?.host else {
+            var mainDocDomain = request.mainDocumentURL?.host else {
                 return false
         }
 
-        domain = stripLocalhostWebServer(domain)
+        
+        mainDocDomain = stripLocalhostWebServer(mainDocDomain)
 
-        if isWhitelistedUrl(url.absoluteString, forMainDocDomain: domain) {
+        if isWhitelistedUrl(url.absoluteString, forMainDocDomain: mainDocDomain) {
             return false
         }
 
+        if url.absoluteString.contains(mainDocDomain) {
+            return false // ignore top level doc
+        }
+
         // A cache entry is like: fifoOfCachedUrlChunks[0]["www.microsoft.com_http://some.url"] = true/false for blocking
-        let key = "\(domain)_" + stripLocalhostWebServer(url.absoluteString)
+        let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString)
 
         if let urlIsBlocked = fifoOfCachedUrlChunks.containsAndIsBlocked(key) {
             return urlIsBlocked
         }
 
         let isBlocked = AdBlockCppFilter.singleton().checkWithCppABPFilter(url.absoluteString,
-            mainDocumentUrl: domain,
+            mainDocumentUrl: mainDocDomain,
             acceptHTTPHeader:request.valueForHTTPHeaderField("Accept"))
 
         fifoOfCachedUrlChunks.addIsBlockedForUrlKey(key, isBlocked: isBlocked)
