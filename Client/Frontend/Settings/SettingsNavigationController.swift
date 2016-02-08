@@ -13,7 +13,7 @@ class SettingsNavigationController: UINavigationController {
             getApp().browserViewController.view.alpha = CGFloat(BraveUX.BrowserViewAlphaWhenShowingTabTray)
         } else {
             self.dismissViewControllerAnimated(true, completion: {
-                getApp().browserViewController.view.alpha = CGFloat(BraveUX.BrowserViewAlphaWhenShowingTabTray)
+                getApp().browserViewController.view.alpha = CGFloat(1.0)
             })
         }
     }

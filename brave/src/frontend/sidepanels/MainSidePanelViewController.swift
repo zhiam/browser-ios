@@ -88,7 +88,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 //        settingsTableViewController.settingsDelegate = self
 
         let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
-       // controller.popoverDelegate = self
+        ///controller.popoverDelegate = self
         controller.modalPresentationStyle = UIModalPresentationStyle.FormSheet
         presentViewController(controller, animated: true, completion: nil)
     }
