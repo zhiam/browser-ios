@@ -11,6 +11,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     var bookmarksButton = UIButton()
     var historyButton = UIButton()
 
+    var settingsButton = UIButton()
+
     let topButtonsView = UIView()
     let addBookmarkButton = UIButton()
 
@@ -36,10 +38,15 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         topButtonsView.addSubview(bookmarksButton)
         topButtonsView.addSubview(historyButton)
         topButtonsView.addSubview(addBookmarkButton)
+        topButtonsView.addSubview(settingsButton)
 
         triangleView.image = UIImage(named: "triangle-nub")
         triangleView.contentMode = UIViewContentMode.Center
         triangleView.alpha = 0.9
+
+        settingsButton.setImage(UIImage(named: "settings"), forState: .Normal)
+        settingsButton.addTarget(self, action: NSSelectorFromString(SEL_onClickSettingsButton), forControlEvents: .TouchUpInside)
+        settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
 
         bookmarksButton.setImage(UIImage(named: "bookmarklist"), forState: .Normal)
         bookmarksButton.addTarget(self, action: "showBookmarks", forControlEvents: .TouchUpInside)
@@ -54,6 +61,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         addBookmarkButton.setImage(UIImage(named: "bookmarkMarked"), forState: .Selected)
         addBookmarkButton.accessibilityLabel = NSLocalizedString("Add Bookmark", comment: "Button to add a bookmark")
 
+        settingsButton.tintColor = BraveUX.ActionButtonTintColor
         bookmarksButton.tintColor = BraveUX.ActionButtonTintColor
         historyButton.tintColor = BraveUX.ActionButtonTintColor
         addBookmarkButton.tintColor = UIColor.whiteColor()
@@ -66,6 +74,23 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         bookmarks.view.hidden = false
 
         containerView.bringSubviewToFront(topButtonsView)
+    }
+
+    let SEL_onClickSettingsButton = "onClickSettingsButton"
+    func onClickSettingsButton() {
+        if getApp().profile == nil {
+            return
+        }
+        
+        let settingsTableViewController = BraveSettingsView()
+        settingsTableViewController.profile = getApp().profile
+//        settingsTableViewController.tabManager = tabManager
+//        settingsTableViewController.settingsDelegate = self
+
+        let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
+       // controller.popoverDelegate = self
+        controller.modalPresentationStyle = UIModalPresentationStyle.FormSheet
+        presentViewController(controller, animated: true, completion: nil)
     }
 
     func addBookmark() {
@@ -90,25 +115,36 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             make.height.equalTo(44.0)
         }
 
+        func common(make: ConstraintMaker) {
+            make.bottom.equalTo(self.topButtonsView)
+            make.height.equalTo(UIConstants.ToolbarHeight)
+        }
+
+        settingsButton.snp_remakeConstraints {
+            make in
+            common(make)
+            make.centerX.equalTo(self.topButtonsView).multipliedBy(0.25)
+        }
+
         historyButton.snp_remakeConstraints {
             make in
             make.bottom.equalTo(self.topButtonsView)
             make.height.equalTo(UIConstants.ToolbarHeight)
-            make.centerX.equalTo(self.topButtonsView).dividedBy(2.0)
+            make.centerX.equalTo(self.topButtonsView).multipliedBy(0.75)
         }
 
         bookmarksButton.snp_remakeConstraints {
             make in
             make.bottom.equalTo(self.topButtonsView)
             make.height.equalTo(UIConstants.ToolbarHeight)
-            make.centerX.equalTo(self.topButtonsView)
+            make.centerX.equalTo(self.topButtonsView).multipliedBy(1.25)
         }
 
         addBookmarkButton.snp_remakeConstraints {
             make in
             make.bottom.equalTo(self.topButtonsView)
             make.height.equalTo(UIConstants.ToolbarHeight)
-            make.centerX.equalTo(self.topButtonsView).multipliedBy(1.5)
+            make.centerX.equalTo(self.topButtonsView).multipliedBy(1.75)
         }
 
         tabTitleViewContainer.snp_remakeConstraints {
