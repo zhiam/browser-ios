@@ -20,26 +20,35 @@ function _brave_replaceDivWithNewContent(replacerObject) {
     
     // ref param for referrer when possible
     var srcUrl = replacementUrl + '?width=' + width + '&height=' + height + '&seg=' + segment + ':' + time_in_segment + ':' + segment_expiration_time
-    var frameSrc = '<html><body style="width: ' + width + 'px; height: ' + height + '; padding: 0; margin: 0;"><script src="' + srcUrl + '"></script></body></html>'
     
     console.log('------tag name: ' + node.tagName);
-    if (node.tagName === 'IFRAME') {
-      node.srcdoc = frameSrc;
-      node.sandbox = 'allow-scripts allow-popups';
-    } else {
-      while (node.firstChild) {
-        node.removeChild(node.firstChild);
+    var xhttp = new XMLHttpRequest()
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+        var src = '<html><body style="width: ' + width + 'px; height: ' + height +
+        '; padding: 0; margin: 0; overflow: hidden;">' + xhttp.responseText + '</body></html>'
+        var sandbox = 'allow-scripts allow-popups allow-popups-to-escape-sandbox'
+        if (node.tagName === 'IFRAME') {
+          node.srcdoc = src
+          node.sandbox = sandbox
+        } else {
+          while (node.firstChild) {
+            node.removeChild(node.firstChild)
+          }
+          var iframe = document.createElement('iframe')
+          iframe.style.padding = 0
+          iframe.style.border = 0
+          iframe.style.margin = 0
+          iframe.style.width = width + 'px'
+          iframe.style.height = height + 'px'
+          iframe.srcdoc = src
+          iframe.sandbox = sandbox
+          node.appendChild(iframe)
+        }
       }
-      var iframe = document.createElement('iframe');
-      iframe.style.padding = 0;
-      iframe.style.border = 0;
-      iframe.style.margin = 0;
-      iframe.style.width = width + 'px';
-      iframe.style.height = height + 'px';
-      iframe.srcdoc = frameSrc;
-      iframe.sandbox = 'allow-scripts allow-popups';
-      node.appendChild(iframe);
     }
+    xhttp.open("GET", srcUrl, true)
+    xhttp.send()
   } else {
     console.log('-------selector null: ' + selector);
   }

@@ -59,7 +59,7 @@ extension BraveWebView {
         }
 
         // TODO: this should probably be converted to a setting somewhere
-        let adHost = "//cdn.brave.com";
+        let adHost = "//oip.brave.com";
 
         for item in divNamesAndSizes {
             let divWidth = item["width"] as? Int ?? 0
