@@ -22,6 +22,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     let tabTitleViewContainer = UIView()
     let tabTitleView = UILabel()
 
+    let divider = UIView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,6 +41,9 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         topButtonsView.addSubview(historyButton)
         topButtonsView.addSubview(addBookmarkButton)
         topButtonsView.addSubview(settingsButton)
+        topButtonsView.addSubview(divider)
+
+        divider.backgroundColor = UIColor.grayColor()
 
         triangleView.image = UIImage(named: "triangle-nub")
         triangleView.contentMode = UIViewContentMode.Center
@@ -124,6 +129,14 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             make in
             common(make)
             make.centerX.equalTo(self.topButtonsView).multipliedBy(0.25)
+        }
+
+        divider.snp_remakeConstraints {
+            make in
+            make.bottom.equalTo(self.topButtonsView).inset(8.0)
+            make.height.equalTo(UIConstants.ToolbarHeight - 18.0)
+            make.width.equalTo(2.0)
+            make.centerX.equalTo(self.topButtonsView).multipliedBy(0.5)
         }
 
         historyButton.snp_remakeConstraints {
