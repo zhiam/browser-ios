@@ -69,7 +69,7 @@ class CookieSetting: Setting, PicklistSettingDelegate {
 
     static var prefAcceptCookies = "braveAcceptCookiesPref"
 
-    let heading = "Accept Cookies"
+    let heading = "Cookie Control"
     override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
 
     override var style: UITableViewCellStyle { return .Value1 }
@@ -81,7 +81,7 @@ class CookieSetting: Setting, PicklistSettingDelegate {
     }
 
     static func getOptions() -> [String] {
-        return ["Only from main document domain", "Always", "Never"]
+        return ["Block 3rd party cookies", "Block all cookies", "Don't block cookies"]
     }
 
     static func checkIndexOk(index: Int) -> Bool {
@@ -97,9 +97,9 @@ class CookieSetting: Setting, PicklistSettingDelegate {
     static func indexToPolicy(index: UInt) -> NSHTTPCookieAcceptPolicy {
         switch index {
         case 1:
-            return NSHTTPCookieAcceptPolicy.Always
-        case 2:
             return NSHTTPCookieAcceptPolicy.Never
+        case 2:
+            return NSHTTPCookieAcceptPolicy.Always
         default:
             return NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain
         }
