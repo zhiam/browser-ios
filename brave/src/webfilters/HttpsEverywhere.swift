@@ -181,8 +181,10 @@ class HttpsEverywhere {
         if let path = url.path {
             newUrl = newUrl?.URLByAppendingPathComponent(path)
         }
+        if let query = url.query, url = newUrl?.absoluteString {
+            newUrl = NSURL(string: url + "?" + query)
+        }
 
-        //
         let ignoredlist = [
             "m.slashdot.org" // see https://github.com/brave/browser-ios/issues/104
         ]
@@ -191,7 +193,6 @@ class HttpsEverywhere {
                 return nil
             }
         }
-
 
         return newUrl
     }
@@ -208,6 +209,11 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
                     BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
                     return
                 }
+            }
+
+            let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d")!)
+            if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d") {
+                BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
             }
         }
 #endif
@@ -241,11 +247,13 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
             loadSqlDb()
         }
 
-        runtimeDebugOnlyTestVerifyResourcesLoaded()
+        delay(0) { // runs the closure on main thread
+            self.runtimeDebugOnlyTestVerifyResourcesLoaded()
 
-        if domainToIdMapping != nil && db != nil {
-            NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
-            runtimeDebugOnlyTestDomainsRedirected()
+            if self.domainToIdMapping != nil && self.db != nil {
+                NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
+                self.runtimeDebugOnlyTestDomainsRedirected()
+            }
         }
     }
 
