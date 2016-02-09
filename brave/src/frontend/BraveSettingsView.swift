@@ -36,7 +36,7 @@ class BraveSettingsView : AppSettingsTableViewController {
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
                 [ClearPrivateDataSetting(settings: self)]
             ),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Site Protections", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
+            SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Site Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
                 [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
                 BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
                 BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
