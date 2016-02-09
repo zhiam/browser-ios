@@ -831,7 +831,7 @@ class BrowserViewController: UIViewController {
         })
     }
 
-    private func removeBookmark(url: String) {
+    func removeBookmark(url: String) {
         profile.bookmarks.removeByURL(url).uponQueue(dispatch_get_main_queue()) { res in
             if res.isSuccess {
                 self.toolbar?.updateBookmarkStatus(false)

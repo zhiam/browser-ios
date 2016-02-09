@@ -61,7 +61,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         historyButton.addTarget(self, action: "showHistory", forControlEvents: .TouchUpInside)
         historyButton.accessibilityLabel = NSLocalizedString("Show History", comment: "Button to show the history list")
 
-        addBookmarkButton.addTarget(self, action: "addBookmark", forControlEvents: .TouchUpInside)
+        addBookmarkButton.addTarget(self, action: NSSelectorFromString(SEL_onClickBookmarksButton), forControlEvents: .TouchUpInside)
         addBookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
         addBookmarkButton.setImage(UIImage(named: "bookmarkMarked"), forState: .Selected)
         addBookmarkButton.accessibilityLabel = NSLocalizedString("Add Bookmark", comment: "Button to add a bookmark")
@@ -96,13 +96,19 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         presentViewController(controller, animated: true, completion: nil)
     }
 
-    func addBookmark() {
+    let SEL_onClickBookmarksButton = "onClickBookmarksButton"
+    func onClickBookmarksButton() {
         guard let tab = browser?.tabManager.selectedTab,
             let url = tab.displayURL?.absoluteString else {
                 return
         }
 
-        browser?.addBookmark(url, title: tab.title)
+        if addBookmarkButton.selected {
+            browser?.removeBookmark(url)
+        } else {
+            browser?.addBookmark(url, title: tab.title)
+        }
+
         showBookmarks()
 
         delay(0.1) {
