@@ -165,6 +165,7 @@ class BraveTopViewController : UIViewController {
     }
 
     func togglePanel(panel: SidePanelBaseViewController) {
+        leftSidePanelButton?.selected = panel.view.hidden
         clickDetectionView.removeFromSuperview()
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone && panel.view.hidden {
             view.addSubview(clickDetectionView)

@@ -89,8 +89,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         
         let settingsTableViewController = BraveSettingsView()
         settingsTableViewController.profile = getApp().profile
-//        settingsTableViewController.tabManager = tabManager
-//        settingsTableViewController.settingsDelegate = self
 
         let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
         ///controller.popoverDelegate = self
