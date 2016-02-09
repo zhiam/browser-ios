@@ -5,6 +5,25 @@ class HideCurveView : CurveView {
     override func drawRect(rect: CGRect) {}
 }
 
+extension UILabel {
+    func boldRange(range: Range<String.Index>) {
+        if let text = self.attributedText {
+            let attr = NSMutableAttributedString(attributedString: text)
+            let start = text.string.startIndex.distanceTo(range.startIndex)
+            let length = range.startIndex.distanceTo(range.endIndex)
+            attr.addAttributes([NSFontAttributeName: UIFont.boldSystemFontOfSize(self.font.pointSize)], range: NSMakeRange(start, length))
+            self.attributedText = attr
+        }
+    }
+
+    func boldSubstring(substr: String) {
+        let range = self.text?.rangeOfString(substr)
+        if let r = range {
+            boldRange(r)
+        }
+    }
+}
+
 class BraveURLBarView : URLBarView {
 
     private static weak var currentInstance: BraveURLBarView?
@@ -98,8 +117,11 @@ class BraveURLBarView : URLBarView {
     func onClickBraveButton() {
         braveButton.selected = !braveButton.selected
         let v = InsetLabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
-
         v.text = braveButton.selected ? BraveUX.TitleForBraveProtectionOff : BraveUX.TitleForBraveProtectionOn
+        if var range = v.text!.rangeOfString(" ", options:NSStringCompareOptions.BackwardsSearch) {
+            range.endIndex = v.text!.characters.endIndex
+            v.boldRange(range)
+        }
         v.backgroundColor = BraveUX.BraveButtonMessageInUrlBarColor
         v.textAlignment = .Right
         locationContainer.addSubview(v)
