@@ -49,7 +49,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         triangleView.contentMode = UIViewContentMode.Center
         triangleView.alpha = 0.9
 
-        settingsButton.setImage(UIImage(named: "settings"), forState: .Normal)
+        settingsButton.setImage(UIImage(named: "settings")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         settingsButton.addTarget(self, action: NSSelectorFromString(SEL_onClickSettingsButton), forControlEvents: .TouchUpInside)
         settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
 
@@ -69,7 +69,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         settingsButton.tintColor = BraveUX.ActionButtonTintColor
         bookmarksButton.tintColor = BraveUX.ActionButtonTintColor
         historyButton.tintColor = BraveUX.ActionButtonTintColor
-        addBookmarkButton.tintColor = UIColor.whiteColor()
+        addBookmarkButton.tintColor = BraveUX.ActionButtonTintColor
 
         containerView.addSubview(history.view)
         containerView.addSubview(bookmarks.view)
