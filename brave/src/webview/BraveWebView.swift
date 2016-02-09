@@ -42,7 +42,19 @@ class BraveWebView: UIWebView {
 
     var estimatedProgress: Double = 0
     var title: String = ""
-    var URL: NSURL?
+    private var prevUrl: NSURL?
+    var URL: NSURL? {
+        willSet {
+            if !(URL?.absoluteString.hasPrefix("about") ?? true) {
+                prevUrl = URL
+            }
+        }
+        didSet {
+            if let prevUrl = prevUrl where (URL?.absoluteString.hasPrefix("about:blank") ?? false) {
+                URL = prevUrl
+            }
+        }
+    }
     var internalIsLoadingEndedFlag: Bool = false;
     var knownFrameContexts = Set<NSObject>()
     static var containerWebViewForCallbacks = { return ContainerWebView() }()
