@@ -295,6 +295,7 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
         if AboutUtils.isAboutURL(request.URL) {
+            URL = request.URL
             progress?.completeProgress()
             print(request)
             return true
