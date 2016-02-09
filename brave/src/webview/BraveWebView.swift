@@ -45,12 +45,12 @@ class BraveWebView: UIWebView {
     private var prevUrl: NSURL?
     var URL: NSURL? {
         willSet {
-            if !(URL?.absoluteString.hasPrefix("about") ?? true) {
+            if !(URL?.absoluteString.hasPrefix("about:") ?? true) {
                 prevUrl = URL
             }
         }
         didSet {
-            if let prevUrl = prevUrl where (URL?.absoluteString.hasPrefix("about:blank") ?? false) {
+            if let prevUrl = prevUrl where (URL?.absoluteString.hasPrefix("about:") ?? false) {
                 URL = prevUrl
             }
         }
@@ -306,10 +306,17 @@ extension BraveWebView: UIWebViewDelegate {
 
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
-        if AboutUtils.isAboutURL(request.URL) {
+        #if DEBUG
+            if var printedUrl = request.URL?.absoluteString {
+                if printedUrl.characters.count > 100 {
+                    printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(100)) + "..."
+                }
+                print("webview load: " + printedUrl)
+            }
+        #endif
+        if AboutUtils.isAboutHomeURL(request.URL) {
             URL = request.URL
             progress?.completeProgress()
-            print(request)
             return true
         }
 

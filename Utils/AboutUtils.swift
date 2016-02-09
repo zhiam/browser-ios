@@ -8,11 +8,11 @@ struct AboutUtils {
     private static let AboutPath = "/about/"
 
     static func isAboutHomeURL(url: NSURL?) -> Bool {
-        return getAboutComponent(url) == "home" || (url?.absoluteString.hasPrefix("about:home") ?? false)
+        return getAboutComponent(url) == "home"
     }
 
     static func isAboutURL(url: NSURL?) -> Bool {
-        return getAboutComponent(url) != nil || (url?.absoluteString.hasPrefix("about:") ?? false)
+        return getAboutComponent(url) != nil 
     }
 
     /// If the URI is an about: URI, return the path after "about/" in the URI.
