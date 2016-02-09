@@ -88,14 +88,20 @@ class BraveURLBarView : URLBarView {
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLeftSlideOutClicked, object: leftSidePanelButton)
     }
 
+    class InsetLabel: UILabel {
+        override func drawTextInRect(rect: CGRect) {
+            super.drawTextInRect(UIEdgeInsetsInsetRect(rect, UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20)))
+        }
+    }
+
     let SEL_onClickBraveButton = "onClickBraveButton"
     func onClickBraveButton() {
         braveButton.selected = !braveButton.selected
-        let v = UILabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
+        let v = InsetLabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
 
         v.text = braveButton.selected ? BraveUX.TitleForBraveProtectionOff : BraveUX.TitleForBraveProtectionOn
         v.backgroundColor = BraveUX.BraveButtonMessageInUrlBarColor
-        v.textAlignment = .Center
+        v.textAlignment = .Right
         locationContainer.addSubview(v)
         v.alpha = 0.0
         UIView.animateWithDuration(0.25, animations: { v.alpha = 1.0 }, completion: {

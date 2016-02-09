@@ -1,8 +1,8 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 struct BraveUX {
-    static var TitleForBraveProtectionOff = "Brave Shields Down"
-    static var TitleForBraveProtectionOn = "Brave Shields Up"
+    static var TitleForBraveProtectionOff = "Shields Down"
+    static var TitleForBraveProtectionOn = "Shields Up"
     static let BraveButtonMessageInUrlBarColor = UIColor.orangeColor()
     static let BraveButtonMessageInUrlBarShowTime = 0.5
     static let BraveButtonMessageInUrlBarFadeTime = 0.7
