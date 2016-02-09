@@ -251,6 +251,9 @@ class BraveWebView: UIWebView {
         LegacyUserContentController.injectJsIntoAllFrames(self, script: js)
     }
 
+    // I noticed on youtube, clicking videos is not updating the location bar. 
+    // This workaround hooks into UrlProtocol so that when a load is detected (of any kind) trigger a delayed check for location change, and if the host is the same but the path has changed, then update the displayed URL
+    // I don't want to generalize this check beyond that specific case, as in all other cases (thus far), normal webview events are triggered for page loading
     var locationChangedPeriodicCheckRunning = false
     func setFlagToCheckIfLocationChanged() {
         if self.locationChangedPeriodicCheckRunning {
@@ -261,10 +264,10 @@ class BraveWebView: UIWebView {
         delay(0.5) {
             self.locationChangedPeriodicCheckRunning = false
             guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = self.URL?.absoluteString else { return }
-
-            if !currentUrl.hasPrefix(location) {
+            guard let pageExtractedUrl = NSURL(string: location) else { return }
+            if pageExtractedUrl.host == self.URL?.host && !currentUrl.hasPrefix(location) {
                 self.URL = NSURL(string: location)
-                self.kvoBroadcast()
+                self.kvoBroadcast([KVOStrings.kvoURL])
             }
         }
     }
