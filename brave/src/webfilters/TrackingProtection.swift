@@ -33,6 +33,7 @@ class TrackingProtection {
         updateEnabledState()
     }
 
+
     func shouldBlock(request: NSURLRequest) -> Bool {
         // synchronize code from this point on.
         objc_sync_enter(self)
@@ -47,6 +48,10 @@ class TrackingProtection {
                 return false
         }
 
+        // https://github.com/brave/browser-ios/issues/90
+        if url.absoluteString.contains("connect.facebook.com") {
+            return false
+        }
         mainDocDomain = stripGenericSubdomainPrefixFromUrl(stripLocalhostWebServer(mainDocDomain))
 
         guard var host = url.host else { return false}
