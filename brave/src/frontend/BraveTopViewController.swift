@@ -153,8 +153,16 @@ class BraveTopViewController : UIViewController {
     let SEL_onClickBraveButton = "onClickBraveButton:"
     func onClickBraveButton(notification: NSNotification) {
         guard let button = notification.object as? UIButton else { return }
+
+        NSURLCache.sharedURLCache().removeAllCachedResponses()
+        NSURLCache.sharedURLCache().diskCapacity = 0
+        NSURLCache.sharedURLCache().memoryCapacity = 0
+
         BraveApp.areAllBraveFiltersBypassed = button.selected
         BraveApp.getCurrentWebView()?.reload()
+
+        BraveApp.setupCacheDefaults()
+
         #if RIGHTPANEL
             togglePanel(rightSidePanel)
         #endif
