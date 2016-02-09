@@ -15,7 +15,7 @@ class SidePanelBaseViewController : UIViewController {
     var isLeftSidePanel = true
 
 
-    var parentSideConstraints: [Constraint]?
+    var parentSideConstraints: [Constraint?]?
 
 
     override func loadView() {
@@ -57,7 +57,7 @@ class SidePanelBaseViewController : UIViewController {
         return Double(UIConstants.ToolbarHeight) + spaceForStatusBar()
     }
 
-    func showPanel(showing: Bool, parentSideConstraints: [Constraint]? = nil) {
+    func showPanel(showing: Bool, parentSideConstraints: [Constraint?]? = nil) {
         if (parentSideConstraints != nil) {
             self.parentSideConstraints = parentSideConstraints
         }
@@ -83,7 +83,9 @@ class SidePanelBaseViewController : UIViewController {
 
             if let constraints = self.parentSideConstraints {
                 for c in constraints {
-                    c.updateOffset(self.isLeftSidePanel ? width : -width)
+                    if let c = c {
+                        c.updateOffset(self.isLeftSidePanel ? width : -width)
+                    }
                 }
             }
             superview.layoutIfNeeded()

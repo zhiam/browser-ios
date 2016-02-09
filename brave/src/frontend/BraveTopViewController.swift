@@ -104,12 +104,12 @@ class BraveTopViewController : UIViewController {
                 make.top.equalTo(view).inset(20)
             }
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                rightConstraint = make.right.equalTo(view).constraint
              //   make.width.equalTo(view.snp_width)
             } else {
                 make.right.equalTo(view)
             }
             leftConstraint = make.left.equalTo(view).constraint
-            rightConstraint = make.right.equalTo(view).constraint
         }
     }
 
@@ -175,7 +175,7 @@ class BraveTopViewController : UIViewController {
             clickDetectionView.layoutIfNeeded()
         }
         panel.setHomePanelDelegate(self)
-        panel.showPanel(panel.view.hidden, parentSideConstraints: [leftConstraint!, rightConstraint!])
+        panel.showPanel(panel.view.hidden, parentSideConstraints: [leftConstraint, rightConstraint])
     }
 
     func updateBookmarkStatus(isBookmarked: Bool) {
