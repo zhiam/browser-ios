@@ -92,12 +92,13 @@ class BraveURLBarView : URLBarView {
     func onClickBraveButton() {
         braveButton.selected = !braveButton.selected
         let v = UILabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
-        v.text = "Brave site protection: " + (braveButton.selected ? "Off" : "On")
+
+        v.text = braveButton.selected ? BraveUX.TitleForBraveProtectionOff : BraveUX.TitleForBraveProtectionOn
         v.backgroundColor = BraveUX.BraveButtonMessageInUrlBarColor
         v.textAlignment = .Center
         locationContainer.addSubview(v)
         v.alpha = 0.0
-        UIView.animateWithDuration(0.2, animations: { v.alpha = 1.0 }, completion: {
+        UIView.animateWithDuration(0.25, animations: { v.alpha = 1.0 }, completion: {
             finished in
             UIView.animateWithDuration(BraveUX.BraveButtonMessageInUrlBarFadeTime, delay: BraveUX.BraveButtonMessageInUrlBarShowTime, options: [], animations: { v.alpha = 0 }, completion: {
                 finished in

@@ -1,6 +1,11 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 struct BraveUX {
+    static var TitleForBraveProtectionOff = "Brave Shields Down"
+    static var TitleForBraveProtectionOn = "Brave Shields Up"
+    static let BraveButtonMessageInUrlBarColor = UIColor.orangeColor()
+    static let BraveButtonMessageInUrlBarShowTime = 0.5
+    static let BraveButtonMessageInUrlBarFadeTime = 0.7
 
     // I am considering using DeviceInfo.isBlurSupported() to set this, and reduce heavy animations
     static var IsHighLoadAnimationAllowed = true
@@ -16,10 +21,6 @@ struct BraveUX {
     static let PrefKeyIsToolbarHidingEnabled = "PrefKeyIsToolbarHidingEnabled"
 
     static let BackgroundColorForBookmarksHistoryAndTopSites = UIColor(white: 242/255.0, alpha: 1.0)
-
-    static let BraveButtonMessageInUrlBarColor = UIColor.orangeColor()
-    static let BraveButtonMessageInUrlBarShowTime = 0.4
-    static let BraveButtonMessageInUrlBarFadeTime = 0.4
 
     // debug settings
     //  static var IsToolbarHidingOff = false
