@@ -295,7 +295,13 @@ extension BraveScrollController: UIScrollViewDelegate {
             refreshControl?.hidden = false
             refreshControl?.frame = CGRectMake(0, position, refreshControl?.frame.size.width ?? 0, -contentOffset.y)
 
-            if Int(contentOffset.y) < -BraveUX.PullToReloadDistance && !keyboardIsShowing {
+            var pullToReloadDistance = CGFloat(-BraveUX.PullToReloadDistance)
+            if BraveApp.isIPhoneLandscape() {
+                // The "spring" is tighter in this case, make the distance shorter
+                pullToReloadDistance *= CGFloat(0.80)
+            }
+
+            if contentOffset.y < pullToReloadDistance && !keyboardIsShowing {
                 isInRefreshQuietPeriod = true
 
                 let currentOffset =  scrollView.contentOffset.y
