@@ -10,27 +10,51 @@ class BraveSettingsView : AppSettingsTableViewController {
     var debugToggleItemToTriggerCrashCount = 0
 
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if !BraveApp.areAllBraveFiltersBypassed || section != 2 {
+        if section != 2 {
             return nil
         }
 
         let footerView = InsetLabel(frame: CGRectMake(0, 0, tableView.frame.size.width, 40))
         footerView.leftInset = CGFloat(20)
         footerView.numberOfLines = 0
-        footerView.text = "Brave Shields are currently down. These settings only take effect when shields are up."
         footerView.font = UIFont.systemFontOfSize(11)
 
-        return footerView
+        if BraveSettingsView.isAllBraveShieldPrefsOff {
+            footerView.text = "The Brave Shield button is disabled when all settings are off."
+            return footerView
+        } else if BraveApp.isBraveButtonBypassingFilters {
+            footerView.text = "Brave Shields are currently down. These settings only take effect when shields are up."
+            return footerView
+        }
+
+        return nil
     }
 
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if !BraveApp.areAllBraveFiltersBypassed || section != 2 {
+        if section != 2 || !(BraveApp.isBraveButtonBypassingFilters || BraveSettingsView.isAllBraveShieldPrefsOff) {
             return 0
         }
         return 40.0
     }
 
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
+    let SEL_prefsChanged = "prefsChanged:"
+    static var isAllBraveShieldPrefsOff = false
+    @objc func prefsChanged(notification: NSNotification) {
+        BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
+        delay(0.1) {
+            self.tableView.reloadData()
+        }
+    }
+
     override func generateSettings() -> [SettingSection] {
+        BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
+
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:NSSelectorFromString(SEL_prefsChanged), name: NSUserDefaultsDidChangeNotification, object: nil)
 
         let prefs = profile.prefs
         let generalSettings = [

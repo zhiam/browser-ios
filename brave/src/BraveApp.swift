@@ -24,10 +24,17 @@ class BraveApp {
     // If app runs for this long, clear the saved pref that indicates it is safe to restore tabs
     static let kDelayBeforeDecidingAppHasBootedOk = (Int64(NSEC_PER_SEC) * 10) // 10 sec
 
-    static var areAllBraveFiltersBypassed = false
+    static var isBraveButtonBypassingFilters = false
 
     class var singleton: BraveApp {
         return _singleton
+    }
+
+    class func isAllBraveShieldPrefsOff() -> Bool {
+        let abOn = BraveApp.getPref(AdBlocker.prefKeyAdBlockOn) as? Bool ?? true
+        let tpOn = BraveApp.getPref(TrackingProtection.prefKeyTrackingProtectionOn) as? Bool ?? true
+        let httpseOn = BraveApp.getPref(HttpsEverywhere.prefKeyHttpsEverywhereOn) as? Bool ?? true
+        return !abOn && !tpOn && !httpseOn
     }
 
 #if !TEST

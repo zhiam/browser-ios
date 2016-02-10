@@ -158,7 +158,7 @@ class BraveTopViewController : UIViewController {
         NSURLCache.sharedURLCache().diskCapacity = 0
         NSURLCache.sharedURLCache().memoryCapacity = 0
 
-        BraveApp.areAllBraveFiltersBypassed = button.selected
+        BraveApp.isBraveButtonBypassingFilters = button.selected
         BraveApp.getCurrentWebView()?.reload()
 
         BraveApp.setupCacheDefaults()

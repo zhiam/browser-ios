@@ -13,7 +13,7 @@ class URLProtocol: NSURLProtocol {
     var response: NSURLResponse!
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
-        if (BraveApp.areAllBraveFiltersBypassed) {
+        if (BraveApp.isBraveButtonBypassingFilters) {
             return false
         }
 

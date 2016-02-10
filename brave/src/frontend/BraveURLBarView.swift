@@ -109,6 +109,10 @@ class BraveURLBarView : URLBarView {
 
     let SEL_onClickBraveButton = "onClickBraveButton"
     func onClickBraveButton() {
+        if BraveApp.isAllBraveShieldPrefsOff() {
+            return
+        }
+
         braveButton.selected = !braveButton.selected
         let v = InsetLabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
         v.rightInset = CGFloat(20)
@@ -204,6 +208,12 @@ class BraveURLBarView : URLBarView {
 
     override func updateConstraints() {
         super.updateConstraints()
+
+        if BraveApp.isAllBraveShieldPrefsOff() {
+            delay(0.1) {
+                self.braveButton.selected = true
+            }
+        }
 
         curveShape.hidden = true
         bookmarkButton.hidden = true

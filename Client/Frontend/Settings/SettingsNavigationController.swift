@@ -16,6 +16,9 @@ class SettingsNavigationController: UINavigationController {
                 getApp().browserViewController.view.alpha = CGFloat(1.0)
             })
         }
+        
+        getApp().browserViewController.urlBar.setNeedsLayout()
+        getApp().browserViewController.urlBar.setNeedsUpdateConstraints()
     }
 }
 
