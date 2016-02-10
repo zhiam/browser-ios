@@ -100,6 +100,10 @@ class BraveScrollController: NSObject {
     }
 
     func checkHeightOfPageAndAdjustWebViewInsents() {
+        if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
+            return
+        }
+
         if !isScrollHeightIsLargeEnoughForScrolling() {
             if (scrollView?.contentInset.bottom == 0) {
                 scrollView?.contentInset = UIEdgeInsetsMake(0, 0, UIConstants.ToolbarHeight * 2, 0)
@@ -148,6 +152,14 @@ private extension BraveScrollController {
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         if browserIsLoading() /*|| BraveUX.IsToolbarHidingOff */ {
             return
+        }
+
+        delay(0.1) {
+            // https://github.com/brave/browser-ios/issues/125
+            // To ensure this happens after all other logic, and overrides any other logic, call it with a delay
+            if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
+                self.scrollView?.contentInset = UIEdgeInsetsMake(0, 0, 2*UIConstants.ToolbarHeight, 0)
+            }
         }
 
         if !BraveScrollController.hideShowToolbarEnabled {
