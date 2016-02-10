@@ -40,13 +40,16 @@ class BraveSettingsView : AppSettingsTableViewController {
                 [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
                 BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
                 BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
-                CookieSetting(settings: self)]),
-//            SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
-//                ShowIntroductionSetting(settings: self),
-//                //SendFeedbackSetting(),
-//                //SendAnonymousUsageDataSetting(prefs: prefs, delegate: settingsDelegate),
-//                //OpenSupportPageSetting(delegate: settingsDelegate),
-//                ]),
+                CookieSetting(settings: self)])]
+
+#if ENABLE_INTRO_SCREEN
+        settings += [
+            SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
+                ShowIntroductionSetting(settings: self),
+                //SendFeedbackSetting(),
+                ])]
+#endif
+        settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
                 VersionSetting(settings: self),
             ])
