@@ -9,6 +9,27 @@ class BraveSettingsView : AppSettingsTableViewController {
 
     var debugToggleItemToTriggerCrashCount = 0
 
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if !BraveApp.areAllBraveFiltersBypassed || section != 2 {
+            return nil
+        }
+
+        let footerView = InsetLabel(frame: CGRectMake(0, 0, tableView.frame.size.width, 40))
+        footerView.leftInset = CGFloat(20)
+        footerView.numberOfLines = 0
+        footerView.text = "Brave Shields are currently down. These settings only take effect when shields are up."
+        footerView.font = UIFont.systemFontOfSize(11)
+
+        return footerView
+    }
+
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if !BraveApp.areAllBraveFiltersBypassed || section != 2 {
+            return 0
+        }
+        return 40.0
+    }
+
     override func generateSettings() -> [SettingSection] {
 
         let prefs = profile.prefs
@@ -34,13 +55,12 @@ class BraveSettingsView : AppSettingsTableViewController {
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
-                [ClearPrivateDataSetting(settings: self)]
+                [ClearPrivateDataSetting(settings: self), CookieSetting(settings: self)]
             ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
                 [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
                 BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
-                BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
-                CookieSetting(settings: self)])]
+                BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere")])]
 
 #if ENABLE_INTRO_SCREEN
         settings += [

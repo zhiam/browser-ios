@@ -12,6 +12,14 @@ func delay(delay:Double, closure:()->()) {
 }
 
 
+class InsetLabel: UILabel {
+    var leftInset = CGFloat(0)
+    var rightInset = CGFloat(0)
+    override func drawTextInRect(rect: CGRect) {
+        super.drawTextInRect(UIEdgeInsetsInsetRect(rect, UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: rightInset)))
+    }
+}
+
 
 extension String {
     func regexReplacePattern(pattern:String,  with:String) -> String {

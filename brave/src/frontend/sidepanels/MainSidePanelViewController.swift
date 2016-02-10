@@ -87,7 +87,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             return
         }
         
-        let settingsTableViewController = BraveSettingsView()
+        let settingsTableViewController = BraveSettingsView(style: .Grouped)
         settingsTableViewController.profile = getApp().profile
 
         let controller = SettingsNavigationController(rootViewController: settingsTableViewController)

@@ -340,13 +340,16 @@ class SettingsTableViewController: UITableViewController {
             headerView.titleLabel.text = sectionTitle
         }
 
+#if BRAVE
+        headerView.showTopBorder = false
+#else
         // Hide the top border for the top section to avoid having a double line at the top
         if section == 0 {
             headerView.showTopBorder = false
         } else {
             headerView.showTopBorder = true
         }
-
+#endif
         return headerView
     }
 
