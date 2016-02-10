@@ -78,28 +78,54 @@ class CacheClearable: Clearable {
 
         // Now let's finish up by destroying our Cache directory.
         do {
-            try deleteLibraryFolderContents("Caches")
+            try deleteLibraryFolderContents("Caches", validateClearedWithNameContains: ["WebKit", "brave"])
         } catch {
             return deferMaybe(ClearableErrorType(err: error))
         }
 
+        do {
+            try deleteLibraryFolderContents("WebKit", validateClearedWithNameContains: ["WebsiteData", "GeolocationSites.plist"])
+        } catch {
+            return deferMaybe(ClearableErrorType(err: error))
+        }
+
+        // Leave the cache off in the error cases above
         BraveApp.setupCacheDefaults()
 
         return succeed()
     }
 }
 
-private func deleteLibraryFolderContents(folder: String) throws {
+// Delete all the contents of a the folder, and verify using validateClearedWithNameContains that critical files are removed (any remaining file must not contain the specified substring(s))
+// Alert the user if these files still exist after clearing.
+// validateClearedWithNameContains can be nil, in which case the check is skipped or pass [] as a special case to verify that
+// the directory is empty.
+private func deleteLibraryFolderContents(folder: String, validateClearedWithNameContains:[String]?) throws {
     let manager = NSFileManager.defaultManager()
     let library = manager.URLsForDirectory(NSSearchPathDirectory.LibraryDirectory, inDomains: .UserDomainMask)[0]
     let dir = library.URLByAppendingPathComponent(folder)
-    let contents = try manager.contentsOfDirectoryAtPath(dir.path!)
+    var contents = try manager.contentsOfDirectoryAtPath(dir.path!)
     for content in contents {
         do {
             try manager.removeItemAtURL(dir.URLByAppendingPathComponent(content))
         } catch where ((error as NSError).userInfo[NSUnderlyingErrorKey] as? NSError)?.code == Int(EPERM) {
             // "Not permitted". We ignore this.
-            BraveApp.showErrorAlert(title: "Error clearing data", error: "Unable to fully clear data from disk.")
+            // Snapshots directory is an example of a Cache dir that is not permitted on device (but is permitted on simulator)
+        }
+    }
+
+    guard let namesToCheck = validateClearedWithNameContains else { return }
+    contents = try manager.contentsOfDirectoryAtPath(dir.path!)
+    if namesToCheck.count < 1 && contents.count > 0 {
+        BraveApp.showErrorAlert(title: "Error clearing data", error: "\(folder) not fully cleared")
+        return
+    }
+
+    for content in contents {
+        for name in namesToCheck {
+            if content.contains(name) {
+                BraveApp.showErrorAlert(title: "Error clearing data", error: "Item not cleared: \(content)")
+            }
         }
     }
 }
@@ -166,7 +192,7 @@ class CookiesClearable: Clearable {
 
         // And just to be safe, we also wipe the Cookies directory.
         do {
-            try deleteLibraryFolderContents("Cookies")
+            try deleteLibraryFolderContents("Cookies", validateClearedWithNameContains: [])
         } catch {
             return deferMaybe(ClearableErrorType(err: error))
         }
