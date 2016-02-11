@@ -32,6 +32,8 @@ struct BraveUX {
     static let BackForwardDisabledButtonAlpha = CGFloat(0.3)
     static let BackForwardEnabledButtonAlpha = CGFloat(1.0)
 
+    static let TopLevelBackgroundColor = UIColor(white: 0.67, alpha: 1.0)
+
     static let LocationBarTextColor = UIColor(white: 255/255.0, alpha: 1)
     static let LocationBarEditModeBackgroundColor = UIColor(white: 242/255.0, alpha: 1.0)
     static let LocationBarEditModeTextColor = UIColor(white: 0/255.0, alpha: 1)
@@ -63,9 +65,6 @@ struct BraveUX {
 
     static let ProgressBarColor = UIColor(colorLiteralRed: 0/255.0, green: 118/255.0, blue: 255/255.0, alpha: 1.0)
     
-    // Internal use
-    static let HeaderBackdropBackgroundColor = UIColor.blackColor()
-
     static let TabTrayCellCornerRadius = 14.0
     static let TabTrayCellFaviconSize = 54.0
     static let TabTrayCellCloseButtonSize = 24.0

@@ -12,7 +12,11 @@ class BraveBrowserViewController : BrowserViewController {
         webViewContainer.accessibilityLabel = "webViewContainer"
         statusBarOverlay.accessibilityLabel = "statusBarOverlay"
         urlBar.accessibilityLabel = "BraveUrlBar"
-        headerBackdrop.backgroundColor = BraveUX.HeaderBackdropBackgroundColor
+
+        // TODO sorry, I am in a rush, but this needs to be removed from the view heirarchy properly
+        headerBackdrop.backgroundColor = UIColor.clearColor()
+        headerBackdrop.alpha = 0
+        headerBackdrop.hidden = true
 
         header.blurStyle = .Dark
         footerBackground?.blurStyle = .Dark
@@ -35,6 +39,10 @@ class BraveBrowserViewController : BrowserViewController {
 
         footer.accessibilityLabel = "footer"
         footerBackdrop.accessibilityLabel = "footerBackdrop"
+
+        // With this color, it matches to default semi-transparent state of the toolbar
+        // The value is hand-picked to match the effect on the url bar, we don't have a color constant for this elsewhere
+        statusBarOverlay.backgroundColor = UIColor(white: 0.255, alpha: 1.0)
     }
 
     override func SELtappedTopArea() {

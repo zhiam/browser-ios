@@ -310,9 +310,13 @@ class TabTrayController: UIViewController {
 
 #if BRAVE
     override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
+
         super.dismissViewControllerAnimated(flag, completion:completion)
+
         UIView.animateWithDuration(0.2) {
-            getApp().browserViewController.view.alpha = 1.0
+            let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController
+            braveTopVC?.view.backgroundColor = BraveUX.TopLevelBackgroundColor
+             getApp().browserViewController.view.alpha = 1.0
         }
     }
 #endif

@@ -39,7 +39,7 @@ class BraveTopViewController : UIViewController {
 
     override func viewDidLoad() {
         view.accessibilityLabel = "HighestView"
-        view.backgroundColor = UIColor.blackColor()
+        view.backgroundColor = BraveUX.TopLevelBackgroundColor
 
         browser.view.accessibilityLabel = "BrowserView"
 

@@ -1179,7 +1179,11 @@ extension BrowserViewController: URLBarDelegate {
             tabTrayController.modalPresentationStyle = .OverCurrentContext
             tabTrayController.modalTransitionStyle = .CrossDissolve
             self.navigationController?.presentViewController(tabTrayController, animated: true, completion: nil)
-            UIView.animateWithDuration(0.2, animations: { self.view.alpha = CGFloat(BraveUX.BrowserViewAlphaWhenShowingTabTray) })
+            UIView.animateWithDuration(0.2, animations: {
+                let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController
+                braveTopVC?.view.backgroundColor = UIColor.blackColor()
+                self.view.alpha = CGFloat(BraveUX.BrowserViewAlphaWhenShowingTabTray)
+            })
         #endif
         self.tabTrayController = tabTrayController
     }

@@ -88,12 +88,12 @@ class BraveURLBarView : URLBarView {
 
     override func applyTheme(themeName: String) {
         super.applyTheme(themeName)
-        if themeName == Theme.NormalMode {
-            backgroundColor = BraveUX.LocationBarBackgroundColor
-        }
-        if themeName == Theme.PrivateMode {
-            backgroundColor = BraveUX.LocationBarBackgroundColor_PrivateMode
-        }
+//        if themeName == Theme.NormalMode {
+//            backgroundColor = BraveUX.LocationBarBackgroundColor
+//        }
+//        if themeName == Theme.PrivateMode {
+//            backgroundColor = BraveUX.LocationBarBackgroundColor_PrivateMode
+//        }
     }
 
     override func updateAlphaForSubviews(alpha: CGFloat) {
