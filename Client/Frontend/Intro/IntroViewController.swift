@@ -317,7 +317,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
             }
-
+            guard let arrow = arrow else { return }
             pageControl.superview?.addSubview(arrow)
             arrow.alpha = 0
             arrow.snp_remakeConstraints {
@@ -327,7 +327,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
             }
 
             UIView.animateWithDuration(0.2) {
-                self.arrow.alpha = 1.0
+                self.arrow?.alpha = 1.0
                 self.pageControl.alpha = 0
             }
         } else {
@@ -335,7 +335,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 v.alpha = 0
                 v.transform = CGAffineTransformMakeTranslation(0, 0)
             }
-            arrow.alpha = 0
+            arrow?.alpha = 0
             pageControl.alpha = 1
         }
     }
@@ -393,7 +393,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
             titleLabel.snp_makeConstraints { (make) -> Void in
                 make.top.equalTo(introView)
                 make.bottom.equalTo(label.snp_top)
-                make.left.equalTo(self.view).offset(20)
+                make.left.equalTo(titleLabel.superview!).offset(20)
                 make.width.equalTo(self.view.frame.width <= 320 ? 260 : 300) // TODO Talk to UX about small screen sizes
             }
         }
@@ -401,15 +401,16 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     }
 
     private func setupDynamicFonts() {
+        let biggerIt = self.view.frame.width <= 320 ? CGFloat(0) : CGFloat(3)
         startBrowsingButton.titleLabel?.font = UIFont.systemFontOfSize(DynamicFontHelper.defaultHelper.IntroBigFontSize)
 
 
         for titleLabel in titleLabels {
-            titleLabel.font = UIFont.systemFontOfSize(DynamicFontHelper.defaultHelper.IntroBigFontSize, weight: UIFontWeightBold)
+            titleLabel.font = UIFont.systemFontOfSize(DynamicFontHelper.defaultHelper.IntroBigFontSize + biggerIt, weight: UIFontWeightBold)
         }
 
         for label in textLabels {
-            label.font = UIFont.systemFontOfSize(DynamicFontHelper.defaultHelper.IntroStandardFontSize)
+            label.font = UIFont.systemFontOfSize(DynamicFontHelper.defaultHelper.IntroStandardFontSize + biggerIt)
         }
     }
 }
