@@ -16,6 +16,7 @@ class BraveSettingsView : AppSettingsTableViewController {
 
         let footerView = InsetLabel(frame: CGRectMake(0, 0, tableView.frame.size.width, 40))
         footerView.leftInset = CGFloat(20)
+        footerView.rightInset = CGFloat(10)
         footerView.numberOfLines = 0
         footerView.font = UIFont.boldSystemFontOfSize(13)
 

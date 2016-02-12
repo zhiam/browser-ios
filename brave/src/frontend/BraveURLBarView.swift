@@ -211,6 +211,7 @@ class BraveURLBarView : URLBarView {
 
         if BraveApp.isAllBraveShieldPrefsOff() {
             delay(0.1) {
+                BraveApp.isBraveButtonBypassingFilters = true
                 self.braveButton.selected = true
             }
         }
