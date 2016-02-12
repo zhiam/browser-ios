@@ -442,7 +442,7 @@ class BrowserViewController: UIViewController {
         log.debug("BVC viewWillAppear.")
         super.viewWillAppear(animated)
         log.debug("BVC super.viewWillAppear done.")
-#if ENABLE_INTRO_SCREEN
+#if !DISABLE_INTRO_SCREEN
         // On iPhone, if we are about to show the On-Boarding, blank out the browser so that it does
         // not flash before we present. This change of alpha also participates in the animation when
         // the intro view is dismissed.
@@ -521,7 +521,7 @@ class BrowserViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         log.debug("BVC viewDidAppear.")
 
-#if ENABLE_INTRO_SCREEN
+#if !DISABLE_INTRO_SCREEN
         presentIntroViewController()
 #endif
 
