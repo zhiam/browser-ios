@@ -226,7 +226,7 @@ class BraveTermsOfUseSetting: Setting {
     }
 
     override var url: NSURL? {
-        return NSURL(string: "https://www.brave.com/ios_ToU.html")
+        return NSURL(string: "https://www.brave.com/terms_of_use")
     }
 
     override func onClick(navigationController: UINavigationController?) {
