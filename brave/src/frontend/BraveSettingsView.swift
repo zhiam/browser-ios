@@ -80,7 +80,9 @@ class BraveSettingsView : AppSettingsTableViewController {
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
-                [ClearPrivateDataSetting(settings: self), CookieSetting(settings: self)]
+                [ClearPrivateDataSetting(settings: self), CookieSetting(settings: self),
+                   BravePrivacyPolicySetting(), BraveTermsOfUseSetting()]
+
             ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
                 [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
@@ -205,7 +207,33 @@ class PasswordsClearable: Clearable {
     }
 }
 
+class BravePrivacyPolicySetting: Setting {
+    override var title: NSAttributedString? {
+        return NSAttributedString(string: NSLocalizedString("Privacy Policy", comment: "Show Brave Browser Privacy Policy page from the Privacy section in the settings."), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+    }
 
+    override var url: NSURL? {
+        return NSURL(string: "https://www.brave.com/ios_privacy.html")
+    }
+
+    override func onClick(navigationController: UINavigationController?) {
+        setUpAndPushSettingsContentViewController(navigationController)
+    }
+}
+
+class BraveTermsOfUseSetting: Setting {
+    override var title: NSAttributedString? {
+        return NSAttributedString(string: NSLocalizedString("Terms of Use", comment: "Show Brave Browser TOS page from the Privacy section in the settings."), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+    }
+
+    override var url: NSURL? {
+        return NSURL(string: "https://www.brave.com/ios_ToU.html")
+    }
+
+    override func onClick(navigationController: UINavigationController?) {
+        setUpAndPushSettingsContentViewController(navigationController)
+    }
+}
 
 
 
