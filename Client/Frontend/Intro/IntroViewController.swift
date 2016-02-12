@@ -68,13 +68,14 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     var pageControl: UIPageControl!
     var backButton: UIButton!
     var forwardButton: UIButton!
-    //var signInButton: UIButton!
 
     var bgColors = [UIColor]()
 
     private var scrollView: IntroOverlayScrollView!
 
     var slideVerticalScaleFactor: CGFloat = 1.0
+
+    var arrow: UIImageView?
 
     override func viewDidLoad() {
         view.backgroundColor = UIColor.whiteColor()
@@ -85,6 +86,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         bgColors.append(BraveUX.BraveButtonMessageInUrlBarColor)
         bgColors.append(BraveUX.BraveButtonMessageInUrlBarColor)
 
+        arrow = UIImageView(image: UIImage(named: "screen_5_arrow"))
 
         // scale the slides down for iPhone 4S
         if view.frame.height <=  480 {
@@ -92,7 +94,9 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         }
 
         for slideName in IntroViewControllerUX.CardSlides {
-            slides.append(UIImage(named: slideName)!)
+            if let image = UIImage(named: slideName) {
+                slides.append(image)
+            }
         }
 
         startBrowsingButton = UIButton()
@@ -122,13 +126,15 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
 
         slideContainer = UIView()
         slideContainer.backgroundColor = bgColors[0]
-        var imageView: UIImageView!
+        var imageView: UIImageView? = nil
         for i in 0..<IntroViewControllerUX.NumberOfCards {
             imageView = UIImageView(frame: CGRect(x: CGFloat(i)*scaledWidthOfSlide, y: 0, width: scaledWidthOfSlide, height: scaledHeightOfSlide))
-            imageView.image = slides[i]
-            slideContainer.addSubview(imageView)
+            imageView?.image = slides[i]
+            if let imageView = imageView {
+                slideContainer.addSubview(imageView)
+            }
         }
-        imageView.alpha = 0.1
+        imageView?.alpha = 0.1
 
         scrollView.addSubview(slideContainer)
         scrollView.snp_makeConstraints { (make) -> Void in
@@ -288,21 +294,6 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-    var arrow = UIImageView(image: UIImage(named: "screen_5_arrow"))
-
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-
-    }
-
-    private func colorForPercentage(percentage: CGFloat, start: UIColor, end: UIColor) -> UIColor {
-        let s = start.components
-        let e = end.components
-        let newRed   = (1.0 - percentage) * s.red   + percentage * e.red
-        let newGreen = (1.0 - percentage) * s.green + percentage * e.green
-        let newBlue  = (1.0 - percentage) * s.blue  + percentage * e.blue
-        return UIColor(red: newRed, green: newGreen, blue: newBlue, alpha: 1.0)
-    }
-
     private func setActiveIntroView(newIntroView: UIView, forPage page: Int) {
         if introView != newIntroView {
             UIView.animateWithDuration(IntroViewControllerUX.FadeDuration, animations: { () -> Void in
@@ -334,6 +325,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 make.bottom.equalTo(pageControl)
                 make.centerX.equalTo(pageControl)
             }
+
             UIView.animateWithDuration(0.2) {
                 self.arrow.alpha = 1.0
                 self.pageControl.alpha = 0
@@ -401,7 +393,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
             titleLabel.snp_makeConstraints { (make) -> Void in
                 make.top.equalTo(introView)
                 make.bottom.equalTo(label.snp_top)
-                make.left.equalTo(titleLabel.superview!).offset(20)
+                make.left.equalTo(self.view).offset(20)
                 make.width.equalTo(self.view.frame.width <= 320 ? 260 : 300) // TODO Talk to UX about small screen sizes
             }
         }
