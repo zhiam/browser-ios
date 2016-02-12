@@ -88,13 +88,13 @@ class BraveSettingsView : AppSettingsTableViewController {
                 BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
                 BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere")])]
 
-#if !DISABLE_INTRO_SCREEN
+//#if !DISABLE_INTRO_SCREEN
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
                 ShowIntroductionSetting(settings: self),
                 BravePrivacyPolicySetting(), BraveTermsOfUseSetting(), 
                 ])]
-#endif
+//#endif
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
                 VersionSetting(settings: self),
@@ -212,7 +212,7 @@ class BravePrivacyPolicySetting: Setting {
     }
 
     override var url: NSURL? {
-        return NSURL(string: "https://www.brave.com/ios_privacy.html")
+        return NSURL(string: "https://www.brave.com/privacy_ios")
     }
 
     override func onClick(navigationController: UINavigationController?) {
