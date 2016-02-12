@@ -31,7 +31,12 @@ class URLProtocol: NSURLProtocol {
                 BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
             }
         #endif
-        
+
+        guard let url = request.URL else { return false }
+        if (!TrackingProtection.singleton.shouldBlock(request) && !AdBlocker.singleton.shouldBlock(request) && HttpsEverywhere.singleton.tryRedirectingUrl(url) == nil) {
+            return false
+        }
+
         return true
     }
 
