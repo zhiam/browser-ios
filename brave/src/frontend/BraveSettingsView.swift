@@ -80,8 +80,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
-                [ClearPrivateDataSetting(settings: self), CookieSetting(settings: self),
-                   BravePrivacyPolicySetting(), BraveTermsOfUseSetting()]
+                [ClearPrivateDataSetting(settings: self), CookieSetting(settings: self)]
 
             ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
@@ -93,7 +92,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
                 ShowIntroductionSetting(settings: self),
-                //SendFeedbackSetting(),
+                BravePrivacyPolicySetting(), BraveTermsOfUseSetting(), 
                 ])]
 #endif
         settings += [
