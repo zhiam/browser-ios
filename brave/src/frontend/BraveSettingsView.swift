@@ -17,7 +17,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         let footerView = InsetLabel(frame: CGRectMake(0, 0, tableView.frame.size.width, 40))
         footerView.leftInset = CGFloat(20)
         footerView.numberOfLines = 0
-        footerView.font = UIFont.systemFontOfSize(11)
+        footerView.font = UIFont.boldSystemFontOfSize(13)
 
         if BraveSettingsView.isAllBraveShieldPrefsOff {
             footerView.text = "The Brave Shield button is disabled when all settings are off."
