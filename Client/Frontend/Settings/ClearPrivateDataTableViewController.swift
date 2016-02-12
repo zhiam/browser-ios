@@ -132,6 +132,9 @@ class ClearPrivateDataTableViewController: UITableViewController {
             }
         }
 
+        clearPrivateData()
+
+        #if !BRAVE
         // We have been asked to clear history and we have an account.
         // (Whether or not it's in a good state is irrelevant.)
         if self.toggles[HistoryClearableIndex] && profile.hasAccount() {
@@ -151,6 +154,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
         } else {
             clearPrivateData()
         }
+        #endif
     }
 
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
