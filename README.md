@@ -6,6 +6,10 @@ These steps should be sufficient to build, but if you need more info, refer to t
 
 ## Setup
 
+Install [Node.js](https://nodejs.org/en/download/stable/) v5.0.0
+
+Install [Carthage](https://github.com/Carthage/Carthage)
+
 Do the following commands:
 ```
 ./checkout.sh
