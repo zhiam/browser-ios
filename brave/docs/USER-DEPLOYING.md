@@ -27,3 +27,7 @@ Going forward,
 any time that you successfully sync with the repo,
 please re-run the three shell commands above,
 and then tell `Xcode` to `Product > Run` (&#8984;R).
+
+# Creating a redistributable build
+
+This requires app entitlements are set. In the Apple Dev site, go to Identifiers>App IDs and for the app id you are using for the build, check off 'App Groups', as this is a required entitlement.
