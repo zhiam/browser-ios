@@ -146,6 +146,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         pageControl.pageIndicatorTintColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
         pageControl.currentPageIndicatorTintColor = UIColor.blackColor()
         pageControl.numberOfPages = IntroViewControllerUX.NumberOfCards
+        pageControl.accessibilityIdentifier = "pageControl"
         pageControl.addTarget(self, action: Selector("changePage"), forControlEvents: UIControlEvents.ValueChanged)
 
         view.addSubview(pageControl)

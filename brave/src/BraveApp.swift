@@ -80,7 +80,7 @@ class BraveApp {
 
         #if !TEST
         //  these quiet the logging from the core of fx ios
-        GCDWebServer.setLogLevel(5)
+       // GCDWebServer.setLogLevel(5)
         Logger.syncLogger.setup(.None)
         Logger.browserLogger.setup(.None)
         #endif
