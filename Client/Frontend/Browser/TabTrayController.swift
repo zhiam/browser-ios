@@ -787,8 +787,7 @@ extension TabTrayController: TabCellDelegate {
 extension TabTrayController: SettingsDelegate {
     func settingsOpenURLInNewTab(url: NSURL) {
         let request = NSURLRequest(URL: url)
-        let tab = tabManager.addTab(request)
-        tabManager.selectTab(tab)
+        openNewTab(request)
     }
 }
 
