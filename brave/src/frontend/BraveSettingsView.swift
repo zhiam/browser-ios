@@ -168,7 +168,8 @@ class CookieSetting: Setting, PicklistSettingDelegate {
     }
 
     override func onClick(navigationController: UINavigationController?) {
-        let viewController = PicklistSetting(options: CookieSetting.getOptions(), title: heading)
+        let current = BraveApp.getPref(CookieSetting.prefAcceptCookies) as? Int ?? 0
+        let viewController = PicklistSetting(options: CookieSetting.getOptions(), title: heading, current: current)
         navigationController?.pushViewController(viewController, animated: true)
         viewController.delegate = self
     }
