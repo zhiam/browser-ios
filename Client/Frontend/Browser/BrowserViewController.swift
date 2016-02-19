@@ -44,7 +44,7 @@ class BrowserViewController: UIViewController {
     private var searchController: SearchViewController?
     let uriFixup = URIFixup()
     private var screenshotHelper: ScreenshotHelper!
-    var homePanelIsInline = false
+    var homePanelIsInline = true
     private var searchLoader: SearchLoader!
     let snackBars = UIView()
     private let webViewContainerToolbar = UIView()
@@ -668,6 +668,11 @@ class BrowserViewController: UIViewController {
     private func showHomePanelController(inline inline: Bool) {
         log.debug("BVC showHomePanelController.")
         homePanelIsInline = inline
+
+        #if BRAVE
+            // we always want to show the bottom toolbar, if this is false, the bottom toolbar is hidden
+            homePanelIsInline = true
+        #endif
 
         if homePanelController == nil {
             homePanelController = HomePanelViewController()
