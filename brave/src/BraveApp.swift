@@ -104,7 +104,7 @@ class BraveApp {
         if AppConstants.IsRunningTest {
             print("In test mode, bypass automatic vault registration.")
         } else {
-            VaultManager.userProfileInit()
+            // TODO hookup VaultManager.userProfileInit()
         }
 
         BraveApp.isSafeToRestoreTabs = BraveApp.getPref(kAppBootingIncompleteFlag) == nil
