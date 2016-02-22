@@ -1,5 +1,7 @@
 # Brave iOS Browser 
 
+Download in the [App Store](https://itunes.apple.com/app/brave-web-browser/id1052879175?mt=8)
+
 Brave is based on Firefox iOS, most of the Brave-specific code is in the [brave dir](brave/)
 
 These steps should be sufficient to build, but if you need more info, refer to the the [Firefox iOS readme](https://github.com/mozilla/firefox-ios/blob/master/README.md)
