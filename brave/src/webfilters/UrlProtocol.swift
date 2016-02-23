@@ -43,8 +43,9 @@ class URLProtocol: NSURLProtocol {
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
         if (TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)) {
             let newRequest = cloneRequest(request)
-            // the minimum I can return without a crash is this url. NSURL() or NSURL("") will crash.
-            newRequest.URL = NSURL(string:"https://")
+            if let url = request.URL {
+                newRequest.URL = NSURL(string:url.absoluteString + "_blocked")
+            }
             return newRequest
         }
 
