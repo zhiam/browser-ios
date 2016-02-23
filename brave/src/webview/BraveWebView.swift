@@ -42,19 +42,28 @@ class BraveWebView: UIWebView {
 
     var estimatedProgress: Double = 0
     var title: String = ""
+
+    // The URL property is used for display (inherent to fx codebase), for GCDWebServer URLs, don't set the URL, as we never want it displayed
+    // TODO: consider moving to display code
     private var prevUrl: NSURL?
+    private func _urlShouldNotBeDisplayed(url: NSURL?) -> Bool {
+        guard let href = url?.absoluteString else { return true }
+        return href.hasPrefix("about:") || href.hasPrefix(WebServer.sharedInstance.base)
+    }
     var URL: NSURL? {
         willSet {
-            if !(URL?.absoluteString.hasPrefix("about:") ?? true) {
-                prevUrl = URL
+            if !(_urlShouldNotBeDisplayed(newValue)) {
+                prevUrl = newValue
             }
         }
         didSet {
-            if let prevUrl = prevUrl where (URL?.absoluteString.hasPrefix("about:") ?? false) {
+            if let prevUrl = prevUrl where _urlShouldNotBeDisplayed(URL) {
                 URL = prevUrl
             }
+            print(URL?.absoluteString)
         }
     }
+
     var internalIsLoadingEndedFlag: Bool = false;
     var knownFrameContexts = Set<NSObject>()
     static var containerWebViewForCallbacks = { return ContainerWebView() }()
@@ -308,12 +317,18 @@ extension BraveWebView: UIWebViewDelegate {
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
         #if DEBUG
             if var printedUrl = request.URL?.absoluteString {
-                if printedUrl.characters.count > 100 {
-                    printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(100)) + "..."
+                let maxLen = 100
+                if printedUrl.characters.count > maxLen {
+                    printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
                 }
                 print("webview load: " + printedUrl)
             }
         #endif
+        if request.URL?.absoluteString == "https:/" {
+            // Adblock/TP returns 'https://' as an empty url when blocking. Some arrive here, and they come in without the 2nd slash. Very odd. Don't bother trying to load these obviously
+            return false
+        }
+
         if AboutUtils.isAboutHomeURL(request.URL) {
             URL = request.URL
             progress?.completeProgress()
