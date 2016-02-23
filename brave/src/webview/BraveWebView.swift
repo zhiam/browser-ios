@@ -42,27 +42,7 @@ class BraveWebView: UIWebView {
 
     var estimatedProgress: Double = 0
     var title: String = ""
-
-    // The URL property is used for display (inherent to fx codebase), for GCDWebServer URLs, don't set the URL, as we never want it displayed
-    // TODO: consider moving to display code
-    private var prevUrl: NSURL?
-    private func _urlShouldNotBeDisplayed(url: NSURL?) -> Bool {
-        guard let href = url?.absoluteString else { return true }
-        return href.hasPrefix("about:") || href.hasPrefix(WebServer.sharedInstance.base)
-    }
-    var URL: NSURL? {
-        willSet {
-            if !(_urlShouldNotBeDisplayed(newValue)) {
-                prevUrl = newValue
-            }
-        }
-        didSet {
-            if let prevUrl = prevUrl where _urlShouldNotBeDisplayed(URL) {
-                URL = prevUrl
-            }
-            print(URL?.absoluteString)
-        }
-    }
+    var URL: NSURL?
 
     var internalIsLoadingEndedFlag: Bool = false;
     var knownFrameContexts = Set<NSObject>()
