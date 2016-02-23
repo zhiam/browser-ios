@@ -176,6 +176,15 @@ extension KIFUITestActor {
         return found
     }
 
+    func hasWebViewTitleWithPrefix(text: String) -> Bool {
+        let webView = getWebViewWithKIFHelper()
+        var stepResult = KIFTestStepResult.Wait
+        let title = webView.stringByEvaluatingJavaScriptFromString("document.title")
+        stepResult = title?.startsWith(text) ?? false ? KIFTestStepResult.Success : KIFTestStepResult.Failure
+        runBlock { _ in return stepResult }
+        return stepResult == KIFTestStepResult.Success
+    }
+
     private func getWebViewWithKIFHelper() -> UIWebView {
         let webView = waitForViewWithAccessibilityLabel("Web content") as! UIWebView
 
@@ -186,9 +195,9 @@ extension KIFUITestActor {
 
         var stepResult = KIFTestStepResult.Wait
 
-        var result = webView.stringByEvaluatingJavaScriptFromString("typeof KIFHelper")
+        let result = webView.stringByEvaluatingJavaScriptFromString("typeof KIFHelper")
         if result == "undefined" {
-                let bundle = NSBundle(forClass: NavigationTests.self)
+                let bundle = NSBundle(forClass: SessionRestoreTests.self)
                 let path = bundle.pathForResource("KIFHelper", ofType: "js")!
                 let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding)
                 webView.stringByEvaluatingJavaScriptFromString(source as String)
