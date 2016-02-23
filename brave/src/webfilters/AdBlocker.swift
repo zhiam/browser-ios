@@ -100,7 +100,10 @@ class AdBlocker {
                 return false
         }
 
-        
+        if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
+            return false
+        }
+
         mainDocDomain = stripLocalhostWebServer(mainDocDomain)
 
         if isWhitelistedUrl(url.absoluteString, forMainDocDomain: mainDocDomain) {
