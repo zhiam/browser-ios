@@ -37,6 +37,7 @@ class SessionRestoreTests: KIFTestCase {
 
         tester().tapViewWithAccessibilityIdentifier("url")
         tester().clearTextFromAndThenEnterTextIntoCurrentFirstResponder("\(restoreURL!.absoluteString)\n")
+        tester().waitForTimeInterval(1)
         tester().waitForTappableViewWithAccessibilityLabel("Back")
         tester().tapViewWithAccessibilityLabel("Back")
         tester().waitForTimeInterval(1)
