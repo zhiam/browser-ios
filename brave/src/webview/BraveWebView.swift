@@ -113,10 +113,13 @@ class BraveWebView: UIWebView {
         commonInit()
     }
 
+    func destroy() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        progress = nil
+    }
+
     deinit {
-        if let obs = progress?.loadingObserver {
-            removeObserver(obs, forKeyPath: obs.kvoLoading)
-        }
+        print("webview deinit ")
     }
 
     let internalProgressStartedNotification = "WebProgressStartedNotification"
@@ -301,13 +304,9 @@ extension BraveWebView: UIWebViewDelegate {
                 if printedUrl.characters.count > maxLen {
                     printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
                 }
-                print("webview load: " + printedUrl)
+                //print("webview load: " + printedUrl)
             }
         #endif
-        if request.URL?.absoluteString == "https:/" {
-            // Adblock/TP returns 'https://' as an empty url when blocking. Some arrive here, and they come in without the 2nd slash. Very odd. Don't bother trying to load these obviously
-            return false
-        }
 
         if AboutUtils.isAboutHomeURL(request.URL) {
             URL = request.URL

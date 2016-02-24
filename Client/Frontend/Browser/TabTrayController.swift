@@ -813,6 +813,7 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         for (i, tab) in tabs.enumerate() {
             if tabToRemove === tab {
                 index = i
+                tab.deleteWebView()
                 break
             }
         }

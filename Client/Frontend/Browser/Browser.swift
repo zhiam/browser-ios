@@ -112,8 +112,8 @@ class Browser: NSObject, BrowserWebViewDelegate {
 
     func createWebview() {
         if webView == nil {
-            assert(configuration != nil, "Create webview can only be called once")
 #if !BRAVE
+            assert(configuration != nil, "Create webview can only be called once")
             configuration!.userContentController = WKUserContentController()
             configuration!.preferences = WKPreferences()
             configuration!.preferences.javaScriptCanOpenWindowsAutomatically = false
@@ -175,10 +175,16 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
     }
 
-    deinit {
+    func deleteWebView() {
         if let webView = webView {
             browserDelegate?.browser(self, willDeleteWebView: webView)
+            webView.destroy()
+            self.webView = nil
         }
+    }
+
+    deinit {
+        deleteWebView()
     }
 
     var loading: Bool {

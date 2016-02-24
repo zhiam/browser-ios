@@ -68,6 +68,6 @@ class SessionRestoreTests: KIFTestCase {
     }
 
     override func tearDown() {
-        BrowserUtils.resetToAboutHome(tester())
+        //BrowserUtils.resetToAboutHome(tester())
     }
 }
