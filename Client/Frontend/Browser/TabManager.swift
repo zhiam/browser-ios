@@ -180,12 +180,6 @@ class TabManager : NSObject {
         for delegate in delegates {
             delegate.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous)
         }
-
-        for tab in tabs {
-            if tab != selectedTab {
-                tab.deleteWebView()
-            }
-        }
     }
 
     func expireSnackbars() {
