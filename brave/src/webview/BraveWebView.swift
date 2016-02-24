@@ -73,6 +73,8 @@ class BraveWebView: UIWebView {
     }
 
     private func commonInit() {
+        print("webview init ")
+
         progress = WebViewProgress(parent: self)
 
         delegate = self
@@ -119,7 +121,7 @@ class BraveWebView: UIWebView {
     }
 
     deinit {
-        print("webview deinit ")
+        print("webview deinit \(title) ")
     }
 
     let internalProgressStartedNotification = "WebProgressStartedNotification"

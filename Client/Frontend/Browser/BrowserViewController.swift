@@ -1950,9 +1950,9 @@ extension BrowserViewController: WKNavigationDelegate {
       
         tabManager.expireSnackbars()
 
-        if let url = webView.URL where !ErrorPageHelper.isErrorPageURL(url) && !AboutUtils.isAboutHomeURL(url) {
-            tab.lastExecutedTime = NSDate.now()
+        tab.lastExecutedTime = NSDate.now()
 
+        if let url = webView.URL where !ErrorPageHelper.isErrorPageURL(url) && !AboutUtils.isAboutHomeURL(url) {
             if navigation == nil {
                 log.warning("Implicitly unwrapped optional navigation was nil.")
             }
@@ -2541,12 +2541,10 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         var dialogTitle: String?
         actionSheetController.view.tag = BraveWebView.kContextMenuBlockNavigation
 
-        let maxTabsReached = getApp().tabManager.tabCount >= kMaxTabs
-
         if let url = elements.link, currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString
             let isPrivate = currentTab.isPrivate
-            if !isPrivate && !maxTabsReached {
+            if !isPrivate {
                 let newTabTitle = NSLocalizedString("Open In New Tab", comment: "Context menu item for opening a link in a new tab")
                 let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
                     actionSheetController.view.tag = 0 // BRAVE: clear this to allow navigation

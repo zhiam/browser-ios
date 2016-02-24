@@ -143,6 +143,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
             // Since we now have a web view, lastTitle is no longer useful.
             lastTitle = nil
 #endif
+            lastExecutedTime = NSDate.now()
         }
     }
 
