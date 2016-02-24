@@ -376,6 +376,7 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webViewDidFinishLoad(webView: UIWebView) {
         assert(NSThread.isMainThread())
+        backForwardList.update(webView)
 
         let readyState = stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
 

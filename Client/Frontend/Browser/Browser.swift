@@ -177,6 +177,16 @@ class Browser: NSObject, BrowserWebViewDelegate {
 
     func deleteWebView() {
         if let webView = webView {
+            let currentItem: LegacyBackForwardListItem! = webView.backForwardList.currentItem
+            // Freshly created web views won't have any history entries at all.
+            // If we have no history, abort.
+            if currentItem != nil {
+                let backList = webView.backForwardList.backList ?? []
+                let forwardList = webView.backForwardList.forwardList ?? []
+                let urls = (backList + [currentItem] + forwardList).map { $0.URL }
+                let currentPage = -forwardList.count
+                self.sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: lastExecutedTime ?? NSDate.now())
+            }
             browserDelegate?.browser(self, willDeleteWebView: webView)
             webView.destroy()
             self.webView = nil
