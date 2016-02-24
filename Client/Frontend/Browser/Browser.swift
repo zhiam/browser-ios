@@ -138,9 +138,11 @@ class Browser: NSObject, BrowserWebViewDelegate {
             self.webView = webView
             browserDelegate?.browser(self, didCreateWebView: self.webView!)
 
+#if !BRAVE
             // lastTitle is used only when showing zombie tabs after a session restore.
             // Since we now have a web view, lastTitle is no longer useful.
             lastTitle = nil
+#endif
         }
     }
 
@@ -153,7 +155,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
             #if !BRAVE // no idea why restoring is needed, but it causes the displayed url not to update, which is bad
                 restoring = true
             #endif
-
+            lastTitle = sessionData.currentTitle
             var updatedURLs = [String]()
             for url in sessionData.urls {
                 let updatedURL = WebServer.sharedInstance.updateLocalURL(url)!.absoluteString
@@ -177,6 +179,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
 
     func deleteWebView() {
         if let webView = webView {
+            lastTitle = title
             let currentItem: LegacyBackForwardListItem! = webView.backForwardList.currentItem
             // Freshly created web views won't have any history entries at all.
             // If we have no history, abort.
@@ -185,7 +188,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 let forwardList = webView.backForwardList.forwardList ?? []
                 let urls = (backList + [currentItem] + forwardList).map { $0.URL }
                 let currentPage = -forwardList.count
-                self.sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: lastExecutedTime ?? NSDate.now())
+                self.sessionData = SessionData(currentPage: currentPage, currentTitle: title, urls: urls, lastUsedTime: lastExecutedTime ?? NSDate.now())
             }
             browserDelegate?.browser(self, willDeleteWebView: webView)
             webView.destroy()
@@ -225,12 +228,15 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     var displayTitle: String {
-        if let title = webView?.title {
-            if !title.isEmpty {
-                return title
-            }
+        if let title = webView?.title where !title.isEmpty {
+            return title
         }
-        return displayURL?.absoluteString ?? lastTitle ?? ""
+
+        if let lastTitle = lastTitle where !lastTitle.isEmpty {
+            return lastTitle
+        }
+
+        return displayURL?.absoluteString ?? ""
     }
 
     var currentInitialURL: NSURL? {

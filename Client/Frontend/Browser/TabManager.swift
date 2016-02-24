@@ -180,6 +180,12 @@ class TabManager : NSObject {
         for delegate in delegates {
             delegate.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous)
         }
+
+        for tab in tabs {
+            if tab != selectedTab {
+                tab.deleteWebView()
+            }
+        }
     }
 
     func expireSnackbars() {
@@ -450,7 +456,7 @@ extension TabManager {
                 let forwardList = browser.webView?.backForwardList.forwardList ?? []
                 let urls = (backList + [currentItem] + forwardList).map { $0.URL }
                 let currentPage = -forwardList.count
-                self.sessionData = SessionData(currentPage: currentPage, urls: urls, lastUsedTime: browser.lastExecutedTime ?? NSDate.now())
+                self.sessionData = SessionData(currentPage: currentPage, currentTitle: browser.title, urls: urls, lastUsedTime: browser.lastExecutedTime ?? NSDate.now())
             } else {
                 self.sessionData = browser.sessionData
             }
