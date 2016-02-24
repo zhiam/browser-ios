@@ -86,6 +86,34 @@ class AdBlocker {
         return false
     }
 
+    func setForbesCookie() {
+        let cookieName = "forbes bypass"
+        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        let existing = storage.cookiesForURL(NSURL(string: "http://www.forbes.com")!)
+        if let existing = existing {
+            for c in existing {
+                if c.name == cookieName {
+                    return
+                }
+            }
+        }
+
+        var dict: [String:AnyObject] = [:]
+        dict[NSHTTPCookiePath] = "/"
+        dict[NSHTTPCookieName] = cookieName
+        dict[NSHTTPCookieValue] = "forbes_ab=true; welcomeAd=true; adblock_session=Off; dailyWelcomeCookie=true"
+        dict[NSHTTPCookieDomain] = "www.forbes.com"
+
+        let components: NSDateComponents = NSDateComponents()
+        components.setValue(1, forComponent: NSCalendarUnit.Month);
+        dict[NSHTTPCookieExpires] = NSCalendar.currentCalendar().dateByAddingComponents(components, toDate: NSDate(), options: NSCalendarOptions(rawValue: 0))
+
+        let newCookie = NSHTTPCookie(properties: dict)
+        if let c = newCookie {
+            storage.setCookie(c)
+        }
+    }
+
     func shouldBlock(request: NSURLRequest) -> Bool {
         // synchronize code from this point on.
         objc_sync_enter(self)
@@ -98,6 +126,10 @@ class AdBlocker {
         guard let url = request.URL,
             var mainDocDomain = request.mainDocumentURL?.host else {
                 return false
+        }
+
+        if url.host?.contains("forbes.com") ?? false {
+            setForbesCookie()
         }
 
         if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
