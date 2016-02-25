@@ -59,8 +59,8 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     var slides = [UIImage]()
     var cards = [UIImageView]()
     var introViews = [UIView]()
-    var titleLabels = [UILabel]()
-    var textLabels = [UILabel]()
+    var titleLabels = [InsetLabel]()
+    var textLabels = [InsetLabel]()
 
     var startBrowsingButton: UIButton!
     var introView: UIView?
@@ -134,7 +134,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 slideContainer.addSubview(imageView)
             }
         }
-        imageView?.alpha = 0.1
+        imageView?.alpha = 0.0
 
         scrollView.addSubview(slideContainer)
         scrollView.snp_makeConstraints { (make) -> Void in
@@ -168,6 +168,8 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         addCard(IntroViewControllerUX.CardTextPage4, title: IntroViewControllerUX.CardTitlePage4)
         addCard(IntroViewControllerUX.CardTextPage5, title: IntroViewControllerUX.CardTitlePage5)
 
+        titleLabels.last?.textAlignment = .Center
+        titleLabels.last?.leftInset = self.view.frame.width <= 320 ? -20 : 20
         // Add all the cards to the view, make them invisible with zero alpha
 
         for introView in introViews {
@@ -189,6 +191,12 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         setActiveIntroView(introViews[0], forPage: 0)
 
         setupDynamicFonts()
+    }
+
+    func setupTextOnButton() {
+        startBrowsingButton.contentHorizontalAlignment = .Left
+        startBrowsingButton.contentVerticalAlignment = .Top
+        startBrowsingButton.contentEdgeInsets = UIEdgeInsetsMake(20, 20, 0, 0);
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -295,6 +303,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
+    var lionHead: UIImageView?
     private func setActiveIntroView(newIntroView: UIView, forPage page: Int) {
         if introView != newIntroView {
             UIView.animateWithDuration(IntroViewControllerUX.FadeDuration, animations: { () -> Void in
@@ -310,21 +319,34 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         }
 
         if page == bgColors.count - 1 {
-            delay(0) {
-                UIView.animateWithDuration(0.2) {
-                    if let v = self.slideContainer.subviews.last {
-                        v.alpha = 1.0
-                        v.transform = CGAffineTransformMakeTranslation(0, 40)
-                    }
-                }
+            startBrowsingButton.contentHorizontalAlignment = .Center
+            startBrowsingButton.contentVerticalAlignment = .Center
+            startBrowsingButton.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
+
+            if lionHead == nil {
+                lionHead = UIImageView(image: UIImage(named: "lionhead"))
             }
+            self.view.addSubview(lionHead!)
+            lionHead!.snp_remakeConstraints {
+                make in
+                make.centerX.equalTo(self.view)
+                make.centerY.equalTo(introView!.snp_top)
+            }
+//            delay(0) {
+//                UIView.animateWithDuration(0.2) {
+//                    if let v = self.slideContainer.subviews.last {
+//                        v.alpha = 10
+//                        v.transform = CGAffineTransformMakeTranslation(0, 40)
+//                    }
+//                }
+//            }
             guard let arrow = arrow else { return }
             pageControl.superview?.addSubview(arrow)
             arrow.alpha = 0
             arrow.snp_remakeConstraints {
                 make in
                 make.bottom.equalTo(pageControl)
-                make.centerX.equalTo(pageControl)
+                make.centerX.equalTo(arrow.superview!)
             }
 
             UIView.animateWithDuration(0.2) {
@@ -332,6 +354,11 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 self.pageControl.alpha = 0
             }
         } else {
+            if lionHead?.superview != nil {
+                lionHead?.removeFromSuperview()
+            }
+
+            setupTextOnButton()
             if let v = self.slideContainer.subviews.last {
                 v.alpha = 0
                 v.transform = CGAffineTransformMakeTranslation(0, 0)
@@ -360,7 +387,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     }
 
     private func addLabelsToIntroView(introView: UIView, text: String, title: String = "") {
-        let label = UILabel()
+        let label = InsetLabel()
 
         label.numberOfLines = 0
         label.attributedText = attributedStringForLabel(text)
@@ -379,7 +406,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         }
 
         if !title.isEmpty {
-            let titleLabel = UILabel()
+            let titleLabel = InsetLabel()
             if (title == IntroViewControllerUX.CardTitlePage1) {
                 titleLabel.textColor = BraveUX.BraveButtonMessageInUrlBarColor
             } else if (title == IntroViewControllerUX.CardTitlePage5) {
