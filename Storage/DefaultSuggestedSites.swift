@@ -50,7 +50,7 @@ public class DefaultSuggestedSites {
         SuggestedSiteData(
             url: "https://www.brave.com",
             bgColor: "0xf37c00",
-            imageUrl: "asset://suggestedsites_bravesupport",
+            imageUrl: "asset://suggestedsites_brave",
             faviconUrl: "asset://braveLogo",
             trackingId: 631,
             title: NSLocalizedString("", comment: "Tile for Brave")
