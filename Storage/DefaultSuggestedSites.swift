@@ -53,7 +53,7 @@ public class DefaultSuggestedSites {
             imageUrl: "asset://suggestedsites_bravesupport",
             faviconUrl: "asset://braveLogo",
             trackingId: 631,
-            title: NSLocalizedString("Brave Help and Support", comment: "Tile title for App Help")
+            title: NSLocalizedString("", comment: "Tile for Brave")
         )
       ]
      ]
