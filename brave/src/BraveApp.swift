@@ -139,6 +139,7 @@ class BraveApp {
     @objc func memoryWarning(_: NSNotification) {
         NSURLCache.sharedURLCache().memoryCapacity = 0
         BraveApp.setupCacheDefaults()
+        getApp().tabManager.memoryWarning()
     }
 
     @objc func didEnterBackground(_: NSNotification) {

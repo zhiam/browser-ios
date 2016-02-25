@@ -233,6 +233,18 @@ class TabManager : NSObject {
         }
     }
 
+    func memoryWarning() {
+        for browser in tabs {
+            if browser.webView == nil {
+                continue
+            }
+
+            if selectedTab != browser {
+                browser.deleteWebView()
+            }
+        }
+    }
+
     func limitInMemoryTabs() {
         let maxInMemTabs = BraveUX.MaxTabsInMemory
         if tabs.count < maxInMemTabs {
