@@ -140,12 +140,16 @@ class BraveWebView: UIWebView {
     }
 
     func loadingCompleted() {
+        if internalIsLoadingEndedFlag {
+            return
+        }
+        internalIsLoadingEndedFlag = true
+
         if let nd = navigationDelegate {
             BraveWebView.containerWebViewForCallbacks.legacyWebView = self
             nd.webView?(BraveWebView.containerWebViewForCallbacks, didFinishNavigation: nullWKNavigation)
         }
 
-        internalIsLoadingEndedFlag = true
         configuration.userContentController.injectJsIntoPage()
         NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil)
         LegacyUserContentController.injectJsIntoAllFrames(self, script: "document.body.style.webkitTouchCallout='none'")
