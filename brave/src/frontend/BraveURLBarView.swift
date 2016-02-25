@@ -68,13 +68,11 @@ class BraveURLBarView : URLBarView {
         theme = Theme()
         theme.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor
         theme.textColor = BraveUX.LocationBarEditModeTextColor
-        theme.highlightColor = BraveUX.AutocompleteTextFieldHighlightColor
         ToolbarTextField.Themes[Theme.NormalMode] = theme
 
         theme = Theme()
         theme.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor_Private
         theme.textColor = BraveUX.LocationBarEditModeTextColor_Private
-        theme.highlightColor = BraveUX.AutocompleteTextFieldHighlightColor
         ToolbarTextField.Themes[Theme.PrivateMode] = theme
 
         theme = Theme()
