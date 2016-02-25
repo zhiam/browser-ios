@@ -192,7 +192,7 @@ class BrowserLocationView: UIView {
             }
 
             if readerModeButton.hidden {
-                make.trailing.greaterThanOrEqualTo(self).offset(-BrowserLocationViewUX.LocationContentInset)
+                make.trailing.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset)
             } else {
                 make.trailing.equalTo(self.readerModeButton.snp_leading)
             }
