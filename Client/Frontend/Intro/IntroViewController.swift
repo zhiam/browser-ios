@@ -169,7 +169,9 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         addCard(IntroViewControllerUX.CardTextPage5, title: IntroViewControllerUX.CardTitlePage5)
 
         titleLabels.last?.textAlignment = .Center
-        titleLabels.last?.leftInset = self.view.frame.width <= 320 ? -20 : 20
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            titleLabels.last?.leftInset = self.view.frame.width <= 320 ? -20 : 20
+        }
         // Add all the cards to the view, make them invisible with zero alpha
 
         for introView in introViews {
@@ -345,7 +347,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
             arrow.alpha = 0
             arrow.snp_remakeConstraints {
                 make in
-                make.bottom.equalTo(pageControl)
+                make.bottom.equalTo(pageControl).inset(15)
                 make.centerX.equalTo(arrow.superview!)
             }
 
