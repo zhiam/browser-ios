@@ -13,7 +13,7 @@ class HttpsEverywhere {
     lazy var rulesetsLoader: NetworkDataFileLoader = {
         let rulesetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/rulesets.sqlite")!
         let dataFile = "https-ruleset-\(dataVersion).sqlite"
-        let loader = NetworkDataFileLoader(url: rulesetsDataUrl, file: dataFile, localDirName: "https-everywhere-data")
+        let loader = NetworkDataFileLoader(url: rulesetsDataUrl, file: dataFile, localDirName: "https-everywhere-data-rulesets")
         loader.delegate = self
         return loader
     }()
@@ -21,7 +21,7 @@ class HttpsEverywhere {
     lazy var targetsLoader: NetworkDataFileLoader = {
         let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse-targets.json")!
         let dataFile = "https-targets-\(dataVersion).json"
-        let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data")
+        let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data-targets")
         loader.delegate = self
         return loader
     }()
@@ -229,6 +229,24 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
 #endif
     }
 
+    private func checkBothLoadsAreComplete() {
+        delay(0) { // runs the closure on main thread
+            self.runtimeDebugOnlyTestVerifyResourcesLoaded()
+
+            if self.domainToIdMapping != nil && self.db != nil {
+                NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
+                self.runtimeDebugOnlyTestDomainsRedirected()
+            }
+        }
+    }
+
+    private func finishedParsingJson(json: [String:[Int]]) {
+        delay(0) {
+            self.domainToIdMapping = json
+            self.checkBothLoadsAreComplete()
+        }
+    }
+
     func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
         // synchronize code from this point on.
         objc_sync_enter(self)
@@ -237,23 +255,17 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         guard let data = data else { return }
 
         if loader === targetsLoader {
-            do {
-                guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:[Int]] else { return }
-                domainToIdMapping = json
-            } catch {
-                print("Failed to load targetsLoader: \(error)")
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                do {
+                    guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:[Int]] else { return }
+                    self.finishedParsingJson(json)
+                } catch {
+                    print("Failed to load targetsLoader: \(error)")
+                }
             }
         } else if loader === rulesetsLoader {
             loadSqlDb()
-        }
-
-        delay(0) { // runs the closure on main thread
-            self.runtimeDebugOnlyTestVerifyResourcesLoaded()
-
-            if self.domainToIdMapping != nil && self.db != nil {
-                NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
-                self.runtimeDebugOnlyTestDomainsRedirected()
-            }
+            checkBothLoadsAreComplete()
         }
     }
 
