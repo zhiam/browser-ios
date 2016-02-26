@@ -224,6 +224,14 @@ class BraveURLBarView : URLBarView {
         bookmarkButton.snp_removeConstraints()
         curveShape.snp_removeConstraints()
 
+        func pinLeftPanelButtonToLeft() {
+            leftSidePanelButton.snp_remakeConstraints { make in
+                make.left.equalTo(self)
+                make.centerY.equalTo(self)
+                make.size.equalTo(UIConstants.ToolbarHeight)
+            }
+        }
+
         if inOverlayMode {
             // In overlay mode, we always show the location view full width
             self.locationContainer.snp_remakeConstraints { make in
@@ -232,11 +240,7 @@ class BraveURLBarView : URLBarView {
                 make.height.equalTo(URLBarViewUX.LocationHeight)
                 make.centerY.equalTo(self)
             }
-            leftSidePanelButton.snp_remakeConstraints { make in
-                make.left.equalTo(self)
-                make.centerY.equalTo(self)
-                make.size.lessThanOrEqualTo(UIConstants.ToolbarHeight)
-            }
+            pinLeftPanelButtonToLeft()
         } else {
             self.locationContainer.snp_remakeConstraints { make in
                 if self.toolbarIsShowing {
@@ -252,16 +256,14 @@ class BraveURLBarView : URLBarView {
                 make.centerY.equalTo(self)
             }
 
-            leftSidePanelButton.snp_remakeConstraints { make in
-                if self.toolbarIsShowing {
+            if self.toolbarIsShowing {
+                leftSidePanelButton.snp_remakeConstraints { make in
                     make.left.equalTo(self.forwardButton.snp_right)
                     make.centerY.equalTo(self)
                     make.size.equalTo(UIConstants.ToolbarHeight)
-                } else {
-                    make.left.equalTo(self).inset(8)
-                    make.centerY.equalTo(self)
-                    make.size.lessThanOrEqualTo(UIConstants.ToolbarHeight)
                 }
+            } else {
+                pinLeftPanelButtonToLeft()
             }
 
             braveButton.snp_remakeConstraints { make in
