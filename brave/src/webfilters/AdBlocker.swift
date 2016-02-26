@@ -114,6 +114,35 @@ class AdBlocker {
         }
     }
 
+    class RedirectLoopGuard {
+        let timeWindow: NSTimeInterval // seconds
+        let maxRedirects: Int
+        var startTime = NSDate()
+        var redirects = 0
+
+        init(timeWindow: NSTimeInterval, maxRedirects: Int) {
+            self.timeWindow = timeWindow
+            self.maxRedirects = maxRedirects
+        }
+
+        func isLooping() -> Bool {
+            return redirects > maxRedirects
+        }
+
+        func increment() {
+            let time = NSDate()
+            if time.timeIntervalSinceDate(startTime) > timeWindow {
+                startTime = time
+                redirects = 0
+            }
+            redirects++
+        }
+    }
+
+    // In the valid case, 4-5x we see 'forbes/welcome' page in succession (URLProtocol can call more than once for an URL, this is well documented)
+    // Set the window as 10x in 10sec, after that stop forwarding the page.
+    var forbesRedirectGuard = RedirectLoopGuard(timeWindow: 10.0, maxRedirects: 10)
+
     func shouldBlock(request: NSURLRequest) -> Bool {
         // synchronize code from this point on.
         objc_sync_enter(self)
@@ -130,10 +159,14 @@ class AdBlocker {
 
         if url.host?.contains("forbes.com") ?? false {
             setForbesCookie()
+
             if url.absoluteString.contains("/forbes/welcome") {
-                delay(0.5) {
-                    /* For some reason, even with the cookie set, I can't get past the welcome page, until I manually load a page on forbes. So if a do a google search for a subpage on forbes, I can click on that and get to forbes, and from that point on, I no longer see the welcome page. This hack seems to work perfectly for duplicating that behaviour. */
-                    BraveApp.getCurrentWebView()?.loadRequest(NSURLRequest(URL: NSURL(string: "http://www.forbes.com")!))
+                forbesRedirectGuard.increment()
+                if !forbesRedirectGuard.isLooping() {
+                    delay(0.5) {
+                        /* For some reason, even with the cookie set, I can't get past the welcome page, until I manually load a page on forbes. So if a do a google search for a subpage on forbes, I can click on that and get to forbes, and from that point on, I no longer see the welcome page. This hack seems to work perfectly for duplicating that behaviour. */
+                        BraveApp.getCurrentWebView()?.loadRequest(NSURLRequest(URL: NSURL(string: "http://www.forbes.com")!))
+                    }
                 }
             }
         }
