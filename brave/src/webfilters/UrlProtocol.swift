@@ -95,13 +95,37 @@ class URLProtocol: NSURLProtocol {
         client?.URLProtocolDidFinishLoading(self)
     }
 
+    static var blankPixel: NSData? = {
+        let rect = CGRectMake(0, 0, 1, 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let c = UIGraphicsGetCurrentContext()
+        CGContextSetFillColorWithColor(c, UIColor.clearColor().CGColor)
+        CGContextFillRect(c, rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return UIImageJPEGRepresentation(image, 0.4)
+    }()
+
+    func returnBlankPixel() {
+        guard let url = request.URL, pixel = URLProtocol.blankPixel else { return }
+        let response = NSURLResponse(URL: url, MIMEType: "image/jpeg", expectedContentLength: pixel.length, textEncodingName: nil)
+        client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
+        client?.URLProtocol(self, didLoadData: pixel)
+        client?.URLProtocolDidFinishLoading(self)
+    }
+
     override func startLoading() {
         let newRequest = URLProtocol.cloneRequest(request)
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
         self.connection = NSURLConnection(request: newRequest, delegate: self)
 
         if request.URL?.absoluteString.endsWith(URLProtocol.suffixBlockedUrl) ?? false {
-            returnEmptyResponse()
+            if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
+                // sites such as macworld.com need this, or links are not clickable
+                returnBlankPixel()
+            } else {
+                returnEmptyResponse()
+            }
         }
     }
 
