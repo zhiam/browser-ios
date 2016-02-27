@@ -210,6 +210,10 @@ class AdBlocker {
 }
 
 extension AdBlocker: NetworkDataFileLoaderDelegate {
+    func fileLoader(loader: NetworkDataFileLoader, convertDataBeforeWriting data: NSData, etag: String?) {
+        loader.finishWritingToDisk(data, etag: etag)
+    }
+
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?) {
         AdBlockCppFilter.singleton().setAdblockDataFile(data)
     }

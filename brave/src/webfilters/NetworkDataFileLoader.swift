@@ -7,6 +7,7 @@ import Alamofire
 protocol NetworkDataFileLoaderDelegate: class {
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?)
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool
+    func fileLoader(_: NetworkDataFileLoader, convertDataBeforeWriting: NSData, etag: String?)
 }
 
 class NetworkDataFileLoader {
@@ -57,6 +58,13 @@ class NetworkDataFileLoader {
     }
 
     func writeData(data: NSData, etag: String?) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+            guard let delegate = self.delegate else { return }
+            delegate.fileLoader(self, convertDataBeforeWriting: data, etag: etag)
+        }
+    }
+
+    func finishWritingToDisk(data: NSData, etag: String?) {
         let (dir, wasCreated) = createAndGetDataDirPath()
         // If dir existed already, clear out the old one
         if !wasCreated {
@@ -79,6 +87,8 @@ class NetworkDataFileLoader {
                 BraveApp.showErrorAlert(title: "Adblock error", error: "Failed to write data to \(etagPath)")
             }
         }
+
+        delegate?.fileLoader(self, setDataFile: data)
     }
 
     func readData() -> NSData? {
@@ -105,7 +115,6 @@ class NetworkDataFileLoader {
                 if let data = data, response = response as? NSHTTPURLResponse {
                     let etag = response.allHeaderFields["Etag"] as? String
                     self.writeData(data, etag: etag)
-                    delegate.fileLoader(self, setDataFile: data)
                 }
             }
         }

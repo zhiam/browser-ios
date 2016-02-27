@@ -20,7 +20,7 @@ class HttpsEverywhere {
 
     lazy var targetsLoader: NetworkDataFileLoader = {
         let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse-targets.json")!
-        let dataFile = "https-targets-\(dataVersion).json"
+        let dataFile = "https-targets-\(dataVersion).json_preparsed"
         let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data-targets")
         loader.delegate = self
         return loader
@@ -240,11 +240,33 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         }
     }
 
-    private func finishedParsingJson(json: [String:[Int]]) {
+    private func finishedUnarchivingPreparsedJson(json: AnyObject?) {
         delay(0) {
+            guard let json = json as? [String:[Int]] else { return }
             self.domainToIdMapping = json
             self.checkBothLoadsAreComplete()
         }
+    }
+
+    func fileLoader(loader: NetworkDataFileLoader, convertDataBeforeWriting data: NSData, etag: String?) {
+        if loader !== targetsLoader {
+            loader.finishWritingToDisk(data, etag: etag)
+            return
+        }
+
+        let start = NSDate()
+        do {
+            guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [String:[Int]] else { return }
+            let mutableData = NSMutableData()
+            let archiver = NSKeyedArchiver(forWritingWithMutableData: mutableData)
+            archiver.encodeObject(json, forKey: "httpse-json")
+            archiver.finishEncoding()
+            loader.finishWritingToDisk(mutableData, etag: etag)
+        } catch {
+            print("Failed to load targetsLoader: \(error) \(NSString(data: data, encoding: NSUTF8StringEncoding)))")
+        }
+        let end = NSDate()
+        print("»»»»» HTTPS-E convert to archive time: \(end.timeIntervalSinceDate(start))")
     }
 
     func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
@@ -255,13 +277,16 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         guard let data = data else { return }
 
         if loader === targetsLoader {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                do {
-                    guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:[Int]] else { return }
-                    self.finishedParsingJson(json)
-                } catch {
-                    print("Failed to load targetsLoader: \(error)")
-                }
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+                let start = NSDate()
+
+                let archiver = NSKeyedUnarchiver(forReadingWithData: data)
+                let jsonAsDict = archiver.decodeObjectForKey("httpse-json")
+                archiver.finishDecoding()
+                self.finishedUnarchivingPreparsedJson(jsonAsDict)
+
+                let end = NSDate()
+                print("»»»»» HTTPS-E unarchive time: \(end.timeIntervalSinceDate(start))")
             }
         } else if loader === rulesetsLoader {
             loadSqlDb()
