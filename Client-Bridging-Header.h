@@ -18,4 +18,5 @@
 #import "TrackingProtectionCpp.h"
 #import "UIView+ShowBorders.h"
 #import "ODRefreshControl.h"
+#import "FastCoder.h"
 #endif
