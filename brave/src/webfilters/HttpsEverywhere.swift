@@ -8,7 +8,7 @@ class HttpsEverywhere {
     static let dataVersion = "5.1.2"
     var isEnabled = true
     var db: Connection?
-    var domainToIdMapping: [String: [Int]]?
+    var domainToIdMapping: NSDictionary?
 
     lazy var rulesetsLoader: NetworkDataFileLoader = {
         let rulesetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/rulesets.sqlite")!
@@ -127,7 +127,7 @@ class HttpsEverywhere {
 
     private func mapExactDomainToIdForLookup(domain: String) -> Int? {
         guard let domainToIdMapping = domainToIdMapping else { return nil }
-        if let val = domainToIdMapping[domain] {
+        if let val = domainToIdMapping[domain] as? [Int] {
             return val[0]
         }
         return nil
@@ -229,16 +229,13 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
 #endif
     }
 
-    private func runtimeDebugOnlyTestFastCoder(json: [String:[Int]], fastCodedData: NSData) {
+    private func runtimeDebugOnlyTestFastCoder(json: NSDictionary, fastCodedData: NSData) {
 #if DEBUG
         // delay a bit to let loading complete
         delay(2) { dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-            func comp(lhs: [String: AnyObject], rhs: [String: AnyObject] ) -> Bool {
-                return NSDictionary(dictionary: lhs).isEqualToDictionary(rhs)
-            }
-            let obj = FastCoder.objectWithData(fastCodedData) as? [String:[Int]]
+            let obj = FastCoder.objectWithData(fastCodedData) as? NSDictionary
             assert(obj != nil, "Fastcoder validation failed, obj nil")
-            assert(comp(obj!, rhs: json), "Fastcoder validation failed, obj mismatch")
+            assert(NSDictionary(dictionary: obj!).isEqualToDictionary(json as [NSObject : AnyObject]), "Fastcoder validation failed, obj mismatch")
         }}
 #endif
     }
@@ -254,9 +251,8 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         }
     }
 
-    private func finishedUnarchivingPreparsedJson(json: AnyObject?) {
+    private func finishedUnarchivingPreparsedJson(json: NSDictionary) {
         delay(0) { // post to main thread
-            guard let json = json as? [String:[Int]] else { return }
             self.domainToIdMapping = json
             self.checkBothLoadsAreComplete()
         }
@@ -271,10 +267,10 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         do {
             let start = NSDate()
 
-            guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:[Int]] else { return }
+            guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary else { return }
             let fastCodedData = FastCoder.dataWithRootObject(json)
 
-            print("»»»»» HTTPS-E convert to archive time: \(NSDate().timeIntervalSinceDate(start))")
+            NSLog("»»»»» HTTPS-E convert to archive time: \(NSDate().timeIntervalSinceDate(start))")
 
             loader.finishWritingToDisk(fastCodedData, etag: etag)
 
@@ -295,10 +291,10 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
                 let start = NSDate()
 
-                let obj = FastCoder.objectWithData(data)
+                guard let obj = FastCoder.objectWithData(data) as? NSDictionary else { return }
                 self.finishedUnarchivingPreparsedJson(obj)
 
-                print("»»»»» HTTPS-E unarchive time: \(NSDate().timeIntervalSinceDate(start))")
+                NSLog("»»»»» HTTPS-E unarchive time: \(NSDate().timeIntervalSinceDate(start))")
             }
         } else if loader === rulesetsLoader {
             loadSqlDb()
