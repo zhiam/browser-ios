@@ -20,7 +20,7 @@ class HttpsEverywhere {
 
     lazy var targetsLoader: NetworkDataFileLoader = {
         let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse-targets.json")!
-        let dataFile = "https-targets-\(dataVersion).json"
+        let dataFile = "https-targets-\(dataVersion).json_fastcoded"
         let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data-targets")
         loader.delegate = self
         return loader
@@ -229,8 +229,22 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
 #endif
     }
 
+    private func runtimeDebugOnlyTestFastCoder(json: [String:[Int]], fastCodedData: NSData) {
+#if DEBUG
+        // delay a bit to let loading complete
+        delay(2) { dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+            func comp(lhs: [String: AnyObject], rhs: [String: AnyObject] ) -> Bool {
+                return NSDictionary(dictionary: lhs).isEqualToDictionary(rhs)
+            }
+            let obj = FastCoder.objectWithData(fastCodedData) as? [String:[Int]]
+            assert(obj != nil, "Fastcoder validation failed, obj nil")
+            assert(comp(obj!, rhs: json), "Fastcoder validation failed, obj mismatch")
+        }}
+#endif
+    }
+
     private func checkBothLoadsAreComplete() {
-        delay(0) { // runs the closure on main thread
+        delay(0) { // post to main thread
             self.runtimeDebugOnlyTestVerifyResourcesLoaded()
 
             if self.domainToIdMapping != nil && self.db != nil {
@@ -240,10 +254,33 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         }
     }
 
-    private func finishedParsingJson(json: [String:[Int]]) {
-        delay(0) {
+    private func finishedUnarchivingPreparsedJson(json: AnyObject?) {
+        delay(0) { // post to main thread
+            guard let json = json as? [String:[Int]] else { return }
             self.domainToIdMapping = json
             self.checkBothLoadsAreComplete()
+        }
+    }
+
+    func fileLoader(loader: NetworkDataFileLoader, convertDataBeforeWriting data: NSData, etag: String?) {
+        if loader !== targetsLoader {
+            loader.finishWritingToDisk(data, etag: etag)
+            return
+        }
+
+        do {
+            let start = NSDate()
+
+            guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:[Int]] else { return }
+            let fastCodedData = FastCoder.dataWithRootObject(json)
+
+            print("»»»»» HTTPS-E convert to archive time: \(NSDate().timeIntervalSinceDate(start))")
+
+            loader.finishWritingToDisk(fastCodedData, etag: etag)
+
+            runtimeDebugOnlyTestFastCoder(json, fastCodedData: fastCodedData)
+        } catch {
+            print("Failed to load targetsLoader: \(error) \(NSString(data: data, encoding: NSUTF8StringEncoding)))")
         }
     }
 
@@ -255,13 +292,13 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         guard let data = data else { return }
 
         if loader === targetsLoader {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                do {
-                    guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:[Int]] else { return }
-                    self.finishedParsingJson(json)
-                } catch {
-                    print("Failed to load targetsLoader: \(error)")
-                }
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+                let start = NSDate()
+
+                let obj = FastCoder.objectWithData(data)
+                self.finishedUnarchivingPreparsedJson(obj)
+
+                print("»»»»» HTTPS-E unarchive time: \(NSDate().timeIntervalSinceDate(start))")
             }
         } else if loader === rulesetsLoader {
             loadSqlDb()
@@ -273,4 +310,3 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
         return false
     }
 }
-
