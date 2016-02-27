@@ -57,13 +57,6 @@ class NetworkDataFileLoader {
         return NSString(data: data, encoding: NSUTF8StringEncoding) as? String
     }
 
-    func writeData(data: NSData, etag: String?) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-            guard let delegate = self.delegate else { return }
-            delegate.fileLoader(self, convertDataBeforeWriting: data, etag: etag)
-        }
-    }
-
     func finishWritingToDisk(data: NSData, etag: String?) {
         let (dir, wasCreated) = createAndGetDataDirPath()
         // If dir existed already, clear out the old one
@@ -114,7 +107,7 @@ class NetworkDataFileLoader {
             else {
                 if let data = data, response = response as? NSHTTPURLResponse {
                     let etag = response.allHeaderFields["Etag"] as? String
-                    self.writeData(data, etag: etag)
+                    self.delegate?.fileLoader(self, convertDataBeforeWriting: data, etag: etag)
                 }
             }
         }
