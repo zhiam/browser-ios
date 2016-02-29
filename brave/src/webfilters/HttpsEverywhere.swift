@@ -85,17 +85,17 @@ class HttpsEverywhere {
         for row in db.prepare(query) {
             guard let data = row.get(contents).utf8EncodedData else { continue }
             do {
-                let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as AnyObject
-                guard let ruleset = json["ruleset"] as? NSDictionary,
-                            rules = ruleset["rule"] as? NSArray else {
+                guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary,
+                    ruleset = json["ruleset"] as? NSDictionary,
+                    rules = ruleset["rule"] as? NSArray else {
                     return nil
                 }
-                if let props = ruleset["$"] {
-                    // Sorry: the test target won't compile without these extra (unecessary) casts (possibly http://www.openradar.me/22836823)
-                    if let off = props["default_off"] as? AnyObject? , _ = off {
+
+                if let props = ruleset["$"] as? [String:AnyObject] {
+                    if props.indexForKey("default_off") != nil {
                         return nil
                     }
-                    if let platform = props["platform"] as? AnyObject?, _ = platform {
+                    if props.indexForKey("platform") != nil {
                         return nil
                     }
                 }
@@ -120,7 +120,6 @@ class HttpsEverywhere {
             } catch {
                 print("Failed to load targetsLoader: \(error)")
             }
-
         }
         return nil
     }
