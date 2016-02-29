@@ -1,6 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #import "AdBlockCppFilter.h"
+#import <UIKit/UIKit.h>
 #include "ABPFilterParser.h"
 
 static ABPFilterParser parser;
@@ -26,12 +27,24 @@ static ABPFilterParser parser;
     }
 }
 
+//extern int vm_pressure_monitor(int wait_for_pressure, int nsecs_monitored, uint32_t *pages_reclaimed);
+
 + (instancetype)singleton
 {
     static AdBlockCppFilter *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[self alloc] init];
+
+        //vm_pressure_monitor(1,1, 0);
+
+        dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MEMORYPRESSURE, 0, DISPATCH_MEMORYPRESSURE_NORMAL|DISPATCH_MEMORYPRESSURE_WARN|DISPATCH_MEMORYPRESSURE_CRITICAL, dispatch_get_main_queue());
+        dispatch_source_set_event_handler(source, ^{
+            dispatch_source_memorypressure_flags_t pressureLevel = dispatch_source_get_data(source);
+            [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidReceiveMemoryWarningNotification object:nil userInfo:@{@"pressure": @(pressureLevel)}];
+        });
+        dispatch_resume(source);
+
     });
     return instance;
 }

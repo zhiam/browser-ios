@@ -5,6 +5,25 @@ import Shared
 
 private let _singleton = AdBlocker()
 
+func reportMemory() {
+    let name = mach_task_self_
+    let flavor = task_flavor_t(TASK_BASIC_INFO)
+    let basicInfo = task_basic_info()
+    var size: mach_msg_type_number_t = mach_msg_type_number_t(sizeofValue(basicInfo))
+    let pointerOfBasicInfo = UnsafeMutablePointer<task_basic_info>.alloc(1)
+
+    let kerr: kern_return_t = task_info(name, flavor, UnsafeMutablePointer(pointerOfBasicInfo), &size)
+    let info = pointerOfBasicInfo.move()
+    pointerOfBasicInfo.dealloc(1)
+
+    if kerr == KERN_SUCCESS {
+        print("Memory in use (in bytes): \(info.resident_size)")
+    } else {
+        print("error with task info(): \(mach_error_string(kerr))")
+    }
+}
+
+
 // Store the last 500 URLs checked
 // Store 10 x 50 URLs in the array called timeOrderedCacheChunks. This is a FIFO array,
 // Throw out a 50 URL chunk when the array is full
@@ -151,7 +170,7 @@ class AdBlocker {
         if !isEnabled {
             return false
         }
-
+reportMemory()
         guard let url = request.URL,
             var mainDocDomain = request.mainDocumentURL?.host else {
                 return false

@@ -243,6 +243,9 @@ class TabManager : NSObject {
                 browser.deleteWebView()
             }
         }
+        if let tab = selectedTab {
+            tab.webView?.stopLoading()
+        }
     }
 
     func limitInMemoryTabs() {

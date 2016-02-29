@@ -57,8 +57,9 @@ class BraveApp {
     }
 
     class func setupCacheDefaults() {
-        NSURLCache.sharedURLCache().memoryCapacity = 6 * 1024 * 1024; // 6 MB
+        NSURLCache.sharedURLCache().memoryCapacity = 4 * 1024 * 1024; // 6 MB
         NSURLCache.sharedURLCache().diskCapacity = 40 * 1024 * 1024;
+        
     }
 
     // Be aware: the Prefs object has not been created yet
@@ -138,8 +139,10 @@ class BraveApp {
 
     @objc func memoryWarning(_: NSNotification) {
         NSURLCache.sharedURLCache().memoryCapacity = 0
-        BraveApp.setupCacheDefaults()
         getApp().tabManager.memoryWarning()
+        delay(10) {
+            BraveApp.setupCacheDefaults()
+        }
     }
 
     @objc func didEnterBackground(_: NSNotification) {
