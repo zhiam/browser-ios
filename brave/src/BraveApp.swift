@@ -117,7 +117,7 @@ class BraveApp {
 
         AdBlocker.singleton.networkFileLoader.loadData()
         TrackingProtection.singleton.networkFileLoader.loadData()
-        HttpsEverywhere.singleton.loadData()
+        HttpsEverywhere.singleton.networkFileLoader.loadData()
 
         #if !TEST
             BraveScrollController.hideShowToolbarEnabled = BraveApp.getPref(BraveUX.PrefKeyIsToolbarHidingEnabled) as? Bool ?? true

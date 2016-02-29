@@ -1,27 +1,19 @@
-import SQLite
+/* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 private let _singleton = HttpsEverywhere()
 
 class HttpsEverywhere {
     static let kNotificationDataLoaded = "kNotificationDataLoaded"
     static let prefKeyHttpsEverywhereOn = "braveHttpsEverywhere"
-    static let dataVersion = "5.1.2"
+    static let dataVersion = "5.1.3"
     var isEnabled = true
-    var db: Connection?
-    var domainToIdMapping: NSDictionary?
+    var httpseTargets: NSDictionary?
+    var httpseRulesetStrings: NSArray?
 
-    lazy var rulesetsLoader: NetworkDataFileLoader = {
-        let rulesetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/rulesets.sqlite")!
-        let dataFile = "https-ruleset-\(dataVersion).sqlite"
-        let loader = NetworkDataFileLoader(url: rulesetsDataUrl, file: dataFile, localDirName: "https-everywhere-data-rulesets")
-        loader.delegate = self
-        return loader
-    }()
-
-    lazy var targetsLoader: NetworkDataFileLoader = {
-        let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse-targets.json")!
-        let dataFile = "https-targets-\(dataVersion).json_fastcoded"
-        let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data-targets")
+    lazy var networkFileLoader: NetworkDataFileLoader = {
+        let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.json")!
+        let dataFile = "httpse-\(dataVersion).json_fastcoded"
+        let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data")
         loader.delegate = self
         return loader
     }()
@@ -48,45 +40,14 @@ class HttpsEverywhere {
         updateEnabledState()
     }
 
-    func loadSqlDb() {
-        // synchronize code from this point on.
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-
-        guard let path = rulesetsLoader.pathToExistingDataOnDisk() else { return }
-        do {
-            db = try Connection(path)
-        }  catch {
-            print("\(error)")
-        }
-    }
-
-    func loadData() {
-        // synchronize code from this point on.
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-
-        if let _ = rulesetsLoader.pathToExistingDataOnDisk() {
-          loadSqlDb()
-        } else {
-            rulesetsLoader.loadData()
-        }
-        targetsLoader.loadData()
-    }
-
     private func applyRedirectRuleForIds(ids: [Int], schemeAndHost: String) -> String? {
-        guard let db = db else { return nil }
-        let table = Table("rulesets")
-        let contents = Expression<String>("contents")
-        let id = Expression<Int>("id")
+        guard let httpseRulesetStrings = httpseRulesetStrings else { return nil }
 
-        let query = table.select(contents).filter(ids.contains(id))
-
-        for row in db.prepare(query) {
-            guard let data = row.get(contents).utf8EncodedData else { continue }
+        for rulesetId in ids {
+            guard let data = httpseRulesetStrings[rulesetId] as? NSDictionary else { continue }
             do {
-                guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary,
-                    ruleset = json["ruleset"] as? NSDictionary,
+                guard let
+                    ruleset = data["ruleset"] as? NSDictionary,
                     rules = ruleset["rule"] as? NSArray else {
                     return nil
                 }
@@ -125,7 +86,7 @@ class HttpsEverywhere {
     }
 
     private func mapExactDomainToIdForLookup(domain: String) -> Int? {
-        guard let domainToIdMapping = domainToIdMapping else { return nil }
+        guard let domainToIdMapping = httpseTargets else { return nil }
         if let val = domainToIdMapping[domain] as? [Int] {
             return val[0]
         }
@@ -198,52 +159,11 @@ class HttpsEverywhere {
 }
 
 extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
-    // Build in test cases, swift compiler is mangling the test cases in HttpsEverywhereTests.swift and they are failing. The compiler is falsely casting  AnyObjects to XCUIElement, which then breaks the runtime tests, I don't have time to look at this further ATM.
-    private func runtimeDebugOnlyTestDomainsRedirected() {
-#if DEBUG
-        if HttpsEverywhere.singleton.isEnabled {
-            let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
-            for url in urls {
-                guard let _ =  HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!) else {
-                    BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
-                    return
-                }
-            }
-
-            let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d")!)
-            if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d") {
-                BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
-            }
-        }
-#endif
-    }
-
-    private func runtimeDebugOnlyTestVerifyResourcesLoaded() {
-#if DEBUG
-        delay(60) {
-            if self.domainToIdMapping == nil && self.db == nil {
-                BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
-            }
-        }
-#endif
-    }
-
-    private func runtimeDebugOnlyTestFastCoder(json: NSDictionary, fastCodedData: NSData) {
-#if DEBUG
-        // delay a bit to let loading complete
-        delay(2) { dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-            let obj = FastCoder.objectWithData(fastCodedData) as? NSDictionary
-            assert(obj != nil, "Fastcoder validation failed, obj nil")
-            assert(NSDictionary(dictionary: obj!).isEqualToDictionary(json as [NSObject : AnyObject]), "Fastcoder validation failed, obj mismatch")
-        }}
-#endif
-    }
-
-    private func checkBothLoadsAreComplete() {
+    private func checkLoadIsComplete() {
         delay(0) { // post to main thread
             self.runtimeDebugOnlyTestVerifyResourcesLoaded()
 
-            if self.domainToIdMapping != nil && self.db != nil {
+            if self.httpseRulesetStrings != nil && self.httpseTargets != nil {
                 NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
                 self.runtimeDebugOnlyTestDomainsRedirected()
             }
@@ -252,17 +172,14 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
 
     private func finishedUnarchivingPreparsedJson(json: NSDictionary) {
         delay(0) { // post to main thread
-            self.domainToIdMapping = json
-            self.checkBothLoadsAreComplete()
+            self.httpseRulesetStrings = json["rulesetStrings"] as? NSArray
+            self.httpseTargets = json["targets"] as? NSDictionary
+
+            self.checkLoadIsComplete()
         }
     }
 
     func fileLoader(loader: NetworkDataFileLoader, convertDataBeforeWriting data: NSData, etag: String?) {
-        if loader !== targetsLoader {
-            loader.finishWritingToDisk(data, etag: etag)
-            return
-        }
-
         do {
             let start = NSDate()
 
@@ -286,22 +203,61 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
 
         guard let data = data else { return }
 
-        if loader === targetsLoader {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-                let start = NSDate()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+            let start = NSDate()
 
-                guard let obj = FastCoder.objectWithData(data) as? NSDictionary else { return }
-                self.finishedUnarchivingPreparsedJson(obj)
+            guard let obj = FastCoder.objectWithData(data) as? NSDictionary else { return }
+            self.finishedUnarchivingPreparsedJson(obj)
 
-                NSLog("»»»»» HTTPS-E unarchive time: \(NSDate().timeIntervalSinceDate(start))")
-            }
-        } else if loader === rulesetsLoader {
-            loadSqlDb()
-            checkBothLoadsAreComplete()
+            NSLog("»»»»» HTTPS-E unarchive time: \(NSDate().timeIntervalSinceDate(start))")
         }
     }
 
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
-        return false
+        return httpseTargets != nil && httpseRulesetStrings != nil
+    }
+}
+
+
+// Build in test cases, swift compiler is mangling the test cases in HttpsEverywhereTests.swift and they are failing. The compiler is falsely casting  AnyObjects to XCUIElement, which then breaks the runtime tests, I don't have time to look at this further ATM.
+extension HttpsEverywhere {
+    private func runtimeDebugOnlyTestDomainsRedirected() {
+        #if DEBUG
+            if HttpsEverywhere.singleton.isEnabled {
+                let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
+                for url in urls {
+                    guard let _ =  HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!) else {
+                        BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
+                        return
+                    }
+                }
+
+                let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d")!)
+                if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d") {
+                    BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
+                }
+            }
+        #endif
+    }
+
+    private func runtimeDebugOnlyTestVerifyResourcesLoaded() {
+        #if DEBUG
+            delay(60) {
+                if self.httpseRulesetStrings == nil || self.httpseTargets == nil {
+                    BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
+                }
+            }
+        #endif
+    }
+
+    private func runtimeDebugOnlyTestFastCoder(json: NSDictionary, fastCodedData: NSData) {
+        #if DEBUG
+            // delay a bit to let loading complete
+            delay(2) { dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
+                let obj = FastCoder.objectWithData(fastCodedData) as? NSDictionary
+                assert(obj != nil, "Fastcoder validation failed, obj nil")
+                assert(NSDictionary(dictionary: obj!).isEqualToDictionary(json as [NSObject : AnyObject]), "Fastcoder validation failed, obj mismatch")
+                }}
+        #endif
     }
 }
