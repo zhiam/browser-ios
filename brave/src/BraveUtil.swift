@@ -11,6 +11,14 @@ func delay(delay:Double, closure:()->()) {
         dispatch_get_main_queue(), closure)
 }
 
+func ensureMainThread(closure:()->()) {
+    if NSThread.isMainThread() {
+        closure()
+    } else {
+        dispatch_async(dispatch_get_main_queue(), closure)
+    }
+}
+
 
 class InsetLabel: UILabel {
     var leftInset = CGFloat(0)

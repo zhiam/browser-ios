@@ -111,8 +111,10 @@ class SpotlightHelper: NSObject {
 
 extension SpotlightHelper: NSUserActivityDelegate {
     @objc func userActivityWasContinued(userActivity: NSUserActivity) {
-        if let url = userActivity.webpageURL {
-            createNewTab?(url: url)
+        ensureMainThread() {
+            if let url = userActivity.webpageURL {
+                self.createNewTab?(url: url)
+            }
         }
     }
 }
