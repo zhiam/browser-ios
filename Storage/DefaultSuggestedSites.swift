@@ -32,7 +32,7 @@ public class DefaultSuggestedSites {
             title: NSLocalizedString("Search Bing", comment: "Tile title for Bing")
         ),
         SuggestedSiteData(
-            url: "https://www.duckduckgo.com",
+            url: "https://www.duckduckgo.com/?t=brave",
             bgColor: "ffffff",
             imageUrl: "asset://suggestedsites_DDG",
             faviconUrl: "asset://braveLogo",
