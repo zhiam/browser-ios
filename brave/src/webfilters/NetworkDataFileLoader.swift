@@ -7,7 +7,6 @@ import Alamofire
 protocol NetworkDataFileLoaderDelegate: class {
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?)
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool
-    func fileLoader(_: NetworkDataFileLoader, convertDataBeforeWriting: NSData, etag: String?)
 }
 
 class NetworkDataFileLoader {
@@ -57,7 +56,7 @@ class NetworkDataFileLoader {
         return NSString(data: data, encoding: NSUTF8StringEncoding) as? String
     }
 
-    func finishWritingToDisk(data: NSData, etag: String?) {
+    private func finishWritingToDisk(data: NSData, etag: String?) {
         let (dir, wasCreated) = createAndGetDataDirPath()
         // If dir existed already, clear out the old one
         if !wasCreated {
@@ -107,7 +106,7 @@ class NetworkDataFileLoader {
             else {
                 if let data = data, response = response as? NSHTTPURLResponse {
                     let etag = response.allHeaderFields["Etag"] as? String
-                    self.delegate?.fileLoader(self, convertDataBeforeWriting: data, etag: etag)
+                    self.finishWritingToDisk(data, etag: etag)
                 }
             }
         }

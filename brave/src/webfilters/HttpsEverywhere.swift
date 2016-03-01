@@ -1,4 +1,5 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+import SQLite
 
 private let _singleton = HttpsEverywhere()
 
@@ -7,14 +8,16 @@ class HttpsEverywhere {
     static let prefKeyHttpsEverywhereOn = "braveHttpsEverywhere"
     static let dataVersion = "5.1.3"
     var isEnabled = true
-    var httpseTargets: NSDictionary?
-    var httpseRulesetStrings: NSArray?
+    var db: Connection?
 
     lazy var networkFileLoader: NetworkDataFileLoader = {
-        let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.json")!
-        let dataFile = "httpse-\(dataVersion).json_fastcoded"
+        let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.sqlite")!
+        let dataFile = "httpse-\(dataVersion).sqlite"
         let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data")
         loader.delegate = self
+
+        self.runtimeDebugOnlyTestVerifyResourcesLoaded()
+
         return loader
     }()
 
@@ -25,6 +28,20 @@ class HttpsEverywhere {
     private init() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "prefsChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
         updateEnabledState()
+    }
+
+    func loadSqlDb() {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
+        guard let path = networkFileLoader.pathToExistingDataOnDisk() else { return }
+        do {
+            db = try Connection(path)
+            NSLog("»»»»»» https-e db loaded")
+        }  catch {
+            print("\(error)")
+        }
     }
 
     func updateEnabledState() {
@@ -41,15 +58,20 @@ class HttpsEverywhere {
     }
 
     private func applyRedirectRuleForIds(ids: [Int], schemeAndHost: String) -> String? {
-        guard let httpseRulesetStrings = httpseRulesetStrings else { return nil }
+        guard let db = db else { return nil }
+        let table = Table("rulesets")
+        let contents = Expression<String>("contents")
+        let id = Expression<Int>("id")
 
-        for rulesetId in ids {
-            guard let data = httpseRulesetStrings[rulesetId] as? NSDictionary else { continue }
+        let query = table.select(contents).filter(ids.contains(id))
+
+        for row in db.prepare(query) {
+            guard let data = row.get(contents).utf8EncodedData else { continue }
             do {
-                guard let
-                    ruleset = data["ruleset"] as? NSDictionary,
+                guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary,
+                    ruleset = json["ruleset"] as? NSDictionary,
                     rules = ruleset["rule"] as? NSArray else {
-                    return nil
+                        return nil
                 }
 
                 if let props = ruleset["$"] as? [String:AnyObject] {
@@ -85,10 +107,30 @@ class HttpsEverywhere {
         return nil
     }
 
-    private func mapExactDomainToIdForLookup(domain: String) -> Int? {
-        guard let domainToIdMapping = httpseTargets else { return nil }
-        if let val = domainToIdMapping[domain] as? [Int] {
-            return val[0]
+    private func mapExactDomainToIdForLookup(domain: String) -> [Int]? {
+        guard let db = db else { return nil }
+        let table = Table("targets")
+        let hostCol = Expression<String>("host")
+        let ids = Expression<String>("ids")
+
+        let query = table.select(ids).filter(hostCol.like(domain))
+
+        var result = [Int]()
+
+        for row in db.prepare(query) {
+            var data = row.get(ids)
+            data = data.substringWithRange(Range(start: data.startIndex.advancedBy(1),end: data.endIndex.advancedBy(-1)))
+            if let loc = data.rangeOfString(",")?.startIndex {
+                data = data.substringToIndex(loc)
+            }
+            let parts = data.characters.split(",")
+            for i in 0..<parts.count {
+                if let j = Int(String(parts[i])) {
+                    result.append(j)
+                }
+            }
+
+            return result
         }
         return nil
     }
@@ -102,9 +144,8 @@ class HttpsEverywhere {
         for i in 0..<(parts.count - 1) {
             let slice = Array(parts[i..<parts.count]).joinWithSeparator(".".characters)
             let prefix = (i > 0) ? "*" : ""
-            let id = mapExactDomainToIdForLookup(prefix + String(slice))
-            if let id = id {
-                resultIds.append(id)
+            if let ids = mapExactDomainToIdForLookup(prefix + String(slice)) {
+                resultIds.appendContentsOf(ids)
             }
         }
         return resultIds
@@ -159,62 +200,14 @@ class HttpsEverywhere {
 }
 
 extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
-    private func checkLoadIsComplete() {
-        delay(0) { // post to main thread
-            self.runtimeDebugOnlyTestVerifyResourcesLoaded()
-
-            if self.httpseRulesetStrings != nil && self.httpseTargets != nil {
-                NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
-                self.runtimeDebugOnlyTestDomainsRedirected()
-            }
-        }
-    }
-
-    private func finishedUnarchivingPreparsedJson(json: NSDictionary) {
-        delay(0) { // post to main thread
-            self.httpseRulesetStrings = json["rulesetStrings"] as? NSArray
-            self.httpseTargets = json["targets"] as? NSDictionary
-
-            self.checkLoadIsComplete()
-        }
-    }
-
-    func fileLoader(loader: NetworkDataFileLoader, convertDataBeforeWriting data: NSData, etag: String?) {
-        do {
-            let start = NSDate()
-
-            guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary else { return }
-            let fastCodedData = FastCoder.dataWithRootObject(json)
-
-            NSLog("»»»»» HTTPS-E convert to archive time: \(NSDate().timeIntervalSinceDate(start))")
-
-            loader.finishWritingToDisk(fastCodedData, etag: etag)
-
-            runtimeDebugOnlyTestFastCoder(json, fastCodedData: fastCodedData)
-        } catch {
-            print("Failed to load targetsLoader: \(error) \(NSString(data: data, encoding: NSUTF8StringEncoding)))")
-        }
-    }
-
     func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
-        // synchronize code from this point on.
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-
-        guard let data = data else { return }
-
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-            let start = NSDate()
-
-            guard let obj = FastCoder.objectWithData(data) as? NSDictionary else { return }
-            self.finishedUnarchivingPreparsedJson(obj)
-
-            NSLog("»»»»» HTTPS-E unarchive time: \(NSDate().timeIntervalSinceDate(start))")
+        if data != nil {
+            loadSqlDb()
         }
     }
 
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
-        return httpseTargets != nil && httpseRulesetStrings != nil
+        return db != nil
     }
 }
 
@@ -242,22 +235,13 @@ extension HttpsEverywhere {
 
     private func runtimeDebugOnlyTestVerifyResourcesLoaded() {
         #if DEBUG
-            delay(60) {
-                if self.httpseRulesetStrings == nil || self.httpseTargets == nil {
+            delay(10) {
+                if self.db == nil {
                     BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
+                } else {
+                    self.runtimeDebugOnlyTestDomainsRedirected()
                 }
             }
-        #endif
-    }
-
-    private func runtimeDebugOnlyTestFastCoder(json: NSDictionary, fastCodedData: NSData) {
-        #if DEBUG
-            // delay a bit to let loading complete
-            delay(2) { dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-                let obj = FastCoder.objectWithData(fastCodedData) as? NSDictionary
-                assert(obj != nil, "Fastcoder validation failed, obj nil")
-                assert(NSDictionary(dictionary: obj!).isEqualToDictionary(json as [NSObject : AnyObject]), "Fastcoder validation failed, obj mismatch")
-                }}
         #endif
     }
 }

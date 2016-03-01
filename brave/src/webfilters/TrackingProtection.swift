@@ -73,10 +73,6 @@ class TrackingProtection {
 }
 
 extension TrackingProtection: NetworkDataFileLoaderDelegate {
-    func fileLoader(loader: NetworkDataFileLoader, convertDataBeforeWriting data: NSData, etag: String?) {
-        loader.finishWritingToDisk(data, etag: etag)
-    }
-
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?) {
         parser.setDataFile(data)
     }
