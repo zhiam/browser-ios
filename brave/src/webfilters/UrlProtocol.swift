@@ -12,8 +12,6 @@ class URLProtocol: NSURLProtocol {
     var mutableData: NSMutableData!
     var response: NSURLResponse!
 
-    static var suffixBlockedUrl = "_b_l_o_c_k_e_d_"
-
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         if (BraveApp.isBraveButtonBypassingFilters) {
             return false
@@ -28,11 +26,9 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
-        #if !TEST
-            ensureMainThread() {
-                BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
-            }
-        #endif
+        ensureMainThread() {
+            BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
+        }
 
         guard let url = request.URL else { return false }
         if (!TrackingProtection.singleton.shouldBlock(request) && !AdBlocker.singleton.shouldBlock(request) && HttpsEverywhere.singleton.tryRedirectingUrl(url) == nil) {
@@ -43,17 +39,6 @@ class URLProtocol: NSURLProtocol {
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-
-        if (TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)) {
-            let newRequest = cloneRequest(request)
-            if let url = request.URL {
-                // Note CFURLCopyScheme crash if the url value is nil or "" or modified host like: "https://blocked_\(host)\(path)
-                // Just add a sentinel suffix, and returnEmptyResponse() if seen later
-                newRequest.URL = NSURL(string:url.absoluteString + suffixBlockedUrl)
-            }
-            return newRequest
-        }
-
         // TODO handle https redirect loop
         if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
             let newRequest = cloneRequest(request)
@@ -119,13 +104,16 @@ class URLProtocol: NSURLProtocol {
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
         self.connection = NSURLConnection(request: newRequest, delegate: self)
 
-        if request.URL?.absoluteString.endsWith(URLProtocol.suffixBlockedUrl) ?? false {
-            if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
-                // sites such as macworld.com need this, or links are not clickable
-                returnBlankPixel()
-            } else {
-                returnEmptyResponse()
-            }
+
+        if !TrackingProtection.singleton.shouldBlock(request) && !AdBlocker.singleton.shouldBlock(request) {
+            return
+        }
+
+        if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
+            // sites such as macworld.com need this, or links are not clickable
+            returnBlankPixel()
+        } else {
+            returnEmptyResponse()
         }
     }
 
