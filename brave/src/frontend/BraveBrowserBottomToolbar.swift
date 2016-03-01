@@ -127,8 +127,19 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         app.browserViewController.urlBar.browserLocationViewDidTapLocation(app.browserViewController.urlBar.locationView)
     }
 
+    func setAlphaOnAllExceptTabButton(alpha: CGFloat) {
+        for item in [addTabButton, backButton, forwardButton, shareButton] {
+            item.alpha = alpha
+        }
+    }
+
     func onClickShowTabs() {
+        setAlphaOnAllExceptTabButton(0)
         BraveURLBarView.tabButtonPressed()
+    }
+
+    func leavingTabTrayMode() {
+        setAlphaOnAllExceptTabButton(1.0)
     }
 
     // TODO find a way to do this properly with themes.

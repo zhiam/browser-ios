@@ -317,6 +317,7 @@ class TabTrayController: UIViewController {
             let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController
             braveTopVC?.view.backgroundColor = BraveUX.TopLevelBackgroundColor
              getApp().browserViewController.view.alpha = 1.0
+             getApp().browserViewController.toolbar?.leavingTabTrayMode()
         }
     }
 #endif

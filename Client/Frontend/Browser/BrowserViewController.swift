@@ -40,7 +40,7 @@ class BrowserViewController: UIViewController {
     var readerModeBar: ReaderModeBarView?
     var readerModeCache: ReaderModeCache
     var statusBarOverlay: UIView!
-    private(set) var toolbar: BrowserToolbar?
+    private(set) var toolbar: BraveBrowserBottomToolbar?
     private var searchController: SearchViewController?
     let uriFixup = URIFixup()
     private var screenshotHelper: ScreenshotHelper!
