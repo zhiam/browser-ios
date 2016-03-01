@@ -373,9 +373,10 @@ class TabTrayController: UIViewController {
         navBar.backgroundColor = TabTrayControllerUX.BackgroundColor
 
         addTabButton = UIButton()
-        addTabButton.setImage(UIImage(named: "add"), forState: .Normal)
+        addTabButton.setImage(UIImage(named: "add")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         addTabButton.addTarget(self, action: "SELdidClickAddTab", forControlEvents: .TouchUpInside)
         addTabButton.accessibilityLabel = NSLocalizedString("Add Tab", comment: "Accessibility label for the Add Tab button in the Tab Tray.")
+        addTabButton.tintColor = UIColor.whiteColor() // makes it stand out more
 
         settingsButton = UIButton()
 //        settingsButton.setImage(UIImage(named: "settings"), forState: .Normal)
