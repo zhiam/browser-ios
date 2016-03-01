@@ -56,7 +56,7 @@ public class WebViewProgress
 
         @objc override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
             guard let path = keyPath where path == kvoLoading else { return }
-            delay(0) { // ensure closure is on main thread
+            ensureMainThread() { // ensure closure is on main thread
                 if !(self.webView?.loading ?? true) && self.webView?.estimatedProgress < 1.0 {
                     self.timer?.invalidate()
                     self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "delayedCompletionCheck", userInfo: nil, repeats: false)

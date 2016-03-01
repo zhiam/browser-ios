@@ -184,7 +184,7 @@ class BraveApp {
     }
 
     static func showErrorAlert(title title: String,  error: String) {
-        delay(0) {
+        ensureMainThread() {
             UIAlertView(title: title, message: error, delegate: nil, cancelButtonTitle: "Close").show()
         }
     }

@@ -29,7 +29,7 @@ class URLProtocol: NSURLProtocol {
         }
 
         #if !TEST
-            delay(0) { // calls closure on main thread
+            ensureMainThread() {
                 BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
             }
         #endif
