@@ -157,29 +157,30 @@ class TabManager : NSObject {
 
     func selectTab(tab: Browser?) {
         assert(NSThread.isMainThread())
+        ensureMainThread() {
+            if self.selectedTab === tab {
+                return
+            }
 
-        if selectedTab === tab {
-            return
+            let previous = self.selectedTab
+
+            if let tab = tab {
+                self._selectedIndex = self.tabs.indexOf(tab) ?? -1
+            } else {
+                self._selectedIndex = -1
+            }
+
+            self.preserveTabs()
+
+            assert(tab === self.selectedTab, "Expected tab is selected")
+            self.selectedTab?.createWebview()
+
+            for delegate in self.delegates {
+                delegate.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous)
+            }
+
+            self.limitInMemoryTabs()
         }
-
-        let previous = selectedTab
-
-        if let tab = tab {
-            _selectedIndex = tabs.indexOf(tab) ?? -1
-        } else {
-            _selectedIndex = -1
-        }
-
-        preserveTabs()
-
-        assert(tab === selectedTab, "Expected tab is selected")
-        selectedTab?.createWebview()
-
-        for delegate in delegates {
-            delegate.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous)
-        }
-
-        limitInMemoryTabs()
     }
 
     func expireSnackbars() {
@@ -234,13 +235,15 @@ class TabManager : NSObject {
     }
 
     func memoryWarning() {
-        for browser in tabs {
-            if browser.webView == nil {
-                continue
-            }
+        ensureMainThread() {
+            for browser in self.tabs {
+                if browser.webView == nil {
+                    continue
+                }
 
-            if selectedTab != browser {
-                browser.deleteWebView()
+                if self.selectedTab != browser {
+                    browser.deleteWebView()
+                }
             }
         }
     }
@@ -293,7 +296,9 @@ class TabManager : NSObject {
         }
 
         let tab = Browser(configuration: configuration, isPrivate: isPrivate)
-        configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
+        ensureMainThread() {
+            self.configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
+        }
         return tab
     }
 
@@ -301,7 +306,9 @@ class TabManager : NSObject {
         assert(NSThread.isMainThread())
 
         let tab = Browser(configuration: configuration ?? self.configuration)
-        configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
+        ensureMainThread() {
+            self.configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
+        }
         return tab
     }
 
@@ -325,7 +332,7 @@ class TabManager : NSObject {
         tab.loadRequest(request ?? defaultNewTabRequest)
 
         if flushToDisk {
-        	storeChanges()
+            storeChanges()
         }
     }
 
@@ -339,6 +346,10 @@ class TabManager : NSObject {
     ///   is removed.
     private func removeTab(tab: Browser, flushToDisk: Bool, notify: Bool) {
         assert(NSThread.isMainThread())
+        if !NSThread.isMainThread() {
+            return
+        }
+
         // If the removed tab was selected, find the new tab to select.
         if tab === selectedTab {
             let index = getIndex(tab)

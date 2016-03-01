@@ -111,6 +111,11 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     func createWebview() {
+        assert(NSThread.isMainThread())
+        if !NSThread.isMainThread() {
+            return
+        }
+
         if webView == nil {
 #if !BRAVE
             assert(configuration != nil, "Create webview can only be called once")
@@ -179,6 +184,11 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     func deleteWebView() {
+        assert(NSThread.isMainThread())
+        if !NSThread.isMainThread() {
+            return
+        }
+
         if let webView = webView {
             lastTitle = title
             let currentItem: LegacyBackForwardListItem! = webView.backForwardList.currentItem
