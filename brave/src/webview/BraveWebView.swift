@@ -44,11 +44,16 @@ class BraveWebView: UIWebView {
     var title: String = ""
     var URL: NSURL?
 
+    var uniqueId = -1
+
     var internalIsLoadingEndedFlag: Bool = false;
     var knownFrameContexts = Set<NSObject>()
     static var containerWebViewForCallbacks = { return ContainerWebView() }()
     // From http://stackoverflow.com/questions/14268230/has-anybody-found-a-way-to-load-https-pages-with-an-invalid-server-certificate-u
     var loadingUnvalidatedHTTPSPage: Bool = false
+
+    // This gets set as soon as it is available from the first UIWebVew created
+    static var webviewBuiltinUserAgent: String?
 
     // To mimic WKWebView we need this property. And, to easily overrride where Firefox code is setting it, we hack the setter,
     // so that a custom agent is set always to our kDesktopUserAgent.
@@ -67,6 +72,52 @@ class BraveWebView: UIWebView {
         }
     }
 
+    static let idToWebview = NSMapTable(keyOptions: .StrongMemory, valueOptions: .WeakMemory)
+    static var webViewCounter = 0
+    // Needed to identify webview in url protocol
+    func generateUniqueUserAgent() {
+        BraveWebView.webViewCounter++
+        if let webviewBuiltinUserAgent = BraveWebView.webviewBuiltinUserAgent {
+            let userAgent = webviewBuiltinUserAgent + String(format:" _id/%06d", BraveWebView.webViewCounter)
+            let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
+            defaults.registerDefaults(["UserAgent": userAgent ])
+            self.uniqueId = BraveWebView.webViewCounter
+            BraveWebView.idToWebview.setObject(self, forKey: uniqueId)
+        } else {
+            assert(BraveWebView.webViewCounter == 1)
+            BraveWebView.idToWebview.setObject(self, forKey: 1) // the first webview, we don't have the user agent just yet
+        }
+    }
+
+    static func userAgentToWebview(let ua: String?) -> BraveWebView? {
+        guard let ua = ua else { return nil }
+        guard let loc = ua.rangeOfString("_id/") else {
+            // the first created webview doesn't have this id set (see webviewBuiltinUserAgent to explain)
+            return idToWebview.objectForKey(1) as? BraveWebView
+        }
+        let keyString = ua.substringWithRange(Range(start: loc.endIndex, end: loc.endIndex.advancedBy(6)))
+        guard let key = Int(keyString) else { return nil }
+        return idToWebview.objectForKey(key) as? BraveWebView
+    }
+
+    var currentMainDocFromNetworkLayer: String = ""
+    func networkLayerRequestMainDoc(mainDoc: NSURL?) {
+        if mainDoc?.absoluteString != nil {
+            return
+        }
+
+        // Pushstate navigation can cause this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
+        // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
+        guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
+        if location != currentUrl {
+            URL = NSURL(string: location)
+            kvoBroadcast([KVOStrings.kvoURL])
+            #if DEBUG
+            print("Page changed by url protocol: \(location)")
+            #endif
+        }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -74,6 +125,7 @@ class BraveWebView: UIWebView {
 
     private func commonInit() {
         print("webview init ")
+        generateUniqueUserAgent()
 
         progress = WebViewProgress(parent: self)
 
@@ -260,27 +312,6 @@ class BraveWebView: UIWebView {
         js += "document.head.appendChild(script);"
         LegacyUserContentController.injectJsIntoAllFrames(self, script: js)
     }
-
-    // I noticed on youtube, clicking videos is not updating the location bar. 
-    // This workaround hooks into UrlProtocol so that when a load is detected (of any kind) trigger a delayed check for location change, and if the host is the same but the path has changed, then update the displayed URL
-    // I don't want to generalize this check beyond that specific case, as in all other cases (thus far), normal webview events are triggered for page loading
-    var locationChangedPeriodicCheckRunning = false
-    func setFlagToCheckIfLocationChanged() {
-        if self.locationChangedPeriodicCheckRunning {
-            return
-        }
-        self.locationChangedPeriodicCheckRunning = true
-        // delay to coalesce repeated calls to this function, calling js is a heavy operation
-        delay(0.5) {
-            self.locationChangedPeriodicCheckRunning = false
-            guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = self.URL?.absoluteString else { return }
-            guard let pageExtractedUrl = NSURL(string: location) else { return }
-            if pageExtractedUrl.host == self.URL?.host && !currentUrl.hasPrefix(location) {
-                self.URL = NSURL(string: location)
-                self.kvoBroadcast([KVOStrings.kvoURL])
-            }
-        }
-    }
 }
 
 extension BraveWebView: UIWebViewDelegate {
@@ -304,13 +335,18 @@ extension BraveWebView: UIWebViewDelegate {
 
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
+        if BraveWebView.webviewBuiltinUserAgent == nil {
+            BraveWebView.webviewBuiltinUserAgent = request.valueForHTTPHeaderField("User-Agent")
+            assert(BraveWebView.webviewBuiltinUserAgent != nil)
+        }
+
         #if DEBUG
             if var printedUrl = request.URL?.absoluteString {
                 let maxLen = 100
                 if printedUrl.characters.count > maxLen {
                     printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
                 }
-                //print("webview load: " + printedUrl)
+               // print("webview load: " + printedUrl)
             }
         #endif
 
@@ -353,11 +389,14 @@ extension BraveWebView: UIWebViewDelegate {
             })
         }
 
-        let locationChanged = BraveWebView.isTopFrameRequest(request)
+        let locationChanged = BraveWebView.isTopFrameRequest(request) && request.URL?.absoluteString != URL?.absoluteString
         if locationChanged {
             // TODO Maybe separate page unload from link clicked.
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
             URL = request.URL
+            #if DEBUG
+            print("Page changed by shouldStartLoad: \(URL?.absoluteString)")
+            #endif
         }
 
         kvoBroadcast()

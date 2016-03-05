@@ -93,8 +93,7 @@ class BraveApp {
             #endif
             // desktop UA for testing
             //      let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
-            //      let desktop = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; it-it) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16"
-            //      defaults.registerDefaults(["UserAgent": desktop])
+            //      defaults.registerDefaults(["UserAgent": kDesktopUserAgent])
 
         #endif
     }

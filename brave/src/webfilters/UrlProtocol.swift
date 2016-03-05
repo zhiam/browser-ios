@@ -17,7 +17,7 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
-        //print("Request #\(requestCount++): URL = \(request.URL?.absoluteString)")
+        //print("Request #\(requestCount++): URL = \(request.mainDocumentURL?.absoluteString)")
         if let scheme = request.URL?.scheme where !scheme.startsWith("http") {
             return false
         }
@@ -26,16 +26,15 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
+        let ua = request.allHTTPHeaderFields?["User-Agent"]
         ensureMainThread() {
-            BraveApp.getCurrentWebView()?.setFlagToCheckIfLocationChanged()
+            BraveWebView.userAgentToWebview(ua)?.networkLayerRequestMainDoc(request.mainDocumentURL)
         }
 
         guard let url = request.URL else { return false }
-        if (!TrackingProtection.singleton.shouldBlock(request) && !AdBlocker.singleton.shouldBlock(request) && HttpsEverywhere.singleton.tryRedirectingUrl(url) == nil) {
-            return false
-        }
+        let useCustomUrlProtocol = TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request) || HttpsEverywhere.singleton.tryRedirectingUrl(url) != nil
 
-        return true
+        return useCustomUrlProtocol
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
@@ -44,7 +43,7 @@ class URLProtocol: NSURLProtocol {
             let newRequest = cloneRequest(request)
             newRequest.URL = redirectedUrl
 #if DEBUG
-            print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
+            //print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
 #endif
             return newRequest
         }
