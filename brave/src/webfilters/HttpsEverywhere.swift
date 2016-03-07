@@ -162,11 +162,10 @@ class HttpsEverywhere {
         }
 
         if let redirect = fifoCacheOfRedirects.getItem(url.absoluteString) {
-            switch redirect {
-                case.Some:
-                    return redirect as? NSURL
-                default:
-                    return nil
+            if redirect === NSNull() {
+                return nil
+            } else {
+                return redirect as? NSURL
             }
         }
 

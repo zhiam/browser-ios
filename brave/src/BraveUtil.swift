@@ -38,7 +38,11 @@ class FifoDict {
         }
 
         if let lastDict = fifoArrayOfDicts.last {
-            lastDict[key] = value
+            if value == nil {
+                lastDict[key] = NSNull()
+            } else {
+                lastDict[key] = value
+            }
         }
     }
 

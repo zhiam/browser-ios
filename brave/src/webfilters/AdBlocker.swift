@@ -152,11 +152,10 @@ class AdBlocker {
         let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString)
 
         if let checkedItem = fifoCacheOfUrlsChecked.getItem(key) {
-            switch checkedItem {
-            case .Some:
-                return checkedItem as! Bool
-            default:
+            if checkedItem === NSNull() {
                 return false
+            } else {
+                return checkedItem as! Bool
             }
         }
 
