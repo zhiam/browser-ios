@@ -20,6 +20,38 @@ func ensureMainThread(closure:()->()) {
 }
 
 
+// Lookup time is O(maxDicts)
+// Very basic implementation of a recent item collection class, stored as groups of items in dictionaries, oldest items are deleted as blocks of items since their entire containing dictionary is deleted.
+class FifoDict {
+    var fifoArrayOfDicts: [NSMutableDictionary] = []
+    let maxDicts = 5
+    let maxItemsPerDict = 50
+
+    // the url key is a combination of urls, the main doc url, and the url being checked
+    func addItem(key: String, value: AnyObject?) {
+        if fifoArrayOfDicts.count > maxItemsPerDict {
+            fifoArrayOfDicts.removeFirst()
+        }
+
+        if fifoArrayOfDicts.last == nil || fifoArrayOfDicts.last?.count > maxItemsPerDict {
+            fifoArrayOfDicts.append(NSMutableDictionary())
+        }
+
+        if let lastDict = fifoArrayOfDicts.last {
+            lastDict[key] = value
+        }
+    }
+
+    func getItem(key: String) -> AnyObject?? {
+        for dict in fifoArrayOfDicts {
+            if let item = dict[key] {
+                return item
+            }
+        }
+        return nil
+    }
+}
+
 class InsetLabel: UILabel {
     var leftInset = CGFloat(0)
     var rightInset = CGFloat(0)

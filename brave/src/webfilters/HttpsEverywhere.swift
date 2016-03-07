@@ -9,6 +9,7 @@ class HttpsEverywhere {
     static let dataVersion = "5.1.3"
     var isEnabled = true
     var db: Connection?
+    let fifoCacheOfRedirects = FifoDict()
 
     lazy var networkFileLoader: NetworkDataFileLoader = {
         let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.sqlite")!
@@ -160,42 +161,57 @@ class HttpsEverywhere {
             return nil
         }
 
-        var str = stripLocalhostWebServer(url.absoluteString)
-        if str.hasSuffix("/") {
-            str = String(str.characters.dropLast())
-        }
-        guard let url = NSURL(string: str), host = url.host else {
-            return nil
-        }
-
-
-        let scheme = url.scheme
-
-        let ids = mapDomainToIdForLookup(host)
-        if ids.count < 1 {
-            return nil
-        }
-
-        guard let newHost = applyRedirectRuleForIds(ids, schemeAndHost: scheme + "://" + host) else { return nil }
-
-        var newUrl = NSURL(string: newHost)
-        if let path = url.path {
-            newUrl = newUrl?.URLByAppendingPathComponent(path)
-        }
-        if let query = url.query, url = newUrl?.absoluteString {
-            newUrl = NSURL(string: url + "?" + query)
-        }
-
-        let ignoredlist = [
-            "m.slashdot.org" // see https://github.com/brave/browser-ios/issues/104
-        ]
-        for item in ignoredlist {
-            if url.absoluteString.contains(item) || newHost.contains(item) {
-                return nil
+        if let redirect = fifoCacheOfRedirects.getItem(url.absoluteString) {
+            switch redirect {
+                case.Some:
+                    return redirect as? NSURL
+                default:
+                    return nil
             }
         }
 
-        return newUrl
+        // This internal function is so we can store the result in the fifoCacheOfRedirects
+        func redirect(url: NSURL) -> NSURL? {
+            var str = stripLocalhostWebServer(url.absoluteString)
+            if str.hasSuffix("/") {
+                str = String(str.characters.dropLast())
+            }
+            guard let url = NSURL(string: str), host = url.host else {
+                return nil
+            }
+
+            let scheme = url.scheme
+
+            let ids = mapDomainToIdForLookup(host)
+            if ids.count < 1 {
+                return nil
+            }
+
+            guard let newHost = applyRedirectRuleForIds(ids, schemeAndHost: scheme + "://" + host) else { return nil }
+
+            var newUrl = NSURL(string: newHost)
+            if let path = url.path {
+                newUrl = newUrl?.URLByAppendingPathComponent(path)
+            }
+            if let query = url.query, url = newUrl?.absoluteString {
+                newUrl = NSURL(string: url + "?" + query)
+            }
+
+            let ignoredlist = [
+                "m.slashdot.org" // see https://github.com/brave/browser-ios/issues/104
+            ]
+            for item in ignoredlist {
+                if url.absoluteString.contains(item) || newHost.contains(item) {
+                    return nil
+                }
+            }
+
+            return newUrl
+        }
+
+        let redirected = redirect(url)
+        fifoCacheOfRedirects.addItem(url.absoluteString, value: redirected)
+        return redirected
     }
 }
 

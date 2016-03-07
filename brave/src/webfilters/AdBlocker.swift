@@ -5,44 +5,6 @@ import Shared
 
 private let _singleton = AdBlocker()
 
-// Store the last 500 URLs checked
-// Store 10 x 50 URLs in the array called timeOrderedCacheChunks. This is a FIFO array,
-// Throw out a 50 URL chunk when the array is full
-class UrlFifo {
-    var fifoOfCachedUrlChunks: [NSMutableDictionary] = []
-    let maxChunks = 10
-    let maxUrlsPerChunk = 50
-
-    // the url key is a combination of urls, the main doc url, and the url being checked
-    func addIsBlockedForUrlKey(urlKey: String, isBlocked: Bool) {
-        if fifoOfCachedUrlChunks.count > maxChunks {
-            fifoOfCachedUrlChunks.removeFirst()
-        }
-
-        if fifoOfCachedUrlChunks.last == nil || fifoOfCachedUrlChunks.last?.count > maxUrlsPerChunk {
-            fifoOfCachedUrlChunks.append(NSMutableDictionary())
-        }
-
-        if let cacheChunkUrlAndDomain = fifoOfCachedUrlChunks.last {
-            cacheChunkUrlAndDomain[urlKey] = isBlocked
-        }
-    }
-
-    func containsAndIsBlocked(needle: String) -> Bool? {
-        for urls in fifoOfCachedUrlChunks {
-            if let urlIsBlocked = urls[needle] {
-                if urlIsBlocked as! Bool {
-                    #if LOG_AD_BLOCK
-                        print("blocked (cached result) \(url.absoluteString)")
-                    #endif
-                }
-                return urlIsBlocked as? Bool
-            }
-        }
-        return nil
-    }
-}
-
 class AdBlocker {
     static let prefKeyAdBlockOn = "braveBlockAds"
     static let prefKeyAdBlockOnDefaultValue = true
@@ -56,7 +18,7 @@ class AdBlocker {
         return loader
     }()
 
-    var fifoOfCachedUrlChunks = UrlFifo()
+    var fifoCacheOfUrlsChecked = FifoDict()
     var isEnabled = true
 
     private init() {
@@ -189,16 +151,21 @@ class AdBlocker {
         // A cache entry is like: fifoOfCachedUrlChunks[0]["www.microsoft.com_http://some.url"] = true/false for blocking
         let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString)
 
-        if let urlIsBlocked = fifoOfCachedUrlChunks.containsAndIsBlocked(key) {
-            return urlIsBlocked
+        if let checkedItem = fifoCacheOfUrlsChecked.getItem(key) {
+            switch checkedItem {
+            case .Some:
+                return checkedItem as! Bool
+            default:
+                return false
+            }
         }
 
         let isBlocked = AdBlockCppFilter.singleton().checkWithCppABPFilter(url.absoluteString,
             mainDocumentUrl: mainDocDomain,
             acceptHTTPHeader:request.valueForHTTPHeaderField("Accept"))
 
-        fifoOfCachedUrlChunks.addIsBlockedForUrlKey(key, isBlocked: isBlocked)
-
+        fifoCacheOfUrlsChecked.addItem(key, value: isBlocked)
+        
         #if LOG_AD_BLOCK
             if isBlocked {
                 print("blocked \(url.absoluteString)")

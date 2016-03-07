@@ -38,15 +38,6 @@ class URLProtocol: NSURLProtocol {
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-        // TODO handle https redirect loop
-        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
-            let newRequest = cloneRequest(request)
-            newRequest.URL = redirectedUrl
-#if DEBUG
-            //print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
-#endif
-            return newRequest
-        }
         return request
     }
 
@@ -63,6 +54,9 @@ class URLProtocol: NSURLProtocol {
         if let b = request.HTTPBody {
             newRequest.HTTPBody = b
         }
+        newRequest.HTTPShouldUsePipelining = request.HTTPShouldUsePipelining
+        newRequest.mainDocumentURL = request.mainDocumentURL
+        newRequest.networkServiceType = request.networkServiceType
         return newRequest
     }
 
@@ -101,18 +95,24 @@ class URLProtocol: NSURLProtocol {
     override func startLoading() {
         let newRequest = URLProtocol.cloneRequest(request)
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
-        self.connection = NSURLConnection(request: newRequest, delegate: self)
 
-
-        if !TrackingProtection.singleton.shouldBlock(request) && !AdBlocker.singleton.shouldBlock(request) {
-            return
-        }
-
-        if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
-            // sites such as macworld.com need this, or links are not clickable
-            returnBlankPixel()
+        // HttpsEverywhere re-checking is O(1) due to internal cache,
+        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
+            // TODO handle https redirect loop
+            newRequest.URL = redirectedUrl
+            #if DEBUG
+                print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
+            #endif
+            self.connection = NSURLConnection(request: newRequest, delegate: self)
         } else {
-            returnEmptyResponse()
+            // Only other possibility of why we are here is ABP or TP is blocking
+            self.connection = NSURLConnection(request: newRequest, delegate: self)
+            if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
+                // sites such as macworld.com need this, or links are not clickable
+                returnBlankPixel()
+            } else {
+                returnEmptyResponse()
+            }
         }
     }
 
