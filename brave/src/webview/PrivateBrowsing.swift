@@ -33,7 +33,7 @@ class PrivateBrowsing {
         let baseDir = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)[0]
         let webkitDir = baseDir + "/WebKit"
         do {
-            try fm.setAttributes([NSFilePosixPermissions: (lock ? 000 : 755)], ofItemAtPath: webkitDir)
+            try fm.setAttributes([NSFilePosixPermissions: (lock ? NSNumber(short:0) : NSNumber(short:0o755))], ofItemAtPath: webkitDir)
         } catch {
             print(error)
         }
