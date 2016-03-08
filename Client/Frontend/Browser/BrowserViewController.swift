@@ -806,9 +806,9 @@ class BrowserViewController: UIViewController {
             if let title = shareItem.title {
                 userData[QuickActions.TabTitleKey] = title
             }
-            QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark,
-                withUserData: userData,
-                toApplication: UIApplication.sharedApplication())
+//            QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark,
+//                withUserData: userData,
+//                toApplication: UIApplication.sharedApplication())
         }
 
         // Dispatch to the main thread to update the UI

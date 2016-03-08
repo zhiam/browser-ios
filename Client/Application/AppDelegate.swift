@@ -440,11 +440,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let title = notification.userInfo?[TabSendTitleKey] as? String {
                 browserViewController.addBookmark(alertURL, title: title)
 
-                if #available(iOS 9, *) {
-                    let userData = [QuickActions.TabURLKey: alertURL,
-                        QuickActions.TabTitleKey: title]
-                    QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark, withUserData: userData, toApplication: UIApplication.sharedApplication())
-                }
+//                if #available(iOS 9, *) {
+//                    let userData = [QuickActions.TabURLKey: alertURL,
+//                        QuickActions.TabTitleKey: title]
+//                    QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark, withUserData: userData, toApplication: UIApplication.sharedApplication())
+//                }
         }
     }
 

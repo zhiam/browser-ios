@@ -16,7 +16,7 @@ import XCGLogger
 enum ShortcutType: String {
     case NewTab
     case NewPrivateTab
-    case OpenLastBookmark
+    //case OpenLastBookmark
     case OpenLastTab
 
     init?(fullType: String) {
@@ -67,18 +67,18 @@ class QuickActions: NSObject {
         userData[QuickActions.QuickActionsVersionKey] = QuickActions.QuickActionsVersion
         var dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
         switch(type) {
-        case .OpenLastBookmark:
-            let openLastBookmarkShortcut = UIMutableApplicationShortcutItem(type: ShortcutType.OpenLastBookmark.type,
-                localizedTitle: lastBookmarkTitle,
-                localizedSubtitle: userData[QuickActions.TabTitleKey] as? String,
-                icon: UIApplicationShortcutIcon(templateImageName: "quick_action_last_bookmark"),
-                userInfo: userData
-            )
-            if let index = (dynamicShortcutItems.indexOf { $0.type == ShortcutType.OpenLastBookmark.type }) {
-                dynamicShortcutItems[index] = openLastBookmarkShortcut
-            } else {
-                dynamicShortcutItems.append(openLastBookmarkShortcut)
-            }
+//        case .OpenLastBookmark:
+//            let openLastBookmarkShortcut = UIMutableApplicationShortcutItem(type: ShortcutType.OpenLastBookmark.type,
+//                localizedTitle: lastBookmarkTitle,
+//                localizedSubtitle: userData[QuickActions.TabTitleKey] as? String,
+//                icon: UIApplicationShortcutIcon(templateImageName: "quick_action_last_bookmark"),
+//                userInfo: userData
+//            )
+//            if let index = (dynamicShortcutItems.indexOf { $0.type == ShortcutType.OpenLastBookmark.type }) {
+//                dynamicShortcutItems[index] = openLastBookmarkShortcut
+//            } else {
+//                dynamicShortcutItems.append(openLastBookmarkShortcut)
+//            }
         case .OpenLastTab:
             let openLastTabShortcut = UIMutableApplicationShortcutItem(type: ShortcutType.OpenLastTab.type,
                 localizedTitle: lastTabTitle,
@@ -129,7 +129,7 @@ class QuickActions: NSObject {
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
         case .NewPrivateTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
-        case .OpenLastBookmark, .OpenLastTab:
+        case .OpenLastTab:
             if let urlToOpen = (userData?[QuickActions.TabURLKey] as? String)?.asURL {
                 handleOpenURL(withBrowserViewController: browserViewController, urlToOpen: urlToOpen)
             }
