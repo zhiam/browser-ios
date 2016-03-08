@@ -275,7 +275,7 @@ class TabTrayController: UIViewController {
         let button = UIButton()
         button.setTitle(NSLocalizedString("Private", comment: "Private button title"), forState: .Normal)
         button.setTitleColor(UIColor.blackColor(), forState: .Selected)
-        button.setTitleColor(UIColor(white: 179/255.0, alpha: 1.0), forState: .Normal)
+        button.setTitleColor(UIColor(white: 255/255.0, alpha: 1.0), forState: .Normal)
         button.titleLabel!.font = UIFont.systemFontOfSize(button.titleLabel!.font.pointSize + 2)
         button.contentEdgeInsets = UIEdgeInsetsMake(0, 4 /* left */, 0, 4 /* right */)
         button.addTarget(self, action: "SELdidTogglePrivateMode", forControlEvents: .TouchUpInside)
