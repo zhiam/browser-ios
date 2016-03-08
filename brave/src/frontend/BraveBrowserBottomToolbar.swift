@@ -41,7 +41,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
     lazy var addTabButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "add")
-        //.accessibilityLabel = NSLocalizedString("Back", comment: "Accessibility Label for the browser toolbar Back button")
+        button.accessibilityLabel = NSLocalizedString("Add Tab", comment: "Accessibility label for the bottom toolbar add tab button")
         button.addTarget(self, action: "onClickAddTab", forControlEvents: UIControlEvents.TouchUpInside)
 
         // Button is grey without upping the brightness
