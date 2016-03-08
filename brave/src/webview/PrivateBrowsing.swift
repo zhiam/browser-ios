@@ -13,7 +13,7 @@ class PrivateBrowsing {
 
     // On startup we are no longer in private mode, if there is a .public cookies file, it means app was killed in private mode, so restore the cookies file
     func startupCheckIfKilledWhileInPBMode() {
-#if BRAVE_PRIVATE_MODE
+#if !BRAVE_NO_PRIVATE_MODE
         webkitDirLocker(lock: false)
         cookiesFileDiskOperation(.Restore)
 #endif
@@ -71,7 +71,7 @@ class PrivateBrowsing {
     }
 
     func enter() {
-#if BRAVE_PRIVATE_MODE
+#if !BRAVE_NO_PRIVATE_MODE
         isOn = true
 
         cookiesFileDiskOperation(.SavePublicBackup)
@@ -94,7 +94,7 @@ class PrivateBrowsing {
     }
 
     func exit() {
-#if BRAVE_PRIVATE_MODE
+#if !BRAVE_NO_PRIVATE_MODE
         if !isOn {
             return
         }
@@ -125,7 +125,7 @@ class PrivateBrowsing {
     }
 
     @objc func cookiesChanged(info: NSNotification) {
-#if BRAVE_PRIVATE_MODE
+#if !BRAVE_NO_PRIVATE_MODE
         NSNotificationCenter.defaultCenter().removeObserver(self)
         let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
         var newCookies = [NSHTTPCookie]()
