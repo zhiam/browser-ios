@@ -18,7 +18,7 @@ class HttpsEverywhereTest: XCTestCase {
 
     func test() {
         expectationForNotification(HttpsEverywhere.kNotificationDataLoaded, object: nil, handler:nil)
-        HttpsEverywhere.singleton.loadData()
+        HttpsEverywhere.singleton.networkFileLoader.loadData()
         var isOk = true
         waitForExpectationsWithTimeout(5) { (error:NSError?) -> Void in
             if let _ = error {
@@ -31,7 +31,7 @@ class HttpsEverywhereTest: XCTestCase {
             return
         }
 
-        let urls = ["thestar.com", "www.thestar.com", "apple.com", "xkcd.com"]
+        let urls = ["motherboard.vice.com", "thestar.com", "www.thestar.com", "apple.com", "xkcd.com"]
 
         for url in urls {
             let redirected = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!)

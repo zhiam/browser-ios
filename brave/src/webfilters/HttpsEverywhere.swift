@@ -40,6 +40,7 @@ class HttpsEverywhere {
         do {
             db = try Connection(path)
             NSLog("»»»»»» https-e db loaded")
+            NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
         }  catch {
             print("\(error)")
         }
