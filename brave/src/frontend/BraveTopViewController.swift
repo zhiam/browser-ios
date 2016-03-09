@@ -17,7 +17,7 @@ class BraveTopViewController : UIViewController {
     var clickDetectionView = UIButton()
     var leftConstraint: Constraint? = nil
     var rightConstraint: Constraint? = nil
-
+    var leftSidePanelButtonAndUnderlay: ButtonWithUnderlayView?
     init(browser:BraveBrowserViewController) {
         self.browser = browser
         mainSidePanel = MainSidePanelViewController()
@@ -84,7 +84,8 @@ class BraveTopViewController : UIViewController {
     @objc func dismissAllSidePanels(button: UIButton) {
         if leftPanelShowing() {
             togglePanel(mainSidePanel)
-            leftSidePanelButton?.selected = false
+            leftSidePanelButtonAndUnderlay?.selected = false
+            leftSidePanelButtonAndUnderlay?.underlay.hidden = true
         }
         #if RIGHTPANEL
         if rightPanelShowing() {
@@ -144,9 +145,8 @@ class BraveTopViewController : UIViewController {
     }
 
     let SEL_onClickLeftSlideOut = "onClickLeftSlideOut:"
-    var leftSidePanelButton: UIButton?
     func onClickLeftSlideOut(notification: NSNotification) {
-        leftSidePanelButton = notification.object as? UIButton
+        leftSidePanelButtonAndUnderlay = notification.object as? ButtonWithUnderlayView
         togglePanel(mainSidePanel)
     }
 
@@ -173,7 +173,8 @@ class BraveTopViewController : UIViewController {
     }
 
     func togglePanel(panel: SidePanelBaseViewController) {
-        leftSidePanelButton?.selected = panel.view.hidden
+        leftSidePanelButtonAndUnderlay?.selected = panel.view.hidden
+        leftSidePanelButtonAndUnderlay?.underlay.hidden = !panel.view.hidden
         clickDetectionView.removeFromSuperview()
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone && panel.view.hidden {
             view.addSubview(clickDetectionView)

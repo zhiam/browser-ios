@@ -24,10 +24,24 @@ extension UILabel {
     }
 }
 
+class ButtonWithUnderlayView : UIButton {
+    lazy var underlay: UIView = {
+        let v = UIView()
+        v.backgroundColor = BraveUX.ProgressBarColor
+        v.layer.cornerRadius = 4
+        v.layer.borderWidth = 1
+        v.layer.borderColor = UIColor.clearColor().CGColor
+        v.layer.masksToBounds = true
+        v.userInteractionEnabled = false
+        v.hidden = true
+        return v
+    }()
+}
+
 class BraveURLBarView : URLBarView {
 
     private static weak var currentInstance: BraveURLBarView?
-    lazy var leftSidePanelButton = { return UIButton() }()
+    lazy var leftSidePanelButton: ButtonWithUnderlayView = { return ButtonWithUnderlayView() }()
     lazy var braveButton = { return UIButton() }()
 
     override func commonInit() {
@@ -35,6 +49,7 @@ class BraveURLBarView : URLBarView {
         locationContainer.layer.cornerRadius = CGFloat(BraveUX.TextFieldCornerRadius)
         curveShape = HideCurveView()
 
+        addSubview(leftSidePanelButton.underlay)
         addSubview(leftSidePanelButton)
         addSubview(braveButton)
         super.commonInit()
@@ -212,6 +227,12 @@ class BraveURLBarView : URLBarView {
                 BraveApp.isBraveButtonBypassingFilters = true
                 self.braveButton.selected = true
             }
+        }
+
+        leftSidePanelButton.underlay.snp_makeConstraints {
+            make in
+            make.left.right.equalTo(leftSidePanelButton).inset(2)
+            make.top.bottom.equalTo(leftSidePanelButton).inset(7)
         }
 
         curveShape.hidden = true
