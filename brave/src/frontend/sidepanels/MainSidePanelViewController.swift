@@ -31,6 +31,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         shadow.image = UIImage(named: "panel_shadow")
         shadow.contentMode = .ScaleToFill
+        shadow.alpha = 0.8
 
         tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
         tabTitleView.textColor = self.view.tintColor
