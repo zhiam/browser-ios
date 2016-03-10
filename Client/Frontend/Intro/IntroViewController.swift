@@ -31,7 +31,7 @@ struct IntroViewControllerUX {
     static let CardTextPage3 = NSLocalizedString("Browse with us and your privacy is protected, with nothing further to install, learn or configure.", tableName: "Intro", comment: "")
 
     static let CardTitlePage4 = NSLocalizedString("In case you hit a speed bump", tableName: "Intro", comment: "")
-    static let CardTextPage4 = NSLocalizedString("Brave makes it easy to temporarily disable ad blocking and privacy features.\nTap the Brave button to toggle shields on or off.", tableName: "Intro", comment: "")
+    static let CardTextPage4 = NSLocalizedString("Brave makes it easy to temporarily disable ad blocking and privacy features.\nTap the Brave button to toggle shields up or down.", tableName: "Intro", comment: "")
 
     static let CardTitlePage5 = NSLocalizedString("Ready?", tableName: "Intro", comment: "")
     static let CardTextPage5 = NSLocalizedString("", tableName: "Intro", comment: "")

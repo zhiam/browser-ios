@@ -37,7 +37,7 @@ public class DefaultSuggestedSites {
             imageUrl: "asset://suggestedsites_DDG",
             faviconUrl: "asset://braveLogo",
             trackingId: 632,
-            title: NSLocalizedString("Seach DuckDuckGo", comment: "Tile title for DDG")
+            title: NSLocalizedString("Search DuckDuckGo", comment: "Tile title for DDG")
         ),
         SuggestedSiteData(
             url: "https://www.wikipedia.org",
