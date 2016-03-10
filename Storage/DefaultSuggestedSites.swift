@@ -17,7 +17,7 @@ public class DefaultSuggestedSites {
         ),
         SuggestedSiteData(
             url: "https://www.yahoo.com",
-            bgColor: "420894",
+            bgColor: "ffffff",
             imageUrl: "asset://suggestedsites_yahoo",
             faviconUrl: "asset://braveLogo",
             trackingId: 632,
