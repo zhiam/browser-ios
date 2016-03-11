@@ -1,5 +1,5 @@
-bing
 duckduckgo
+bing
 eBay-france
 google
 twitter

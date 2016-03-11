@@ -1,5 +1,5 @@
-bing
 duckduckgo
+bing
 faclair-beag
 google
 wikipedia-gd

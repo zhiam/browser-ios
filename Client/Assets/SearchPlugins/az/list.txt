@@ -1,6 +1,6 @@
+duckduckgo
 amazondotcom
 azerdict
 bing
-duckduckgo
 google
 wikipedia-az

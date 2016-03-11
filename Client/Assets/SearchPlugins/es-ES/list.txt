@@ -1,6 +1,6 @@
+duckduckgo
 11870
 bing
-duckduckgo
 google
 twitter
 wikipedia-es

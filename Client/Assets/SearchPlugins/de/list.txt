@@ -1,6 +1,6 @@
+duckduckgo
 amazon-de
 bing
-duckduckgo
 google
 twitter
 wikipedia-de
