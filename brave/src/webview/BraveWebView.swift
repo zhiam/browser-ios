@@ -84,7 +84,12 @@ class BraveWebView: UIWebView {
             self.uniqueId = BraveWebView.webViewCounter
             BraveWebView.idToWebview.setObject(self, forKey: uniqueId)
         } else {
-            assert(BraveWebView.webViewCounter == 1)
+            if BraveWebView.webViewCounter > 1 {
+                // We shouldn't get here, we allow the first webview to have no user agent, and we special-case the look up. The first webview inits the UA from its built in defaults
+                // If we get to more than one, just use a hard coded user agent, to avoid major bugs
+                let device = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? "iPhone" : "iPad"
+                BraveWebView.webviewBuiltinUserAgent = "Mozilla/5.0 (\(device)) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75"
+            }
             BraveWebView.idToWebview.setObject(self, forKey: 1) // the first webview, we don't have the user agent just yet
         }
     }
