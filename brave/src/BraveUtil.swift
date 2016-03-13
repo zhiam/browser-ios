@@ -98,3 +98,16 @@ func stripLocalhostWebServer(url: String) -> String {
 func stripGenericSubdomainPrefixFromUrl(url: String) -> String {
     return url.regexReplacePattern("^(m\\.|www\\.|mobile\\.)", with:"");
 }
+
+func addSkipBackupAttributeToItemAtURL(url:NSURL) {
+    let fileManager = NSFileManager.defaultManager()
+    #if DEBUG
+    assert(fileManager.fileExistsAtPath(url.path!))
+    #endif
+
+    do {
+        try url.setResourceValue(true, forKey: NSURLIsExcludedFromBackupKey)
+    } catch {
+        print("Error excluding \(url.lastPathComponent) from backup \(error)")
+    }
+}

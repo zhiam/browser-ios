@@ -73,6 +73,8 @@ class NetworkDataFileLoader {
             BraveApp.showErrorAlert(title: "Adblock error", error: "Failed to write data to \(path)")
         }
 
+        addSkipBackupAttributeToItemAtURL(NSURL(fileURLWithPath: dir, isDirectory: true))
+
         if let etagData = etag?.dataUsingEncoding(NSUTF8StringEncoding) {
             let etagPath = etagFileNameFromDataFile(path)
             if !etagData.writeToFile(etagPath, atomically: true) {
