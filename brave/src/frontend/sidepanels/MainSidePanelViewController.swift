@@ -34,7 +34,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         shadow.alpha = 0.8
 
         tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
-        tabTitleView.textColor = self.view.tintColor
         bookmarks.profile = getApp().profile
         history.profile = getApp().profile
 
