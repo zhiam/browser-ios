@@ -27,11 +27,13 @@ extension UILabel {
 class ButtonWithUnderlayView : UIButton {
     lazy var underlay: UIView = {
         let v = UIView()
-        v.backgroundColor = BraveUX.ProgressBarColor
-        v.layer.cornerRadius = 4
-        v.layer.borderWidth = 1
-        v.layer.borderColor = UIColor.clearColor().CGColor
-        v.layer.masksToBounds = true
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            v.backgroundColor = BraveUX.ProgressBarColor
+            v.layer.cornerRadius = 4
+            v.layer.borderWidth = 1
+            v.layer.borderColor = UIColor.clearColor().CGColor
+            v.layer.masksToBounds = true
+        }
         v.userInteractionEnabled = false
         v.hidden = true
         return v
@@ -231,7 +233,7 @@ class BraveURLBarView : URLBarView {
 
         leftSidePanelButton.underlay.snp_makeConstraints {
             make in
-            make.left.right.equalTo(leftSidePanelButton).inset(2)
+            make.left.right.equalTo(leftSidePanelButton).inset(4)
             make.top.bottom.equalTo(leftSidePanelButton).inset(7)
         }
 
