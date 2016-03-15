@@ -2,7 +2,7 @@
 
 which -s sigh
 if [[ $? != 0 ]] ; then
-  gem install fastlane --no-doc --no-ri --user-install
+  gem install fastlane --no-doc --no-ri --user-install -n/usr/local/bin
 fi
 
 rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/*
