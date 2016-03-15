@@ -123,7 +123,14 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
     func onClickAddTab() {
         let app = UIApplication.sharedApplication().delegate as! AppDelegate
-        app.tabManager.addTabAndSelect()
+        let isPrivate = getApp().browserViewController.tabManager.selectedTab?.isPrivate ?? false
+        if isPrivate {
+            if #available(iOS 9, *) {
+                app.tabManager.addTabAndSelect(nil, configuration: nil, isPrivate: true)
+            }
+        } else {
+            app.tabManager.addTabAndSelect()
+        }
         app.browserViewController.urlBar.browserLocationViewDidTapLocation(app.browserViewController.urlBar.locationView)
     }
 

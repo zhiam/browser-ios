@@ -21,11 +21,11 @@ struct TabsButtonUX {
     static let Themes: [String: Theme] = {
         var themes = [String: Theme]()
         var theme = Theme()
-        theme.borderColor = UIConstants.PrivateModePurple
-        theme.borderWidth = 1
+        theme.borderColor = BraveUX.BraveButtonMessageInUrlBarColor
+        theme.borderWidth = 2
         theme.font = UIConstants.DefaultChromeBoldFont
         theme.backgroundColor = UIConstants.AppBackgroundColor
-        theme.textColor = UIConstants.PrivateModePurple
+        theme.textColor = BraveUX.BraveButtonMessageInUrlBarColor
         theme.insets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         themes[Theme.PrivateMode] = theme
 
@@ -88,6 +88,14 @@ class TabsButton: UIControl {
 
     override func updateConstraints() {
         super.updateConstraints()
+
+        delay(0) { // can't change the traits during updateContraints
+            let isPrivate = getApp().browserViewController.tabManager.selectedTab?.isPrivate ?? false
+            if isPrivate {
+                self.applyTheme(Theme.PrivateMode)
+            }
+        }
+
         labelBackground.snp_remakeConstraints { (make) -> Void in
             make.edges.equalTo(insideButton)
         }

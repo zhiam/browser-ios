@@ -2554,7 +2554,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 }
                 actionSheetController.addAction(openNewTabAction)
             }
-#if !BRAVE
             if #available(iOS 9, *) {
                 let openNewPrivateTabTitle = NSLocalizedString("Open In New Private Tab", tableName: "PrivateBrowsing", comment: "Context menu option for opening a link in a new private tab")
                 let openNewPrivateTabAction =  UIAlertAction(title: openNewPrivateTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
@@ -2564,7 +2563,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 }
                 actionSheetController.addAction(openNewPrivateTabAction)
             }
-#endif
             let copyTitle = NSLocalizedString("Copy Link", comment: "Context menu item for copying a link URL to the clipboard")
             let copyAction = UIAlertAction(title: copyTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
                 let pasteBoard = UIPasteboard.generalPasteboard()
