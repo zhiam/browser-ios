@@ -37,6 +37,12 @@ class Browser: NSObject, BrowserWebViewDelegate {
             }
         }
         set {
+            if newValue {
+                PrivateBrowsing.singleton.enter()
+            }
+            else {
+                PrivateBrowsing.singleton.exit()
+            }
             _isPrivate = newValue
         }
     }

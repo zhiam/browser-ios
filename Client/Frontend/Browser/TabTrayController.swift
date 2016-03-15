@@ -534,7 +534,6 @@ class TabTrayController: UIViewController {
             tabManager.removeAllPrivateTabsAndNotify(false)
             PrivateBrowsing.singleton.exit()
         }
-        togglePrivateMode.selected = privateMode
 #else
         // If we are exiting private mode and we have the close private tabs option selected, make sure
         // we clear out all of the private tabs

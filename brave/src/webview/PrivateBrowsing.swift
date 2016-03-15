@@ -72,6 +72,10 @@ class PrivateBrowsing {
 
     func enter() {
 #if !BRAVE_NO_PRIVATE_MODE
+        if isOn {
+            return
+        }
+
         isOn = true
 
         cookiesFileDiskOperation(.SavePublicBackup)

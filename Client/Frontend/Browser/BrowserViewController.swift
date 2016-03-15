@@ -2544,24 +2544,30 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         if let url = elements.link, currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString
             let isPrivate = currentTab.isPrivate
-            if !isPrivate {
-                let newTabTitle = NSLocalizedString("Open In New Tab", comment: "Context menu item for opening a link in a new tab")
-                let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
-                    actionSheetController.view.tag = 0 // BRAVE: clear this to allow navigation
-                    self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in
+            let newTabTitle = NSLocalizedString("Open In Background", comment: "Context menu item for opening a link in a new tab")
+            let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
+                actionSheetController.view.tag = 0 // BRAVE: clear this to allow navigation
+                self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in
+                    if #available(iOS 9, *) {
+                        self.tabManager.addTab(NSURLRequest(URL: url), isPrivate: isPrivate)
+                    } else {
                         self.tabManager.addTab(NSURLRequest(URL: url))
-                    })
-                }
-                actionSheetController.addAction(openNewTabAction)
+                    }
+                })
             }
+            actionSheetController.addAction(openNewTabAction)
+
             if #available(iOS 9, *) {
-                let openNewPrivateTabTitle = NSLocalizedString("Open In New Private Tab", tableName: "PrivateBrowsing", comment: "Context menu option for opening a link in a new private tab")
-                let openNewPrivateTabAction =  UIAlertAction(title: openNewPrivateTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
-                    self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in
-                        self.tabManager.addTab(NSURLRequest(URL: url), isPrivate: true)
-                    })
+                if !isPrivate {
+                    let openNewPrivateTabTitle = NSLocalizedString("Open In New Private Tab", tableName: "PrivateBrowsing", comment: "Context menu option for opening a link in a new private tab")
+                    let openNewPrivateTabAction =  UIAlertAction(title: openNewPrivateTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
+                        self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in
+                            self.tabManager.addTabAndSelect(NSURLRequest(URL: url), isPrivate: true)
+
+                        })
+                    }
+                    actionSheetController.addAction(openNewPrivateTabAction)
                 }
-                actionSheetController.addAction(openNewPrivateTabAction)
             }
             let copyTitle = NSLocalizedString("Copy Link", comment: "Context menu item for copying a link URL to the clipboard")
             let copyAction = UIAlertAction(title: copyTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
