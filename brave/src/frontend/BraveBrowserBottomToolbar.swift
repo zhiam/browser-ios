@@ -202,5 +202,13 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
     override func updatePageStatus(isWebPage isWebPage: Bool) {
         super.updatePageStatus(isWebPage: isWebPage)
+
+        let isPrivate = getApp().browserViewController.tabManager.selectedTab?.isPrivate ?? false
+        if isPrivate {
+            delay(0) {
+                // ensure theme is applied after inital styling
+                self.applyTheme(Theme.PrivateMode)
+            }
+        }
     }
 }

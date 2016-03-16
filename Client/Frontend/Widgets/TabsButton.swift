@@ -12,7 +12,7 @@ private let log = Logger.browserLogger
 struct TabsButtonUX {
     static let TitleColor: UIColor = UIColor.blackColor()
     static let TitleBackgroundColor: UIColor = UIColor.whiteColor()
-    static let CornerRadius: CGFloat = 2
+    static let CornerRadius: CGFloat = 1
     static let TitleFont: UIFont = UIConstants.DefaultChromeSmallFontBold
     static let BorderStrokeWidth: CGFloat = 0
     static let BorderColor: UIColor = UIColor.clearColor()
@@ -88,13 +88,6 @@ class TabsButton: UIControl {
 
     override func updateConstraints() {
         super.updateConstraints()
-
-        delay(0) { // can't change the traits during updateContraints
-            let isPrivate = getApp().browserViewController.tabManager.selectedTab?.isPrivate ?? false
-            if isPrivate {
-                self.applyTheme(Theme.PrivateMode)
-            }
-        }
 
         labelBackground.snp_remakeConstraints { (make) -> Void in
             make.edges.equalTo(insideButton)
