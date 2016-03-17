@@ -116,7 +116,9 @@ class BraveWebView: UIWebView {
         guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
         if location != currentUrl {
             URL = NSURL(string: location)
-            kvoBroadcast([KVOStrings.kvoURL])
+            internalIsLoadingEndedFlag = false
+            loadingCompleted()
+            kvoBroadcast()
             #if DEBUG
             print("Page changed by url protocol: \(location)")
             #endif
