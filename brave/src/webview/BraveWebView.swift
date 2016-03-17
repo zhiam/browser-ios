@@ -211,6 +211,9 @@ class BraveWebView: UIWebView {
         NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil)
         LegacyUserContentController.injectJsIntoAllFrames(self, script: "document.body.style.webkitTouchCallout='none'")
 
+        print("Getting favicons")
+        stringByEvaluatingJavaScriptFromString("__firefox__.favicons.getFavicons()")
+
         #if !TEST
             replaceAdImages(self)
         #endif
