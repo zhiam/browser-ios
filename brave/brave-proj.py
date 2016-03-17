@@ -148,15 +148,6 @@ while line:
         out_lines.pop()
         infile.readline()
         line = infile.readline()
-    elif '/* Embed App Extensions */' in line:
-        # TODO use mod_pbxproj for this
-        # There are 2 entries for embed app extensions. The first is one-line, so skip writing it out.
-        # The 2nd is a multi-line block bounded by '= {' and '};'
-        if '= {' in line:
-            while line:
-                line = infile.readline()
-                if '};' in line:
-                    break
     elif 'CODE_SIGN_ENTITLEMENTS' in line:
         out_lines.append(' CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;\n')
     elif 'Breakpad.framework' in line and not line.rstrip().endswith('= {'):
