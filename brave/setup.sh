@@ -15,9 +15,7 @@ sed -e "s/BUNDLE_ID_PLACEHOLDER/$app_id/" Brave.entitlements.template > Brave.en
 
 npm update
 
-#output a placeholder id, Archive builds will generate a real build id
-echo GENERATED_BUILD_ID=1  > xcconfig/build-id.xcconfig
-## cp xcconfig/build-id.xcconfig ../Client/Configuration
+echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"`  > xcconfig/build-id.xcconfig
 
 #create the xcode project
 python brave-proj.py 
