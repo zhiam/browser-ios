@@ -307,11 +307,6 @@ class BraveWebView: UIWebView {
 
     // Long press context menu text selection overriding
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if (action.description.lowercaseString.contains("define")) {
-            // This action leads to searching in Safari
-            // TODO replace with an action that keeps the search in our app
-            return false
-        }
         return super.canPerformAction(action, withSender: sender)
     }
 
