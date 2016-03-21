@@ -41,7 +41,14 @@ class BraveWebView: UIWebView {
     var certificateInvalidConnection:NSURLConnection?
 
     var estimatedProgress: Double = 0
-    var title: String = ""
+    var title: String = "" {
+        didSet {
+            if let item = backForwardList.currentItem {
+                item.title = title
+            }
+        }
+    }
+
     var URL: NSURL?
 
     var uniqueId = -1
@@ -105,24 +112,35 @@ class BraveWebView: UIWebView {
         return idToWebview.objectForKey(key) as? BraveWebView
     }
 
-    var currentMainDocFromNetworkLayer: String = ""
-    func networkLayerRequestMainDoc(mainDoc: NSURL?) {
-        if mainDoc?.absoluteString != nil {
+    var urlProtocolTriggeredLocationCheckTimer = NSTimer()
+    func urlProtocolTriggeredLocationCheck() {
+        if urlProtocolTriggeredLocationCheckTimer.valid || loading {
             return
         }
 
+        // Add a time delay so that multiple calls are aggregated
+        urlProtocolTriggeredLocationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: kTimeoutCheckLocation, userInfo: nil, repeats: false)
+    }
+
+    let kTimeoutCheckLocation = Selector("timeoutCheckLocation")
+    func timeoutCheckLocation() {
+        if loading {
+            return
+        }
         // Pushstate navigation can cause this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
         // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
         guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
-        if location != currentUrl {
-            URL = NSURL(string: location)
-            internalIsLoadingEndedFlag = false
-            loadingCompleted()
-            kvoBroadcast()
-            #if DEBUG
-            print("Page changed by url protocol: \(location)")
-            #endif
+        if location == currentUrl {
+            return
         }
+        URL = NSURL(string: location)
+        title = stringByEvaluatingJavaScriptFromString("document.title") ?? ""
+        internalIsLoadingEndedFlag = false // need to set this to bypass loadingCompleted() precondition
+        loadingCompleted()
+        kvoBroadcast()
+        #if DEBUG
+            print("Page changed by url protocol: \(location)")
+        #endif
     }
 
     override init(frame: CGRect) {
@@ -414,6 +432,7 @@ extension BraveWebView: UIWebViewDelegate {
         backForwardList.update(webView)
 
         if let nd = navigationDelegate {
+            // this triggers the network activity spinner
             nd.webView?(nullWebView, didStartProvisionalNavigation: nullWKNavigation)
         }
         progress?.webViewDidStartLoad()
@@ -433,10 +452,6 @@ extension BraveWebView: UIWebViewDelegate {
         //print("readyState:\(readyState)")
 
         title = webView.stringByEvaluatingJavaScriptFromString("document.title") ?? ""
-        if let item = backForwardList.currentItem {
-            item.title = title
-        }
-
         progress?.webViewDidFinishLoad(documentReadyState: readyState)
 
         kvoBroadcast()

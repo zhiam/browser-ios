@@ -26,9 +26,16 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
-        let ua = request.allHTTPHeaderFields?["User-Agent"]
-        ensureMainThread() {
-            BraveWebView.userAgentToWebview(ua)?.networkLayerRequestMainDoc(request.mainDocumentURL)
+        // Handle navigations that don't trigger UIWebView shouldStartLoadWithRequest
+        if let foregroundWebView = BraveApp.getCurrentWebView() {
+            let ua = request.allHTTPHeaderFields?["User-Agent"]
+            let webViewFromUA = BraveWebView.userAgentToWebview(ua)
+            if ua == nil || // React router case: user-agent will be nil, mainDoc is nil
+               (webViewFromUA == foregroundWebView && request.mainDocumentURL != nil) { // Youtube navigation does this case
+                ensureMainThread() {
+                    foregroundWebView.urlProtocolTriggeredLocationCheck()
+                }
+            }
         }
 
         guard let url = request.URL else { return false }
@@ -101,9 +108,18 @@ class URLProtocol: NSURLProtocol {
             // TODO handle https redirect loop
             newRequest.URL = redirectedUrl
             #if DEBUG
-                print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
+                //print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
             #endif
-            self.connection = NSURLConnection(request: newRequest, delegate: self)
+
+            if url == request.mainDocumentURL {
+                returnEmptyResponse()
+                let ua = request.allHTTPHeaderFields?["User-Agent"]
+                ensureMainThread() {
+                    BraveWebView.userAgentToWebview(ua)?.loadRequest(newRequest)
+                }
+            } else {
+                self.connection = NSURLConnection(request: newRequest, delegate: self)
+            }
         } else {
             // Only other possibility of why we are here is ABP or TP is blocking
             self.connection = NSURLConnection(request: newRequest, delegate: self)
