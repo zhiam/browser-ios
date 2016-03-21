@@ -689,6 +689,19 @@ extension TabManager {
 extension TabManager : WKNavigationDelegate {
     func webView(_: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+
+#if BRAVE
+        var hider: (Void -> Void)!
+        hider = {
+            delay(1) {
+                self.hideNetworkActivitySpinner()
+                if UIApplication.sharedApplication().networkActivityIndicatorVisible {
+                    hider()
+                }
+            }
+        }
+        hider()
+#endif
     }
 
     func webView(webView: WKWebView, didFinishNavigation _: WKNavigation!) {
