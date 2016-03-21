@@ -118,7 +118,7 @@ class BrowserLocationView: UIView {
     }()
 
     private lazy var lockImageView: UIImageView = {
-        let lockImageView = UIImageView(image: UIImage(named: "lock_verified.png"))
+        let lockImageView = UIImageView(image: UIImage(named: "lock_verified"))
         lockImageView.hidden = true
         lockImageView.isAccessibilityElement = true
         lockImageView.contentMode = UIViewContentMode.Center
@@ -127,12 +127,13 @@ class BrowserLocationView: UIView {
     }()
 
     private lazy var privateBrowsingIconView: UIImageView = {
-        let lockImageView = UIImageView(image: UIImage(named: "lock_verified.png"))
-        lockImageView.hidden = true
-        lockImageView.isAccessibilityElement = true
-        lockImageView.contentMode = UIViewContentMode.Center
-        lockImageView.accessibilityLabel = NSLocalizedString("Private mode icon", comment: "Private mode icon next to location string")
-        return lockImageView
+        let icon = UIImageView(image: UIImage(named: "largePrivateMask")!.imageWithRenderingMode(.AlwaysTemplate))
+        icon.tintColor = UIColor.orangeColor()
+        icon.alpha = 0
+        icon.isAccessibilityElement = true
+        icon.contentMode = UIViewContentMode.ScaleAspectFit
+        icon.accessibilityLabel = NSLocalizedString("Private mode icon", comment: "Private mode icon next to location string")
+        return icon
     }()
 
     private lazy var readerModeButton: ReaderModeButton = {
@@ -160,19 +161,17 @@ class BrowserLocationView: UIView {
         addSubview(lockImageView)
         addSubview(readerModeButton)
 
-        privateBrowsingIconView.snp_makeConstraints() {
-            make in
-            make.leading.leading
-        }
+        privateBrowsingIconLayout()
 
         lockImageView.snp_makeConstraints { make in
-            make.leading.centerY.equalTo(self)
-            make.width.equalTo(self.lockImageView.intrinsicContentSize().width + CGFloat(BrowserLocationViewUX.LocationContentInset * 2))
+            make.centerY.equalTo(self)
+            make.left.equalTo(self.privateBrowsingIconView.snp_right).offset(BrowserLocationViewUX.LocationContentInset)
+            make.width.equalTo(self.lockImageView.intrinsicContentSize().width)
         }
 
         readerModeButton.snp_makeConstraints { make in
-            make.trailing.centerY.equalTo(self)
-            make.width.equalTo(self.readerModeButton.intrinsicContentSize().width + CGFloat(BrowserLocationViewUX.LocationContentInset * 2))
+            make.right.centerY.equalTo(self)
+            make.width.equalTo(self.readerModeButton.intrinsicContentSize().width)
         }
 
         braveProgressView.accessibilityLabel = "braveProgressView"
@@ -185,7 +184,7 @@ class BrowserLocationView: UIView {
 
     override var accessibilityElements: [AnyObject]! {
         get {
-            return [lockImageView, urlTextField, readerModeButton].filter { !$0.hidden }
+            return [privateBrowsingIconView, lockImageView, urlTextField, readerModeButton].filter { !$0.hidden }
         }
         set {
             super.accessibilityElements = newValue
@@ -197,23 +196,44 @@ class BrowserLocationView: UIView {
     }
 
     override func updateConstraints() {
+        privateBrowsingIconLayout()
+
         urlTextField.snp_remakeConstraints { make in
             make.top.bottom.equalTo(self)
 
             if lockImageView.hidden {
-                make.leading.equalTo(self).offset(BrowserLocationViewUX.LocationContentInset)
+                make.left.equalTo(self.privateBrowsingIconView.snp_right).offset(BrowserLocationViewUX.LocationContentInset)
             } else {
-                make.leading.equalTo(self.lockImageView.snp_trailing)
+                make.left.equalTo(self.lockImageView.snp_right).offset(BrowserLocationViewUX.LocationContentInset)
             }
 
             if readerModeButton.hidden {
-                make.trailing.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset)
+                make.right.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset)
             } else {
-                make.trailing.equalTo(self.readerModeButton.snp_leading)
+                make.right.equalTo(self.readerModeButton.snp_left)
             }
         }
 
         super.updateConstraints()
+    }
+
+    func showPrivateBrowsingIcon(enabled: Bool) {
+        privateBrowsingIconView.alpha = enabled ? 1.0 : 0.0
+        setNeedsUpdateConstraints()
+    }
+
+    private func privateBrowsingIconLayout() {
+        privateBrowsingIconView.snp_remakeConstraints() { make in
+            make.centerY.equalTo(self)
+
+            if self.privateBrowsingIconView.alpha > 0 {
+                make.width.equalTo(16)
+                make.left.equalTo(self).offset(BrowserLocationViewUX.LocationContentInset)
+            } else {
+                make.left.equalTo(self)
+                make.width.equalTo(0)
+            }
+        }
     }
 
     func SELtapReaderModeButton() {

@@ -1698,12 +1698,15 @@ extension BrowserViewController: TabManagerDelegate {
             ///wv.scrollView.hidden = true
         }
 
+
         if let tab = selected, webView = tab.webView {
             // if we have previously hidden this scrollview in order to make scrollsToTop work then
             // we should ensure that it is not hidden now that it is our foreground scrollView
 //            if webView.scrollView.hidden {
 //                webView.scrollView.hidden = false
 //            }
+
+            self.urlBar.locationView.showPrivateBrowsingIcon(tab.isPrivate)
 
             updateURLBarDisplayURL(tab)
 
