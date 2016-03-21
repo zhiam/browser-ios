@@ -126,6 +126,15 @@ class BrowserLocationView: UIView {
         return lockImageView
     }()
 
+    private lazy var privateBrowsingIconView: UIImageView = {
+        let lockImageView = UIImageView(image: UIImage(named: "lock_verified.png"))
+        lockImageView.hidden = true
+        lockImageView.isAccessibilityElement = true
+        lockImageView.contentMode = UIViewContentMode.Center
+        lockImageView.accessibilityLabel = NSLocalizedString("Private mode icon", comment: "Private mode icon next to location string")
+        return lockImageView
+    }()
+
     private lazy var readerModeButton: ReaderModeButton = {
         let readerModeButton = ReaderModeButton(frame: CGRectZero)
         readerModeButton.hidden = true
@@ -147,8 +156,14 @@ class BrowserLocationView: UIView {
         tapRecognizer = UITapGestureRecognizer(target: self, action: "SELtapLocation:")
 
         addSubview(urlTextField)
+        addSubview(privateBrowsingIconView)
         addSubview(lockImageView)
         addSubview(readerModeButton)
+
+        privateBrowsingIconView.snp_makeConstraints() {
+            make in
+            make.leading.leading
+        }
 
         lockImageView.snp_makeConstraints { make in
             make.leading.centerY.equalTo(self)
