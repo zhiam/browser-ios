@@ -128,7 +128,7 @@ class BrowserLocationView: UIView {
 
     private lazy var privateBrowsingIconView: UIImageView = {
         let icon = UIImageView(image: UIImage(named: "largePrivateMask")!.imageWithRenderingMode(.AlwaysTemplate))
-        icon.tintColor = UIColor.orangeColor()
+        icon.tintColor = BraveUX.BraveButtonMessageInUrlBarColor
         icon.alpha = 0
         icon.isAccessibilityElement = true
         icon.contentMode = UIViewContentMode.ScaleAspectFit
