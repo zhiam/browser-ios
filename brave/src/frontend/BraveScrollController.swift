@@ -106,7 +106,8 @@ class BraveScrollController: NSObject {
 
         if !isScrollHeightIsLargeEnoughForScrolling() {
             if (scrollView?.contentInset.bottom == 0) {
-                scrollView?.contentInset = UIEdgeInsetsMake(0, 0, UIConstants.ToolbarHeight * 2, 0)
+                let h = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? UIConstants.ToolbarHeight * 2 : UIConstants.ToolbarHeight
+                scrollView?.contentInset = UIEdgeInsetsMake(0, 0, h, 0)
             }
         } else {
             if (scrollView?.contentInset.bottom != 0) {
