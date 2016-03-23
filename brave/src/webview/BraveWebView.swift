@@ -112,18 +112,19 @@ class BraveWebView: UIWebView {
         return idToWebview.objectForKey(key) as? BraveWebView
     }
 
-    var urlProtocolTriggeredLocationCheckTimer = NSTimer()
-    func urlProtocolTriggeredLocationCheck() {
-        if urlProtocolTriggeredLocationCheckTimer.valid || loading {
+    var triggeredLocationCheckTimer = NSTimer()
+    // On page load, the contentSize of the webview is updated. If the webview has not been notified of a page change (i.e. shouldStartLoadWithRequest was never called) then 'loading' will be false, and we should check the page location using JS.
+    func contentSizeTriggeredLocationCheck() {
+        if triggeredLocationCheckTimer.valid || loading {
             return
         }
 
         // Add a time delay so that multiple calls are aggregated
-        urlProtocolTriggeredLocationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: kTimeoutCheckLocation, userInfo: nil, repeats: false)
+        triggeredLocationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: kTimeoutCheckLocation, userInfo: nil, repeats: false)
     }
 
     let kTimeoutCheckLocation = Selector("timeoutCheckLocation")
-    func timeoutCheckLocation() {
+    @objc func timeoutCheckLocation() {
         if loading {
             return
         }
@@ -139,7 +140,7 @@ class BraveWebView: UIWebView {
         loadingCompleted()
         kvoBroadcast()
         #if DEBUG
-            print("Page changed by url protocol: \(location)")
+            print("Page change detected by content size change triggered timer: \(location)")
         #endif
     }
 

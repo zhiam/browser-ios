@@ -26,18 +26,6 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
-        // Handle navigations that don't trigger UIWebView shouldStartLoadWithRequest
-        if let foregroundWebView = BraveApp.getCurrentWebView() {
-            let ua = request.allHTTPHeaderFields?["User-Agent"]
-            let webViewFromUA = BraveWebView.userAgentToWebview(ua)
-            if ua == nil || // React router case: user-agent will be nil, mainDoc is nil
-               (webViewFromUA == foregroundWebView && request.mainDocumentURL != nil) { // Youtube navigation does this case
-                ensureMainThread() {
-                    foregroundWebView.urlProtocolTriggeredLocationCheck()
-                }
-            }
-        }
-
         guard let url = request.URL else { return false }
         let useCustomUrlProtocol = TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request) || HttpsEverywhere.singleton.tryRedirectingUrl(url) != nil
 
