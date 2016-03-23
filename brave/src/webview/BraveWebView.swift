@@ -131,7 +131,7 @@ class BraveWebView: UIWebView {
         // Pushstate navigation can cause this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
         // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
         guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
-        if location == currentUrl {
+        if location == currentUrl || location.contains("about:") || location.contains("//localhost") {
             return
         }
         URL = NSURL(string: location)
