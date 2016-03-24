@@ -153,5 +153,6 @@ class URLProtocol: NSURLProtocol {
     
     func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
         self.client!.URLProtocol(self, didFailWithError: error)
+        print("* Error url: \(self.request.URLString)\n* Details: \(error)")
     }
 }
