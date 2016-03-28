@@ -3,6 +3,7 @@
 #import "Swizzling.h"
 #import <libkern/OSAtomic.h>
 
+
 @implementation UIScrollView(DetectWebViewRender)
 
 + (void)load
@@ -22,9 +23,9 @@ volatile int32_t shouldCheck = 0;
 
 /* UIWebView page drawing is accompanied by calls to this. In order to detect a render (and to take action post-render) send a notification.
  */
-- (void)swizzled_setContentOffset: (CGFloat)f
+- (void)swizzled_setContentOffset:(CGPoint)p
 {
-    [self swizzled_setContentOffset:f];
+    [self swizzled_setContentOffset:p];
 
     if (OSAtomicOr32(0, (uint32_t*)&shouldCheck) == 0) {
         return;
