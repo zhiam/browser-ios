@@ -87,6 +87,10 @@ class HistorySwiper {
 #endif
 
     private func handleSwipe(recognizer: UIScreenEdgePanGestureRecognizer) {
+        if getApp().browserViewController.homePanelController != nil {
+            return
+        }
+
         guard let tab = getApp().browserViewController.tabManager.selectedTab else { return }
 
         if let wv = tab.webView where (recognizer.edges == .Left && !wv.canNavigateBackward()) ||
