@@ -113,11 +113,9 @@ class BraveWebView: UIWebView {
     }
 
     var triggeredLocationCheckTimer = NSTimer()
-    // On page load, the contentSize of the webview is updated. If the webview has not been notified of a page change (i.e. shouldStartLoadWithRequest was never called) then 'loading' will be false, and we should check the page location using JS.
+    // On page load, the contentSize of the webview is updated (**). If the webview has not been notified of a page change (i.e. shouldStartLoadWithRequest was never called) then 'loading' will be false, and we should check the page location using JS.
+    // (** Not always updated, particularly on back/forward. For instance load duckduckgo.com, then google.com, and go back. No content size change detected.)
     func contentSizeChangeDetected() {
-
-        (getApp().browserViewController as! BraveBrowserViewController).historySwiper.restoreWebview()
-
         if triggeredLocationCheckTimer.valid || loading {
             return
         }

@@ -64,15 +64,19 @@ class HistorySwiper {
 
     lazy var goBackSwipe: UIScreenEdgePanGestureRecognizer = {
         let pan = UIScreenEdgePanGestureRecognizer(target: self, action: "screenLeftEdgeSwiped:")
-        self.topLevelView.addGestureRecognizer(pan)
+        self.topLevelView.superview!.addGestureRecognizer(pan)
         return pan
     }()
 
     lazy var goForwardSwipe: UIScreenEdgePanGestureRecognizer = {
         let pan = UIScreenEdgePanGestureRecognizer(target: self, action: "screenRightEdgeSwiped:")
-        self.topLevelView.addGestureRecognizer(pan)
+        self.topLevelView.superview!.addGestureRecognizer(pan)
         return pan
     }()
+
+    @objc func updateDetected() {
+        restoreWebview()
+    }
 
     func screenWidth() -> CGFloat {
         return topLevelView.frame.width
@@ -117,6 +121,9 @@ class HistorySwiper {
                         delay(3.0) {
                             self.restoreWebview()
                         }
+                        NSNotificationCenter.defaultCenter().removeObserver(self)
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateDetected", name: "ScrollViewDetectedWebViewRender", object: nil)
+                        UIScrollView.listenForRender()
                     } else {
                         getApp().browserViewController.scrollController.edgeSwipingActive = false
 #if IMAGE_SWIPE_ON
@@ -146,9 +153,15 @@ class HistorySwiper {
     }
 
     func restoreWebview() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         if webViewContainer.alpha < 1 && getApp().browserViewController.scrollController.edgeSwipingActive {
-            webViewContainer.alpha = 1.0
             getApp().browserViewController.scrollController.edgeSwipingActive = false
+            delay(0.4) { // after a render detected, allow ample time for drawing to complete
+                UIView.animateWithDuration(0.2) {
+                    self.webViewContainer.alpha = 1.0
+                }
+            }
+
 #if IMAGE_SWIPE_ON
             if let v = self.imageView {
                 v.removeFromSuperview()
