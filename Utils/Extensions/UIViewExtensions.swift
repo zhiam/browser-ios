@@ -12,20 +12,33 @@ extension UIView {
         assert(0...1 ~= quality)
 
         let offset = offset ?? CGPointMake(0, 0)
-
-        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.mainScreen().scale * quality)
+        UIGraphicsBeginImageContextWithOptions(size, true, UIScreen.mainScreen().scale * quality)
         drawViewHierarchyInRect(CGRect(origin: offset, size: frame.size), afterScreenUpdates: false)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
         return image
+
+        // Migrate to use this alternate method which is 3x faster, but returns UIViews
+        //        let startTime = CFAbsoluteTimeGetCurrent()
+        //        let snap = snapshotViewAfterScreenUpdates(false)
+        //        addSubview(snap)
+        //        snap.frame = CGRectMake(0, 0, 200, 200)
+        //
+        //        UIGraphicsBeginImageContext(snap.frame.size)
+        //        snap.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        //        let image = UIGraphicsGetImageFromCurrentImageContext()
+        //        UIGraphicsEndImageContext()
+        //
+        //        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        //        print("Time elapsed for screenshot: \(timeElapsed) s")
+        //        return image
     }
 
     /**
      * Takes a screenshot of the view with the given aspect ratio.
      * An aspect ratio of 0 means capture the entire view.
      */
-    func screenshot(aspectRatio: CGFloat = 0, offset: CGPoint? = nil, quality: CGFloat = 1) -> UIImage? {
+    func screenshot(aspectRatio: CGFloat = 0, offset: CGPoint? = nil, quality: CGFloat = 1.0) -> UIImage? {
         assert(aspectRatio >= 0)
 
         var size: CGSize
