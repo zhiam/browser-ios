@@ -40,6 +40,9 @@ class BraveWebView: UIWebView {
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
 
+    var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
+    var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
+
     var estimatedProgress: Double = 0
     var title: String = "" {
         didSet {
@@ -194,12 +197,21 @@ class BraveWebView: UIWebView {
         commonInit()
     }
 
-    func destroy() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        progress = nil
-    }
-
     deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+
+        _ = Try(withTry: {
+            self.removeBvcObserversOnDeinit?(self)
+        }) { (exception) -> Void in
+            print("Failed remove: \(exception)")
+        }
+
+       _ = Try(withTry: {
+            self.removeProgressObserversOnDeinit?(self)
+        }) { (exception) -> Void in
+            print("Failed remove: \(exception)")
+        }
+
         print("webview deinit \(title) ")
     }
 

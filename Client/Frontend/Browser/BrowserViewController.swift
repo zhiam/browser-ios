@@ -1432,15 +1432,21 @@ extension BrowserViewController: WindowCloseHelperDelegate {
 extension BrowserViewController: BrowserDelegate {
 
     func browser(browser: Browser, didCreateWebView webView: BraveWebView) {
-        // Observers that live as long as the tab. Make sure these are all cleared
-        // in willDeleteWebView below!
-        webView.addObserver(self, forKeyPath: KVOEstimatedProgress, options: .New, context: nil)
-        webView.addObserver(self, forKeyPath: KVOLoading, options: .New, context: nil)
-        webView.addObserver(self, forKeyPath: KVOCanGoBack, options: .New, context: nil)
-        webView.addObserver(self, forKeyPath: KVOCanGoForward, options: .New, context: nil)
-        browser.webView?.addObserver(self, forKeyPath: KVOURL, options: .New, context: nil)
+        // Observers that live as long as the tab.
+        let observed = [KVOEstimatedProgress, KVOLoading, KVOCanGoBack, KVOCanGoForward, KVOURL]
+        for key in observed {
+            webView.addObserver(self, forKeyPath: key, options: .New, context: nil)
+        }
 
         webView.scrollView.addObserver(self.scrollController, forKeyPath: KVOContentSize, options: .New, context: nil)
+
+        webView.removeBvcObserversOnDeinit = {
+            [unowned self, weak sc = self.scrollController] (wv) in
+            for key in observed {
+                wv.removeObserver(self, forKeyPath: key)
+            }
+            wv.scrollView.removeObserver(sc!, forKeyPath: KVOContentSize)
+        }
 
 #if !BRAVE
         webView.UIDelegate = self /// these are for javascript alert panels
@@ -1494,13 +1500,6 @@ extension BrowserViewController: BrowserDelegate {
 
     func browser(browser: Browser, willDeleteWebView webView: BraveWebView) {
         browser.cancelQueuedAlerts()
-
-        webView.removeObserver(self, forKeyPath: KVOEstimatedProgress)
-        webView.removeObserver(self, forKeyPath: KVOLoading)
-        webView.removeObserver(self, forKeyPath: KVOCanGoBack)
-        webView.removeObserver(self, forKeyPath: KVOCanGoForward)
-        webView.scrollView.removeObserver(self.scrollController, forKeyPath: KVOContentSize)
-        webView.removeObserver(self, forKeyPath: KVOURL)
 
 #if !BRAVE // todo create a fake proxy for this. it is unused completely ATM
         webView.UIDelegate = nil

@@ -31,16 +31,13 @@ public class WebViewProgress
 
         let kvoLoading = "loading"
 
-        private var context = 0
-
         init(webView:BraveWebView) {
             self.webView = webView
             super.init()
-            webView.addObserver(self, forKeyPath: kvoLoading, options: .New, context: &context)
-        }
-
-        deinit {
-            webView?.removeObserver(self, forKeyPath: kvoLoading, context: &context)
+            webView.addObserver(self, forKeyPath: kvoLoading, options: .New, context: nil)
+            webView.removeProgressObserversOnDeinit = { [unowned self] (view) in
+                view.removeObserver(self, forKeyPath: "loading")
+            }
         }
 
         @objc func delayedCompletionCheck() {

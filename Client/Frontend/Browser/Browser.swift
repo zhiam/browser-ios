@@ -224,7 +224,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 self.sessionData = SessionData(currentPage: currentPage, currentTitle: title, urls: urls, lastUsedTime: lastExecutedTime ?? NSDate.now())
             }
             browserDelegate?.browser(self, willDeleteWebView: webView)
-            webView.destroy()
             self.webView = nil
         }
     }
