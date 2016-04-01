@@ -24,8 +24,6 @@ class BravePageUnloadHelper: NSObject, BrowserHelper {
     }
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-
-        //guard let data = message.body as? [String: AnyObject] else { return }
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: browser?.webView)
     }
 }

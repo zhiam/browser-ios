@@ -92,7 +92,7 @@ class BraveApp {
         #if DEBUG
             #if !TEST
                 if BraveUX.DebugShowBorders {
-                    UIView.bordersOn()
+                    
                 }
             #endif
             // desktop UA for testing

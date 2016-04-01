@@ -138,6 +138,7 @@ class BraveWebView: UIWebView {
         if location == currentUrl || location.contains("about:") || location.contains("//localhost") {
             return
         }
+        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
         URL = NSURL(string: location)
         title = stringByEvaluatingJavaScriptFromString("document.title") ?? ""
         internalIsLoadingEndedFlag = false // need to set this to bypass loadingCompleted() precondition
