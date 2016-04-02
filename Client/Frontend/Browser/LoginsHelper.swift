@@ -16,9 +16,9 @@ private let UpdateButtonTitle = NSLocalizedString("Update", comment: "Button to 
 private let YesButtonTitle = NSLocalizedString("Yes", comment: "Button to save the user's password")
 
 class LoginsHelper: BrowserHelper {
-    private weak var browser: Browser?
     private let profile: Profile
-    private var snackBar: SnackBar?
+    weak var browser: Browser?
+    var snackBar: SnackBar?
 
     // Exposed for mocking purposes
     var logins: BrowserLogins {
@@ -37,6 +37,12 @@ class LoginsHelper: BrowserHelper {
             let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: false)
             browser.webView!.configuration.userContentController.addUserScript(userScript)
         }
+
+        registerPageListenersFor1PW()
+    }
+
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     func scriptMessageHandlerName() -> String? {
@@ -59,6 +65,8 @@ class LoginsHelper: BrowserHelper {
                    let requestId = res["requestId"] as? String {
                     requestLogins(login, requestId: requestId)
                 }
+
+                onePasswordSnackbar()
             } else if type == "submit" {
                 if self.profile.prefs.boolForKey("saveLogins") ?? true {
                     if let login = Login.fromScript(url, script: res) {

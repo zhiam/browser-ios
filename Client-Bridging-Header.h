@@ -16,7 +16,7 @@
 #import "LegacyJSContext.h"
 #import "AdBlockCppFilter.h"
 #import "TrackingProtectionCpp.h"
-#import "UIView+ShowBorders.h"
+#import "UIAlertController+Hide.h"
 #import "ODRefreshControl.h"
 #import "UIScrollView+DetectWebViewRender.h"
 #endif
