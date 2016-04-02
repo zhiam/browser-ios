@@ -311,7 +311,7 @@ class TopSitesLayout: UICollectionViewLayout {
 
     private var thumbnailRows: Int {
         assert(NSThread.isMainThread(), "Interacts with UIKit components - not thread-safe.")
-        return max(2, Int((self.collectionView?.frame.height ?? self.thumbnailHeight) / self.thumbnailHeight))
+        return max(2, Int((self.collectionView?.frame.height ?? self.thumbnailHeight) / self.thumbnailHeight)) + 1 // BRAVE added one extra
     }
 
     private var thumbnailCols: Int {
@@ -319,29 +319,31 @@ class TopSitesLayout: UICollectionViewLayout {
 
         let size = collectionView?.bounds.size ?? CGSizeZero
         let traitCollection = collectionView!.traitCollection
+        var cols = 0
         if traitCollection.horizontalSizeClass == .Compact {
             // Landscape iPHone
             if traitCollection.verticalSizeClass == .Compact {
-                return 5
+                cols = 5
             }
             // Split screen iPad width
             else if size.widthLargerOrEqualThanHalfIPad() ?? false {
-                return 4
+                cols = 4
             }
             // iPhone portrait
             else {
-                return 3
+                cols = 3
             }
         } else {
             // Portrait iPad
             if size.height > size.width {
-                return 4;
+                cols = 4;
             }
             // Landscape iPad
             else {
-                return 5;
+                cols = 5;
             }
         }
+        return cols + 1 // BRAVE added one extra
     }
 
     private var width: CGFloat {
