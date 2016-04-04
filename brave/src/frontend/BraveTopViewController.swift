@@ -147,6 +147,7 @@ class BraveTopViewController : UIViewController {
     let SEL_onClickLeftSlideOut = "onClickLeftSlideOut:"
     func onClickLeftSlideOut(notification: NSNotification) {
         leftSidePanelButtonAndUnderlay = notification.object as? ButtonWithUnderlayView
+        mainSidePanel.setupUI()
         togglePanel(mainSidePanel)
     }
 

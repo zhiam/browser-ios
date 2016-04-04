@@ -28,6 +28,12 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+
+    func setupUI() {
+        if shadow.image != nil {
+            return
+        }
 
         shadow.image = UIImage(named: "panel_shadow")
         shadow.contentMode = .ScaleToFill
