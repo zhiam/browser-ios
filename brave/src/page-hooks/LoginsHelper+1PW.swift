@@ -55,7 +55,7 @@ extension LoginsHelper {
             getApp().browserViewController.view.addSubview(iPadOffscreenView)
         }
 
-        OnePasswordExtension.sharedExtension().fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: false) { (success, error) -> Void in
+        OnePasswordExtension.sharedExtension().fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
             iPadOffscreenView.removeFromSuperview()
             UIAlertController.hackyHideOn(false)
 
@@ -64,29 +64,35 @@ extension LoginsHelper {
             }
         }
 
-        var found = false
+        var foundShareSection = false
 
         // recurse through items until the 1pw share item is found
         func selectOnePasswordShareItem(v: UIView) {
+            if foundShareSection {
+                return
+            }
+
             for i in v.subviews {
                 if i.description.contains("UICollectionViewControllerWrapperView") {
                     let wrapperCell = i.subviews.first?.subviews[1] as? UICollectionViewCell
                     if let collectionView = wrapperCell?.subviews.first?.subviews.first?.subviews.first as? UICollectionView {
-                        collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: UICollectionViewScrollPosition.Left)
-                        collectionView.delegate?.collectionView?(collectionView, didSelectItemAtIndexPath:NSIndexPath(forItem: 0, inSection: 0))
-                        found = true
+
+                        foundShareSection = true
+
+                        let indexPath = NSIndexPath(forItem: 0, inSection: 0)
+                        let suspectCell = collectionView.cellForItemAtIndexPath(indexPath)
+                        if suspectCell?.subviews.first?.subviews.last?.description.contains("1Password") ?? false {
+                            collectionView.delegate?.collectionView?(collectionView, didSelectItemAtIndexPath:indexPath)
+                        }
                         return
                     }
                 }
                 selectOnePasswordShareItem(i)
             }
         }
-        selectOnePasswordShareItem(getApp().window!)
-
-        if !found {
-            delay(0.2) {
-                selectOnePasswordShareItem(getApp().window!)
-            }
+        delay(0.2) {
+            // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
+            selectOnePasswordShareItem(getApp().window!)
         }
     }
 }
