@@ -6,6 +6,11 @@ import Foundation
 import Shared
 import XCGLogger
 
+#if BRAVE
+    public let TableOnePasswordNoPopup =  "one_password_no_popup"
+#endif
+
+
 let BookmarksFolderTitleMobile = NSLocalizedString("Mobile Bookmarks", tableName: "Storage", comment: "The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.")
 let BookmarksFolderTitleMenu = NSLocalizedString("Bookmarks Menu", tableName: "Storage", comment: "The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.")
 let BookmarksFolderTitleToolbar = NSLocalizedString("Bookmarks Toolbar", tableName: "Storage", comment: "The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.")
@@ -46,6 +51,8 @@ private let AllTables: [String] = [
     TableBookmarksMirrorStructure,
 
     TableQueuedTabs,
+
+    TableOnePasswordNoPopup,
 ]
 
 private let AllViews: [String] = [
@@ -69,7 +76,7 @@ private let log = Logger.syncLogger
  * We rely on SQLiteHistory having initialized the favicon table first.
  */
 public class BrowserTable: Table {
-    static let DefaultVersion = 11
+    static let DefaultVersion = 12
 
     // TableInfo fields.
     var name: String { return "BROWSER" }
@@ -151,6 +158,13 @@ public class BrowserTable: Table {
 
         return self.run(db, sql: sql, args: args)
     }
+
+    let tableOnePasswordNoPopupCreate =
+        "CREATE TABLE IF NOT EXISTS \(TableOnePasswordNoPopup) (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "domain TEXT NOT NULL UNIQUE" +
+    ")"
+
 
     let topSitesTableCreate =
         "CREATE TABLE IF NOT EXISTS \(TableCachedTopSites) (" +
@@ -442,6 +456,12 @@ public class BrowserTable: Table {
 
         if from < 11 && to >= 11 {
             if !self.run(db, sql: self.topSitesTableCreate) {
+                return false
+            }
+        }
+
+        if from < 12 && to >= 12 {
+            if !self.run(db, sql: self.tableOnePasswordNoPopupCreate) {
                 return false
             }
         }
