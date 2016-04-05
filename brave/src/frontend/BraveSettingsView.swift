@@ -79,7 +79,7 @@ class BraveSettingsView : AppSettingsTableViewController {
 //                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
         ]
 
-        if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+        if BraveApp.isOnePasswordInstalled(refreshLookup: true) {
             generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefNameOnePasswordShortcutEnabled, defaultValue: true, titleText: "1Password Shortcut"))
         }
 

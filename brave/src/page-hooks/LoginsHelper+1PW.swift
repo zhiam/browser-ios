@@ -5,9 +5,11 @@ import Shared
 import Storage
 import Deferred
 
-let iPadOffscreenView = UIView(frame: CGRectMake(3000,0,1,1))
+var iPadOffscreenView = UIView(frame: CGRectMake(3000,0,1,1))
 let tagFor1PwSnackbar = 8675309
 var noPopupOnSites: [String] = []
+
+let kPrefNameOnePasswordShortcutEnabled = "onepassword-shortcut"
 
 extension LoginsHelper {
     func registerPageListenersFor1PW() {
@@ -17,7 +19,8 @@ extension LoginsHelper {
     }
 
     func onePasswordSnackbar() {
-        if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+        let isEnabled = BraveApp.getPrefs()?.boolForKey(kPrefNameOnePasswordShortcutEnabled) ?? true
+        if !BraveApp.isOnePasswordInstalled(refreshLookup: false) || !isEnabled {
             return
         }
 
@@ -103,27 +106,36 @@ extension LoginsHelper {
     }
 
     @objc func onePwTapped() {
-        UIAlertController.hackyHideOn(true)
-        let sender:UIView = UIDevice.currentDevice().userInterfaceIdiom == .Pad ? iPadOffscreenView : snackBar!
+        browser?.removeSnackbar(snackBar!)
+        let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad && iPadOffscreenView.superview == nil {
+        if !isIPad {
+            UIAlertController.hackyHideOn(true)
+        }
+
+        let sender:UIView = isIPad ? iPadOffscreenView : snackBar!
+
+        if isIPad && iPadOffscreenView.superview == nil {
             getApp().browserViewController.view.addSubview(iPadOffscreenView)
         }
 
         OnePasswordExtension.sharedExtension().fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
-            iPadOffscreenView.removeFromSuperview()
-            UIAlertController.hackyHideOn(false)
+            if isIPad {
+                iPadOffscreenView.removeFromSuperview()
+            } else {
+                UIAlertController.hackyHideOn(false)
+            }
 
             if success == false {
                 print("Failed to fill into webview: <\(error)>")
             }
         }
 
-        var foundShareSection = false
+        var found = false
 
         // recurse through items until the 1pw share item is found
         func selectOnePasswordShareItem(v: UIView) {
-            if foundShareSection {
+            if found {
                 return
             }
 
@@ -132,12 +144,11 @@ extension LoginsHelper {
                     let wrapperCell = i.subviews.first?.subviews[1] as? UICollectionViewCell
                     if let collectionView = wrapperCell?.subviews.first?.subviews.first?.subviews.first as? UICollectionView {
 
-                        foundShareSection = true
-
                         let indexPath = NSIndexPath(forItem: 0, inSection: 0)
                         let suspectCell = collectionView.cellForItemAtIndexPath(indexPath)
                         if suspectCell?.subviews.first?.subviews.last?.description.contains("1Password") ?? false {
                             collectionView.delegate?.collectionView?(collectionView, didSelectItemAtIndexPath:indexPath)
+                            found = true
                         }
                         return
                     }
@@ -148,6 +159,18 @@ extension LoginsHelper {
         delay(0.2) {
             // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
             selectOnePasswordShareItem(getApp().window!)
+
+            if !found {
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                    UIActivityViewController.hackyDismissal()
+                    iPadOffscreenView.removeFromSuperview()
+                    BraveApp.getPrefs()?.setBool(false, forKey: kPrefNameOnePasswordShortcutEnabled)
+                    BraveApp.showErrorAlert(title: "1Password shortcut error", error: "Disabling due to internal error. Please report this problem to support@brave.com.")
+                } else {
+                    // Just show the regular share screen, this isn't a fatal problem on iPhone
+                    UIAlertController.hackyHideOn(false)
+                }
+            }
         }
     }
 

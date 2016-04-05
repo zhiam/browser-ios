@@ -2,6 +2,8 @@
 
 import Foundation
 import Shared
+import OnePasswordExtension
+
 #if !NO_FABRIC
 import Fabric
 import Crashlytics
@@ -171,5 +173,14 @@ class BraveApp {
             return 0
         }
         return 20
+    }
+
+    static var is1PWInstalled: Bool?
+
+    static func isOnePasswordInstalled(refreshLookup refreshLookup: Bool) -> Bool {
+        if refreshLookup || is1PWInstalled == nil {
+            is1PWInstalled = OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
+        }
+        return is1PWInstalled!
     }
 }
