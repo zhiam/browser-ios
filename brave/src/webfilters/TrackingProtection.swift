@@ -25,8 +25,7 @@ class TrackingProtection {
     }
 
     func updateEnabledState() {
-        let obj = BraveApp.getPref(TrackingProtection.prefKeyTrackingProtectionOn)
-        isEnabled = obj as? Bool ?? true
+        isEnabled = BraveApp.getPrefs()?.boolForKey(TrackingProtection.prefKeyTrackingProtectionOn) ?? true
     }
 
     @objc func prefsChanged(info: NSNotification) {

@@ -1619,6 +1619,9 @@ extension BrowserViewController: BrowserDelegate {
     }
 
     func browser(browser: Browser, didAddSnackbar bar: SnackBar) {
+        if tabManager.selectedTab !== browser {
+            return
+        }
         showBar(bar, animated: true)
     }
 

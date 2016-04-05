@@ -31,8 +31,7 @@ class AdBlocker {
     }
 
     func updateEnabledState() {
-        let obj = BraveApp.getPref(AdBlocker.prefKeyAdBlockOn)
-        isEnabled = obj as? Bool ?? AdBlocker.prefKeyAdBlockOnDefaultValue
+        isEnabled = BraveApp.getPrefs()?.boolForKey(AdBlocker.prefKeyAdBlockOn) ?? AdBlocker.prefKeyAdBlockOnDefaultValue
     }
 
     @objc func prefsChanged(info: NSNotification) {

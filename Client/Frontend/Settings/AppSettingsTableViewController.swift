@@ -149,6 +149,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
         return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
     }
 
+#if !BRAVE
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if !profile.hasAccount() {
             let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SectionHeaderIdentifier) as! SettingsTableSectionHeaderFooterView
@@ -176,4 +177,5 @@ class AppSettingsTableViewController: SettingsTableViewController {
         
         return super.tableView(tableView, viewForHeaderInSection: section)
     }
+#endif
 }
