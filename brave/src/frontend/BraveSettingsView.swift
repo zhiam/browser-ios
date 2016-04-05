@@ -4,6 +4,7 @@
 import Crashlytics
 #endif
 import Shared
+import OnePasswordExtension
 
 class BraveSettingsView : AppSettingsTableViewController {
 
@@ -58,7 +59,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector:NSSelectorFromString(SEL_prefsChanged), name: NSUserDefaultsDidChangeNotification, object: nil)
 
         let prefs = profile.prefs
-        let generalSettings = [
+        var generalSettings = [
             SearchSetting(settings: self),
             BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyIsToolbarHidingEnabled , defaultValue: true, titleText: "Hide toolbar when scrolling", statusText: nil, settingDidChange:  { value in
                 BraveScrollController.hideShowToolbarEnabled = value
@@ -68,15 +69,21 @@ class BraveSettingsView : AppSettingsTableViewController {
                     UIAlertView(title: "Trigger a crash for testing", message: "Force a crash?", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK").show()
                     self.debugToggleItemToTriggerCrashCount = 0
                 } else {
-                    self.debugToggleItemToTriggerCrashCount++
+                    self.debugToggleItemToTriggerCrashCount += 1
                 }
-            })
+            }),
+            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
+                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager"))
+
 //            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
 //                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
-//            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
-//                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
         ]
-        
+
+        if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+            generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefNameOnePasswordShortcutEnabled, defaultValue: true, titleText: "1Password Shortcut"))
+        }
+
+
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
@@ -158,7 +165,7 @@ class CookieSetting: Setting, PicklistSettingDelegate {
     }
 
     static func setup() {
-        let current = BraveApp.getPref(CookieSetting.prefAcceptCookies) as? Int ?? 0
+        let current = BraveApp.getPrefs()?.intForKey(CookieSetting.prefAcceptCookies) ?? 0
         NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(current))
     }
 
@@ -169,8 +176,8 @@ class CookieSetting: Setting, PicklistSettingDelegate {
 
     var cookiePickList: PicklistSetting? // on iOS8 there is a crash, seems like it requires this to be retained
     override func onClick(navigationController: UINavigationController?) {
-        let current = BraveApp.getPref(CookieSetting.prefAcceptCookies) as? Int ?? 0
-        cookiePickList = PicklistSetting(options: CookieSetting.getOptions(), title: heading, current: current)
+        let current = BraveApp.getPrefs()?.intForKey(CookieSetting.prefAcceptCookies) ?? 0
+        cookiePickList = PicklistSetting(options: CookieSetting.getOptions(), title: heading, current: Int(current))
         navigationController?.pushViewController(cookiePickList!, animated: true)
         cookiePickList!.delegate = self
     }

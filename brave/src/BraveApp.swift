@@ -35,9 +35,9 @@ class BraveApp {
     }
 
     class func isAllBraveShieldPrefsOff() -> Bool {
-        let abOn = BraveApp.getPref(AdBlocker.prefKeyAdBlockOn) as? Bool ?? true
-        let tpOn = BraveApp.getPref(TrackingProtection.prefKeyTrackingProtectionOn) as? Bool ?? true
-        let httpseOn = BraveApp.getPref(HttpsEverywhere.prefKeyHttpsEverywhereOn) as? Bool ?? true
+        let abOn = BraveApp.getPrefs()?.boolForKey(AdBlocker.prefKeyAdBlockOn) ?? true
+        let tpOn = BraveApp.getPrefs()?.boolForKey(TrackingProtection.prefKeyTrackingProtectionOn) ?? true
+        let httpseOn = BraveApp.getPrefs()?.boolForKey(HttpsEverywhere.prefKeyHttpsEverywhereOn) ?? true
         return !abOn && !tpOn && !httpseOn
     }
 
@@ -110,12 +110,12 @@ class BraveApp {
             // TODO hookup VaultManager.userProfileInit()
         }
 
-        BraveApp.isSafeToRestoreTabs = BraveApp.getPref(kAppBootingIncompleteFlag) == nil
-        BraveApp.setPref("remove me when booted", forKey: kAppBootingIncompleteFlag)
-        BraveApp.getPrefs()?.synchronize()
+        BraveApp.isSafeToRestoreTabs = BraveApp.getPrefs()?.stringForKey(kAppBootingIncompleteFlag) == nil
+        BraveApp.getPrefs()?.setString("remove me when booted", forKey: kAppBootingIncompleteFlag)
+
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, BraveApp.kDelayBeforeDecidingAppHasBootedOk),
             dispatch_get_main_queue(), {
-                BraveApp.removePref(kAppBootingIncompleteFlag)
+                BraveApp.getPrefs()?.removeObjectForKey(kAppBootingIncompleteFlag)
         })
 
         AdBlocker.singleton.networkFileLoader.loadData()
@@ -123,7 +123,7 @@ class BraveApp {
         HttpsEverywhere.singleton.networkFileLoader.loadData()
 
         #if !TEST
-            BraveScrollController.hideShowToolbarEnabled = BraveApp.getPref(BraveUX.PrefKeyIsToolbarHidingEnabled) as? Bool ?? true
+            BraveScrollController.hideShowToolbarEnabled = BraveApp.getPrefs()?.boolForKey(BraveUX.PrefKeyIsToolbarHidingEnabled) ?? true
             PrivateBrowsing.singleton.startupCheckIfKilledWhileInPBMode()
             CookieSetting.setup()
         #endif
@@ -156,34 +156,8 @@ class BraveApp {
         return components.scheme == "brave" || components.scheme == "brave-x-callback"
     }
 
-    class func getPrefs() -> NSUserDefaults? {
-        #if !TEST
-            // The prefs are namespaced with 'profile.', find a better way to expose this from fx
-            assert(NSUserDefaultsPrefs.prefixWithDotForBrave.characters.count > 0)
-        #endif
-        return NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())
-    }
-
-    class func getPref(var pref: String) -> AnyObject? {
-        #if !TEST
-            pref = NSUserDefaultsPrefs.prefixWithDotForBrave + pref
-        #endif
-
-        return getPrefs()?.objectForKey(pref)
-    }
-
-    class func setPref(val: AnyObject, var forKey: String) {
-        #if !TEST
-            forKey = NSUserDefaultsPrefs.prefixWithDotForBrave + forKey
-        #endif
-        getPrefs()?.setObject(val, forKey: forKey)
-    }
-
-    class func removePref(var pref: String) {
-        #if !TEST
-            pref = NSUserDefaultsPrefs.prefixWithDotForBrave + pref
-        #endif
-        getPrefs()?.removeObjectForKey(pref)
+    class func getPrefs() -> Prefs? {
+        return getApp().profile?.prefs
     }
 
     static func showErrorAlert(title title: String,  error: String) {

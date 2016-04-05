@@ -51,8 +51,7 @@ class HttpsEverywhere {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        let obj = BraveApp.getPref(HttpsEverywhere.prefKeyHttpsEverywhereOn)
-        isEnabled = obj as? Bool ?? true
+        isEnabled = BraveApp.getPrefs()?.boolForKey(HttpsEverywhere.prefKeyHttpsEverywhereOn) ?? true
     }
 
     @objc func prefsChanged(info: NSNotification) {
