@@ -275,7 +275,7 @@ private class SQLiteDBStatement {
     }
 }
 
-protocol SQLiteDBConnection {
+public protocol SQLiteDBConnection {
     var lastInsertedRowID: Int { get }
     var numberOfRowsModified: Int { get }
     func executeChange(sqlStr: String) -> NSError?
@@ -358,7 +358,7 @@ public class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         return nil
     }
 
-    func interrupt() {
+    public func interrupt() {
         log.debug("Interrupt")
         sqlite3_interrupt(sqliteDB)
     }
@@ -515,14 +515,14 @@ public class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         return Int(sqlite3_changes(sqliteDB))
     }
 
-    func checkpoint() {
+    public func checkpoint() {
         self.checkpoint(SQLITE_CHECKPOINT_FULL)
     }
 
     /**
      * Blindly attempts a WAL checkpoint on all attached databases.
      */
-    func checkpoint(mode: Int32) {
+    public func checkpoint(mode: Int32) {
         guard sqliteDB != nil else {
             log.warning("Trying to checkpoint a nil DB!")
             return
@@ -533,7 +533,7 @@ public class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         log.debug("WAL checkpoint done on \(self.filename).")
     }
 
-    func vacuum() -> NSError? {
+    public func vacuum() -> NSError? {
         return self.executeChange("VACUUM")
     }
 
@@ -629,13 +629,13 @@ public class ConcreteSQLiteDBConnection: SQLiteDBConnection {
         return error
     }
 
-    func executeQuery<T>(sqlStr: String, factory: ((SDRow) -> T)) -> Cursor<T> {
+    public func executeQuery<T>(sqlStr: String, factory: ((SDRow) -> T)) -> Cursor<T> {
         return self.executeQuery(sqlStr, factory: factory, withArgs: nil)
     }
 
     /// Queries the database.
     /// Returns a cursor pre-filled with the complete result set.
-    func executeQuery<T>(sqlStr: String, factory: ((SDRow) -> T), withArgs args: [AnyObject?]?) -> Cursor<T> {
+    public func executeQuery<T>(sqlStr: String, factory: ((SDRow) -> T), withArgs args: [AnyObject?]?) -> Cursor<T> {
         var error: NSError?
         let statement: SQLiteDBStatement?
         do {
@@ -708,7 +708,7 @@ public class ConcreteSQLiteDBConnection: SQLiteDBConnection {
      * Returns a live cursor that holds the query statement and database connection.
      * Instances of this class *must not* leak outside of the connection queue!
      */
-    func executeQueryUnsafe<T>(sqlStr: String, factory: ((SDRow) -> T), withArgs args: [AnyObject?]?) -> Cursor<T> {
+    public func executeQueryUnsafe<T>(sqlStr: String, factory: ((SDRow) -> T), withArgs args: [AnyObject?]?) -> Cursor<T> {
         var error: NSError?
         let statement: SQLiteDBStatement?
         do {
@@ -726,18 +726,18 @@ public class ConcreteSQLiteDBConnection: SQLiteDBConnection {
 }
 
 /// Helper for queries that return a single integer result.
-func IntFactory(row: SDRow) -> Int {
+public func IntFactory(row: SDRow) -> Int {
     return row[0] as! Int
 }
 
 /// Helper for queries that return a single String result.
-func StringFactory(row: SDRow) -> String {
+public func StringFactory(row: SDRow) -> String {
     return row[0] as! String
 }
 
 /// Wrapper around a statement for getting data from a row. This provides accessors for subscript indexing
 /// and a generator for iterating over columns.
-class SDRow: SequenceType {
+public class SDRow: SequenceType {
     // The sqlite statement this row came from.
     private let statement: SQLiteDBStatement
 
@@ -795,7 +795,7 @@ class SDRow: SequenceType {
     }
 
     // Allow iterating through the row. This is currently broken.
-    func generate() -> AnyGenerator<Any> {
+    public func generate() -> AnyGenerator<Any> {
         let nextIndex = 0
         return anyGenerator() {
             // This crashes the compiler. Yay!

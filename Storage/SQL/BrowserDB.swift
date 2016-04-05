@@ -12,7 +12,7 @@ public let NotificationDatabaseWasRecreated = "NotificationDatabaseWasRecreated"
 
 private let log = Logger.syncLogger
 
-typealias Args = [AnyObject?]
+public typealias Args = [AnyObject?]
 
 /* This is a base interface into our browser db. It holds arrays of tables and handles basic creation/updating of them. */
 // Version 1 - Basic history table.
@@ -283,12 +283,12 @@ extension BrowserDB {
     }
 }
 
-extension BrowserDB {
+public extension BrowserDB {
     public class func varlist(count: Int) -> String {
         return "(" + Array(count: count, repeatedValue: "?").joinWithSeparator(", ") + ")"
     }
 
-    enum InsertOperation: String {
+    public enum InsertOperation: String {
         case Insert = "INSERT"
         case Replace = "REPLACE"
         case InsertOrIgnore = "INSERT OR IGNORE"
