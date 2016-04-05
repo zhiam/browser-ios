@@ -7,7 +7,6 @@ import Deferred
 
 let iPadOffscreenView = UIView(frame: CGRectMake(3000,0,1,1))
 let tagFor1PwSnackbar = 8675309
-
 var noPopupOnSites: [String] = []
 
 extension LoginsHelper {
@@ -42,9 +41,10 @@ extension LoginsHelper {
                 [weak self] in
                 guard let safeSelf = self else { return }
                 if let snackBar = safeSelf.snackBar {
-                    if snackBar.tag == tagFor1PwSnackbar && snackBar.superview != nil {
-                        return // already have a 1PW snackbar showing
+                    if safeSelf.browser?.bars.map({ $0.tag }).indexOf(tagFor1PwSnackbar) != nil {
+                        return // already have a 1PW snackbar active for this tab
                     }
+
                     safeSelf.browser?.removeSnackbar(snackBar)
                 }
 
@@ -85,7 +85,7 @@ extension LoginsHelper {
             return
         }
         delay(0.1) {
-            //print(self.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.documentElement.outerHTML"))
+            // TODO: This is only needed for private browsing, as a fallback because the logins detection isn't injected. Fix this.
             let result = self.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
             if let ok = result where ok == "true" {
                 self.onePasswordSnackbar()
@@ -169,7 +169,7 @@ extension LoginsHelper {
         delay(0) {
             var result = false
             if let host = url.hostWithGenericSubdomainPrefixRemoved() {
-                result = noPopupOnSites.contains(host, f: { a, b in a == b})
+                result = noPopupOnSites.contains(host)
             }
             deferred.fill(result)
         }
