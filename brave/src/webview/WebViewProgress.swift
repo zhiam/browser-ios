@@ -170,10 +170,8 @@ public class WebViewProgress
         loadingCount--;
         incrementProgress()
 
-        if webView?.loading == false {
-            completeProgress()
-            return
-        }
+        // note that webView?.loading is false once the page is interactive
+
 
         if let readyState = documentReadyState {
             switch readyState {
