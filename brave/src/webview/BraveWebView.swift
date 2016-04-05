@@ -243,7 +243,7 @@ class BraveWebView: UIWebView {
         }
 
         configuration.userContentController.injectJsIntoPage()
-        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil)
+        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: self)
         LegacyUserContentController.injectJsIntoAllFrames(self, script: "document.body.style.webkitTouchCallout='none'")
 
         print("Getting favicons")
@@ -515,7 +515,7 @@ extension BraveWebView: UIWebViewDelegate {
         }
         
         NSNotificationCenter.defaultCenter()
-            .postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil)
+            .postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: self)
         if let nd = navigationDelegate {
             nd.webView?(nullWebView, didFailNavigation: nullWKNavigation,
                 withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))

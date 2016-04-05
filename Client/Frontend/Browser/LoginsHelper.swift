@@ -33,9 +33,11 @@ class LoginsHelper: BrowserHelper {
         self.browser = browser
         self.profile = profile
 
-        if let path = NSBundle.mainBundle().pathForResource("LoginsHelper", ofType: "js"), source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String {
-            let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: false)
-            browser.webView!.configuration.userContentController.addUserScript(userScript)
+        if !browser.isPrivate {
+            if let path = NSBundle.mainBundle().pathForResource("LoginsHelper", ofType: "js"), source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String {
+                let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
+                browser.webView!.configuration.userContentController.addUserScript(userScript)
+            }
         }
 
         registerPageListenersFor1PW()
