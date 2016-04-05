@@ -167,11 +167,8 @@ public class WebViewProgress
     }
 
     public func webViewDidFinishLoad(documentReadyState documentReadyState:String?) {
-        loadingCount--;
+        loadingCount -= 1
         incrementProgress()
-
-        // note that webView?.loading is false once the page is interactive
-
 
         if let readyState = documentReadyState {
             switch readyState {
@@ -179,6 +176,15 @@ public class WebViewProgress
                 completeProgress()
             case "interactive":
                 interactive = true
+                // Ideally, the document state would reach loaded or complete soon after 'interactive'
+                // Fallback to a delayed manual check using UIWebView.loading property
+                delay(0.25) {
+                    [weak self] in
+                    // note that webView?.loading is false once the page is interactive
+                   if let wv = self?.webView where !wv.loading {
+                        self?.completeProgress()
+                    }
+                }
             case "complete":
                 // When loading consecutive pages, I often see a finishLoad for the previous page
                 // arriving. I have tried webview.stopLoading, and still this seems to arrive. Bizarre.
