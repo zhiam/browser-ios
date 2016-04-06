@@ -5,7 +5,7 @@
 
 import Foundation
 
-let completedUrlPath: String = "__completedprogress__"
+let completedUrlPath = "__completedprogress__"
 
 public class WebViewProgress
 {
@@ -175,6 +175,9 @@ public class WebViewProgress
             case "loaded":
                 completeProgress()
             case "interactive":
+                if let webView = webView {
+                    NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationPageInteractive, object: webView)
+                }
                 interactive = true
                 // Ideally, the document state would reach loaded or complete soon after 'interactive'
                 // Fallback to a delayed manual check using UIWebView.loading property

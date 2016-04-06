@@ -91,10 +91,9 @@ class HistorySwiper {
             return
         }
 
-        guard let tab = getApp().browserViewController.tabManager.selectedTab else { return }
-
-        if let wv = tab.webView where (recognizer.edges == .Left && !wv.canNavigateBackward()) ||
-            (recognizer.edges == .Right && !wv.canNavigateForward()) {
+        guard let tab = getApp().browserViewController.tabManager.selectedTab, webview = tab.webView else { return }
+        if (recognizer.edges == .Left && !webview.canNavigateBackward()) ||
+            (recognizer.edges == .Right && !webview.canNavigateForward()) {
             return
         }
 
@@ -126,8 +125,8 @@ class HistorySwiper {
                             self.restoreWebview()
                         }
                         NSNotificationCenter.defaultCenter().removeObserver(self)
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateDetected", name: "ScrollViewDetectedWebViewRender", object: nil)
-                        UIScrollView.listenForRender()
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateDetected", name: BraveWebView.kNotificationPageInteractive, object: webview)
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateDetected", name: BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: webview)
                     } else {
                         getApp().browserViewController.scrollController.edgeSwipingActive = false
 #if IMAGE_SWIPE_ON

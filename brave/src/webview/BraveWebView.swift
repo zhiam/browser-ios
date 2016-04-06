@@ -32,6 +32,7 @@ enum KVOStrings: String {
 class BraveWebView: UIWebView {
     let specialStopLoadUrl = "http://localhost.stop.load"
     static let kNotificationWebViewLoadCompleteOrFailed = "kNotificationWebViewLoadCompleteOrFailed"
+    static let kNotificationPageInteractive = "kNotificationPageInteractive"
     static let kContextMenuBlockNavigation = 8675309
     weak var navigationDelegate: WKNavigationDelegate?
     weak var UIDelegate: WKUIDelegate?
