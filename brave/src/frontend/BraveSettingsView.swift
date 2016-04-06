@@ -78,10 +78,11 @@ class BraveSettingsView : AppSettingsTableViewController {
 //            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
 //                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
         ]
-
-        if BraveApp.isOnePasswordInstalled(refreshLookup: true) {
-            generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefNameOnePasswordShortcutEnabled, defaultValue: true, titleText: "1Password Shortcut"))
+#if ENABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+        if BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true) {
+            generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefName3rdPartyPasswordShortcutEnabled, defaultValue: true, titleText: "3rd-Party Password Manager Button"))
         }
+#endif
 
 
         settings += [

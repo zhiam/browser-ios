@@ -175,12 +175,12 @@ class BraveApp {
         return 20
     }
 
-    static var is1PWInstalled: Bool?
+    static var isPasswordManagerInstalled: Bool?
 
-    static func isOnePasswordInstalled(refreshLookup refreshLookup: Bool) -> Bool {
-        if refreshLookup || is1PWInstalled == nil {
-            is1PWInstalled = OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
+    static func is3rdPartyPasswordManagerInstalled(refreshLookup refreshLookup: Bool) -> Bool {
+        if refreshLookup || isPasswordManagerInstalled == nil {
+            isPasswordManagerInstalled = OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
         }
-        return is1PWInstalled!
+        return isPasswordManagerInstalled!
     }
 }
