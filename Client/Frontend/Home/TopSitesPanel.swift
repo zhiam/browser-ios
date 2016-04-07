@@ -573,7 +573,15 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
         }
 
         if icon.scheme == "asset" {
-            cell.imageView.image = UIImage(named: host)
+            if let image = UIImage(named: host) {
+                // Brave hack. The images are too close to the top edge
+                UIGraphicsBeginImageContextWithOptions(image.size, false, 0)
+                image.drawInRect(CGRect(origin: CGPoint(x: 3, y: 6), size: CGSizeMake(image.size.width - 6, image.size.height - 6)))
+                let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                cell.imageView.image = scaledImage
+            }
+
         } else {
             cell.imageView.sd_setImageWithURL(icon, completed: { img, err, type, key in
                 if img == nil {
