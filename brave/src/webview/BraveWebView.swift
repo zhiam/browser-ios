@@ -267,10 +267,6 @@ class BraveWebView: UIWebView {
         }
     }
 
-    func setScalesPageToFit(setPages: Bool!) {
-        self.scalesPageToFit = setPages
-    }
-
     func canNavigateBackward() -> Bool {
         return self.canGoBack
     }
@@ -485,7 +481,10 @@ extension BraveWebView: UIWebViewDelegate {
             {
                 let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? ""
                 if errorUrl.characters.count < 1 {
+#if DEBUG
+                    // This doesn't seem to happen on the top level doc, and when a resource is being repeatedly loaded and fails, this would show up repeatedly and block using the page
                     BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
+#endif
                     return
                 }
 
