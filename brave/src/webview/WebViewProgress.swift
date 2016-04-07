@@ -9,16 +9,16 @@ let completedUrlPath = "__completedprogress__"
 
 public class WebViewProgress
 {
-    var loadingCount: Int = 0;
-    var maxLoadCount: Int = 0;
-    var interactive: Bool = false;
+    var loadingCount: Int = 0
+    var maxLoadCount: Int = 0
+    var interactiveCount: Int = 0
 
-    let initialProgressValue: Double = 0.1;
-    let interactiveProgressValue: Double = 0.5;
-    let finalProgressValue: Double = 0.9;
+    let initialProgressValue: Double = 0.1
+    let interactiveProgressValue: Double = 0.5
+    let finalProgressValue: Double = 0.9
 
-    weak var webView: BraveWebView?;
-    var currentURL: NSURL?;
+    weak var webView: BraveWebView?
+    var currentURL: NSURL?
 
     /* After all efforts to catch page load completion in WebViewProgress, sometimes, load completion is *still* missed.
     As a backup we can do KVO on 'loading'. Which can arrive too early (from subrequests) -and frequently- so delay checking by an arbitrary amount
@@ -86,7 +86,7 @@ public class WebViewProgress
 
     func incrementProgress() {
         var progress = webView?.estimatedProgress ?? 0.0
-        let maxProgress = interactive ? finalProgressValue : interactiveProgressValue
+        let maxProgress = interactiveCount > 0 ? finalProgressValue : interactiveProgressValue
         let remainPercent = Double(loadingCount) / Double(maxLoadCount)
         let increment = (maxProgress - progress) * remainPercent
         progress += increment
@@ -102,7 +102,7 @@ public class WebViewProgress
     public func reset() {
         maxLoadCount = 0
         loadingCount = 0
-        interactive = false
+        interactiveCount = 0
         setProgress(0.0)
         webView?.internalIsLoadingEndedFlag = false
     }
@@ -170,31 +170,27 @@ public class WebViewProgress
         loadingCount -= 1
         incrementProgress()
 
+#if DEBUG
+        let documentLocation = webView?.stringByEvaluatingJavaScriptFromString("window.location.href")
+        print("\(documentReadyState) \(documentLocation)")
+#endif
+
         if let readyState = documentReadyState {
             switch readyState {
             case "loaded":
                 completeProgress()
             case "interactive":
+                interactiveCount += 1
                 if let webView = webView {
-                    NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationPageInteractive, object: webView)
-                }
-                interactive = true
-                // Ideally, the document state would reach loaded or complete soon after 'interactive'
-                // Fallback to a delayed manual check using UIWebView.loading property
-                delay(0.25) {
-                    [weak self] in
-                    // note that webView?.loading is false once the page is interactive
-                   if let wv = self?.webView where !wv.loading {
-                        self?.completeProgress()
+                    if  interactiveCount == 1 {
+                        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationPageInteractive, object: webView)
+                    }
+                    if !webView.loading {
+                        completeProgress()
                     }
                 }
             case "complete":
-                // When loading consecutive pages, I often see a finishLoad for the previous page
-                // arriving. I have tried webview.stopLoading, and still this seems to arrive. Bizarre.
-                let isMainDoc = currentURL != nil && currentURL == webView?.URL
-                if (isMainDoc) {
-                    completeProgress()
-                }
+                completeProgress()
             default: ()
             }
         }

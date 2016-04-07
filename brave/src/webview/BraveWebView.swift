@@ -136,7 +136,7 @@ class BraveWebView: UIWebView {
         // Pushstate navigation can cause this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
         // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
         guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
-        if location == currentUrl || location.contains("about:") || location.contains("//localhost") {
+        if location == currentUrl || location.contains("about:") || location.contains("//localhost") || URL?.host != NSURL(string: location)?.host {
             return
         }
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
@@ -286,7 +286,6 @@ class BraveWebView: UIWebView {
 
     override func stopLoading() {
         super.stopLoading()
-        loadRequest(NSURLRequest(URL: NSURL(string: specialStopLoadUrl)!))
         self.progress?.reset()
     }
 
@@ -494,6 +493,8 @@ extension BraveWebView: UIWebViewDelegate {
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
                     handler in
                     self.stopLoading()
+                    webView.loadRequest(NSURLRequest(URL: NSURL(string: self.specialStopLoadUrl)!))
+
                     // The current displayed url is wrong, so easiest hack is:
                     if (self.canGoBack) { // I don't think the !canGoBack case needs handling
                         self.goBack()

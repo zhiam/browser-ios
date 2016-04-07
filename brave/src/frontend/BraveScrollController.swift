@@ -54,7 +54,7 @@ class BraveScrollController: NSObject {
         }
     }
 
-    private lazy var panGesture: UIPanGestureRecognizer = {
+     lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: "handlePan:")
         panGesture.maximumNumberOfTouches = 1
         panGesture.delegate = self

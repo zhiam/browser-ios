@@ -48,8 +48,7 @@ class ScreenshotsForHistory {
     }
 }
 
-
-class HistorySwiper {
+class HistorySwiper : NSObject {
 
     var topLevelView: UIView!
     var webViewContainer: UIView!
@@ -58,18 +57,18 @@ class HistorySwiper {
         self.topLevelView = topLevelView
         self.webViewContainer = webViewContainer
 
-        goBackSwipe.edges = .Left
-        goForwardSwipe.edges = .Right
+        goBackSwipe.delegate = self
+        goForwardSwipe.delegate = self
     }
 
-    lazy var goBackSwipe: UIScreenEdgePanGestureRecognizer = {
-        let pan = UIScreenEdgePanGestureRecognizer(target: self, action: "screenLeftEdgeSwiped:")
+    lazy var goBackSwipe: UIGestureRecognizer = {
+        let pan = UIPanGestureRecognizer(target: self, action: "screenLeftEdgeSwiped:")
         self.topLevelView.superview!.addGestureRecognizer(pan)
         return pan
     }()
 
-    lazy var goForwardSwipe: UIScreenEdgePanGestureRecognizer = {
-        let pan = UIScreenEdgePanGestureRecognizer(target: self, action: "screenRightEdgeSwiped:")
+    lazy var goForwardSwipe: UIGestureRecognizer = {
+        let pan = UIPanGestureRecognizer(target: self, action: "screenRightEdgeSwiped:")
         self.topLevelView.superview!.addGestureRecognizer(pan)
         return pan
     }()
@@ -86,33 +85,26 @@ class HistorySwiper {
     var imageView: UIImageView?
 #endif
 
-    private func handleSwipe(recognizer: UIScreenEdgePanGestureRecognizer) {
+    private func handleSwipe(recognizer: UIGestureRecognizer) {
         if getApp().browserViewController.homePanelController != nil {
             return
         }
-
         guard let tab = getApp().browserViewController.tabManager.selectedTab, webview = tab.webView else { return }
-        if (recognizer.edges == .Left && !webview.canNavigateBackward()) ||
-            (recognizer.edges == .Right && !webview.canNavigateForward()) {
-            return
-        }
-
         let p = recognizer.locationInView(recognizer.view)
-
-        let shouldReturnToZero = (recognizer.edges == .Left) ? p.x < screenWidth() / 2.0 : p.x > screenWidth() / 2.0
+        let shouldReturnToZero = recognizer == goBackSwipe ? p.x < screenWidth() / 2.0 : p.x > screenWidth() / 2.0
 
         if recognizer.state == .Ended || recognizer.state == .Cancelled || recognizer.state == .Failed {
             UIView.animateWithDuration(0.25, animations: {
                 if shouldReturnToZero {
                     self.webViewContainer.transform = CGAffineTransformMakeTranslation(0, self.webViewContainer.transform.ty)
                 } else {
-                    let x = (recognizer.edges == .Left) ? self.screenWidth() : -self.screenWidth()
+                    let x = recognizer == self.goBackSwipe ? self.screenWidth() : -self.screenWidth()
                     self.webViewContainer.transform = CGAffineTransformMakeTranslation(x, self.webViewContainer.transform.ty)
                     self.webViewContainer.alpha = 0
                 }
                 }, completion: { (Bool) -> Void in
                     if !shouldReturnToZero {
-                        if recognizer.edges == .Left {
+                        if recognizer == self.goBackSwipe {
                            tab.goBack()
                         } else {
                             tab.goForward()
@@ -140,7 +132,7 @@ class HistorySwiper {
             })
         } else {
             getApp().browserViewController.scrollController.edgeSwipingActive = true
-            let tx = (recognizer.edges == .Left) ? p.x : p.x - screenWidth()
+            let tx = recognizer == goBackSwipe ? p.x : p.x - screenWidth()
             webViewContainer.transform = CGAffineTransformMakeTranslation(tx, self.webViewContainer.transform.ty)
 #if IMAGE_SWIPE_ON
             let image = recognizer.edges == .Left ? tab.screenshotForBackHistory() : tab.screenshotForForwardHistory()
@@ -181,5 +173,28 @@ class HistorySwiper {
     
     @objc func screenLeftEdgeSwiped(recognizer: UIScreenEdgePanGestureRecognizer) {
         handleSwipe(recognizer)
+    }
+}
+
+extension HistorySwiper : UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(recognizer: UIGestureRecognizer) -> Bool {
+        guard let tab = getApp().browserViewController.tabManager.selectedTab, webview = tab.webView else { return false}
+        if (recognizer == goBackSwipe && !webview.canNavigateBackward()) ||
+            (recognizer == goForwardSwipe && !webview.canNavigateForward()) {
+            return false
+        }
+
+        guard let recognizer = recognizer as? UIPanGestureRecognizer else { return false }
+        let v = recognizer.velocityInView(recognizer.view)
+        if fabs(v.x) < fabs(v.y) {
+            return false
+        }
+
+        let tolerance = CGFloat(30.0)
+        let p = recognizer.locationInView(recognizer.view)
+        return recognizer == goBackSwipe ? p.x < tolerance : p.x > screenWidth() - tolerance
+    }
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

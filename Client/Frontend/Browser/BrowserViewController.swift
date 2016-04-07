@@ -108,6 +108,8 @@ class BrowserViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func selectedTabChanged(selected: Browser) {}
+
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
             return UIInterfaceOrientationMask.AllButUpsideDown
@@ -1692,7 +1694,6 @@ extension BrowserViewController: TabManagerDelegate {
             wv.removeFromSuperview()
         }
 
-
         if let tab = selected, webView = tab.webView {
             // if we have previously hidden this scrollview in order to make scrollsToTop work then
             // we should ensure that it is not hidden now that it is our foreground scrollView
@@ -1720,6 +1721,7 @@ extension BrowserViewController: TabManagerDelegate {
             webView.accessibilityElementsHidden = false
 
 #if BRAVE
+            selectedTabChanged(tab)
             webViewContainer.insertSubview(webView, atIndex: 0)
             webView.snp_makeConstraints { make in
                 make.top.equalTo(webViewContainerToolbar.snp_bottom)

@@ -45,10 +45,16 @@ class BraveBrowserViewController : BrowserViewController {
         // With this color, it matches to default semi-transparent state of the toolbar
         // The value is hand-picked to match the effect on the url bar, we don't have a color constant for this elsewhere
         statusBarOverlay.backgroundColor = DeviceInfo.isBlurSupported() ? UIColor(white: 0.255, alpha: 1.0) : UIColor.blackColor()
-
-        historySwiper.setup(topLevelView: self.view, webViewContainer: self.webViewContainer)
     }
 
+
+    override func selectedTabChanged(selected: Browser) {
+        historySwiper.setup(topLevelView: self.view, webViewContainer: self.webViewContainer)
+        for swipe in [historySwiper.goBackSwipe, historySwiper.goForwardSwipe] {
+            selected.webView?.scrollView.panGestureRecognizer.requireGestureRecognizerToFail(swipe)
+            scrollController.panGesture.requireGestureRecognizerToFail(swipe)
+        }
+    }
 
     override func SELtappedTopArea() {
      //   scrollController.showToolbars(animated: true)
