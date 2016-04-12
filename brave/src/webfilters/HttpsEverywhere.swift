@@ -6,7 +6,7 @@ private let _singleton = HttpsEverywhere()
 class HttpsEverywhere {
     static let kNotificationDataLoaded = "kNotificationDataLoaded"
     static let prefKeyHttpsEverywhereOn = "braveHttpsEverywhere"
-    static let dataVersion = "5.1.3"
+    static let dataVersion = "5.1.6"
     var isEnabled = true
     var db: Connection?
     let fifoCacheOfRedirects = FifoDict()
