@@ -11,6 +11,7 @@ class URLProtocol: NSURLProtocol {
     var connection: NSURLConnection!
     var mutableData: NSMutableData!
     var response: NSURLResponse!
+    static var isCheckForEmptyWebViewActive = false
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         if (BraveApp.isBraveButtonBypassingFilters) {
@@ -111,6 +112,28 @@ class URLProtocol: NSURLProtocol {
                 }
             } else {
                 self.connection = NSURLConnection(request: newRequest, delegate: self)
+            }
+        } else if SafeBrowsing.singleton.shouldBlock(request) {
+            returnEmptyResponse()
+
+            func checkForEmptyWebView() {
+                guard let wv = BraveApp.getCurrentWebView() else { return }
+                if wv.loading {
+                    delay(0.5) {
+                        checkForEmptyWebView()
+                    }
+                    return
+                }
+                let contents = wv.stringByEvaluatingJavaScriptFromString("document.body")
+                if contents?.isEmpty ?? true && URLProtocol.isCheckForEmptyWebViewActive {
+                    URLProtocol.isCheckForEmptyWebViewActive = false
+                    BraveApp.showErrorAlert(title: "Brave Shield Blocked Page", error: "This site is distributing malware or stealing login credentials. Set the Brave Shield to down to load this site. This is not recommended!")
+                }
+            }
+
+            URLProtocol.isCheckForEmptyWebViewActive = true
+            delay(0.5) {
+                checkForEmptyWebView()
             }
         } else {
             // Only other possibility of why we are here is ABP, SafeBrowsing, or TP is blocking

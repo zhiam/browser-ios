@@ -429,7 +429,7 @@ extension BraveWebView: UIWebViewDelegate {
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
             URL = request.URL
             #if DEBUG
-            print("Page changed by shouldStartLoad: \(URL?.absoluteString)")
+            print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
             #endif
         }
 

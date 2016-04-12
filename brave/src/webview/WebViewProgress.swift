@@ -171,8 +171,8 @@ public class WebViewProgress
         incrementProgress()
 
 #if DEBUG
-        let documentLocation = webView?.stringByEvaluatingJavaScriptFromString("window.location.href")
-        print("\(documentReadyState) \(documentLocation)")
+        //let documentLocation = webView?.stringByEvaluatingJavaScriptFromString("window.location.href")
+        //print("State:\(documentReadyState ?? "") \(documentLocation ?? "")")
 #endif
 
         if let readyState = documentReadyState {
