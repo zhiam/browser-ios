@@ -142,6 +142,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         func common(make: ConstraintMaker) {
             make.bottom.equalTo(self.topButtonsView)
             make.height.equalTo(UIConstants.ToolbarHeight)
+            make.width.equalTo(60)
         }
 
         settingsButton.snp_remakeConstraints {
