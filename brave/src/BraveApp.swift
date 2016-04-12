@@ -127,7 +127,8 @@ class BraveApp {
         #if !TEST
             BraveScrollController.hideShowToolbarEnabled = BraveApp.getPrefs()?.boolForKey(BraveUX.PrefKeyIsToolbarHidingEnabled) ?? true
             PrivateBrowsing.singleton.startupCheckIfKilledWhileInPBMode()
-            CookieSetting.setup()
+            CookieSetting.setupOnAppStart()
+            ThirdPartyPasswordManagerSetting.setupOnAppStart()
         #endif
     }
 

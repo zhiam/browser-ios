@@ -2,18 +2,17 @@
 
 import Shared
 
-protocol PicklistSettingDelegate {
-    func picklistSetting(setting: PicklistSetting, pickedIndex: Int)
+protocol PicklistSettingOptionsViewDelegate {
+    func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int)
 }
 
-
-class PicklistSetting: UITableViewController {
-    var options = [String]()
+class PicklistSettingOptionsView: UITableViewController {
+    var options = [(displayName: String, id: Int)]()
     var headerTitle = ""
-    var delegate: PicklistSettingDelegate?
+    var delegate: PicklistSettingOptionsViewDelegate?
     var initialIndex = -1
 
-    convenience init(options: [String], title: String, current: Int) {
+    convenience init(options: [(displayName: String, id: Int)], title: String, current: Int) {
         self.init(style: UITableViewStyle.Grouped)
         self.options = options
         self.headerTitle = title
@@ -31,7 +30,8 @@ class PicklistSetting: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: UITableViewCell!
         cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
-        cell.textLabel?.text = options[indexPath.row]
+        cell.textLabel?.text = options[indexPath.row].displayName
+        // cell.tag = options[indexPath.row].uniqueId --> if we want to decouple row order from option order in future
         if initialIndex == indexPath.row {
             cell.accessoryType = .Checkmark
         }
@@ -52,7 +52,7 @@ class PicklistSetting: UITableViewController {
 
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         navigationController?.popViewControllerAnimated(true)
-        delegate?.picklistSetting(self, pickedIndex: indexPath.row)
+        delegate?.picklistSetting(self, pickedOptionId: options[indexPath.row].id)
         return nil
     }
 
@@ -67,4 +67,53 @@ class PicklistSetting: UITableViewController {
     }
 }
 
+//typealias PicklistSettingChoice = (displayName: String, internalObject: AnyObject, optionId: Int)
+struct Choice<T> {
+    let item: Void -> (displayName: String, object: T, optionId: Int)
+}
+
+class PicklistSettingMainItem<T>: Setting, PicklistSettingOptionsViewDelegate {
+    let profile: Profile
+    let prefName: String
+    let displayName: String
+    let options: [Choice<T>]
+    override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
+    override var style: UITableViewCellStyle { return .Value1 }
+    override var status: NSAttributedString {
+        let prefs = profile.prefs
+        let currentId = prefs.intForKey(prefName) ?? 0
+        let option = lookupOptionById(Int(currentId))
+        return NSAttributedString(string: option?.item().displayName ?? "")
+    }
+
+    func lookupOptionById(id: Int) -> Choice<T>? {
+        for option in options {
+            if option.item().optionId == id {
+                return option
+            }
+        }
+        return nil
+    }
+
+    init(profile: Profile, displayName: String, prefName: String, options: [Choice<T>]) {
+        self.profile = profile
+        self.displayName = displayName
+        self.prefName = prefName
+        self.options = options
+        super.init(title: NSAttributedString(string: displayName, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]))
+    }
+
+    var picklist: PicklistSettingOptionsView? // on iOS8 there is a crash, seems like it requires this to be retained
+    override func onClick(navigationController: UINavigationController?) {
+        let current = BraveApp.getPrefs()?.intForKey(prefName) ?? 0
+        picklist = PicklistSettingOptionsView(options: options.map { ($0.item().displayName,  $0.item().optionId) }, title: displayName, current: Int(current))
+        navigationController?.pushViewController(picklist!, animated: true)
+        picklist!.delegate = self
+    }
+
+    func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
+        let prefs = profile.prefs
+        prefs.setInt(Int32(pickedOptionId), forKey: prefName)
+    }
+}
 

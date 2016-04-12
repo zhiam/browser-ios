@@ -80,7 +80,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         ]
 #if ENABLE_THIRD_PARTY_PASSWORD_SNACKBAR
         if BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true) {
-            generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefName3rdPartyPasswordShortcutEnabled, defaultValue: true, titleText: "3rd-Party Password Manager Button"))
+            generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
         }
 #endif
 
@@ -88,7 +88,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
-                [ClearPrivateDataSetting(settings: self), CookieSetting(settings: self)]
+                [ClearPrivateDataSetting(settings: self), CookieSetting(profile: self.profile)]
 
             ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
@@ -124,69 +124,69 @@ extension BraveSettingsView : UIAlertViewDelegate {
 }
 
 // Opens the search settings pane
-class CookieSetting: Setting, PicklistSettingDelegate {
-    let profile: Profile
+class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
-    static var prefAcceptCookies = "braveAcceptCookiesPref"
+    static var currentSetting: (displayName: String, cellLabel: String, prefId: Int)?
 
-    let heading = "Cookie Control"
-    override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
+    static let _prefName = kPrefName3rdPartyPasswordShortcutEnabled
+    static let _options =  [
+        Choice<String> { ThirdPartyPasswordManagers.UseBuiltInInstead },
+        Choice<String> { ThirdPartyPasswordManagers.OnePassword },
+        Choice<String> { ThirdPartyPasswordManagers.LastPass }
+    ]
 
-    override var style: UITableViewCellStyle { return .Value1 }
-
-    override var status: NSAttributedString {
-        let prefs = profile.prefs
-        let current = prefs.intForKey(CookieSetting.prefAcceptCookies) ?? 0
-        return NSAttributedString(string: CookieSetting.getOption(Int(current)))
-    }
-
-    static func getOptions() -> [String] {
-        return ["Block 3rd party cookies", "Block all cookies", "Don't block cookies"]
-    }
-
-    static func checkIndexOk(index: Int) -> Bool {
-        let options = getOptions()
-        return 0..<options.count ~= index
-    }
-
-    static func getOption(index: Int) -> String {
-        let options = getOptions()
-        return checkIndexOk(index) ? options[index] : options[0]
-    }
-
-    static func indexToPolicy(index: UInt) -> NSHTTPCookieAcceptPolicy {
-        switch index {
-        case 1:
-            return NSHTTPCookieAcceptPolicy.Never
-        case 2:
-            return NSHTTPCookieAcceptPolicy.Always
+    static func setupOnAppStart() {
+        let current = BraveApp.getPrefs()?.intForKey(_prefName) ?? 0
+        switch Int(current) {
+        case ThirdPartyPasswordManagers.OnePassword.prefId:
+            currentSetting = ThirdPartyPasswordManagers.OnePassword
+        case ThirdPartyPasswordManagers.LastPass.prefId:
+            currentSetting = ThirdPartyPasswordManagers.LastPass
         default:
-            return NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain
+            currentSetting = ThirdPartyPasswordManagers.UseBuiltInInstead
         }
     }
 
-    static func setup() {
-        let current = BraveApp.getPrefs()?.intForKey(CookieSetting.prefAcceptCookies) ?? 0
-        NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(current))
+    init(profile: Profile) {
+        super.init(profile: profile, displayName: "3rd-party password manager", prefName: ThirdPartyPasswordManagerSetting._prefName, options: ThirdPartyPasswordManagerSetting._options)
     }
 
-    init(settings: SettingsTableViewController) {
-        self.profile = settings.profile
-        super.init(title: NSAttributedString(string: heading, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor]))
+    override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
+        super.picklistSetting(setting, pickedOptionId: pickedOptionId)
+        CookieSetting.setPolicyFromOptionId(pickedOptionId)
+    }
+}
+
+
+// Opens the search settings pane
+class CookieSetting: PicklistSettingMainItem<UInt> {
+    static let _prefName = "braveAcceptCookiesPref"
+    static let _options =  [
+        Choice<UInt> { (displayName: "Block 3rd party cookies", object: UInt(NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain.rawValue), optionId: 0) },
+        Choice<UInt> { (displayName: "Block all cookies", object: UInt(NSHTTPCookieAcceptPolicy.Never.rawValue), optionId: 1) },
+        Choice<UInt> { (displayName: "Don't block cookies", object: UInt( NSHTTPCookieAcceptPolicy.Always.rawValue), optionId: 2) }
+    ]
+
+    static func setPolicyFromOptionId(optionId: Int) {
+        for option in _options {
+            if option.item().optionId == optionId {
+                NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = NSHTTPCookieAcceptPolicy.init(rawValue: option.item().object)!
+            }
+        }
     }
 
-    var cookiePickList: PicklistSetting? // on iOS8 there is a crash, seems like it requires this to be retained
-    override func onClick(navigationController: UINavigationController?) {
-        let current = BraveApp.getPrefs()?.intForKey(CookieSetting.prefAcceptCookies) ?? 0
-        cookiePickList = PicklistSetting(options: CookieSetting.getOptions(), title: heading, current: Int(current))
-        navigationController?.pushViewController(cookiePickList!, animated: true)
-        cookiePickList!.delegate = self
+    static func setupOnAppStart() {
+        let current = BraveApp.getPrefs()?.intForKey(_prefName) ?? 0
+        setPolicyFromOptionId(Int(current))
     }
 
-    func picklistSetting(setting: PicklistSetting, pickedIndex: Int) {
-        let prefs = profile.prefs
-        prefs.setInt(Int32(pickedIndex), forKey: CookieSetting.prefAcceptCookies)
-        NSHTTPCookieStorage.sharedHTTPCookieStorage().cookieAcceptPolicy = CookieSetting.indexToPolicy(UInt(pickedIndex))
+    init(profile: Profile) {
+        super.init(profile: profile, displayName: "Cookie Control", prefName: CookieSetting._prefName, options: CookieSetting._options)
+    }
+
+    override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
+        super.picklistSetting(setting, pickedOptionId: pickedOptionId)
+        CookieSetting.setPolicyFromOptionId(pickedOptionId)
     }
 }
 

@@ -11,6 +11,13 @@ var noPopupOnSites: [String] = []
 
 let kPrefName3rdPartyPasswordShortcutEnabled = "thirdPartyPasswordShortcutEnabled"
 
+
+struct ThirdPartyPasswordManagers {
+    static let UseBuiltInInstead = (displayName: "Don't use", cellLabel: "", prefId: 0)
+    static let OnePassword = (displayName: "1Password", cellLabel: "1Password", prefId: 1)
+    static let LastPass = (displayName: "LastPass", cellLabel: "LastPass", prefId: 2)
+}
+
 extension LoginsHelper {
     func thirdPartyPasswordRegisterPageListeners() {
         guard let wv = browser?.webView else { return }
@@ -19,7 +26,7 @@ extension LoginsHelper {
     }
 
     func thirdPartyPasswordSnackbar() {
-        let isEnabled = BraveApp.getPrefs()?.boolForKey(kPrefName3rdPartyPasswordShortcutEnabled) ?? true
+        let isEnabled = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 < 1
         if !BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: false) || !isEnabled {
             return
         }
@@ -43,7 +50,7 @@ extension LoginsHelper {
                     safeSelf.browser?.removeSnackbar(snackBar)
                 }
 
-                safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your Password Manager"), img: UIImage(named: "onepassword-button"), buttons: [])
+                safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your password manager"), img: UIImage(named: "onepassword-button"), buttons: [])
                 safeSelf.snackBar!.tag = tagFor1PwSnackbar
                 let button = UIButton()
                 button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -154,16 +161,17 @@ extension LoginsHelper {
             }
         }
 
+        // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
         delay(0.2) {
-            // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
-            selectShareItem(getApp().window!, shareItemName: "1Password")
+            guard let itemToLookFor = ThirdPartyPasswordManagerSetting.currentSetting?.cellLabel else { return }
+            selectShareItem(getApp().window!, shareItemName: itemToLookFor)
 
             if !found {
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                     UIActivityViewController.hackyDismissal()
                     iPadOffscreenView.removeFromSuperview()
-                    BraveApp.getPrefs()?.setBool(false, forKey: kPrefName3rdPartyPasswordShortcutEnabled)
-                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Disabling due to internal error. Please report this problem to support@brave.com.")
+                    BraveApp.getPrefs()?.setInt(0, forKey: kPrefName3rdPartyPasswordShortcutEnabled)
+                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Can't find item named \(itemToLookFor)")
                 } else {
                     // Just show the regular share screen, this isn't a fatal problem on iPhone
                     UIAlertController.hackyHideOn(false)
