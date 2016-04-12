@@ -78,7 +78,7 @@ class BraveSettingsView : AppSettingsTableViewController {
 //            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
 //                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
         ]
-#if ENABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+#if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
         if BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true) {
             generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
         }
@@ -155,7 +155,7 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
         super.picklistSetting(setting, pickedOptionId: pickedOptionId)
-        CookieSetting.setPolicyFromOptionId(pickedOptionId)
+        ThirdPartyPasswordManagerSetting.setupOnAppStart()
     }
 }
 
