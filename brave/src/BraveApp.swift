@@ -3,6 +3,7 @@
 import Foundation
 import Shared
 import OnePasswordExtension
+import Deferred
 
 #if !NO_FABRIC
 import Fabric
@@ -179,10 +180,17 @@ class BraveApp {
 
     static var isPasswordManagerInstalled: Bool?
 
-    static func is3rdPartyPasswordManagerInstalled(refreshLookup refreshLookup: Bool) -> Bool {
+    static func is3rdPartyPasswordManagerInstalled(refreshLookup refreshLookup: Bool) -> Deferred<Bool>  {
+        let deferred = Deferred<Bool>()
         if refreshLookup || isPasswordManagerInstalled == nil {
-            isPasswordManagerInstalled = OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+                isPasswordManagerInstalled = OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
+                deferred.fill(isPasswordManagerInstalled!)
+            }
+        } else {
+            deferred.fill(isPasswordManagerInstalled!)
         }
-        return isPasswordManagerInstalled!
+        return deferred
     }
+
 }

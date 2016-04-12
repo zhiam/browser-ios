@@ -27,47 +27,55 @@ extension LoginsHelper {
 
     func thirdPartyPasswordSnackbar() {
         let isEnabled = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 < 1
-        if !BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: false) || !isEnabled {
+        if !isEnabled {
             return
         }
 
         guard let url = browser?.webView?.URL else { return }
-        isInNoShowList(url).upon {
+
+        BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: false).upon {
             [weak self]
             result in
-            if result {
+            if !result {
                 return
             }
 
-            ensureMainThread {
-                [weak self] in
-                guard let safeSelf = self else { return }
-                if let snackBar = safeSelf.snackBar {
-                    if safeSelf.browser?.bars.map({ $0.tag }).indexOf(tagFor1PwSnackbar) != nil {
-                        return // already have a 1PW snackbar active for this tab
-                    }
-
-                    safeSelf.browser?.removeSnackbar(snackBar)
+            self?.isInNoShowList(url).upon {
+                [weak self]
+                result in
+                if result {
+                    return
                 }
 
-                safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your password manager"), img: UIImage(named: "onepassword-button"), buttons: [])
-                safeSelf.snackBar!.tag = tagFor1PwSnackbar
-                let button = UIButton()
-                button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-                safeSelf.snackBar!.addSubview(button)
-                button.addTarget(self, action: "onExecuteTapped", forControlEvents: .TouchUpInside)
+                ensureMainThread {
+                    [weak self] in
+                    guard let safeSelf = self else { return }
+                    if let snackBar = safeSelf.snackBar {
+                        if safeSelf.browser?.bars.map({ $0.tag }).indexOf(tagFor1PwSnackbar) != nil {
+                            return // already have a 1PW snackbar active for this tab
+                        }
 
-                let close = UIButton(frame: CGRectMake(safeSelf.snackBar!.frame.width - 40, 0, 40, 40))
-                close.setImage(UIImage(named: "stop")!, forState: .Normal)
-                close.addTarget(self, action: "onCloseTapped", forControlEvents: .TouchUpInside)
-                close.tintColor = UIColor.blackColor()
-                close.autoresizingMask = [.FlexibleLeftMargin]
-                safeSelf.snackBar!.addSubview(close)
+                        safeSelf.browser?.removeSnackbar(snackBar)
+                    }
 
-                safeSelf.browser?.addSnackbar(safeSelf.snackBar!)
+                    safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your password manager"), img: UIImage(named: "onepassword-button"), buttons: [])
+                    safeSelf.snackBar!.tag = tagFor1PwSnackbar
+                    let button = UIButton()
+                    button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+                    safeSelf.snackBar!.addSubview(button)
+                    button.addTarget(self, action: "onExecuteTapped", forControlEvents: .TouchUpInside)
+
+                    let close = UIButton(frame: CGRectMake(safeSelf.snackBar!.frame.width - 40, 0, 40, 40))
+                    close.setImage(UIImage(named: "stop")!, forState: .Normal)
+                    close.addTarget(self, action: "onCloseTapped", forControlEvents: .TouchUpInside)
+                    close.tintColor = UIColor.blackColor()
+                    close.autoresizingMask = [.FlexibleLeftMargin]
+                    safeSelf.snackBar!.addSubview(close)
+                    
+                    safeSelf.browser?.addSnackbar(safeSelf.snackBar!)
+                }
             }
         }
-
     }
 
     @objc func onCloseTapped() {
@@ -184,13 +192,11 @@ extension LoginsHelper {
     // Use a similar Deferred-style so switching to the DB method is seamless
     func isInNoShowList(url: NSURL)  -> Deferred<Bool>  {
         let deferred = Deferred<Bool>()
-        delay(0) {
-            var result = false
-            if let host = url.hostWithGenericSubdomainPrefixRemoved() {
-                result = noPopupOnSites.contains(host)
-            }
-            deferred.fill(result)
+        var result = false
+        if let host = url.hostWithGenericSubdomainPrefixRemoved() {
+            result = noPopupOnSites.contains(host)
         }
+        deferred.fill(result)
         return deferred
     }
 }

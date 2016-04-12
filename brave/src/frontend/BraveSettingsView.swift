@@ -1,12 +1,14 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #if !NO_FABRIC
-import Crashlytics
+    import Crashlytics
 #endif
 import Shared
 import OnePasswordExtension
 
 class BraveSettingsView : AppSettingsTableViewController {
+
+    static var cachedIs3rdPartyPasswordManagerInstalled = false
 
     var debugToggleItemToTriggerCrashCount = 0
 
@@ -75,14 +77,34 @@ class BraveSettingsView : AppSettingsTableViewController {
             BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
                 titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager"))
 
-//            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
-//                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
+            //            BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
+            //                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
         ]
-#if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
-        if BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true) {
-            generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
-        }
-#endif
+
+        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+            if BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
+                generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
+            }
+
+            BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true).upon {
+                result in
+                if result == BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
+                    return
+                }
+                BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled = result
+
+                // TODO: if PW manager is removed, settings must be opening a 2nd time for setting to disappear.
+                if result {
+                    ensureMainThread {
+                        generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
+                        self.settings[0] = SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings)
+                        let range = NSMakeRange(0, 1)
+                        let section = NSIndexSet(indexesInRange: range)
+                        self.tableView.reloadSections(section, withRowAnimation: .Automatic)
+                    }
+                }
+            }
+        #endif
 
 
         settings += [
@@ -93,22 +115,22 @@ class BraveSettingsView : AppSettingsTableViewController {
             ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
                 [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
-                BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
-                BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
-                BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: "Block Phishing and Malware")
+                    BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
+                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
+                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: "Block Phishing and Malware")
                 ])]
 
-//#if !DISABLE_INTRO_SCREEN
+        //#if !DISABLE_INTRO_SCREEN
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
                 ShowIntroductionSetting(settings: self),
-                BravePrivacyPolicySetting(), BraveTermsOfUseSetting(), 
+                BravePrivacyPolicySetting(), BraveTermsOfUseSetting(),
                 ])]
-//#endif
+        //#endif
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
                 VersionSetting(settings: self),
-            ])
+                ])
         ]
         return settings
     }
@@ -119,9 +141,9 @@ extension BraveSettingsView : UIAlertViewDelegate {
         if buttonIndex == alertView.cancelButtonIndex {
             return
         }
-#if !NO_FABRIC
-        Crashlytics.sharedInstance().crash()
-#endif
+        #if !NO_FABRIC
+            Crashlytics.sharedInstance().crash()
+        #endif
     }
 }
 
