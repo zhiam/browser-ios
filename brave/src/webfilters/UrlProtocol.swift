@@ -27,7 +27,11 @@ class URLProtocol: NSURLProtocol {
         }
 
         guard let url = request.URL else { return false }
-        let useCustomUrlProtocol = TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request) || HttpsEverywhere.singleton.tryRedirectingUrl(url) != nil
+        let useCustomUrlProtocol =
+            TrackingProtection.singleton.shouldBlock(request) ||
+                AdBlocker.singleton.shouldBlock(request) ||
+                SafeBrowsing.singleton.shouldBlock(request) ||
+                HttpsEverywhere.singleton.tryRedirectingUrl(url) != nil
 
         return useCustomUrlProtocol
     }
@@ -109,7 +113,7 @@ class URLProtocol: NSURLProtocol {
                 self.connection = NSURLConnection(request: newRequest, delegate: self)
             }
         } else {
-            // Only other possibility of why we are here is ABP or TP is blocking
+            // Only other possibility of why we are here is ABP, SafeBrowsing, or TP is blocking
             self.connection = NSURLConnection(request: newRequest, delegate: self)
             if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
                 // sites such as macworld.com need this, or links are not clickable

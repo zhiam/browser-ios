@@ -10,6 +10,8 @@ class AdBlocker {
     static let prefKeyAdBlockOnDefaultValue = true
     static let dataVersion = "1"
 
+    lazy var abpFilterLibWrapper: ABPFilterLibWrapper = { return ABPFilterLibWrapper() }()
+
     lazy var networkFileLoader: NetworkDataFileLoader = {
         let dataUrl = NSURL(string: "https://s3.amazonaws.com/adblock-data/\(dataVersion)/ABPFilterParserData.dat")!
         let dataFile = "abp-data-\(dataVersion).dat"
@@ -158,7 +160,7 @@ class AdBlocker {
             }
         }
 
-        let isBlocked = AdBlockCppFilter.singleton().checkWithCppABPFilter(url.absoluteString,
+        let isBlocked = abpFilterLibWrapper.isBlockedConsideringType(url.absoluteString,
             mainDocumentUrl: mainDocDomain,
             acceptHTTPHeader:request.valueForHTTPHeaderField("Accept"))
 
@@ -177,10 +179,10 @@ class AdBlocker {
 extension AdBlocker: NetworkDataFileLoaderDelegate {
 
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?) {
-        AdBlockCppFilter.singleton().setAdblockDataFile(data)
+        abpFilterLibWrapper.setDataFile(data)
     }
 
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
-        return AdBlockCppFilter.singleton().hasAdblockDataFile()
+        return abpFilterLibWrapper.hasDataFile()
     }
 }

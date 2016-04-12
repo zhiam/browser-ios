@@ -121,6 +121,7 @@ class BraveApp {
         })
 
         AdBlocker.singleton.networkFileLoader.loadData()
+        SafeBrowsing.singleton.networkFileLoader.loadData()
         TrackingProtection.singleton.networkFileLoader.loadData()
         HttpsEverywhere.singleton.networkFileLoader.loadData()
 

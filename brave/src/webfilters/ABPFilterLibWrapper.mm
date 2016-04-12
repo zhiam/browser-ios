@@ -1,17 +1,18 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#import "AdBlockCppFilter.h"
+#import "ABPFilterLibWrapper.h"
 #include "ABPFilterParser.h"
 
-static ABPFilterParser parser;
 
-@interface AdBlockCppFilter()
+@interface ABPFilterLibWrapper() {
+    ABPFilterParser parser;
+}
 @property (nonatomic, retain) NSData *data;
 @end
 
-@implementation AdBlockCppFilter
+@implementation ABPFilterLibWrapper
 
--(void)setAdblockDataFile:(NSData *)data
+-(void)setDataFile:(NSData *)data
 {
     @synchronized(self) {
         self.data = data;
@@ -19,28 +20,44 @@ static ABPFilterParser parser;
     }
 }
 
--(BOOL)hasAdblockDataFile
+-(BOOL)hasDataFile
 {
     @synchronized(self) {
         return self.data != nil;
     }
 }
 
-+ (instancetype)singleton
+-(BOOL)_isBlockedCommonSetup:(NSString **)mainDoc
 {
-    static AdBlockCppFilter *instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [[self alloc] init];
-    });
-    return instance;
+    if (![self hasDataFile]) {
+        return false;
+    }
+
+    if (*mainDoc) {
+        *mainDoc = [*mainDoc stringByReplacingOccurrencesOfString:@"http://" withString:@""];
+        *mainDoc = [*mainDoc stringByReplacingOccurrencesOfString:@"https://" withString:@""];
+    }
+    return true;
 }
 
-- (BOOL)checkWithCppABPFilter:(NSString *)url
+// Ignore the type (.html, .js, .css) of the requested resource
+- (BOOL)isBlockedIgnoringType:(NSString *)url
+                          mainDocumentUrl:(NSString *)mainDoc
+{
+    if (![self _isBlockedCommonSetup:&mainDoc]) {
+        return false;
+    }
+
+    FilterOption option = FONoFilterOption;
+    return parser.matches(url.UTF8String, option, mainDoc.UTF8String);
+}
+
+
+- (BOOL)isBlockedConsideringType:(NSString *)url
               mainDocumentUrl:(NSString *)mainDoc
              acceptHTTPHeader:(NSString *)acceptHeader
 {
-    if (![self hasAdblockDataFile]) {
+    if (![self _isBlockedCommonSetup:&mainDoc]) {
         return false;
     }
 

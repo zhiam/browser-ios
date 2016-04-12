@@ -14,7 +14,7 @@
 
 // BRAVE
 #import "LegacyJSContext.h"
-#import "AdBlockCppFilter.h"
+#import "ABPFilterLibWrapper.h"
 #import "TrackingProtectionCpp.h"
 #import "SwizzlingToHideSharePicker.h"
 #import "ODRefreshControl.h"
