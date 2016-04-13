@@ -78,6 +78,15 @@ class BraveScrollController: NSObject {
     // This added check is a secondary validator of the scroll direction
     private var scrollViewWillBeginDragPoint: CGFloat = 0
 
+    // Can "lock" them for special cases (buggy pages like facebook messenger) that require a specific offset
+    private var lockedContentInsets = false
+    func setContentInset(top top: CGFloat, bottom: CGFloat) {
+        if lockedContentInsets {
+            return
+        }
+        scrollView?.contentInset = UIEdgeInsetsMake(top, 0, bottom, 0)
+    }
+
     override init() {
         super.init()
 
@@ -93,33 +102,40 @@ class BraveScrollController: NSObject {
 
     func keyboardWillDisappear(notification: NSNotification){
         keyboardIsShowing = false
+        lockedContentInsets = false
     }
 
     func pageUnload() {
+        lockedContentInsets = false
+
         delay(0.1) {
             self.showToolbars(animated: true)
         }
     }
 
-    func checkHeightOfPageAndAdjustWebViewInsents() {
-        if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
-            return
-        }
-
+    func checkHeightOfPageAndAdjustWebViewInsets() {
         if !isScrollHeightIsLargeEnoughForScrolling() {
             if (scrollView?.contentInset.bottom == 0) {
                 let h = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? UIConstants.ToolbarHeight * 2 : UIConstants.ToolbarHeight
-                scrollView?.contentInset = UIEdgeInsetsMake(0, 0, h, 0)
+                setContentInset(top: 0, bottom: h)
             }
         } else {
             if (scrollView?.contentInset.bottom != 0) {
-                scrollView?.contentInset = UIEdgeInsetsZero
+                setContentInset(top: 0, bottom: 0)
             }
+        }
+
+        // https://github.com/brave/browser-ios/issues/125 workaround
+        if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
+            setContentInset(top: 0, bottom: 100)
+            lockedContentInsets = true
+        } else {
+            lockedContentInsets = false
         }
     }
 
     func showToolbars(animated animated: Bool, completion: ((finished: Bool) -> Void)? = nil) {
-        checkHeightOfPageAndAdjustWebViewInsents()
+        checkHeightOfPageAndAdjustWebViewInsets()
 
         if verticalTranslation == 0 && headerTopOffset == 0 {
             completion?(finished: true)
@@ -137,10 +153,18 @@ class BraveScrollController: NSObject {
             completion: completion)
     }
 
+    var entrantGuard = false
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if entrantGuard {
+            return
+        }
+        entrantGuard = true
+        defer {
+            entrantGuard = false
+        }
         if keyPath == "contentSize" {
             browser?.webView?.contentSizeChangeDetected()
-            checkHeightOfPageAndAdjustWebViewInsents()
+            checkHeightOfPageAndAdjustWebViewInsets()
             if !isScrollHeightIsLargeEnoughForScrolling() && !toolbarsShowing {
                 showToolbars(animated: true, completion: nil)
             }
@@ -156,14 +180,6 @@ private extension BraveScrollController {
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         if browserIsLoading() || edgeSwipingActive {
             return
-        }
-
-        delay(0.1) {
-            // https://github.com/brave/browser-ios/issues/125
-            // To ensure this happens after all other logic, and overrides any other logic, call it with a delay
-            if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
-                self.scrollView?.contentInset = UIEdgeInsetsMake(0, 0, 2*UIConstants.ToolbarHeight, 0)
-            }
         }
 
         if !BraveScrollController.hideShowToolbarEnabled {
