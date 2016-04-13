@@ -26,7 +26,7 @@ extension LoginsHelper {
     }
 
     func thirdPartyPasswordSnackbar() {
-        let isEnabled = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 < 1
+        let isEnabled = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 > 0
         if !isEnabled {
             return
         }
