@@ -158,7 +158,7 @@ class TabManager : NSObject {
     func selectTab(tab: Browser?) {
         assert(NSThread.isMainThread())
         ensureMainThread() {
-            if self.selectedTab === tab {
+            if let tab = tab where self.selectedTab === tab && tab.webView != nil {
                 return
             }
 
@@ -337,14 +337,14 @@ class TabManager : NSObject {
     }
 
     // This method is duplicated to hide the flushToDisk option from consumers.
-    func removeTab(tab: Browser) {
-        self.removeTab(tab, flushToDisk: true, notify: true)
+    func removeTab(tab: Browser, createTabIfNoneLeft: Bool) {
+        self.removeTab(tab, flushToDisk: true, notify: true, createTabIfNoneLeft: true)
         hideNetworkActivitySpinner()
     }
 
     /// - Parameter notify: if set to true, will call the delegate after the tab 
     ///   is removed.
-    private func removeTab(tab: Browser, flushToDisk: Bool, notify: Bool) {
+    private func removeTab(tab: Browser, flushToDisk: Bool, notify: Bool, createTabIfNoneLeft: Bool) {
         assert(NSThread.isMainThread())
         if !NSThread.isMainThread() {
             return
@@ -395,7 +395,7 @@ class TabManager : NSObject {
         }
 
         // Make sure we never reach 0 normal tabs
-        if !tab.isPrivate && normalTabs.count == 0 {
+        if !tab.isPrivate && normalTabs.count == 0 && createTabIfNoneLeft {
             let tab = addTab()
             selectTab(tab)
         }
@@ -409,14 +409,16 @@ class TabManager : NSObject {
     /// - Parameter notify: if set to true, the delegate is called when a tab is 
     ///   removed.
     func removeAllPrivateTabsAndNotify(notify: Bool) {
-        privateTabs.forEach({ removeTab($0, flushToDisk: true, notify: notify) })
+        privateTabs.forEach{
+            removeTab($0, flushToDisk: true, notify: notify, createTabIfNoneLeft: false)
+        }
     }
     
     func removeAll() {
         let tabs = self.tabs
 
         for tab in tabs {
-            self.removeTab(tab, flushToDisk: false, notify: true)
+            self.removeTab(tab, flushToDisk: false, notify: true, createTabIfNoneLeft: false)
         }
         storeChanges()
     }
@@ -570,6 +572,9 @@ extension TabManager {
         var savedTabs = [SavedTab]()
         var savedUUIDs = Set<String>()
         for (tabIndex, tab) in tabs.enumerate() {
+            if tab.isPrivate {
+                continue
+            }
             if let savedTab = SavedTab(browser: tab, isSelected: tabIndex == selectedIndex) {
                 savedTabs.append(savedTab)
 
@@ -610,6 +615,10 @@ extension TabManager {
 
         var tabToSelect: Browser?
         for (_, savedTab) in savedTabs.enumerate() {
+            if savedTab.isPrivate {
+                continue
+            }
+
             let tab: Browser
             if #available(iOS 9, *) {
                 tab = self.addTab(flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
