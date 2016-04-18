@@ -5,7 +5,7 @@ import SnapKit
 
 class SidePanelBaseViewController : UIViewController {
 
-    var browser:BrowserViewController?
+    var browserViewController:BrowserViewController?
 
     // Wrap everything in a UIScrollView the view animation will not try to shrink the view
     // add subviews to containerView not self.view

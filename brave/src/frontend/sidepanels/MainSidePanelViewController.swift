@@ -113,15 +113,15 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
     let SEL_onClickBookmarksButton = "onClickBookmarksButton"
     func onClickBookmarksButton() {
-        guard let tab = browser?.tabManager.selectedTab,
+        guard let tab = browserViewController?.tabManager.selectedTab,
             let url = tab.displayURL?.absoluteString else {
                 return
         }
 
         if addBookmarkButton.selected {
-            browser?.removeBookmark(url)
+            browserViewController?.removeBookmark(url)
         } else {
-            browser?.addBookmark(url, title: tab.title)
+            browserViewController?.addBookmark(url, title: tab.title)
         }
 
         showBookmarks()

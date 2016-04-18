@@ -111,7 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         browserViewController.restorationClass = AppDelegate.self
         browserViewController.automaticallyAdjustsScrollViewInsets = false
 
-        let topmost = BraveTopViewController(browser: browserViewController as! BraveBrowserViewController)
+        let topmost = BraveTopViewController(browserViewController: browserViewController as! BraveBrowserViewController)
 
         rootViewController = UINavigationController(rootViewController: topmost)
         rootViewController.automaticallyAdjustsScrollViewInsets = false

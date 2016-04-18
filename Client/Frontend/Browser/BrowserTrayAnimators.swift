@@ -7,7 +7,7 @@ import UIKit
 class TrayToBrowserAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
       guard let vc = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) else { return }
-      guard let bvc = (vc as? BraveTopViewController)?.browser else { return }
+      guard let bvc = (vc as? BraveTopViewController)?.browserViewController else { return }
       guard let tabTray = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as? TabTrayController else { return }
       transitionFromTray(tabTray, toBrowser: bvc, usingContext: transitionContext)
     }
@@ -112,7 +112,7 @@ private extension TrayToBrowserAnimator {
 class BrowserToTrayAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
       guard let vc = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) else { return }
-      guard let bvc = (vc as? BraveTopViewController)?.browser else { return }
+      guard let bvc = (vc as? BraveTopViewController)?.browserViewController else { return }
       guard let tabTray = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as? TabTrayController else { return }
       transitionFromBrowser(bvc, toTabTray: tabTray, usingContext: transitionContext)
     }

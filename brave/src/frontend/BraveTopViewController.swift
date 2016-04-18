@@ -9,7 +9,7 @@ let kNotificationBraveButtonClicked = "kNotificationBraveButtonClicked"
 
 
 class BraveTopViewController : UIViewController {
-    var browser:BraveBrowserViewController
+    var browserViewController:BraveBrowserViewController
     var mainSidePanel:MainSidePanelViewController
 #if RIGHTPANEL
     var rightSidePanel:BraveRightSidePanelViewController
@@ -18,8 +18,8 @@ class BraveTopViewController : UIViewController {
     var leftConstraint: Constraint? = nil
     var rightConstraint: Constraint? = nil
     var leftSidePanelButtonAndUnderlay: ButtonWithUnderlayView?
-    init(browser:BraveBrowserViewController) {
-        self.browser = browser
+    init(browserViewController:BraveBrowserViewController) {
+        self.browserViewController = browserViewController
         mainSidePanel = MainSidePanelViewController()
 #if RIGHTPANEL
         rightSidePanel = BraveRightSidePanelViewController()
@@ -41,9 +41,9 @@ class BraveTopViewController : UIViewController {
         view.accessibilityLabel = "HighestView"
         view.backgroundColor = BraveUX.TopLevelBackgroundColor
 
-        browser.view.accessibilityLabel = "BrowserView"
+        browserViewController.view.accessibilityLabel = "BrowserViewController"
 
-        addVC(browser)
+        addVC(browserViewController)
         addVC(mainSidePanel)
         #if RIGHTPANEL
             addVC(rightSidePanel)
@@ -78,7 +78,7 @@ class BraveTopViewController : UIViewController {
 
         clickDetectionView.addTarget(self, action: "dismissAllSidePanels:", forControlEvents: UIControlEvents.TouchUpInside)
 
-        mainSidePanel.browser = browser
+        mainSidePanel.browserViewController = browserViewController
     }
 
     @objc func dismissAllSidePanels(button: UIButton) {
@@ -96,7 +96,7 @@ class BraveTopViewController : UIViewController {
     }
 
     private func setupBrowserConstraints(useTopLayoutGuide useTopLayoutGuide: Bool) {
-        browser.view.snp_remakeConstraints {
+        browserViewController.view.snp_remakeConstraints {
             make in
             make.bottom.equalTo(view)
             if useTopLayoutGuide {
@@ -181,7 +181,7 @@ class BraveTopViewController : UIViewController {
             view.addSubview(clickDetectionView)
             clickDetectionView.snp_remakeConstraints {
                 make in
-                make.edges.equalTo(browser.view)
+                make.edges.equalTo(browserViewController.view)
             }
             clickDetectionView.layoutIfNeeded()
         }
@@ -191,6 +191,8 @@ class BraveTopViewController : UIViewController {
 
     func updateBookmarkStatus(isBookmarked: Bool) {
         mainSidePanel.updateBookmarkStatus(isBookmarked)
+        let bar = browserViewController.urlBar as? BraveURLBarView
+        bar?.updateBookmarkStatus(isBookmarked)
     }
 }
 
@@ -199,8 +201,8 @@ extension BraveTopViewController : HomePanelDelegate {
     func homePanelDidRequestToCreateAccount(homePanel: HomePanel) {}
     func homePanel(homePanel: HomePanel, didSelectURL url: NSURL, visitType: VisitType) {
         print("selected \(url)")
-        browser.urlBar.leaveOverlayMode()
-        browser.tabManager.selectedTab?.loadRequest(NSURLRequest(URL: url))
+        browserViewController.urlBar.leaveOverlayMode()
+        browserViewController.tabManager.selectedTab?.loadRequest(NSURLRequest(URL: url))
         togglePanel(mainSidePanel)
     }
 }

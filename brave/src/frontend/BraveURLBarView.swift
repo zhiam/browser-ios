@@ -378,5 +378,8 @@ class BraveURLBarView : URLBarView {
             }
         }
     }
-    
+
+    override func updateBookmarkStatus(isBookmarked: Bool) {
+        leftSidePanelButton.setImage(UIImage(named: isBookmarked ? "listpanel_bookmarked" : "listpanel"), forState: .Normal)
+    }
 }
