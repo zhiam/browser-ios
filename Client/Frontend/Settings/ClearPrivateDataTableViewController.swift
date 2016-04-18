@@ -115,12 +115,15 @@ class ClearPrivateDataTableViewController: UITableViewController {
                     guard toggles[i] else {
                         return nil
                     }
+
                     log.debug("Clearing \(pair.clearable).")
                     return pair.clearable.clear()
                 }
                 .allSucceed()
                 .upon { result in
-                    assert(result.isSuccess, "Private data cleared successfully")
+                    if !result.isSuccess {
+                        print("Private data NOT cleared successfully")
+                    }
 
                     self.profile.prefs.setObject(self.toggles, forKey: TogglesPrefKey)
 
@@ -128,6 +131,10 @@ class ClearPrivateDataTableViewController: UITableViewController {
                         // Disable the Clear Private Data button after it's clicked.
                         self.clearButtonEnabled = false
                         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
+                        // Cache and Cookie clearables will leave the selected tab with no UIWebView, so re-select it
+                        let browser = getApp().tabManager.selectedTab
+                        getApp().tabManager.selectTab(browser)
                     }
             }
         }

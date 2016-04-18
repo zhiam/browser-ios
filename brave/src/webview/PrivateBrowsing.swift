@@ -13,10 +13,12 @@ class PrivateBrowsing {
 
     // On startup we are no longer in private mode, if there is a .public cookies file, it means app was killed in private mode, so restore the cookies file
     func startupCheckIfKilledWhileInPBMode() {
-#if !BRAVE_NO_PRIVATE_MODE
         webkitDirLocker(lock: false)
+
+        CacheClearable().clear()
+        CookiesClearable().clear()
+
         cookiesFileDiskOperation(.Restore)
-#endif
     }
 
     enum MoveCookies {
@@ -71,7 +73,6 @@ class PrivateBrowsing {
     }
 
     func enter() {
-#if !BRAVE_NO_PRIVATE_MODE
         if isOn {
             return
         }
@@ -94,11 +95,9 @@ class PrivateBrowsing {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "cookiesChanged:", name: NSHTTPCookieManagerCookiesChangedNotification, object: nil)
 
         webkitDirLocker(lock: true)
-#endif
     }
 
     func exit() {
-#if !BRAVE_NO_PRIVATE_MODE
         if !isOn {
             return
         }
@@ -110,26 +109,18 @@ class PrivateBrowsing {
         BraveApp.setupCacheDefaults()
         NSNotificationCenter.defaultCenter().removeObserver(self)
 
-        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-        if let cookies = storage.cookies {
-            for cookie in cookies {
-               storage.deleteCookie(cookie)
-            }
-        }
-
-        NSUserDefaults.standardUserDefaults().synchronize()
+        CacheClearable().clear()
+        CookiesClearable().clear()
 
         cookiesFileDiskOperation(.DeletePublicBackup)
-
+        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
         for cookie in nonprivateCookies {
             storage.setCookie(cookie.0)
         }
         nonprivateCookies = [NSHTTPCookie: Bool]()
-#endif
     }
 
     @objc func cookiesChanged(info: NSNotification) {
-#if !BRAVE_NO_PRIVATE_MODE
         NSNotificationCenter.defaultCenter().removeObserver(self)
         let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
         var newCookies = [NSHTTPCookie]()
@@ -154,6 +145,5 @@ class PrivateBrowsing {
         }
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "cookiesChanged:", name: NSHTTPCookieManagerCookiesChangedNotification, object: nil)
-#endif
         }
 }

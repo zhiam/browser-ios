@@ -1427,7 +1427,7 @@ extension BrowserViewController: BrowserToolbarDelegate {
 
 extension BrowserViewController: WindowCloseHelperDelegate {
     func windowCloseHelper(helper: WindowCloseHelper, didRequestToCloseBrowser browser: Browser) {
-        tabManager.removeTab(browser)
+        tabManager.removeTab(browser, createTabIfNoneLeft: true)
     }
 }
 

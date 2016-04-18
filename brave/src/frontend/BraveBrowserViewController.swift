@@ -34,7 +34,7 @@ class BraveBrowserViewController : BrowserViewController {
         if BraveApp.shouldRestoreTabs() {
             tabManager.restoreTabs()
         } else {
-            tabManager.addTabAndSelect();
+            tabManager.addTabAndSelect()
         }
 
         updateTabCountUsingTabManager(tabManager, animated: false)

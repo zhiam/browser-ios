@@ -71,24 +71,19 @@ class CacheClearable: Clearable {
     }
 
     func clear() -> Success {
-        getApp().tabManager.removeAll()
+        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
 
         NSURLCache.sharedURLCache().memoryCapacity = 0;
         NSURLCache.sharedURLCache().diskCapacity = 0;
         // Remove the basic cache.
         NSURLCache.sharedURLCache().removeAllCachedResponses()
 
-        // Now let's finish up by destroying our Cache directory.
-        do {
-            try deleteLibraryFolderContents("Caches", validateClearedWithNameContains: ["WebKit", "brave"])
-        } catch {
-            return deferMaybe(ClearableErrorType(err: error))
-        }
-
-        do {
-            try deleteLibraryFolderContents("WebKit", validateClearedWithNameContains: ["WebsiteData", "GeolocationSites.plist"])
-        } catch {
-            return deferMaybe(ClearableErrorType(err: error))
+        for item in ["Caches", "Preferences", "Cookies", "WebKit"] {
+            do {
+                try deleteLibraryFolderContents(item, validateClearedExceptFor: ["Snapshots"])
+            } catch {
+                return deferMaybe(ClearableErrorType(err: error))
+            }
         }
 
         // Leave the cache off in the error cases above
@@ -102,7 +97,7 @@ class CacheClearable: Clearable {
 // Alert the user if these files still exist after clearing.
 // validateClearedWithNameContains can be nil, in which case the check is skipped or pass [] as a special case to verify that
 // the directory is empty.
-private func deleteLibraryFolderContents(folder: String, validateClearedWithNameContains:[String]?) throws {
+private func deleteLibraryFolderContents(folder: String, validateClearedExceptFor:[String]?) throws {
     let manager = NSFileManager.defaultManager()
     let library = manager.URLsForDirectory(NSSearchPathDirectory.LibraryDirectory, inDomains: .UserDomainMask)[0]
     let dir = library.URLByAppendingPathComponent(folder)
@@ -116,20 +111,17 @@ private func deleteLibraryFolderContents(folder: String, validateClearedWithName
         }
     }
 
-    guard let namesToCheck = validateClearedWithNameContains else { return }
+    #if DEBUG
+    guard let allowedFileNames = validateClearedExceptFor else { return }
     contents = try manager.contentsOfDirectoryAtPath(dir.path!)
-    if namesToCheck.count < 1 && contents.count > 0 {
-        BraveApp.showErrorAlert(title: "Error clearing data", error: "\(folder) not fully cleared")
-        return
-    }
-
     for content in contents {
-        for name in namesToCheck {
-            if content.contains(name) {
+        for name in allowedFileNames {
+            if !content.contains(name) {
                 BraveApp.showErrorAlert(title: "Error clearing data", error: "Item not cleared: \(content)")
             }
         }
     }
+    #endif
 }
 
 private func deleteLibraryFolder(folder: String) throws {
@@ -179,7 +171,7 @@ class CookiesClearable: Clearable {
     }
 
     func clear() -> Success {
-        getApp().tabManager.removeAll()
+        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
 
         NSUserDefaults.standardUserDefaults().synchronize()
 
@@ -194,7 +186,7 @@ class CookiesClearable: Clearable {
 
         // And just to be safe, we also wipe the Cookies directory.
         do {
-            try deleteLibraryFolderContents("Cookies", validateClearedWithNameContains: [])
+            try deleteLibraryFolderContents("Cookies", validateClearedExceptFor: [])
         } catch {
             return deferMaybe(ClearableErrorType(err: error))
         }

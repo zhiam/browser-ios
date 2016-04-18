@@ -526,6 +526,7 @@ class TabTrayController: UIViewController {
         privateMode = !privateMode
 #if BRAVE
         if privateMode {
+            tabManager.tabs.forEach{ $0.deleteWebView() }
             PrivateBrowsing.singleton.enter()
             togglePrivateMode.backgroundColor = UIColor.whiteColor()
             togglePrivateMode.layer.cornerRadius = 4.0
@@ -763,7 +764,7 @@ extension TabTrayController: SwipeAnimatorDelegate {
         let tabCell = animator.container as! TabCell
         if let indexPath = collectionView.indexPathForCell(tabCell) {
             let tab = tabsToDisplay[indexPath.item]
-            tabManager.removeTab(tab)
+            tabManager.removeTab(tab, createTabIfNoneLeft: true)
             UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Closing tab", comment: ""))
         }
     }
@@ -773,7 +774,7 @@ extension TabTrayController: TabCellDelegate {
     func tabCellDidClose(cell: TabCell) {
         let indexPath = collectionView.indexPathForCell(cell)!
         let tab = tabsToDisplay[indexPath.item]
-        tabManager.removeTab(tab)
+        tabManager.removeTab(tab, createTabIfNoneLeft: true)
     }
 }
 

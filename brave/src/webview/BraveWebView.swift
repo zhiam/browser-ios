@@ -155,8 +155,11 @@ class BraveWebView: UIWebView {
         commonInit()
     }
 
+    static var debugAllocCounter = 0 // Keep me, I am very handy
+
     private func commonInit() {
-        print("webview init ")
+        BraveWebView.debugAllocCounter += 1
+        print("webview init  \(BraveWebView.debugAllocCounter)")
         generateUniqueUserAgent()
 
         progress = WebViewProgress(parent: self)
@@ -167,12 +170,8 @@ class BraveWebView: UIWebView {
         scrollView.showsHorizontalScrollIndicator = false
 
         #if !TEST
-            // if (BraveUX.IsHighLoadAnimationAllowed && !BraveUX.IsOverrideScrollingSpeedAndMakeSlower) {
             let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
             scrollView.setValue(NSValue(CGSize: CGSizeMake(rate, rate)), forKey: "_decelerationFactor")
-            //    } else {
-            //      scrollView.decelerationRate = UIScrollViewDecelerationRateFast
-            //    }
         #endif
 
     }
@@ -200,6 +199,11 @@ class BraveWebView: UIWebView {
     }
 
     deinit {
+        BraveWebView.debugAllocCounter -= 1
+        if (BraveWebView.debugAllocCounter == 0) {
+            print("NO LIVE WEB VIEWS")
+        }
+
         NSNotificationCenter.defaultCenter().removeObserver(self)
 
         _ = Try(withTry: {
