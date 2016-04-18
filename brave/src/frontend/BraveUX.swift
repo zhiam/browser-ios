@@ -7,7 +7,8 @@ struct BraveUX {
 
     static var TitleForBraveProtectionOff = "Shields Down"
     static var TitleForBraveProtectionOn = "Shields Up"
-    static let BraveButtonMessageInUrlBarColor = UIColor(colorLiteralRed: 1.0, green: 80/255.0, blue: 0, alpha: 1.0)
+    static let BraveOrange = UIColor(colorLiteralRed: 1.0, green: 80/255.0, blue: 0, alpha: 1.0)
+    static let BraveButtonMessageInUrlBarColor = BraveOrange
     static let BraveButtonMessageInUrlBarShowTime = 0.5
     static let BraveButtonMessageInUrlBarFadeTime = 0.7
 
