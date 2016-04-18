@@ -58,7 +58,7 @@ extension LoginsHelper {
                         safeSelf.browser?.removeSnackbar(snackBar)
                     }
 
-                    safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your password manager"), img: UIImage(named: "onepassword-button"), buttons: [])
+                    safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your password manager"), img: UIImage(named: "key"), buttons: [])
                     safeSelf.snackBar!.tag = tagFor1PwSnackbar
                     let button = UIButton()
                     button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
