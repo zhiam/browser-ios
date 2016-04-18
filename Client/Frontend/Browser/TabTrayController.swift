@@ -534,6 +534,7 @@ class TabTrayController: UIViewController {
             self.togglePrivateMode.backgroundColor = UIColor.clearColor()
             tabManager.removeAllPrivateTabsAndNotify(false)
             PrivateBrowsing.singleton.exit()
+            tabManager.selectTab(tabManager.tabs.first)
         }
 #else
         // If we are exiting private mode and we have the close private tabs option selected, make sure
@@ -766,6 +767,11 @@ extension TabTrayController: SwipeAnimatorDelegate {
             let tab = tabsToDisplay[indexPath.item]
             tabManager.removeTab(tab, createTabIfNoneLeft: true)
             UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Closing tab", comment: ""))
+
+            if privateMode && tabsToDisplay.count == 0 {
+                // tabManager.removeTab will have selected a tab, which created a non-private webview, so delete it
+                getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
+            }
         }
     }
 }
