@@ -126,11 +126,13 @@ class BraveScrollController: NSObject {
         }
 
         // https://github.com/brave/browser-ios/issues/125 workaround
-        if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
-            setContentInset(top: 0, bottom: 100)
-            lockedContentInsets = true
-        } else {
-            lockedContentInsets = false
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
+                setContentInset(top: 0, bottom: 100)
+                lockedContentInsets = true
+            } else {
+                lockedContentInsets = false
+            }
         }
     }
 
