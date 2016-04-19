@@ -350,6 +350,34 @@ class BraveWebView: UIWebView {
         js += "document.head.appendChild(script);"
         LegacyUserContentController.injectJsIntoAllFrames(self, script: js)
     }
+
+    var safeBrowsingCheckIsEmptyPageTimer = NSTimer()
+
+    func safeBrowsingCheckIsEmptyPageTimeout(timer: NSTimer) {
+        let urlInfo = timer.userInfo as? NSURL
+        safeBrowsingCheckIsEmptyPageTimer.invalidate()
+
+        ensureMainThread {
+            let contents = self.stringByEvaluatingJavaScriptFromString("document.body")
+            if contents?.isEmpty ?? true {
+                let path = NSBundle.mainBundle().pathForResource("SafeBrowsingError", ofType: "html")!
+                let src = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
+                self.loadHTMLString(src, baseURL: nil)
+            }
+            delay(0.2) {
+                [weak self] in
+                self?.URL = urlInfo
+                self?.kvoBroadcast([KVOStrings.kvoURL])
+            }
+         }
+    }
+
+    func safeBrowsingCheckIsEmptyPage(url: NSURL?) {
+        if safeBrowsingCheckIsEmptyPageTimer.valid {
+            return
+        }
+        safeBrowsingCheckIsEmptyPageTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(safeBrowsingCheckIsEmptyPageTimeout), userInfo: url, repeats: false)
+    }
 }
 
 extension BraveWebView: UIWebViewDelegate {
