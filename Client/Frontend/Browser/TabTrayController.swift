@@ -853,6 +853,8 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         if let favIcon = tab.displayFavicon {
             tabCell.favicon.sd_setImageWithURL(NSURL(string: favIcon.url)!)
             tabCell.favicon.backgroundColor = BraveUX.TabTrayCellBackgroundColor
+        } else {
+            tabCell.favicon.image = nil
         }
         
         tabCell.background.image = tab.screenshot
