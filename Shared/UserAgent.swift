@@ -84,7 +84,7 @@ public class UserAgent {
         }
 
         let mutableUA = NSMutableString(string: userAgent)
-        mutableUA.insertString("FxiOS/\(appVersion) ", atIndex: mobileRange.location)
+        mutableUA.insertString("Brave/\(appVersion) ", atIndex: mobileRange.location)
 
         let firefoxUA = "\(mutableUA) Safari/\(webKitVersion)"
 

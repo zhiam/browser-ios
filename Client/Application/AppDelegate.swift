@@ -331,7 +331,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func setUserAgents() {
-#if !BRAVE
         let firefoxUA = UserAgent.defaultUserAgent()
 
         // Set the UA for WKWebView (via defaults), the favicon fetcher, and the image loader.
@@ -344,7 +343,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Record the user agent for use by search suggestion clients.
         SearchViewController.userAgent = firefoxUA
-#endif
+
         // Some sites will only serve HTML that points to .ico files.
         // The FaviconFetcher is explicitly for getting high-res icons, so use the desktop user agent.
         FaviconFetcher.userAgent = UserAgent.desktopUserAgent()
