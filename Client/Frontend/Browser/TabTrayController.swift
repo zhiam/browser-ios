@@ -534,7 +534,9 @@ class TabTrayController: UIViewController {
             self.togglePrivateMode.backgroundColor = UIColor.clearColor()
             tabManager.removeAllPrivateTabsAndNotify(false)
             PrivateBrowsing.singleton.exit()
-            tabManager.selectTab(tabManager.tabs.first)
+            delay(0.1) {
+                getApp().tabManager.selectTab(getApp().tabManager.tabs.first)
+            }
         }
 #else
         // If we are exiting private mode and we have the close private tabs option selected, make sure
@@ -989,6 +991,8 @@ private class EmptyPrivateTabsView: UIView {
 #endif
     override init(frame: CGRect) {
         super.init(frame: frame)
+
+        backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
 
         titleLabel.text =  NSLocalizedString("Private Browsing",
             tableName: "PrivateBrowsing", comment: "Title displayed for when there are no open tabs while in private mode")
