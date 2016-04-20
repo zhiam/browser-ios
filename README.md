@@ -73,6 +73,8 @@ None of these are comparable to Safari iOS's JS engine, which is highly up-to-da
 
 ## Misc Tips
 
+If you get the dreaded "Launch Services Error 0": open ~/Library/Logs/CoreSimulator/CoreSimulator.log for info
+
 Go to the Brave app folder for the most recently run simulator:
 ```
 cd ~/Library/Developer/CoreSimulator/Devices && cd `ls -t | head -1` && cd data/Containers/Data/Application && cd `find . -iname "*brave*" | head -1 | xargs -I{} dirname {}`
