@@ -39,7 +39,7 @@ def walk(proj, base, start, override_target = nil)
   folder = start[base.length + 1,start.length]
   Dir.foreach(start) do |x|
     path = File.join(start, x)
-    if x == "." or x == ".." or x == ".DS_Store"
+    if x == "." or x == ".." or x == ".DS_Store" or x == 'sqlcipher' or x == 'SQLite.swift'
       next
     elsif File.directory?(path)
       if path =~ /(\.xcasset)|(SearchPlugins)/
