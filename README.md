@@ -6,6 +6,10 @@ Brave is based on Firefox iOS, most of the Brave-specific code is in the [brave 
 
 These steps should be sufficient to build, but if you need more info, refer to the the [Firefox iOS readme](https://github.com/mozilla/firefox-ios/blob/master/README.md)
 
+### Adding Brave to your app to open links
+
+Either ensure your app supports [opening urls in a share menu](https://github.com/brave/browser-ios/wiki) or use this project https://github.com/brave/ios-open-thirdparty-browser to open links directly.
+
 ## Setup
 
 Install [Node.js](https://nodejs.org/en/download/stable/) v5.0.0
