@@ -5,6 +5,6 @@
 refprevhead="$1"
 refnewhead="$2"
 [[ -e brave ]] && \
-( git log --diff-filter=A --diff-filter=D --summary $refprevhead..$refnewhead | egrep -q "create|delete" ) && (cd brave; python brave-proj.py)
+( git log --diff-filter=A --diff-filter=D --summary $refprevhead..$refnewhead | egrep -q "create|delete" ) && (cd brave; ./projgen.rb)
 
 exit 0

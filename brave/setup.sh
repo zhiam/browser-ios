@@ -18,8 +18,8 @@ npm update
 echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"`  > xcconfig/build-id.xcconfig
 
 #create the xcode project
-python brave-proj.py 
+./projgen.rb 
 
 echo ""
-echo "If files are added/removed from the project, regenerate it with ./brave-proj.py"
+echo "If files are added/removed from the project, regenerate it with ./projgen.rb"
 echo "Consider adding the post-checkout script for git automation (instructions are in that file)"

@@ -549,12 +549,12 @@ class BrowserViewController: UIViewController {
         super.viewDidAppear(animated)
         log.debug("BVC done.")
 
-        if profile.prefs.stringForKey(LatestAppVersionProfileKey) != AppInfo.appVersion && DeviceInfo.hasConnectivity() {
-            if let whatsNewURL = SupportUtils.URLForTopic("new-ios") {
-                self.openURLInNewTab(whatsNewURL)
-                profile.prefs.setString(AppInfo.appVersion, forKey: LatestAppVersionProfileKey)
-            }
-        }
+//        if profile.prefs.stringForKey(LatestAppVersionProfileKey) != AppInfo.appVersion && DeviceInfo.hasConnectivity() {
+//            if let whatsNewURL = SupportUtils.URLForTopic("new-ios") {
+//                self.openURLInNewTab(whatsNewURL)
+//                profile.prefs.setString(AppInfo.appVersion, forKey: LatestAppVersionProfileKey)
+//            }
+//        }
 
         showQueuedAlertIfAvailable()
     }
