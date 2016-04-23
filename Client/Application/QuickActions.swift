@@ -55,21 +55,21 @@ class QuickActions: NSObject {
 
     // MARK: Administering Quick Actions
     func addDynamicApplicationShortcutItemOfType(type: ShortcutType, fromShareItem shareItem: ShareItem, toApplication application: UIApplication) {
-        var userData = [QuickActions.TabURLKey: shareItem.url]
-        if let title = shareItem.title {
-            userData[QuickActions.TabTitleKey] = title
-        }
-        QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(type, withUserData: userData, toApplication: application)
+            var userData = [QuickActions.TabURLKey: shareItem.url]
+            if let title = shareItem.title {
+                userData[QuickActions.TabTitleKey] = title
+            }
+            QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(type, withUserData: userData, toApplication: application)
     }
 
     func addDynamicApplicationShortcutItemOfType(type: ShortcutType, withUserData userData: [NSObject : AnyObject] = [NSObject : AnyObject](), toApplication application: UIApplication) -> Bool {
         // add the quick actions version so that it is always in the user info
         var userData: [NSObject: AnyObject] = userData
         userData[QuickActions.QuickActionsVersionKey] = QuickActions.QuickActionsVersion
-        // let dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
+       // let dynamicShortcutItems = application.shortcutItems ?? [UIApplicationShortcutItem]()
 
-        log.warning("Cannot add static shortcut item of type \(type)")
-        return false
+            log.warning("Cannot add static shortcut item of type \(type)")
+            return false
 
     }
 
@@ -101,7 +101,7 @@ class QuickActions: NSObject {
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
         case .NewPrivateTab:
             handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
-            // even though we're removing OpenLastTab, it's possible that someone will use an existing last tab quick action to open the app
+        // even though we're removing OpenLastTab, it's possible that someone will use an existing last tab quick action to open the app
         // the first time after upgrading, so we should still handle it
         case .OpenLastTab:
             if let urlToOpen = (userData?[QuickActions.TabURLKey] as? String)?.asURL {

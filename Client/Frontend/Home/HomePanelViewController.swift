@@ -138,7 +138,7 @@ class HomePanelViewController: UIViewController, UITextFieldDelegate, HomePanelD
                     let panel = self.panels[index].makeViewController(profile: profile)
                     let accessibilityLabel = self.panels[index].accessibilityLabel
                     if let panelController = panel as? UINavigationController,
-                        let rootPanel = panelController.viewControllers.first {
+                     let rootPanel = panelController.viewControllers.first {
                         setupHomePanel(rootPanel, accessibilityLabel: accessibilityLabel)
                         self.showPanel(panelController)
                     } else {
@@ -235,9 +235,9 @@ class HomePanelViewController: UIViewController, UITextFieldDelegate, HomePanelD
         // they'd copied and pasted into the URL bar.
         // See BrowserViewController.urlBar:didSubmitText:.
         guard let url = URIFixup.getURL(url) ??
-            profile.searchEngines.defaultEngine.searchURLForQuery(url) else {
-                Logger.browserLogger.warning("Invalid URL, and couldn't generate a search URL for it.")
-                return
+                        profile.searchEngines.defaultEngine.searchURLForQuery(url) else {
+            Logger.browserLogger.warning("Invalid URL, and couldn't generate a search URL for it.")
+            return
         }
 
         return self.homePanel(homePanel, didSelectURL: url, visitType: visitType)
@@ -283,11 +283,11 @@ class HomePanelViewController: UIViewController, UITextFieldDelegate, HomePanelD
         UIView.animateWithDuration(0.4, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [UIViewAnimationOptions.AllowUserInteraction, UIViewAnimationOptions.CurveEaseInOut], animations: { () -> Void in
             self.buttons.forEach { $0.transform = editing ? translateUp : CGAffineTransformIdentity }
             self.finishEditingButton?.transform = editing ? CGAffineTransformIdentity : translateDown
-            }, completion: { _ in
-                if !editing {
-                    self.finishEditingButton?.removeFromSuperview()
-                    self.finishEditingButton = nil
-                }
+        }, completion: { _ in
+            if !editing {
+                self.finishEditingButton?.removeFromSuperview()
+                self.finishEditingButton = nil
+            }
         })
     }
 }

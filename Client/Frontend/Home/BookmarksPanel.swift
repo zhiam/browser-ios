@@ -126,7 +126,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             make.top.equalTo(logoImageView.snp_bottom).offset(BookmarksPanelUX.WelcomeScreenPadding)
             make.width.equalTo(BookmarksPanelUX.WelcomeScreenItemWidth)
         }
-
+        
         return overlayView
     }
 
@@ -493,17 +493,17 @@ private class BookmarkFolderTableViewHeader : UITableViewHeaderFooterView {
             make.top.equalTo(self).offset(-0.5)
             make.height.equalTo(0.5)
         }
-        
+
         bottomBorder.snp_makeConstraints { make in
             make.left.right.bottom.equalTo(self)
             make.height.equalTo(0.5)
         }
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     @objc private func viewWasTapped(gestureRecognizer: UITapGestureRecognizer) {
         delegate?.didSelectHeader()
     }

@@ -99,7 +99,7 @@ class TabCell: UICollectionViewCell {
         self.closeButton = UIButton()
         self.closeButton.setImage(UIImage(named: "stop"), forState: UIControlState.Normal)
         self.closeButton.tintColor = UIColor.lightGrayColor()
-        // self.closeButton.imageEdgeInsets = UIEdgeInsetsMake(TabTrayControllerUX.CloseButtonEdgeInset, TabTrayControllerUX.CloseButtonEdgeInset, TabTrayControllerUX.CloseButtonEdgeInset, TabTrayControllerUX.CloseButtonEdgeInset)
+       // self.closeButton.imageEdgeInsets = UIEdgeInsetsMake(TabTrayControllerUX.CloseButtonEdgeInset, TabTrayControllerUX.CloseButtonEdgeInset, TabTrayControllerUX.CloseButtonEdgeInset, TabTrayControllerUX.CloseButtonEdgeInset)
 
         self.innerStroke = InnerStrokedView(frame: self.backgroundHolder.frame)
         self.innerStroke.layer.backgroundColor = UIColor.clearColor().CGColor
@@ -254,21 +254,21 @@ class TabTrayController: UIViewController {
 
     private(set) internal var privateMode: Bool = false {
         didSet {
-            #if !BRAVE_NO_PRIVATE_MODE
-                if #available(iOS 9, *) {
-                    togglePrivateMode.selected = privateMode
-                    togglePrivateMode.accessibilityValue = privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
-                    tabDataSource.tabs = tabsToDisplay
-                    collectionView?.reloadData()
-                }
-            #endif
+#if !BRAVE_NO_PRIVATE_MODE
+            if #available(iOS 9, *) {
+                togglePrivateMode.selected = privateMode
+                togglePrivateMode.accessibilityValue = privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
+                tabDataSource.tabs = tabsToDisplay
+                collectionView?.reloadData()
+            }
+#endif
         }
     }
 
     private var tabsToDisplay: [Browser] {
         return self.privateMode ? tabManager.privateTabs : tabManager.normalTabs
     }
-    #if !BRAVE_NO_PRIVATE_MODE
+#if !BRAVE_NO_PRIVATE_MODE
     @available(iOS 9, *)
     lazy var togglePrivateMode: UIButton = {
         let button = UIButton()
@@ -297,7 +297,7 @@ class TabTrayController: UIViewController {
         emptyView.learnMoreButton.addTarget(self, action: #selector(TabTrayController.SELdidTapLearnMore), forControlEvents: UIControlEvents.TouchUpInside)
         return emptyView
     }()
-    #endif
+#endif
     private lazy var tabDataSource: TabManagerDataSource = {
         return TabManagerDataSource(tabs: self.tabsToDisplay, cellDelegate: self)
     }()
@@ -308,7 +308,7 @@ class TabTrayController: UIViewController {
         return delegate
     }()
 
-    #if BRAVE
+#if BRAVE
     override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
 
         super.dismissViewControllerAnimated(flag, completion:completion)
@@ -316,11 +316,11 @@ class TabTrayController: UIViewController {
         UIView.animateWithDuration(0.2) {
             let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController
             braveTopVC?.view.backgroundColor = BraveUX.TopLevelBackgroundColor
-            getApp().browserViewController.view.alpha = 1.0
-            getApp().browserViewController.toolbar?.leavingTabTrayMode()
+             getApp().browserViewController.view.alpha = 1.0
+             getApp().browserViewController.toolbar?.leavingTabTrayMode()
         }
     }
-    #endif
+#endif
 
     init(tabManager: TabManager, profile: Profile) {
         self.tabManager = tabManager
@@ -356,7 +356,7 @@ class TabTrayController: UIViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
 
-    // MARK: View Controller Callbacks
+// MARK: View Controller Callbacks
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -381,15 +381,15 @@ class TabTrayController: UIViewController {
         collectionView.registerClass(TabCell.self, forCellWithReuseIdentifier: TabCell.Identifier)
         collectionView.backgroundColor = UIColor.clearColor()
 
-        #if BRAVE
-            collectionView.backgroundView = UIView(frame: view.frame)
-            collectionView.backgroundView?.snp_makeConstraints() {
-                make in
-                make.edges.equalTo(collectionView)
-            }
-            collectionView.backgroundView?.userInteractionEnabled = true
-            collectionView.backgroundView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TabTrayController.onTappedBackground(_:))))
-        #endif
+#if BRAVE
+        collectionView.backgroundView = UIView(frame: view.frame)
+        collectionView.backgroundView?.snp_makeConstraints() {
+            make in
+            make.edges.equalTo(collectionView)
+        }
+        collectionView.backgroundView?.userInteractionEnabled = true
+        collectionView.backgroundView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TabTrayController.onTappedBackground(_:))))
+#endif
 
         view.addSubview(collectionView)
         view.addSubview(navBar)
@@ -397,31 +397,31 @@ class TabTrayController: UIViewController {
 
 
         makeConstraints()
-        #if !BRAVE_NO_PRIVATE_MODE
-            if #available(iOS 9, *) {
-                view.addSubview(togglePrivateMode)
-                togglePrivateMode.snp_makeConstraints { make in
-                    make.right.equalTo(addTabButton.snp_left).offset(-10)
-                    //make.height.equalTo(UIConstants.ToolbarHeight)
-                    make.centerY.equalTo(self.navBar)
-                }
-
-                view.insertSubview(emptyPrivateTabsView, aboveSubview: collectionView)
-                emptyPrivateTabsView.alpha = privateMode && tabManager.privateTabs.count == 0 ? 1 : 0
-                emptyPrivateTabsView.snp_makeConstraints { make in
-                    make.edges.equalTo(self.view)
-                }
-
-                if let tab = tabManager.selectedTab where tab.isPrivate {
-                    privateMode = true
-                }
-
-                // register for previewing delegate to enable peek and pop if force touch feature available
-                //            if traitCollection.forceTouchCapability == .Available {
-                //                registerForPreviewingWithDelegate(self, sourceView: view)
-                //            }
+#if !BRAVE_NO_PRIVATE_MODE
+        if #available(iOS 9, *) {
+            view.addSubview(togglePrivateMode)
+            togglePrivateMode.snp_makeConstraints { make in
+                make.right.equalTo(addTabButton.snp_left).offset(-10)
+                //make.height.equalTo(UIConstants.ToolbarHeight)
+                make.centerY.equalTo(self.navBar)
             }
-        #endif
+
+            view.insertSubview(emptyPrivateTabsView, aboveSubview: collectionView)
+            emptyPrivateTabsView.alpha = privateMode && tabManager.privateTabs.count == 0 ? 1 : 0
+            emptyPrivateTabsView.snp_makeConstraints { make in
+                make.edges.equalTo(self.view)
+            }
+
+            if let tab = tabManager.selectedTab where tab.isPrivate {
+                privateMode = true
+            }
+
+            // register for previewing delegate to enable peek and pop if force touch feature available
+//            if traitCollection.forceTouchCapability == .Available {
+//                registerForPreviewingWithDelegate(self, sourceView: view)
+//            }
+        }
+#endif
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TabTrayController.SELappWillResignActiveNotification), name: UIApplicationWillResignActiveNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TabTrayController.SELappDidBecomeActiveNotification), name: UIApplicationDidBecomeActiveNotification, object: nil)
@@ -439,7 +439,7 @@ class TabTrayController: UIViewController {
         super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
         coordinator.animateAlongsideTransition({ _ in
             self.collectionView.collectionViewLayout.invalidateLayout()
-            }, completion: nil)
+        }, completion: nil)
     }
 
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -464,12 +464,12 @@ class TabTrayController: UIViewController {
         }
     }
 
-    // MARK: Selectors
+// MARK: Selectors
 
     func SELdidClickAddTab() {
         openNewTab()
     }
-    #if !BRAVE_NO_PRIVATE_MODE
+  #if !BRAVE_NO_PRIVATE_MODE
     @available(iOS 9, *)
     func SELdidTapLearnMore() {
         let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
@@ -478,8 +478,8 @@ class TabTrayController: UIViewController {
             openNewTab(learnMoreRequest)
         }
     }
-
-
+    
+    
 
     @available(iOS 9, *)
     func SELdidTogglePrivateMode() {
@@ -496,29 +496,29 @@ class TabTrayController: UIViewController {
         }
 
         privateMode = !privateMode
-        #if BRAVE
-            if privateMode {
-                tabManager.tabs.forEach{ $0.deleteWebView() }
-                PrivateBrowsing.singleton.enter()
-                togglePrivateMode.backgroundColor = UIColor.whiteColor()
-                togglePrivateMode.layer.cornerRadius = 4.0
-            } else {
-                self.togglePrivateMode.backgroundColor = UIColor.clearColor()
-                tabManager.removeAllPrivateTabsAndNotify(false)
-                PrivateBrowsing.singleton.exit()
-                delay(0.1) {
-                    getApp().tabManager.selectTab(getApp().tabManager.tabs.first)
-                }
+#if BRAVE
+        if privateMode {
+            tabManager.tabs.forEach{ $0.deleteWebView() }
+            PrivateBrowsing.singleton.enter()
+            togglePrivateMode.backgroundColor = UIColor.whiteColor()
+            togglePrivateMode.layer.cornerRadius = 4.0
+        } else {
+            self.togglePrivateMode.backgroundColor = UIColor.clearColor()
+            tabManager.removeAllPrivateTabsAndNotify(false)
+            PrivateBrowsing.singleton.exit()
+            delay(0.1) {
+                getApp().tabManager.selectTab(getApp().tabManager.tabs.first)
             }
-        #else
-            // If we are exiting private mode and we have the close private tabs option selected, make sure
-            // we clear out all of the private tabs
-            if !privateMode && profile.prefs.boolForKey("settings.closePrivateTabs") ?? false {
-                tabManager.removeAllPrivateTabsAndNotify(false)
-            }
+        }
+#else
+        // If we are exiting private mode and we have the close private tabs option selected, make sure
+        // we clear out all of the private tabs
+        if !privateMode && profile.prefs.boolForKey("settings.closePrivateTabs") ?? false {
+            tabManager.removeAllPrivateTabsAndNotify(false)
+        }
 
-            togglePrivateMode.setSelected(privateMode, animated: true)
-        #endif
+        togglePrivateMode.setSelected(privateMode, animated: true)
+#endif
 
         collectionView.layoutSubviews()
 
@@ -555,53 +555,53 @@ class TabTrayController: UIViewController {
     private func privateTabsAreEmpty() -> Bool {
         return privateMode && tabManager.privateTabs.count == 0
     }
-    #endif
+#endif
 
     @available(iOS 9, *)
     func changePrivacyMode(isPrivate: Bool) {
-        #if !BRAVE_NO_PRIVATE_MODE
-            if isPrivate != privateMode {
-                guard let _ = collectionView else {
-                    privateMode = isPrivate
-                    return
-                }
-                SELdidTogglePrivateMode()
+#if !BRAVE_NO_PRIVATE_MODE
+        if isPrivate != privateMode {
+            guard let _ = collectionView else {
+                privateMode = isPrivate
+                return
             }
-        #endif
+            SELdidTogglePrivateMode()
+        }
+#endif
     }
 
     private func openNewTab(request: NSURLRequest? = nil) {
-        #if !BRAVE_NO_PRIVATE_MODE
-            if #available(iOS 9, *) {
-                if privateMode {
-                    emptyPrivateTabsView.hidden = true
-                }
+#if !BRAVE_NO_PRIVATE_MODE
+        if #available(iOS 9, *) {
+            if privateMode {
+                emptyPrivateTabsView.hidden = true
             }
-        #endif
+        }
+#endif
         // We're only doing one update here, but using a batch update lets us delay selecting the tab
         // until after its insert animation finishes.
         self.collectionView.performBatchUpdates({ _ in
             var tab: Browser?
-            #if !BRAVE_NO_PRIVATE_MODE
-                if #available(iOS 9, *) {
-                    tab = self.tabManager.addTab(request, isPrivate: self.privateMode)
-                } else {
-                    tab = self.tabManager.addTab(request)
-                }
-            #else
-                tab = self.tabManager.addTab(request)
-            #endif
+#if !BRAVE_NO_PRIVATE_MODE
+            if #available(iOS 9, *) {
+                tab = self.tabManager.addTab(request, isPrivate: self.privateMode)
+            } else {
+              tab = self.tabManager.addTab(request)
+            }
+#else
+            tab = self.tabManager.addTab(request)
+#endif
             if let tab = tab {
                 self.tabManager.selectTab(tab)
             }
-            }, completion: { finished in
-                if finished {
-                    #if BRAVE
-                        self.dismissViewControllerAnimated(true, completion: nil)
-                    #else
-                        self.navigationController?.popViewControllerAnimated(true)
-                    #endif
-                }
+        }, completion: { finished in
+            if finished {
+                #if BRAVE
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                #else
+                    self.navigationController?.popViewControllerAnimated(true)
+                #endif
+            }
         })
     }
 }
@@ -619,8 +619,8 @@ extension TabTrayController {
         // as part of a private mode tab
         UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
             self.collectionView.alpha = 1
-            },
-                                   completion: nil)
+        },
+        completion: nil)
     }
 }
 
@@ -656,18 +656,18 @@ extension TabTrayController: TabManagerDelegate {
         tabDataSource.addTab(tab)
         self.collectionView?.performBatchUpdates({ _ in
             self.collectionView.insertItemsAtIndexPaths([NSIndexPath(forItem: index, inSection: 0)])
-            }, completion: { finished in
-                if finished {
-                    tabManager.selectTab(tab)
-                    // don't pop the tab tray view controller if it is not in the foreground
-                    if self.presentedViewController == nil {
-                        #if BRAVE
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                        #else
-                            self.navigationController?.popViewControllerAnimated(true)
-                        #endif
-                    }
+        }, completion: { finished in
+            if finished {
+                tabManager.selectTab(tab)
+                // don't pop the tab tray view controller if it is not in the foreground
+                if self.presentedViewController == nil {
+                    #if BRAVE
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    #else
+                        self.navigationController?.popViewControllerAnimated(true)
+                    #endif
                 }
+            }
         })
     }
 
@@ -686,13 +686,13 @@ extension TabTrayController: TabManagerDelegate {
             }
             self.collectionView.reloadItemsAtIndexPaths(offscreenIndexPaths)
         }
-        #if !BRAVE_NO_PRIVATE_MODE
-            if #available(iOS 9, *) {
-                if privateTabsAreEmpty() {
-                    emptyPrivateTabsView.alpha = 1
-                }
+#if !BRAVE_NO_PRIVATE_MODE
+        if #available(iOS 9, *) {
+            if privateTabsAreEmpty() {
+                emptyPrivateTabsView.alpha = 1
             }
-        #endif
+        }
+#endif
     }
 
     func tabManagerDidAddTabs(tabManager: TabManager) {
@@ -829,7 +829,7 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         } else {
             tabCell.favicon.image = nil
         }
-
+        
         tabCell.background.image = tab.screenshot
         return tabCell
     }
@@ -958,28 +958,28 @@ private class EmptyPrivateTabsView: UIView {
         return button
     }()
 
-    #if !BRAVE
+#if !BRAVE
     private var iconImageView: UIImageView = {
-    let imageView = UIImageView(image: UIImage(named: "largePrivateMask"))
-    return imageView
+        let imageView = UIImageView(image: UIImage(named: "largePrivateMask"))
+        return imageView
     }()
-    #endif
+#endif
     override init(frame: CGRect) {
         super.init(frame: frame)
 
         backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
 
         titleLabel.text =  NSLocalizedString("Private Browsing",
-                                             tableName: "PrivateBrowsing", comment: "Title displayed for when there are no open tabs while in private mode")
+            tableName: "PrivateBrowsing", comment: "Title displayed for when there are no open tabs while in private mode")
         descriptionLabel.text = NSLocalizedString("Brave won't remember any of your history or cookies, but new bookmarks will be saved.",
-                                                  tableName: "PrivateBrowsing", comment: "Description text displayed when there are no open tabs while in private mode")
+            tableName: "PrivateBrowsing", comment: "Description text displayed when there are no open tabs while in private mode")
 
         addSubview(titleLabel)
         addSubview(descriptionLabel)
-        #if !BRAVE
-            addSubview(iconImageView)
-            addSubview(learnMoreButton)
-        #endif
+#if !BRAVE
+        addSubview(iconImageView)
+        addSubview(learnMoreButton)
+#endif
         titleLabel.snp_makeConstraints { make in
             make.center.equalTo(self)
         }
@@ -989,17 +989,17 @@ private class EmptyPrivateTabsView: UIView {
             make.centerX.equalTo(self)
         }
 
-        #if !BRAVE
-            iconImageView.snp_makeConstraints { make in
-                make.bottom.equalTo(titleLabel.snp_top).offset(-EmptyPrivateTabsViewUX.TextMargin)
-                make.centerX.equalTo(self)
-            }
+#if !BRAVE
+        iconImageView.snp_makeConstraints { make in
+            make.bottom.equalTo(titleLabel.snp_top).offset(-EmptyPrivateTabsViewUX.TextMargin)
+            make.centerX.equalTo(self)
+        }
 
-            learnMoreButton.snp_makeConstraints { (make) -> Void in
-                make.top.equalTo(descriptionLabel.snp_bottom).offset(EmptyPrivateTabsViewUX.LearnMoreMargin)
-                make.centerX.equalTo(self)
-            }
-        #endif
+        learnMoreButton.snp_makeConstraints { (make) -> Void in
+            make.top.equalTo(descriptionLabel.snp_bottom).offset(EmptyPrivateTabsViewUX.LearnMoreMargin)
+            make.centerX.equalTo(self)
+        }
+#endif
     }
 
     required init?(coder aDecoder: NSCoder) {

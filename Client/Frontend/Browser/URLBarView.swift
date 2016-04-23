@@ -307,13 +307,13 @@ class URLBarView: UIView {
         super.updateConstraints()
         if inOverlayMode {
             #if !BRAVE
-                // In overlay mode, we always show the location view full width
-                self.locationContainer.snp_remakeConstraints { make in
-                    make.leading.equalTo(self).offset(URLBarViewUX.LocationLeftPadding)
-                    make.trailing.equalTo(self.cancelButton.snp_leading)
-                    make.height.equalTo(URLBarViewUX.LocationHeight)
-                    make.centerY.equalTo(self)
-                }
+            // In overlay mode, we always show the location view full width
+            self.locationContainer.snp_remakeConstraints { make in
+                make.leading.equalTo(self).offset(URLBarViewUX.LocationLeftPadding)
+                make.trailing.equalTo(self.cancelButton.snp_leading)
+                make.height.equalTo(URLBarViewUX.LocationHeight)
+                make.centerY.equalTo(self)
+            }
             #endif
         } else {
             self.locationContainer.snp_remakeConstraints { make in
@@ -399,19 +399,19 @@ class URLBarView: UIView {
         if currentCount == count.description {
             return
         }
-        //
-        //            // make a 'clone' of the tabs button
-        //            let newTabsButton = self.tabsButton.clone() as! TabsButton
-        //            self.clonedTabsButton = newTabsButton
-        //            newTabsButton.addTarget(self, action: #selector(URLBarView.SELdidClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
-        //            newTabsButton.titleLabel.text = count.description
-        //            newTabsButton.accessibilityValue = count.description
-        //            addSubview(newTabsButton)
-        //            newTabsButton.snp_makeConstraints { make in
-        //                make.centerY.equalTo(self.locationContainer)
-        //                make.trailing.equalTo(self)
-        //                make.size.equalTo(UIConstants.ToolbarHeight)
-        //            }
+//
+//            // make a 'clone' of the tabs button
+//            let newTabsButton = self.tabsButton.clone() as! TabsButton
+//            self.clonedTabsButton = newTabsButton
+//            newTabsButton.addTarget(self, action: #selector(URLBarView.SELdidClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
+//            newTabsButton.titleLabel.text = count.description
+//            newTabsButton.accessibilityValue = count.description
+//            addSubview(newTabsButton)
+//            newTabsButton.snp_makeConstraints { make in
+//                make.centerY.equalTo(self.locationContainer)
+//                make.trailing.equalTo(self)
+//                make.size.equalTo(UIConstants.ToolbarHeight)
+//            }
 
         // make a 'clone' of the tabs button
         let newTabsButton = tabsButton.clone() as! TabsButton
@@ -480,10 +480,10 @@ class URLBarView: UIView {
             self.progressBar.setProgress(progress, animated: !isTransitioning)
             UIView.animateWithDuration(1.5, animations: {
                 self.progressBar.alpha = 0.0
-                }, completion: { finished in
-                    if finished {
-                        self.progressBar.setProgress(0.0, animated: false)
-                    }
+            }, completion: { finished in
+                if finished {
+                    self.progressBar.setProgress(0.0, animated: false)
+                }
             })
         } else {
             if self.progressBar.alpha < 1.0 {
@@ -611,8 +611,8 @@ class URLBarView: UIView {
             self.transitionToOverlay(cancel)
             self.setNeedsUpdateConstraints()
             self.layoutIfNeeded()
-            }, completion: { _ in
-                self.updateViewsForOverlayModeAndToolbarChanges()
+        }, completion: { _ in
+            self.updateViewsForOverlayModeAndToolbarChanges()
         })
     }
 
@@ -643,7 +643,7 @@ extension URLBarView: BrowserToolbarProtocol {
 
         if let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController {
             braveTopVC.updateBookmarkStatus(isBookmarked)
-        }
+       }
     }
 
     func updateReloadStatus(isLoading: Bool) {
@@ -699,7 +699,7 @@ extension URLBarView: BrowserLocationViewDelegate {
     func browserLocationViewDidTapReload(browserLocationView: BrowserLocationView) {
         delegate?.urlBarDidPressReload(self)
     }
-
+    
     func browserLocationViewDidTapStop(browserLocationView: BrowserLocationView) {
         delegate?.urlBarDidPressStop(self)
     }
@@ -757,7 +757,7 @@ extension URLBarView {
 }
 
 extension URLBarView: Themeable {
-
+    
     func applyTheme(themeName: String) {
         locationView.applyTheme(themeName)
         locationTextField?.applyTheme(themeName)
@@ -831,12 +831,12 @@ class CurveView: UIView {
 
         path.moveToPoint(CGPoint(x: from.0, y: from.1))
         path.addCurveToPoint(CGPoint(x: from.0 + width * W_M2, y: from.1 + height * H_M2),
-                             controlPoint1: CGPoint(x: from.0 + width * W_M1, y: from.1),
-                             controlPoint2: CGPoint(x: from.0 + width * W_M3, y: from.1 + height * H_M1))
+              controlPoint1: CGPoint(x: from.0 + width * W_M1, y: from.1),
+              controlPoint2: CGPoint(x: from.0 + width * W_M3, y: from.1 + height * H_M1))
 
         path.addCurveToPoint(CGPoint(x: from.0 + width,        y: from.1 + height),
-                             controlPoint1: CGPoint(x: from.0 + width * W_M4, y: from.1 + height * H_M3),
-                             controlPoint2: CGPoint(x: from.0 + width * W_M5, y: from.1 + height * H_M4))
+              controlPoint1: CGPoint(x: from.0 + width * W_M4, y: from.1 + height * H_M3),
+              controlPoint2: CGPoint(x: from.0 + width * W_M5, y: from.1 + height * H_M4))
     }
 
     private func getPath() -> UIBezierPath {
@@ -927,11 +927,11 @@ class ToolbarTextField: AutocompleteTextField {
         UIGraphicsBeginImageContextWithOptions(size, false, 2)
         let context = UIGraphicsGetCurrentContext()
         image.drawAtPoint(CGPointZero, blendMode: CGBlendMode.Normal, alpha: 1.0)
-        
+
         CGContextSetFillColorWithColor(context, color.CGColor)
         CGContextSetBlendMode(context, CGBlendMode.SourceIn)
         CGContextSetAlpha(context, 1.0)
-        
+
         let rect = CGRectMake(
             CGPointZero.x,
             CGPointZero.y,
@@ -951,7 +951,7 @@ extension ToolbarTextField: Themeable {
             log.error("Unable to apply unknown theme \(themeName)")
             return
         }
-        
+
         backgroundColor = theme.backgroundColor
         textColor = theme.textColor
         clearButtonTintColor = theme.buttonTintColor
