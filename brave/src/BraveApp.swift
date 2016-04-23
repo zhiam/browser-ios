@@ -6,12 +6,12 @@ import OnePasswordExtension
 import Deferred
 
 #if !NO_FABRIC
-import Fabric
-import Crashlytics
+    import Fabric
+    import Crashlytics
 #endif
 
 #if !DEBUG
-func print(items: Any..., separator: String = " ", terminator: String = "\n") {}
+    func print(items: Any..., separator: String = " ", terminator: String = "\n") {}
 #endif
 
 private let _singleton = BraveApp()
@@ -44,11 +44,11 @@ class BraveApp {
         return !abOn && !tpOn && !httpseOn
     }
 
-#if !TEST
+    #if !TEST
     class func getCurrentWebView() -> BraveWebView? {
         return getApp().browserViewController.tabManager.selectedTab?.webView
     }
-#endif
+    #endif
 
     private init() {
     }
@@ -70,34 +70,29 @@ class BraveApp {
 
     // Be aware: the Prefs object has not been created yet
     class func willFinishLaunching_begin() {
-#if !NO_FABRIC
-        Fabric.with([Crashlytics.self])
-#endif
+        #if !NO_FABRIC
+            Fabric.with([Crashlytics.self])
+        #endif
         BraveApp.setupCacheDefaults()
         NSURLProtocol.registerClass(URLProtocol);
 
         NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
-            selector: "didEnterBackground:", name: UIApplicationDidEnterBackgroundNotification, object: nil)
+             selector: #selector(BraveApp.didEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
-            selector: "willEnterForeground:", name: UIApplicationWillEnterForegroundNotification, object: nil)
+             selector: #selector(BraveApp.willEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
-            selector: "memoryWarning:", name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+             selector: #selector(BraveApp.memoryWarning(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
 
         #if !TEST
-        //  these quiet the logging from the core of fx ios
-       // GCDWebServer.setLogLevel(5)
-        Logger.syncLogger.setup(.None)
-        Logger.browserLogger.setup(.None)
+            //  these quiet the logging from the core of fx ios
+            // GCDWebServer.setLogLevel(5)
+            Logger.syncLogger.setup(.None)
+            Logger.browserLogger.setup(.None)
         #endif
 
         #if DEBUG
-            #if !TEST
-                if BraveUX.DebugShowBorders {
-                    
-                }
-            #endif
             // desktop UA for testing
             //      let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
             //      defaults.registerDefaults(["UserAgent": kDesktopUserAgent])
@@ -117,8 +112,8 @@ class BraveApp {
         BraveApp.getPrefs()?.setString("remove me when booted", forKey: kAppBootingIncompleteFlag)
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, BraveApp.kDelayBeforeDecidingAppHasBootedOk),
-            dispatch_get_main_queue(), {
-                BraveApp.getPrefs()?.removeObjectForKey(kAppBootingIncompleteFlag)
+                       dispatch_get_main_queue(), {
+                        BraveApp.getPrefs()?.removeObjectForKey(kAppBootingIncompleteFlag)
         })
 
         AdBlocker.singleton.networkFileLoader.loadData()
@@ -192,5 +187,4 @@ class BraveApp {
         }
         return deferred
     }
-
 }

@@ -9,7 +9,6 @@ private let SectionToggles = 0
 private let SectionButton = 1
 private let NumberOfSections = 2
 private let SectionHeaderFooterIdentifier = "SectionHeaderFooterIdentifier"
-private let HeaderFooterHeight: CGFloat = 44
 private let TogglesPrefKey = "clearprivatedata.toggles"
 
 private let log = Logger.browserLogger
@@ -29,7 +28,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
             (CacheClearable(), true),
             (CookiesClearable(), true),
             (PasswordsClearable(profile: self.profile), true),
-        ]
+            ]
     }()
 
     private lazy var toggles: [Bool] = {
@@ -49,13 +48,13 @@ class ClearPrivateDataTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("Clear Private Data", tableName: "ClearPrivateData", comment: "Navigation title in settings.")
+        title = Strings.SettingsClearPrivateDataTitle
 
         tableView.registerClass(SettingsTableSectionHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderFooterIdentifier)
 
         tableView.separatorColor = UIConstants.TableViewSeparatorColor
         tableView.backgroundColor = UIConstants.TableViewHeaderBackgroundColor
-        let footer = SettingsTableSectionHeaderFooterView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: HeaderFooterHeight))
+        let footer = SettingsTableSectionHeaderFooterView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: UIConstants.TableViewHeaderFooterHeight))
         footer.showBottomBorder = false
         tableView.tableFooterView = footer
     }
@@ -67,17 +66,18 @@ class ClearPrivateDataTableViewController: UITableViewController {
             cell.textLabel?.text = clearables[indexPath.item].clearable.label
             let control = UISwitch()
             control.onTintColor = UIConstants.ControlTintColor
-            control.addTarget(self, action: "switchValueChanged:", forControlEvents: UIControlEvents.ValueChanged)
+            control.addTarget(self, action: #selector(ClearPrivateDataTableViewController.switchValueChanged(_:)), forControlEvents: UIControlEvents.ValueChanged)
             control.on = toggles[indexPath.item]
             cell.accessoryView = control
             cell.selectionStyle = .None
             control.tag = indexPath.item
         } else {
             assert(indexPath.section == SectionButton)
-            cell.textLabel?.text = NSLocalizedString("Clear Private Data", tableName: "ClearPrivateData", comment: "Button in settings that clears private data for the selected items.")
+            cell.textLabel?.text = Strings.SettingsClearPrivateDataClearButton
             cell.textLabel?.textAlignment = NSTextAlignment.Center
             cell.textLabel?.textColor = UIConstants.DestructiveRed
             cell.accessibilityTraits = UIAccessibilityTraitButton
+            cell.accessibilityIdentifier = "ClearPrivateData"
             clearButton = cell
         }
 
@@ -142,26 +142,28 @@ class ClearPrivateDataTableViewController: UITableViewController {
         clearPrivateData()
 
         #if !BRAVE
-        // We have been asked to clear history and we have an account.
-        // (Whether or not it's in a good state is irrelevant.)
-        if self.toggles[HistoryClearableIndex] && profile.hasAccount() {
-            profile.syncManager.hasSyncedHistory().uponQueue(dispatch_get_main_queue()) { yes in
-                // Err on the side of warning, but this shouldn't fail.
-                if yes.successValue ?? true {
-                    // Our local database contains some history items that have been synced.
-                    // Warn the user before clearing.
-                    let alert = UIAlertController.clearSyncedHistoryAlert(clearPrivateData)
+            // We have been asked to clear history and we have an account.
+            // (Whether or not it's in a good state is irrelevant.)
+            if self.toggles[HistoryClearableIndex] && profile.hasAccount() {
+                profile.syncManager.hasSyncedHistory().uponQueue(dispatch_get_main_queue()) { yes in
+                    // Err on the side of warning, but this shouldn't fail.
+                    let alert: UIAlertController
+                    if yes.successValue ?? true {
+                        // Our local database contains some history items that have been synced.
+                        // Warn the user before clearing.
+                        alert = UIAlertController.clearSyncedHistoryAlert(clearPrivateData)
+                    } else {
+                        alert = UIAlertController.clearPrivateDataAlert(clearPrivateData)
+                    }
                     self.presentViewController(alert, animated: true, completion: nil)
                     return
                 }
-
-                // Otherwise, just clear directly.
-                clearPrivateData()
+            } else {
+                let alert = UIAlertController.clearPrivateDataAlert(clearPrivateData)
+                self.presentViewController(alert, animated: true, completion: nil)
             }
-        } else {
-            clearPrivateData()
-        }
         #endif
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -169,12 +171,12 @@ class ClearPrivateDataTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return HeaderFooterHeight
+        return UIConstants.TableViewHeaderFooterHeight
     }
-
+    
     @objc func switchValueChanged(toggle: UISwitch) {
         toggles[toggle.tag] = toggle.on
-
+        
         // Dim the clear button if no clearables are selected.
         clearButtonEnabled = toggles.contains(true)
     }

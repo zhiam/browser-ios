@@ -54,8 +54,8 @@ class BraveScrollController: NSObject {
         }
     }
 
-     lazy var panGesture: UIPanGestureRecognizer = {
-        let panGesture = UIPanGestureRecognizer(target: self, action: "handlePan:")
+    lazy var panGesture: UIPanGestureRecognizer = {
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(BraveScrollController.handlePan(_:)))
         panGesture.maximumNumberOfTouches = 1
         panGesture.delegate = self
         return panGesture
@@ -90,10 +90,10 @@ class BraveScrollController: NSObject {
     override init() {
         super.init()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "pageUnload", name: kNotificationPageUnload, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveScrollController.pageUnload), name: kNotificationPageUnload, object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:"keyboardWillAppear:", name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:"keyboardWillDisappear:", name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillAppear(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillDisappear(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
 
     func keyboardWillAppear(notification: NSNotification){
@@ -257,36 +257,36 @@ private extension BraveScrollController {
 
     // Currently only has handling for the show toolbars case.
     private func animateToolbarsWithOffsets(animated animated: Bool, duration: NSTimeInterval, headerOffset: CGFloat,
-        footerOffset: CGFloat, alpha: CGFloat, completion: ((finished: Bool) -> Void)?) {
+                                                     footerOffset: CGFloat, alpha: CGFloat, completion: ((finished: Bool) -> Void)?) {
 
-            let animation: () -> Void = {
-                self.headerTopOffset = headerOffset
-                self.footerBottomOffset = footerOffset
-                self.urlBar?.updateAlphaForSubviews(alpha)
-                self.header?.layoutIfNeeded()
-                self.footer?.layoutIfNeeded()
+        let animation: () -> Void = {
+            self.headerTopOffset = headerOffset
+            self.footerBottomOffset = footerOffset
+            self.urlBar?.updateAlphaForSubviews(alpha)
+            self.header?.layoutIfNeeded()
+            self.footer?.layoutIfNeeded()
 
-                // TODO this code is only being used to show toolbars, so right now hard-code for that case, obviously if/when hide is added, update the code to support that
-                let webView = getApp().browserViewController.webViewContainer
-                webView.layer.transform = CATransform3DIdentity
-                if self.contentOffset.y > UIConstants.ToolbarHeight {
-                    self.scrollView?.contentOffset.y += UIConstants.ToolbarHeight
-                }
+            // TODO this code is only being used to show toolbars, so right now hard-code for that case, obviously if/when hide is added, update the code to support that
+            let webView = getApp().browserViewController.webViewContainer
+            webView.layer.transform = CATransform3DIdentity
+            if self.contentOffset.y > UIConstants.ToolbarHeight {
+                self.scrollView?.contentOffset.y += UIConstants.ToolbarHeight
             }
+        }
 
-            // Reset the scroll direction now that it is handled
-            scrollDirection = .None
+        // Reset the scroll direction now that it is handled
+        scrollDirection = .None
 
-            let completionWrapper: Bool -> Void = { finished in
-                completion?(finished: finished)
-            }
+        let completionWrapper: Bool -> Void = { finished in
+            completion?(finished: finished)
+        }
 
-            if animated {
-                UIView.animateWithDuration(0.350, delay:0.0, options: .AllowUserInteraction, animations: animation, completion: completionWrapper)
-            } else {
-                animation()
-                completion?(finished: true)
-            }
+        if animated {
+            UIView.animateWithDuration(0.350, delay:0.0, options: .AllowUserInteraction, animations: animation, completion: completionWrapper)
+        } else {
+            animation()
+            completion?(finished: true)
+        }
     }
 
     func isScrollHeightIsLargeEnoughForScrolling() -> Bool {
@@ -296,8 +296,8 @@ private extension BraveScrollController {
 
 extension BraveScrollController: UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer,
-        shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            return true
+                           shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 
@@ -383,7 +383,7 @@ extension BraveScrollController: UIScrollViewDelegate {
         if verticalTranslation == 0 {
             return
         }
-        
+
         if verticalTranslation < 0 && headerTopOffset == 0 {
             headerTopOffset = -UIConstants.ToolbarHeight
             footerBottomOffset = UIConstants.ToolbarHeight
@@ -393,12 +393,12 @@ extension BraveScrollController: UIScrollViewDelegate {
             footerBottomOffset = 0
             urlBar?.updateAlphaForSubviews(1.0)
         }
-        
+
         verticalTranslation = 0
         header?.layer.transform = CATransform3DIdentity
         footer?.layer.transform = CATransform3DIdentity
     }
-    
+
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.scrollViewWillBeginDragPoint = scrollView.contentOffset.y
     }
@@ -407,7 +407,7 @@ extension BraveScrollController: UIScrollViewDelegate {
         self.removeTranslationAndSetLayout()
         isRefreshBlockedDueToMomentumScroll = false
     }
-
+    
     func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
         showToolbars(animated: true)
         return true

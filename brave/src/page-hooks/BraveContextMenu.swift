@@ -43,7 +43,7 @@ class BraveContextMenu {
                 tapLocation = touch.locationInView(window)
                 resetTimer()
                 // This timer repeats in order to run twice. See tapAndHoldAction() for comments.
-                contextualMenuTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "tapAndHoldAction", userInfo: nil, repeats: true)
+                contextualMenuTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: #selector(BraveContextMenu.tapAndHoldAction), userInfo: nil, repeats: true)
                 break
             case .Moved, .Stationary:
                 let p1 = touch.locationInView(window)
@@ -71,7 +71,7 @@ class BraveContextMenu {
                 let h = json["height"] as? CGFloat,
                 let x = json["x"] as? CGFloat,
                 let y = json["y"] as? CGFloat {
-                    return (CGSizeMake(w, h), CGPointMake(x, y))
+                return (CGSizeMake(w, h), CGPointMake(x, y))
             }
             return nil
         } catch {
@@ -86,7 +86,7 @@ class BraveContextMenu {
             resetTimer()
             return
         }
-        
+
         if let tappedElement = tappedElement {
             let info = ["point": NSValue(CGPoint: tapLocation)]
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationMainWindowTapAndHold, object: self, userInfo: info)

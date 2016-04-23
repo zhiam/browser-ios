@@ -18,7 +18,10 @@ class AppSettingsTableViewController: SettingsTableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: NSLocalizedString("Done", comment: "Done button on left side of the Settings view controller title bar"),
             style: UIBarButtonItemStyle.Done,
-            target: navigationController, action: "SELdone")
+            target: navigationController, action: #selector(SettingsNavigationController.SELdone))
+        navigationItem.leftBarButtonItem?.accessibilityIdentifier = "AppSettingsTableViewController.navigationItem.leftBarButtonItem"
+
+        tableView.accessibilityIdentifier = "AppSettingsTableViewController.tableView"
     }
 
     override func generateSettings() -> [SettingSection] {
@@ -44,7 +47,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
             BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
                 titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
-        ]
+            BoolSetting(prefs: prefs, prefKey: AllowThirdPartyKeyboardsKey, defaultValue: false,
+                titleText: NSLocalizedString("Allow Third-Party Keyboards", comment: "Setting to enable third-party keyboards"), statusText: NSLocalizedString("Firefox needs to reopen for this change to take effect.", comment: "Setting value prop to enable third-party keyboards")),
+            ]
 
         let accountChinaSyncSetting: [Setting]
         let locale = NSLocale.currentLocale()
@@ -73,7 +78,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 // With a Firefox Account:
                 AccountStatusSetting(settings: self),
                 SyncNowSetting(settings: self)
-            ] + accountChinaSyncSetting + accountDebugSettings)]
+                ] + accountChinaSyncSetting + accountDebugSettings)]
 
         if !profile.hasAccount() {
             settings += [SettingSection(title: NSAttributedString(string: NSLocalizedString("Sign in to get your tabs, bookmarks, and passwords from your other devices.", comment: "Clarify value prop under Sign In to Firefox in Settings.")), children: [])]
@@ -117,46 +122,34 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 SendFeedbackSetting(),
                 SendAnonymousUsageDataSetting(prefs: prefs, delegate: settingsDelegate),
                 OpenSupportPageSetting(delegate: settingsDelegate),
-            ]),
+                ]),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
                 VersionSetting(settings: self),
                 LicenseAndAcknowledgementsSetting(),
                 YourRightsSetting(),
                 ExportBrowserDataSetting(settings: self),
                 DeleteExportedDataSetting(settings: self),
-            ])]
-            
-            if (profile.hasAccount()) {
-                settings += [
-                    SettingSection(title: nil, children: [
-                        DisconnectSetting(settings: self),
-                        ])
-                ]
-            }
+                ])]
+
+        if (profile.hasAccount()) {
+            settings += [
+                SettingSection(title: nil, children: [
+                    DisconnectSetting(settings: self),
+                    ])
+            ]
+        }
 
         return settings
     }
 
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        // Make account/sign-in and close private tabs rows taller, as per design specs.
-        let section = settings[indexPath.section]
-        if let setting = section[indexPath.row] as? BoolSetting where setting.prefKey == "settings.closePrivateTabs" {
-            return 64
-        } else if section[indexPath.row] is ConnectSetting {
-            return 64
-        }
-
-        return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
-    }
-
-#if !BRAVE
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if !profile.hasAccount() {
-            let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SectionHeaderIdentifier) as! SettingsTableSectionHeaderFooterView
-            let sectionSetting = settings[section]
-            headerView.titleLabel.text = sectionSetting.title?.string
+        #if !BRAVE
+            if !profile.hasAccount() {
+                let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SectionHeaderIdentifier) as! SettingsTableSectionHeaderFooterView
+                let sectionSetting = settings[section]
+                headerView.titleLabel.text = sectionSetting.title?.string
 
-            switch section {
+                switch section {
                 // Hide the bottom border for the Sign In to Firefox value prop
                 case 1:
                     headerView.titleAlignment = .Top
@@ -171,11 +164,10 @@ class AppSettingsTableViewController: SettingsTableViewController {
                     headerView.showTopBorder = false
                 default:
                     return super.tableView(tableView, viewForHeaderInSection: section)
+                }
+                return headerView
             }
-            return headerView
-        }
-        
+        #endif
         return super.tableView(tableView, viewForHeaderInSection: section)
     }
-#endif
 }

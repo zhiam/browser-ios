@@ -7,15 +7,17 @@ import Storage
 import AVFoundation
 import XCGLogger
 #if !BRAVE
-import Breakpad
+    import Breakpad
 #endif
 import MessageUI
 import WebImage
-
+import SwiftKeychainWrapper
+import LocalAuthentication
 
 private let log = Logger.browserLogger
 
 let LatestAppVersionProfileKey = "latestAppVersion"
+let AllowThirdPartyKeyboardsKey = "settings.allowThirdPartyKeyboards"
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
@@ -30,12 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
 
-    var openInBraveURL: NSURL? = nil
+    var openInBraveParams: LaunchParams? = nil
 
     func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-#if BRAVE
-        BraveApp.willFinishLaunching_begin()
-#endif
+        #if BRAVE
+            BraveApp.willFinishLaunching_begin()
+        #endif
         // Hold references to willFinishLaunching parameters for delayed app launch
         self.application = application
         self.launchOptions = launchOptions
@@ -118,10 +120,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         rootViewController.navigationBarHidden = true
         self.window!.rootViewController = rootViewController
 
-#if !BRAVE
-        activeCrashReporter = BreakpadCrashReporter(breakpadInstance: BreakpadController.sharedInstance())
-        configureActiveCrashReporter(profile.prefs.boolForKey("crashreports.send.always"))
-#endif
+        #if !BRAVE
+            activeCrashReporter = BreakpadCrashReporter(breakpadInstance: BreakpadController.sharedInstance())
+            configureActiveCrashReporter(profile.prefs.boolForKey("crashreports.send.always"))
+        #endif
 
         log.debug("Adding observers…")
         NSNotificationCenter.defaultCenter().addObserverForName(FSReadingListAddReadingListItemNotification, object: nil, queue: nil) { (notification) -> Void in
@@ -135,7 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let localNotification = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
             viewURLInNewTab(localNotification)
         }
-        
+
         adjustIntegration = AdjustIntegration(profile: profile)
 
         // We need to check if the app is a clean install to use for
@@ -143,11 +145,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if getProfile(application).prefs.intForKey(IntroViewControllerSeenProfileKey) == nil {
             getProfile(application).prefs.setString(AppInfo.appVersion, forKey: LatestAppVersionProfileKey)
         }
+
+        log.debug("Updating authentication keychain state to reflect system state")
+        self.updateAuthenticationInfo()
+        SystemUtils.onFirstRun()
+
         log.debug("Done with setting up the application.")
 
-#if BRAVE
-        BraveApp.willFinishLaunching_end()
-#endif
+        #if BRAVE
+            BraveApp.willFinishLaunching_end()
+        #endif
         return true
     }
 
@@ -178,20 +185,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let profile = self.profile {
             return profile
         }
-        let clearProfile = NSProcessInfo.processInfo().environment["MOZ_WIPE_PROFILE"] != nil
-        let p = BrowserProfile(localName: "profile", app: application, clear: clearProfile)
+        let p = BrowserProfile(localName: "profile", app: application)
         self.profile = p
         return p
     }
-    
+
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         var shouldPerformAdditionalDelegateHandling = true
 
         log.debug("Did finish launching.")
-        
+
         log.debug("Setting up Adjust")
         self.adjustIntegration?.triggerApplicationDidFinishLaunchingWithOptions(launchOptions)
-        
+
         log.debug("Making window key and visible…")
         self.window!.makeKeyAndVisible()
 
@@ -218,42 +224,64 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        if let components = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) {
-#if BRAVE
+        guard let components = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+        #if BRAVE
             if !BraveApp.shouldHandleOpenURL(components) { return false }
-#else
+        #else
             if components.scheme != "firefox" && components.scheme != "firefox-x-callback" {
                 return false
             }
-#endif
-            var url: String?
-            for item in (components.queryItems ?? []) as [NSURLQueryItem] {
-                switch item.name {
-                case "url":
-                    url = item.value
-                default: ()
-                }
-            }
+        #endif
 
-            if let url = url, newURL = NSURL(string: url.unescape()) {
-                // If we are active then we can ask the BVC to open the new tab right away. Else we remember the
-                // URL and we open it in applicationDidBecomeActive.
-                if application.applicationState == .Active {
-                    if #available(iOS 9, *) {
-                        self.browserViewController.switchToPrivacyMode(isPrivate: false)
-                    }
-                    self.browserViewController.openURLInNewTab(newURL)
-                } else {
-                    openInBraveURL = newURL
-                }
-                return true
+
+        var url: String?
+        var isPrivate: Bool = false
+        for item in (components.queryItems ?? []) as [NSURLQueryItem] {
+            switch item.name {
+            case "url":
+                url = item.value
+            case "private":
+                isPrivate = NSString(string: item.value ?? "false").boolValue
+            default: ()
             }
         }
-        return false
+
+        let params: LaunchParams
+
+        if let url = url, newURL = NSURL(string: url.unescape()) {
+            params = LaunchParams(url: newURL, isPrivate: isPrivate)
+        } else {
+            params = LaunchParams(url: nil, isPrivate: isPrivate)
+        }
+
+        if application.applicationState == .Active {
+            // If we are active then we can ask the BVC to open the new tab right away.
+            // Otherwise, we remember the URL and we open it in applicationDidBecomeActive.
+            launchFromURL(params)
+        } else {
+            openInBraveParams = params
+        }
+
+        return true
+    }
+
+    func launchFromURL(params: LaunchParams) {
+        let isPrivate = params.isPrivate ?? false
+        if let newURL = params.url {
+            self.browserViewController.switchToTabForURLOrOpen(newURL, isPrivate: isPrivate)
+        } else {
+            self.browserViewController.openBlankNewTabAndFocus(isPrivate: isPrivate)
+        }
     }
 
     func application(application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: String) -> Bool {
-        return extensionPointIdentifier != UIApplicationKeyboardExtensionPointIdentifier
+        if let thirdPartyKeyboardSettingBool = getProfile(application).prefs.boolForKey(AllowThirdPartyKeyboardsKey) where extensionPointIdentifier == UIApplicationKeyboardExtensionPointIdentifier {
+            return thirdPartyKeyboardSettingBool
+        }
+
+        return true
     }
 
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
@@ -278,17 +306,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 quickActions.handleShortCutItem(shortcut, withBrowserViewController: browserViewController)
                 quickActions.launchedShortcutItem = nil
             }
+
+            // we've removed the Last Tab option, so we should remove any quick actions that we already have that are last tabs
+            // we do this after we've handled any quick actions that have been used to open the app so that we don't b0rk if
+            // the user has opened the app for the first time after upgrade with a Last Tab quick action
+            QuickActions.sharedInstance.removeDynamicApplicationShortcutItemOfType(ShortcutType.OpenLastTab, fromApplication: application)
         }
 
-        // If we have a URL waiting to open, switch to non-private mode and open the URL.
-        if let url = openInBraveURL {
-            openInBraveURL = nil
-            // This needs to be scheduled so that the BVC is ready.
+        // Check if we have a URL from an external app or extension waiting to launch,
+        // then launch it on the main thread.
+        if let params = openInBraveParams {
+            openInBraveParams = nil
             dispatch_async(dispatch_get_main_queue()) {
-                if #available(iOS 9, *) {
-                    self.browserViewController.switchToPrivacyMode(isPrivate: false)
-                }
-                self.browserViewController.switchToTabForURLOrOpen(url)
+                self.launchFromURL(params)
             }
         }
     }
@@ -299,10 +329,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var taskId: UIBackgroundTaskIdentifier = 0
         taskId = application.beginBackgroundTaskWithExpirationHandler { _ in
             log.warning("Running out of background time, but we have a profile shutdown pending.")
+            self.profile?.shutdown()
             application.endBackgroundTask(taskId)
         }
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+        let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
+        self.profile?.syncManager.syncEverything().uponQueue(backgroundQueue) { _ in
             self.profile?.shutdown()
             application.endBackgroundTask(taskId)
         }
@@ -312,10 +344,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         tabManager.selectedTab?.webView?.evaluateJavaScript(jsBlurSelect, completionHandler: nil)
     }
 
+    func applicationWillEnterForeground(application: UIApplication) {
+        // The reason we need to call this method here instead of `applicationDidBecomeActive`
+        // is that this method is only invoked whenever the application is entering the foreground where as
+        // `applicationDidBecomeActive` will get called whenever the Touch ID authentication overlay disappears.
+        self.updateAuthenticationInfo()
+    }
+
+    private func updateAuthenticationInfo() {
+        if let authInfo = KeychainWrapper.authenticationInfo() {
+            if !LAContext().canEvaluatePolicy(.DeviceOwnerAuthenticationWithBiometrics, error: nil) {
+                authInfo.useTouchID = false
+                KeychainWrapper.setAuthenticationInfo(authInfo)
+            }
+        }
+    }
+
     private func setUpWebServer(profile: Profile) {
         let server = WebServer.sharedInstance
         ReaderModeHandlers.register(server, profile: profile)
-        ErrorPageHelper.register(server)
+        ErrorPageHelper.register(server, certStore: profile.certStore)
         AboutHomeHandler.register(server)
         AboutLicenseHandler.register(server)
         SessionRestoreHandler.register(server)
@@ -420,16 +468,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let alertURL = notification.userInfo?[TabSendURLKey] as? String {
             if let urlToOpen = NSURL(string: alertURL) {
                 browserViewController.openURLInNewTab(urlToOpen)
-
-                if #available(iOS 9, *) {
-                    var userData = [QuickActions.TabURLKey: alertURL]
-                    if let title = notification.userInfo?[TabSendTitleKey] as? String where title.characters.count > 0 {
-                        userData[QuickActions.TabTitleKey] = title
-                    } else {
-                        userData[QuickActions.TabTitleKey] = alertURL
-                    }
-                    QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastTab, withUserData: userData, toApplication: UIApplication.sharedApplication())
-                }
             }
         }
     }
@@ -437,19 +475,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func addBookmark(notification: UILocalNotification) {
         if let alertURL = notification.userInfo?[TabSendURLKey] as? String,
             let title = notification.userInfo?[TabSendTitleKey] as? String {
-                browserViewController.addBookmark(alertURL, title: title)
+            browserViewController.addBookmark(alertURL, title: title)
 
-//                if #available(iOS 9, *) {
-//                    let userData = [QuickActions.TabURLKey: alertURL,
-//                        QuickActions.TabTitleKey: title]
-//                    QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark, withUserData: userData, toApplication: UIApplication.sharedApplication())
-//                }
+            //                if #available(iOS 9, *) {
+            //                    let userData = [QuickActions.TabURLKey: alertURL,
+            //                        QuickActions.TabTitleKey: title]
+            //                    QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark, withUserData: userData, toApplication: UIApplication.sharedApplication())
+            //                }
         }
     }
 
     private func addToReadingList(notification: UILocalNotification) {
         if let alertURL = notification.userInfo?[TabSendURLKey] as? String,
-           let title = notification.userInfo?[TabSendTitleKey] as? String {
+            let title = notification.userInfo?[TabSendTitleKey] as? String {
             if let urlToOpen = NSURL(string: alertURL) {
                 NSNotificationCenter.defaultCenter().postNotificationName(FSReadingListAddReadingListItemNotification, object: self, userInfo: ["URL": urlToOpen, "Title": title])
             }
@@ -463,32 +501,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(handledShortCutItem)
     }
 
-#if !BRAVE
-  var activeCrashReporter: CrashReporter?
-  func configureActiveCrashReporter(optedIn: Bool?) {
+    #if !BRAVE
+    var activeCrashReporter: CrashReporter?
+    func configureActiveCrashReporter(optedIn: Bool?) {
     if let reporter = activeCrashReporter {
-      configureCrashReporter(reporter, optedIn: optedIn)
+    configureCrashReporter(reporter, optedIn: optedIn)
     }
-  }
-#endif
+    }
+    #endif
 }
 
 // MARK: - Root View Controller Animations
 extension AppDelegate: UINavigationControllerDelegate {
-#if !BRAVE
+    #if !BRAVE
     func navigationController(navigationController: UINavigationController,
-        animationControllerForOperation operation: UINavigationControllerOperation,
-        fromViewController fromVC: UIViewController,
-        toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-            if operation == UINavigationControllerOperation.Push {
-                return BrowserToTrayAnimator()
-            } else if operation == UINavigationControllerOperation.Pop {
-                return TrayToBrowserAnimator()
-            } else {
-                return nil
-            }
+    animationControllerForOperation operation: UINavigationControllerOperation,
+    fromViewController fromVC: UIViewController,
+    toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    if operation == UINavigationControllerOperation.Push {
+    return BrowserToTrayAnimator()
+    } else if operation == UINavigationControllerOperation.Pop {
+    return TrayToBrowserAnimator()
+    } else {
+    return nil
     }
-#endif
+    }
+    #endif
 }
 
 extension AppDelegate: TabManagerStateDelegate {
@@ -511,4 +549,9 @@ extension AppDelegate: MFMailComposeViewControllerDelegate {
         controller.dismissViewControllerAnimated(true, completion: nil)
         startApplication(application!, withLaunchOptions: self.launchOptions)
     }
+}
+
+struct LaunchParams {
+    let url: NSURL?
+    let isPrivate: Bool?
 }

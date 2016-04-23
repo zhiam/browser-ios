@@ -24,7 +24,7 @@ class AdBlocker {
     var isEnabled = true
 
     private init() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "prefsChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AdBlocker.prefsChanged(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
         updateEnabledState()
     }
 
@@ -98,7 +98,7 @@ class AdBlocker {
                 startTime = time
                 redirects = 0
             }
-            redirects++
+            redirects += 1
         }
     }
 
@@ -161,27 +161,27 @@ class AdBlocker {
         }
 
         let isBlocked = abpFilterLibWrapper.isBlockedConsideringType(url.absoluteString,
-            mainDocumentUrl: mainDocDomain,
-            acceptHTTPHeader:request.valueForHTTPHeaderField("Accept"))
+                                                                     mainDocumentUrl: mainDocDomain,
+                                                                     acceptHTTPHeader:request.valueForHTTPHeaderField("Accept"))
 
         fifoCacheOfUrlsChecked.addItem(key, value: isBlocked)
-        
+
         #if LOG_AD_BLOCK
             if isBlocked {
                 print("blocked \(url.absoluteString)")
             }
         #endif
-        
+
         return isBlocked
     }
 }
 
 extension AdBlocker: NetworkDataFileLoaderDelegate {
-
+    
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?) {
         abpFilterLibWrapper.setDataFile(data)
     }
-
+    
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
         return abpFilterLibWrapper.hasDataFile()
     }

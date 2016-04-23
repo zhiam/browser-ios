@@ -103,7 +103,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         startBrowsingButton.backgroundColor = IntroViewControllerUX.StartBrowsingButtonColor
         startBrowsingButton.setTitle(IntroViewControllerUX.StartBrowsingButtonTitle, forState: UIControlState.Normal)
         startBrowsingButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        startBrowsingButton.addTarget(self, action: "SELstartBrowsing", forControlEvents: UIControlEvents.TouchUpInside)
+        startBrowsingButton.addTarget(self, action: #selector(IntroViewController.SELstartBrowsing), forControlEvents: UIControlEvents.TouchUpInside)
         startBrowsingButton.contentHorizontalAlignment = .Left
         startBrowsingButton.contentVerticalAlignment = .Top
         startBrowsingButton.contentEdgeInsets = UIEdgeInsetsMake(20, 20, 0, 0);
@@ -147,7 +147,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         pageControl.currentPageIndicatorTintColor = UIColor.blackColor()
         pageControl.numberOfPages = IntroViewControllerUX.NumberOfCards
         pageControl.accessibilityIdentifier = "pageControl"
-        pageControl.addTarget(self, action: Selector("changePage"), forControlEvents: UIControlEvents.ValueChanged)
+        pageControl.addTarget(self, action: #selector(IntroViewController.changePage), forControlEvents: UIControlEvents.ValueChanged)
 
         view.addSubview(pageControl)
         pageControl.snp_makeConstraints { (make) -> Void in
@@ -203,7 +203,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELDynamicFontChanged:", name: NotificationDynamicFontChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IntroViewController.SELDynamicFontChanged(_:)), name: NotificationDynamicFontChanged, object: nil)
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -278,7 +278,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
 
     func SELlogin() {
         #if !BRAVE
-		delegate?.introViewControllerDidRequestToLogin(self)
+            delegate?.introViewControllerDidRequestToLogin(self)
         #endif
     }
 
@@ -292,7 +292,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     }
 
     func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        // Need to add this method so that tapping the pageControl will also change the card texts. 
+        // Need to add this method so that tapping the pageControl will also change the card texts.
         // scrollViewDidEndDecelerating waits until the end of the animation to calculate what card it's on.
         scrollViewDidEndDecelerating(scrollView)
     }
@@ -312,8 +312,8 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 self.introView?.alpha = 0
                 self.introView = newIntroView
                 newIntroView.alpha = 1.0
-            }, completion: { _ in
-                        })
+                }, completion: { _ in
+            })
         }
 
         if page < bgColors.count {
@@ -334,14 +334,14 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 make.centerX.equalTo(self.view)
                 make.centerY.equalTo(introView!.snp_top)
             }
-//            delay(0) {
-//                UIView.animateWithDuration(0.2) {
-//                    if let v = self.slideContainer.subviews.last {
-//                        v.alpha = 10
-//                        v.transform = CGAffineTransformMakeTranslation(0, 40)
-//                    }
-//                }
-//            }
+            //            delay(0) {
+            //                UIView.animateWithDuration(0.2) {
+            //                    if let v = self.slideContainer.subviews.last {
+            //                        v.alpha = 10
+            //                        v.transform = CGAffineTransformMakeTranslation(0, 40)
+            //                    }
+            //                }
+            //            }
             guard let arrow = arrow else { return }
             pageControl.superview?.addSubview(arrow)
             arrow.alpha = 0
@@ -455,7 +455,7 @@ private class IntroOverlayScrollView: UIScrollView {
                 return false
             }
         }
-
+        
         return CGRectContainsPoint(CGRect(origin: self.frame.origin, size: CGSize(width: self.contentSize.width, height: self.frame.size.height)), point)
     }
 }
