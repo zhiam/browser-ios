@@ -40,9 +40,9 @@ class WebViewBackForwardList {
     private func isSpecial(_url: NSURL?) -> Bool {
         guard let url = _url else { return false }
         #if !TEST
-        return url.absoluteString.rangeOfString(WebServer.sharedInstance.base) != nil
+            return url.absoluteString.rangeOfString(WebServer.sharedInstance.base) != nil
         #else
-        return false
+            return false
         #endif
     }
 
@@ -55,8 +55,8 @@ class WebViewBackForwardList {
         if cachedHistoryStringLength > 0 && cachedHistoryStringLength == nsHistory.length &&
             cachedHistoryStringPositionOfCurrentMarker > -1 &&
             nsHistory.substringWithRange(NSMakeRange(cachedHistoryStringPositionOfCurrentMarker, currIndicator.characters.count)) == currIndicator {
-                // the history is unchanged (based on this guesstimate)
-                return
+            // the history is unchanged (based on this guesstimate)
+            return
         }
 
         cachedHistoryStringLength = nsHistory.length
@@ -83,7 +83,7 @@ class WebViewBackForwardList {
                 foundCurrent = true
                 cachedHistoryStringPositionOfCurrentMarker = rangeStart
             }
-            i++
+            i += 1
         }
         if !foundCurrent {
             currentIndex = 0
@@ -118,16 +118,16 @@ class WebViewBackForwardList {
         if (backForwardList.count == 0 ||
             index > backForwardList.count - 1 ||
             index < 0) {
-                return nil
+            return nil
         }
         return backForwardList[index]
     }
-    
+
     var backList: [LegacyBackForwardListItem] {
         get {
             return (currentIndex > 0 && backForwardList.count > 0) ? Array(backForwardList[0..<currentIndex]) : []
         }}
-    
+
     var forwardList: [LegacyBackForwardListItem] {
         get {
             return (currentIndex + 1 < backForwardList.count  && backForwardList.count > 0) ?

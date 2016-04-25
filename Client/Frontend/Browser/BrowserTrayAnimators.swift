@@ -88,8 +88,8 @@ private extension TrayToBrowserAnimator {
             // Push out the navigation bar buttons
             let buttonOffset = tabTray.addTabButton.frame.width + TabTrayControllerUX.ToolbarButtonOffset
             tabTray.addTabButton.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, buttonOffset , 0)
-            tabTray.settingsButton.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, -buttonOffset , 0)
 #if !BRAVE
+    tabTray.settingsButton.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, -buttonOffset , 0)
           if #available(iOS 9, *) {
                 tabTray.togglePrivateMode.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, buttonOffset , 0)
             }
@@ -188,7 +188,7 @@ private extension BrowserToTrayAnimator {
                 bvc.footer.alpha = 0
                 tabCollectionViewSnapshot.alpha = 1
 
-                var viewsToReset: [UIView?] = [tabCollectionViewSnapshot, tabTray.addTabButton, tabTray.settingsButton]
+                var viewsToReset: [UIView?] = [tabCollectionViewSnapshot, tabTray.addTabButton]
 #if !BRAVE
               if #available(iOS 9, *) {
                     viewsToReset.append(tabTray.togglePrivateMode)
@@ -223,8 +223,8 @@ private func transformHeaderFooterForBVC(bvc: BrowserViewController, toFrame fin
     bvc.headerBackdrop.transform = headerForTransform
 }
 
-private func footerTransform(var frame: CGRect, toFrame finalFrame: CGRect, container: UIView) -> CGAffineTransform {
-    frame = container.convertRect(frame, toView: container)
+private func footerTransform( frame: CGRect, toFrame finalFrame: CGRect, container: UIView) -> CGAffineTransform {
+    let frame = container.convertRect(frame, toView: container)
     let endY = CGRectGetMaxY(finalFrame) - (frame.size.height / 2)
     let endX = CGRectGetMidX(finalFrame)
     let translation = CGPoint(x: endX - CGRectGetMidX(frame), y: endY - CGRectGetMidY(frame))
@@ -237,8 +237,8 @@ private func footerTransform(var frame: CGRect, toFrame finalFrame: CGRect, cont
     return transform
 }
 
-private func headerTransform(var frame: CGRect, toFrame finalFrame: CGRect, container: UIView) -> CGAffineTransform {
-    frame = container.convertRect(frame, toView: container)
+private func headerTransform(frame: CGRect, toFrame finalFrame: CGRect, container: UIView) -> CGAffineTransform {
+    let frame = container.convertRect(frame, toView: container)
     let endY = CGRectGetMinY(finalFrame) + (frame.size.height / 2)
     let endX = CGRectGetMidX(finalFrame)
     let translation = CGPoint(x: endX - CGRectGetMidX(frame), y: endY - CGRectGetMidY(frame))

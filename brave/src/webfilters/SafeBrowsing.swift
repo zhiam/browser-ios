@@ -24,7 +24,7 @@ class SafeBrowsing {
     var isEnabled = true
 
     private init() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "prefsChanged:", name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SafeBrowsing.prefsChanged(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
         updateEnabledState()
     }
 
@@ -72,13 +72,13 @@ class SafeBrowsing {
         let isBlocked = abpFilterLibWrapper.isBlockedIgnoringType(url.absoluteString, mainDocumentUrl: host)
 
         fifoCacheOfUrlsChecked.addItem(key, value: isBlocked)
-        
-       // #if LOG_AD_BLOCK
-            if isBlocked {
-                print("safe browsing blocked \(url.absoluteString)")
-            }
-       // #endif
-        
+
+        // #if LOG_AD_BLOCK
+        if isBlocked {
+            print("safe browsing blocked \(url.absoluteString)")
+        }
+        // #endif
+
         return isBlocked
     }
 }

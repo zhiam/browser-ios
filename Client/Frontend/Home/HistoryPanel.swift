@@ -30,7 +30,6 @@ private struct HistoryPanelUX {
 
 class HistoryPanel: SiteTableViewController, HomePanel {
     weak var homePanelDelegate: HomePanelDelegate? = nil
-
     private lazy var emptyStateOverlayView: UIView = self.createEmptyStateOverview()
 
     private let QueryLimit = 100
@@ -45,17 +44,13 @@ class HistoryPanel: SiteTableViewController, HomePanel {
     // Reverse lookup from UI section to data category.
     private var sectionLookup = [SectionNumber: CategoryNumber]()
 
-    private lazy var defaultIcon: UIImage = {
-        return UIImage(named: "defaultFavicon")!
-    }()
-
     var refreshControl: UIRefreshControl?
 
     init() {
         super.init(nibName: nil, bundle: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationReceived:", name: NotificationFirefoxAccountChanged, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationReceived:", name: NotificationPrivateDataClearedHistory, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "notificationReceived:", name: NotificationDynamicFontChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistoryPanel.notificationReceived(_:)), name: NotificationFirefoxAccountChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistoryPanel.notificationReceived(_:)), name: NotificationPrivateDataClearedHistory, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistoryPanel.notificationReceived(_:)), name: NotificationDynamicFontChanged, object: nil)
     }
 
     override func viewDidLoad() {
@@ -107,7 +102,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
 
     func addRefreshControl() {
         let refresh = UIRefreshControl()
-        refresh.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        refresh.addTarget(self, action: #selector(HistoryPanel.refresh), forControlEvents: UIControlEvents.ValueChanged)
         self.refreshControl = refresh
         self.tableView.addSubview(refresh)
     }
@@ -195,32 +190,32 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         let overlayView = UIView()
         overlayView.backgroundColor = UIColor.whiteColor()
 
-        let logoImageView = UIImageView(image: UIImage(named: "emptyHistory"))
-        overlayView.addSubview(logoImageView)
-        logoImageView.snp_makeConstraints { make in
-            make.centerX.equalTo(overlayView)
-
-            // Sets proper top constraint for iPhone 6 in portait and for iPad.
-            make.centerY.equalTo(overlayView.snp_centerY).offset(HomePanelUX.EmptyTabContentOffset).priorityMedium()
-
-            // Sets proper top constraint for iPhone 4, 5 in portrait.
-            make.top.greaterThanOrEqualTo(overlayView.snp_top).offset(50).priorityHigh()
-        }
-
-        let welcomeLabel = UILabel()
-        overlayView.addSubview(welcomeLabel)
-        welcomeLabel.text = NSLocalizedString("Pages you have visited recently will show up here.", comment: "See http://bit.ly/1I7Do4b")
-        welcomeLabel.textAlignment = NSTextAlignment.Center
-        welcomeLabel.font = DynamicFontHelper.defaultHelper.DeviceFontLight
-        welcomeLabel.textColor = HistoryPanelUX.WelcomeScreenItemTextColor
-        welcomeLabel.numberOfLines = 2
-        welcomeLabel.adjustsFontSizeToFitWidth = true
-
-        welcomeLabel.snp_makeConstraints { make in
-            make.centerX.equalTo(overlayView)
-            make.top.equalTo(logoImageView.snp_bottom).offset(HistoryPanelUX.WelcomeScreenPadding)
-            make.width.equalTo(HistoryPanelUX.WelcomeScreenItemWidth)
-        }
+//        let logoImageView = UIImageView(image: UIImage(named: "emptyHistory"))
+//        overlayView.addSubview(logoImageView)
+//        logoImageView.snp_makeConstraints { make in
+//            make.centerX.equalTo(overlayView)
+//
+//            // Sets proper top constraint for iPhone 6 in portait and for iPad.
+//            make.centerY.equalTo(overlayView.snp_centerY).offset(HomePanelUX.EmptyTabContentOffset).priorityMedium()
+//
+//            // Sets proper top constraint for iPhone 4, 5 in portrait.
+//            make.top.greaterThanOrEqualTo(overlayView.snp_top).offset(50).priorityHigh()
+//        }
+//
+//        let welcomeLabel = UILabel()
+//        overlayView.addSubview(welcomeLabel)
+//        welcomeLabel.text = NSLocalizedString("Pages you have visited recently will show up here.", comment: "See http://bit.ly/1I7Do4b")
+//        welcomeLabel.textAlignment = NSTextAlignment.Center
+//        welcomeLabel.font = DynamicFontHelper.defaultHelper.DeviceFontLight
+//        welcomeLabel.textColor = HistoryPanelUX.WelcomeScreenItemTextColor
+//        welcomeLabel.numberOfLines = 0
+//        welcomeLabel.adjustsFontSizeToFitWidth = true
+//
+//        welcomeLabel.snp_makeConstraints { make in
+//            make.centerX.equalTo(overlayView)
+//            make.top.equalTo(logoImageView.snp_bottom).offset(HistoryPanelUX.WelcomeScreenPadding)
+//            make.width.equalTo(HistoryPanelUX.WelcomeScreenItemWidth)
+//        }
 
         return overlayView
     }
@@ -231,7 +226,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         if let site = data[indexPath.row + category.offset] {
             if let cell = cell as? TwoLineTableViewCell {
                 cell.setLines(site.title, detailText: site.url)
-                cell.imageView?.setIcon(site.icon, withPlaceholder: self.defaultIcon)
+                cell.imageView?.setIcon(site.icon, withPlaceholder: FaviconFetcher.getDefaultFavicon(site.tileURL))
             }
         }
 
@@ -261,7 +256,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         var count = 0
         for category in self.categories {
             if category.rows > 0 {
-                count++
+                count += 1
             }
         }
         return count
@@ -304,7 +299,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         // Loop over all the data. Record the start of each "section" of our list.
         for i in 0..<data.count {
             if let site = data[i] {
-                counts[categoryForDate(site.latestVisit!.date)]++
+                counts[categoryForDate(site.latestVisit!.date)] += 1
             }
         }
 
@@ -318,7 +313,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
                 self.categories.append((section: section, rows: count, offset: offset))
                 sectionLookup[section] = i
                 offset += count
-                section++
+                section += 1
             } else {
                 log.debug("Category \(i) has 0 rows, and thus has no section.")
                 self.categories.append((section: nil, rows: 0, offset: offset))

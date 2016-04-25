@@ -11,9 +11,9 @@ let kNotificationBraveButtonClicked = "kNotificationBraveButtonClicked"
 class BraveTopViewController : UIViewController {
     var browserViewController:BraveBrowserViewController
     var mainSidePanel:MainSidePanelViewController
-#if RIGHTPANEL
+    #if RIGHTPANEL
     var rightSidePanel:BraveRightSidePanelViewController
-#endif
+    #endif
     var clickDetectionView = UIButton()
     var leftConstraint: Constraint? = nil
     var rightConstraint: Constraint? = nil
@@ -21,9 +21,9 @@ class BraveTopViewController : UIViewController {
     init(browserViewController:BraveBrowserViewController) {
         self.browserViewController = browserViewController
         mainSidePanel = MainSidePanelViewController()
-#if RIGHTPANEL
-        rightSidePanel = BraveRightSidePanelViewController()
-#endif
+        #if RIGHTPANEL
+            rightSidePanel = BraveRightSidePanelViewController()
+        #endif
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -55,13 +55,13 @@ class BraveTopViewController : UIViewController {
             make.width.equalTo(0)
         }
 
-#if RIGHTPANEL
-        rightSidePanel.view.snp_makeConstraints {
-            make in
-            make.bottom.right.top.equalTo(view)
-            make.width.equalTo(0)
-        }
-#endif
+        #if RIGHTPANEL
+            rightSidePanel.view.snp_makeConstraints {
+                make in
+                make.bottom.right.top.equalTo(view)
+                make.width.equalTo(0)
+            }
+        #endif
 
         //    clickDetectionView.layer.shadowColor = UIColor.redColor().CGColor
         //    clickDetectionView.layer.shadowOffset = CGSizeMake(-4, 0)
@@ -76,7 +76,7 @@ class BraveTopViewController : UIViewController {
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: NSSelectorFromString(SEL_onClickBraveButton), name: kNotificationBraveButtonClicked, object: nil)
 
-        clickDetectionView.addTarget(self, action: "dismissAllSidePanels:", forControlEvents: UIControlEvents.TouchUpInside)
+        clickDetectionView.addTarget(self, action: #selector(BraveTopViewController.dismissAllSidePanels(_:)), forControlEvents: UIControlEvents.TouchUpInside)
 
         mainSidePanel.browserViewController = browserViewController
     }
@@ -88,9 +88,9 @@ class BraveTopViewController : UIViewController {
             leftSidePanelButtonAndUnderlay?.underlay.hidden = true
         }
         #if RIGHTPANEL
-        if rightPanelShowing() {
-            togglePanel(rightSidePanel)
-        }
+            if rightPanelShowing() {
+                togglePanel(rightSidePanel)
+            }
 
         #endif
     }
@@ -106,7 +106,7 @@ class BraveTopViewController : UIViewController {
             }
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
                 rightConstraint = make.right.equalTo(view).constraint
-             //   make.width.equalTo(view.snp_width)
+                //   make.width.equalTo(view.snp_width)
             } else {
                 make.right.equalTo(view)
             }
@@ -124,7 +124,7 @@ class BraveTopViewController : UIViewController {
 
     #if RIGHTPANEL
     func rightPanelShowing() -> Bool {
-        return rightSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
+    return rightSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
     }
     #endif
 
@@ -170,7 +170,7 @@ class BraveTopViewController : UIViewController {
     }
 
     func specialTouchEventHandling(touchPoint: CGPoint, phase: UITouchPhase ) {
-   //     mainSidePanel.onTouchToHide(touchPoint, phase: phase)
+        //     mainSidePanel.onTouchToHide(touchPoint, phase: phase)
     }
 
     func togglePanel(panel: SidePanelBaseViewController) {

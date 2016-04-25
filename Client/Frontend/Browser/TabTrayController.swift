@@ -109,7 +109,7 @@ class TabCell: UICollectionViewCell {
         //self.opaque = true
 
         self.animator = SwipeAnimator(animatingView: self.backgroundHolder, container: self)
-        self.closeButton.addTarget(self, action: "SELclose", forControlEvents: UIControlEvents.TouchUpInside)
+        self.closeButton.addTarget(self, action: #selector(TabCell.SELclose), forControlEvents: UIControlEvents.TouchUpInside)
 
         contentView.addSubview(backgroundHolder)
         backgroundHolder.addSubview(self.background)
@@ -119,7 +119,7 @@ class TabCell: UICollectionViewCell {
         applyStyle(style)
 
         self.accessibilityCustomActions = [
-            UIAccessibilityCustomAction(name: NSLocalizedString("Close", comment: "Accessibility label for action denoting closing a tab in tab list (tray)"), target: self.animator, selector: "SELcloseWithoutGesture")
+            UIAccessibilityCustomAction(name: NSLocalizedString("Close", comment: "Accessibility label for action denoting closing a tab in tab list (tray)"), target: self.animator, selector: #selector(SELclose))
         ]
     }
 
@@ -250,7 +250,6 @@ class TabTrayController: UIViewController {
     var collectionView: UICollectionView!
     var navBar: UIView!
     var addTabButton: UIButton!
-    var settingsButton: UIButton!
     var collectionViewTransitionSnapshot: UIView?
 
     private(set) internal var privateMode: Bool = false {
@@ -278,10 +277,11 @@ class TabTrayController: UIViewController {
         button.setTitleColor(UIColor(white: 255/255.0, alpha: 1.0), forState: .Normal)
         button.titleLabel!.font = UIFont.systemFontOfSize(button.titleLabel!.font.pointSize + 2)
         button.contentEdgeInsets = UIEdgeInsetsMake(0, 4 /* left */, 0, 4 /* right */)
-        button.addTarget(self, action: "SELdidTogglePrivateMode", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(TabTrayController.SELdidTogglePrivateMode), forControlEvents: .TouchUpInside)
         button.accessibilityLabel = PrivateModeStrings.toggleAccessibilityLabel
         button.accessibilityHint = PrivateModeStrings.toggleAccessibilityHint
         button.accessibilityValue = self.privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
+        button.accessibilityIdentifier = "TabTrayController.togglePrivateMode"
 
         if PrivateBrowsing.singleton.isOn {
             button.backgroundColor = UIColor.whiteColor()
@@ -294,7 +294,7 @@ class TabTrayController: UIViewController {
     @available(iOS 9, *)
     private lazy var emptyPrivateTabsView: EmptyPrivateTabsView = {
         let emptyView = EmptyPrivateTabsView()
-        emptyView.learnMoreButton.addTarget(self, action: "SELdidTapLearnMore", forControlEvents: UIControlEvents.TouchUpInside)
+        emptyView.learnMoreButton.addTarget(self, action: #selector(TabTrayController.SELdidTapLearnMore), forControlEvents: UIControlEvents.TouchUpInside)
         return emptyView
     }()
 #endif
@@ -326,6 +326,8 @@ class TabTrayController: UIViewController {
         self.tabManager = tabManager
         self.profile = profile
         super.init(nibName: nil, bundle: nil)
+
+        tabManager.addDelegate(self)
     }
 
     convenience init(tabManager: TabManager, profile: Profile, tabTrayDelegate: TabTrayDelegate) {
@@ -337,20 +339,11 @@ class TabTrayController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        self.tabManager.removeDelegate(self)
-    }
-
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        tabManager.addDelegate(self)
-    }
-
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillEnterForegroundNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
+        self.tabManager.removeDelegate(self)
     }
 
     func SELDynamicFontChanged(notification: NSNotification) {
@@ -374,14 +367,10 @@ class TabTrayController: UIViewController {
 
         addTabButton = UIButton()
         addTabButton.setImage(UIImage(named: "add")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        addTabButton.addTarget(self, action: "SELdidClickAddTab", forControlEvents: .TouchUpInside)
+        addTabButton.addTarget(self, action: #selector(TabTrayController.SELdidClickAddTab), forControlEvents: .TouchUpInside)
         addTabButton.accessibilityLabel = NSLocalizedString("Add Tab", comment: "Accessibility label for the Add Tab button in the Tab Tray.")
+        addTabButton.accessibilityIdentifier = "TabTrayController.addTabButton"
         addTabButton.tintColor = UIColor.whiteColor() // makes it stand out more
-
-        settingsButton = UIButton()
-//        settingsButton.setImage(UIImage(named: "settings"), forState: .Normal)
-//        settingsButton.addTarget(self, action: "SELdidClickSettingsItem", forControlEvents: .TouchUpInside)
-//        settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button in the Tab Tray.")
 
         let flowLayout = TabTrayCollectionViewLayout()
         collectionView = UICollectionView(frame: view.frame, collectionViewLayout: flowLayout)
@@ -399,13 +388,13 @@ class TabTrayController: UIViewController {
             make.edges.equalTo(collectionView)
         }
         collectionView.backgroundView?.userInteractionEnabled = true
-        collectionView.backgroundView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "onTappedBackground:"))
+        collectionView.backgroundView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TabTrayController.onTappedBackground(_:))))
 #endif
 
         view.addSubview(collectionView)
         view.addSubview(navBar)
         view.addSubview(addTabButton)
-        view.addSubview(settingsButton)
+
 
         makeConstraints()
 #if !BRAVE_NO_PRIVATE_MODE
@@ -428,15 +417,15 @@ class TabTrayController: UIViewController {
             }
 
             // register for previewing delegate to enable peek and pop if force touch feature available
-            if traitCollection.forceTouchCapability == .Available {
-                registerForPreviewingWithDelegate(self, sourceView: view)
-            }
+//            if traitCollection.forceTouchCapability == .Available {
+//                registerForPreviewingWithDelegate(self, sourceView: view)
+//            }
         }
 #endif
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELappWillResignActiveNotification", name: UIApplicationWillResignActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELappDidBecomeActiveNotification", name: UIApplicationDidBecomeActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "SELDynamicFontChanged:", name: NotificationDynamicFontChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TabTrayController.SELappWillResignActiveNotification), name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TabTrayController.SELappDidBecomeActiveNotification), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TabTrayController.SELDynamicFontChanged(_:)), name: NotificationDynamicFontChanged, object: nil)
     }
 
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
@@ -469,11 +458,6 @@ class TabTrayController: UIViewController {
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
 
-        settingsButton.snp_makeConstraints { make in
-            make.leading.bottom.equalTo(self.navBar)
-            make.size.equalTo(UIConstants.ToolbarHeight)
-        }
-
         collectionView.snp_makeConstraints { make in
             make.top.equalTo(navBar.snp_bottom)
             make.left.right.bottom.equalTo(self.view)
@@ -481,18 +465,6 @@ class TabTrayController: UIViewController {
     }
 
 // MARK: Selectors
-
-//    func SELdidClickSettingsItem() {
-//        let settingsTableViewController = BraveSettingsView()
-//        settingsTableViewController.profile = profile
-//        settingsTableViewController.tabManager = tabManager
-//        settingsTableViewController.settingsDelegate = self
-//
-//        let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
-//        controller.popoverDelegate = self
-//		controller.modalPresentationStyle = UIModalPresentationStyle.FormSheet
-//        presentViewController(controller, animated: true, completion: nil)
-//    }
 
     func SELdidClickAddTab() {
         openNewTab()
@@ -740,9 +712,10 @@ extension TabTrayController: UIScrollViewAccessibilityDelegate {
         // visible cells do sometimes return also not visible cells when attempting to go past the last cell with VoiceOver right-flick gesture; so make sure we have only visible cells (yeah...)
         visibleCells = visibleCells.filter { !CGRectIsEmpty(CGRectIntersection($0.frame, bounds)) }
 
-        let indexPaths = visibleCells.map { self.collectionView.indexPathForCell($0)! }
-//       TODO: the following line is taking 7s to compile, see if can be fixed (or wait for compiler update)
-        //let indexPaths = cells.sort { $0.section < $1.section || ($0.section == $1.section && $0.row < $1.row) }
+        let cells = visibleCells.map { self.collectionView.indexPathForCell($0)! }
+        let indexPaths = cells.sort { (a: NSIndexPath, b: NSIndexPath) -> Bool in
+            return a.section < b.section || (a.section == b.section && a.row < b.row)
+        }
 
         if indexPaths.count == 0 {
             return NSLocalizedString("No tabs", comment: "Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray")
@@ -763,7 +736,7 @@ extension TabTrayController: UIScrollViewAccessibilityDelegate {
 }
 
 extension TabTrayController: SwipeAnimatorDelegate {
-    func swipeAnimator(animator: SwipeAnimator, viewDidExitContainerBounds: UIView) {
+    func swipeAnimator(animator: SwipeAnimator, viewWillExitContainerBounds: UIView) {
         let tabCell = animator.container as! TabCell
         if let indexPath = collectionView.indexPathForCell(tabCell) {
             let tab = tabsToDisplay[indexPath.item]
@@ -1034,75 +1007,75 @@ private class EmptyPrivateTabsView: UIView {
     }
 }
 
-@available(iOS 9.0, *)
-extension TabTrayController: TabPeekDelegate {
+//@available(iOS 9.0, *)
+//extension TabTrayController: TabPeekDelegate {
+//
+//    func tabPeekDidAddBookmark(tab: Browser) {
+//        delegate?.tabTrayDidAddBookmark(tab)
+//    }
+//
+//    func tabPeekDidAddToReadingList(tab: Browser) -> ReadingListClientRecord? {
+//        return delegate?.tabTrayDidAddToReadingList(tab)
+//    }
+//
+//    func tabPeekDidCloseTab(tab: Browser) {
+//        if let index = self.tabDataSource.tabs.indexOf(tab),
+//            let cell = self.collectionView?.cellForItemAtIndexPath(NSIndexPath(forItem: index, inSection: 0)) as? TabCell {
+//            cell.SELclose()
+//        }
+//    }
+//
+//    func tabPeekRequestsPresentationOf(viewController viewController: UIViewController) {
+//        delegate?.tabTrayRequestsPresentationOf(viewController: viewController)
+//    }
+//}
 
-    func tabPeekDidAddBookmark(tab: Browser) {
-        delegate?.tabTrayDidAddBookmark(tab)
-    }
+//@available(iOS 9.0, *)
+//extension TabTrayController: UIViewControllerPreviewingDelegate {
+//
+//    func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+//
+//        guard let collectionView = collectionView else { return nil }
+//        let convertedLocation = self.view.convertPoint(location, toView: collectionView)
+//
+//        guard let indexPath = collectionView.indexPathForItemAtPoint(convertedLocation),
+//            let cell = collectionView.cellForItemAtIndexPath(indexPath) else { return nil }
+//
+//        let tab = tabDataSource.tabs[indexPath.row]
+//        let tabVC = TabPeekViewController(tab: tab, delegate: self)
+//        if let browserProfile = profile as? BrowserProfile {
+//            tabVC.setState(withProfile: browserProfile, clientPickerDelegate: self)
+//        }
+//        previewingContext.sourceRect = self.view.convertRect(cell.frame, fromView: collectionView)
+//
+//        return tabVC
+//    }
+//
+//    func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+//        guard let tpvc = viewControllerToCommit as? TabPeekViewController else { return }
+//        tabManager.selectTab(tpvc.tab)
+//
+//        #if BRAVE
+//            self.dismissViewControllerAnimated(true, completion: nil)
+//        #else
+//            self.navigationController?.popViewControllerAnimated(true)
+//        #endif
+//
+//        delegate?.tabTrayDidDismiss(self)
+//
+//    }
+//}
 
-    func tabPeekDidAddToReadingList(tab: Browser) -> ReadingListClientRecord? {
-        return delegate?.tabTrayDidAddToReadingList(tab)
-    }
-
-    func tabPeekDidCloseTab(tab: Browser) {
-        if let index = self.tabDataSource.tabs.indexOf(tab),
-            let cell = self.collectionView?.cellForItemAtIndexPath(NSIndexPath(forItem: index, inSection: 0)) as? TabCell {
-            cell.SELclose()
-        }
-    }
-
-    func tabPeekRequestsPresentationOf(viewController viewController: UIViewController) {
-        delegate?.tabTrayRequestsPresentationOf(viewController: viewController)
-    }
-}
-
-@available(iOS 9.0, *)
-extension TabTrayController: UIViewControllerPreviewingDelegate {
-
-    func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-
-        guard let collectionView = collectionView else { return nil }
-        let convertedLocation = self.view.convertPoint(location, toView: collectionView)
-
-        guard let indexPath = collectionView.indexPathForItemAtPoint(convertedLocation),
-            let cell = collectionView.cellForItemAtIndexPath(indexPath) else { return nil }
-
-        let tab = tabDataSource.tabs[indexPath.row]
-        let tabVC = TabPeekViewController(tab: tab, delegate: self)
-        if let browserProfile = profile as? BrowserProfile {
-            tabVC.setState(withProfile: browserProfile, clientPickerDelegate: self)
-        }
-        previewingContext.sourceRect = self.view.convertRect(cell.frame, fromView: collectionView)
-
-        return tabVC
-    }
-
-    func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
-        guard let tpvc = viewControllerToCommit as? TabPeekViewController else { return }
-        tabManager.selectTab(tpvc.tab)
-
-        #if BRAVE
-            self.dismissViewControllerAnimated(true, completion: nil)
-        #else
-            self.navigationController?.popViewControllerAnimated(true)
-        #endif
-
-        delegate?.tabTrayDidDismiss(self)
-
-    }
-}
-
-extension TabTrayController: ClientPickerViewControllerDelegate {
-
-    func clientPickerViewController(clientPickerViewController: ClientPickerViewController, didPickClients clients: [RemoteClient]) {
-        if let item = clientPickerViewController.shareItem {
-            self.profile.sendItems([item], toClients: clients)
-        }
-        clientPickerViewController.dismissViewControllerAnimated(true, completion: nil)
-    }
-
-    func clientPickerViewControllerDidCancel(clientPickerViewController: ClientPickerViewController) {
-        clientPickerViewController.dismissViewControllerAnimated(true, completion: nil)
-    }
-}
+//extension TabTrayController: ClientPickerViewControllerDelegate {
+//
+//    func clientPickerViewController(clientPickerViewController: ClientPickerViewController, didPickClients clients: [RemoteClient]) {
+//        if let item = clientPickerViewController.shareItem {
+//            self.profile.sendItems([item], toClients: clients)
+//        }
+//        clientPickerViewController.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//
+//    func clientPickerViewControllerDidCancel(clientPickerViewController: ClientPickerViewController) {
+//        clientPickerViewController.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//}

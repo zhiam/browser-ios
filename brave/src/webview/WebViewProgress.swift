@@ -21,10 +21,10 @@ public class WebViewProgress
     var currentURL: NSURL?
 
     /* After all efforts to catch page load completion in WebViewProgress, sometimes, load completion is *still* missed.
-    As a backup we can do KVO on 'loading'. Which can arrive too early (from subrequests) -and frequently- so delay checking by an arbitrary amount
-    using a timer. The only problem with this is that there is yet more code for load detection, sigh.
-    TODO figure this out. http://thestar.com exhibits this sometimes.
-    Possibly a bug in UIWebView with load completion, but hard to repro, a reload of a page always seems to complete. */
+     As a backup we can do KVO on 'loading'. Which can arrive too early (from subrequests) -and frequently- so delay checking by an arbitrary amount
+     using a timer. The only problem with this is that there is yet more code for load detection, sigh.
+     TODO figure this out. http://thestar.com exhibits this sometimes.
+     Possibly a bug in UIWebView with load completion, but hard to repro, a reload of a page always seems to complete. */
     class LoadingObserver : NSObject {
         private weak var webView: BraveWebView?
         private var timer: NSTimer?
@@ -56,7 +56,7 @@ public class WebViewProgress
             ensureMainThread() { // ensure closure is on main thread
                 if !(self.webView?.loading ?? true) && self.webView?.estimatedProgress < 1.0 {
                     self.timer?.invalidate()
-                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "delayedCompletionCheck", userInfo: nil, repeats: false)
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(LoadingObserver.delayedCompletionCheck), userInfo: nil, repeats: false)
                 } else {
                     self.timer?.invalidate()
                 }
@@ -121,7 +121,7 @@ public class WebViewProgress
 
         if let fragment = request.URL?.fragment {
             let nonFragmentUrl = request.URL?.absoluteString.stringByReplacingOccurrencesOfString("#" + fragment,
-                withString: "")
+                                                                                                  withString: "")
 
             isFragmentJump = nonFragmentUrl == webView?.request?.URL?.absoluteString
         }
@@ -139,7 +139,7 @@ public class WebViewProgress
     }
 
     public func webViewDidStartLoad() {
-        loadingCount++
+        loadingCount += 1
         maxLoadCount = max(maxLoadCount, loadingCount)
         startProgress()
 
@@ -156,9 +156,9 @@ public class WebViewProgress
                         "iframe.src = '%@://%@/#%@';" +
                         "document.body.appendChild(iframe);" +
                     "}, false);}",
-                    scheme,
-                    host,
-                    completedUrlPath);
+                                               scheme,
+                                               host,
+                                               completedUrlPath);
                 webView?.stringByEvaluatingJavaScriptFromString(waitForCompleteJS)
             }
         }
@@ -170,10 +170,10 @@ public class WebViewProgress
         loadingCount -= 1
         incrementProgress()
 
-#if DEBUG
-        //let documentLocation = webView?.stringByEvaluatingJavaScriptFromString("window.location.href")
-        //print("State:\(documentReadyState ?? "") \(documentLocation ?? "")")
-#endif
+        #if DEBUG
+            //let documentLocation = webView?.stringByEvaluatingJavaScriptFromString("window.location.href")
+            //print("State:\(documentReadyState ?? "") \(documentLocation ?? "")")
+        #endif
 
         if let readyState = documentReadyState {
             switch readyState {

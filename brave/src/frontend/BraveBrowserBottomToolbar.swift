@@ -32,9 +32,9 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
     lazy var tabsButton: TabsButton = {
         let tabsButton = TabsButton()
         tabsButton.titleLabel.text = "\(tabsCount)"
-        tabsButton.addTarget(self, action: "onClickShowTabs", forControlEvents: UIControlEvents.TouchUpInside)
+        tabsButton.addTarget(self, action: #selector(BraveBrowserBottomToolbar.onClickShowTabs), forControlEvents: UIControlEvents.TouchUpInside)
         tabsButton.accessibilityLabel = NSLocalizedString("Show Tabs",
-            comment: "Accessibility Label for the tabs button in the browser toolbar")
+                                                          comment: "Accessibility Label for the tabs button in the browser toolbar")
         return tabsButton
     }()
 
@@ -42,7 +42,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         let button = UIButton()
         let image = UIImage(named: "add")
         button.accessibilityLabel = NSLocalizedString("Add Tab", comment: "Accessibility label for the bottom toolbar add tab button")
-        button.addTarget(self, action: "onClickAddTab", forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: #selector(BraveBrowserBottomToolbar.onClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
 
         // Button is grey without upping the brightness
         // TODO remove this when the icon changes
@@ -118,7 +118,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         guard let instance = BraveBrowserBottomToolbar.currentInstance else { return }
         tabsCount = count
         URLBarView.updateTabCount(instance.tabsButton,
-            clonedTabsButton: &instance.clonedTabsButton, count: count, animated: animated)
+                                  clonedTabsButton: &instance.clonedTabsButton, count: count, animated: animated)
     }
 
     func onClickAddTab() {
@@ -202,7 +202,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
     override func updatePageStatus(isWebPage isWebPage: Bool) {
         super.updatePageStatus(isWebPage: isWebPage)
-
+        
         let isPrivate = getApp().browserViewController.tabManager.selectedTab?.isPrivate ?? false
         if isPrivate {
             delay(0) {

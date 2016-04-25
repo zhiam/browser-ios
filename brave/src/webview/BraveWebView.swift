@@ -87,7 +87,7 @@ class BraveWebView: UIWebView {
     static var webViewCounter = 0
     // Needed to identify webview in url protocol
     func generateUniqueUserAgent() {
-        BraveWebView.webViewCounter++
+        BraveWebView.webViewCounter += 1
         if let webviewBuiltinUserAgent = BraveWebView.webviewBuiltinUserAgent {
             let userAgent = webviewBuiltinUserAgent + String(format:" _id/%06d", BraveWebView.webViewCounter)
             let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
@@ -111,7 +111,7 @@ class BraveWebView: UIWebView {
             // the first created webview doesn't have this id set (see webviewBuiltinUserAgent to explain)
             return idToWebview.objectForKey(1) as? BraveWebView
         }
-        let keyString = ua.substringWithRange(Range(start: loc.endIndex, end: loc.endIndex.advancedBy(6)))
+        let keyString = ua.substringWithRange(loc.endIndex..<loc.endIndex.advancedBy(6))
         guard let key = Int(keyString) else { return nil }
         return idToWebview.objectForKey(key) as? BraveWebView
     }
@@ -125,10 +125,9 @@ class BraveWebView: UIWebView {
         }
 
         // Add a time delay so that multiple calls are aggregated
-        triggeredLocationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: kTimeoutCheckLocation, userInfo: nil, repeats: false)
+        triggeredLocationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: #selector(timeoutCheckLocation), userInfo: nil, repeats: false)
     }
 
-    let kTimeoutCheckLocation = Selector("timeoutCheckLocation")
     @objc func timeoutCheckLocation() {
         if loading {
             return
@@ -212,7 +211,7 @@ class BraveWebView: UIWebView {
             print("Failed remove: \(exception)")
         }
 
-       _ = Try(withTry: {
+        _ = Try(withTry: {
             self.removeProgressObserversOnDeinit?(self)
         }) { (exception) -> Void in
             print("Failed remove: \(exception)")
@@ -228,7 +227,7 @@ class BraveWebView: UIWebView {
     override func loadRequest(request: NSURLRequest) {
         guard let internalWebView = valueForKeyPath("documentView.webView") else { return }
         NSNotificationCenter.defaultCenter().removeObserver(self, name: internalProgressChangedNotification, object: internalWebView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "internalProgressNotification:", name: internalProgressChangedNotification, object: internalWebView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveWebView.internalProgressNotification(_:)), name: internalProgressChangedNotification, object: internalWebView)
 
         if let url = request.URL where !url.absoluteString.contains(specialStopLoadUrl) {
             URL = request.URL
@@ -369,7 +368,7 @@ class BraveWebView: UIWebView {
                 self?.URL = urlInfo
                 self?.kvoBroadcast([KVOStrings.kvoURL])
             }
-         }
+        }
     }
 
     func safeBrowsingCheckIsEmptyPage(url: NSURL?) {
@@ -412,7 +411,7 @@ extension BraveWebView: UIWebViewDelegate {
                 if printedUrl.characters.count > maxLen {
                     printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
                 }
-               // print("webview load: " + printedUrl)
+                // print("webview load: " + printedUrl)
             }
         #endif
 
@@ -429,9 +428,9 @@ extension BraveWebView: UIWebViewDelegate {
 
         if let contextMenu = window?.rootViewController?.presentedViewController
             where contextMenu.view.tag == BraveWebView.kContextMenuBlockNavigation {
-                // When showing a context menu, the webview will often still navigate (ex. news.google.com)
-                // We need to block navigation using this tag.
-                return false
+            // When showing a context menu, the webview will often still navigate (ex. news.google.com)
+            // We need to block navigation using this tag.
+            return false
         }
 
         if loadingUnvalidatedHTTPSPage {
@@ -447,11 +446,11 @@ extension BraveWebView: UIWebViewDelegate {
         var result = true
         if let nd = navigationDelegate {
             let action:LegacyNavigationAction =
-            LegacyNavigationAction(type: convertNavActionToWKType(navigationType), request: request)
+                LegacyNavigationAction(type: convertNavActionToWKType(navigationType), request: request)
 
             nd.webView?(nullWebView, decidePolicyForNavigationAction: action,
-                decisionHandler: { (policy:WKNavigationActionPolicy) -> Void in
-                    result = policy == .Allow
+                        decisionHandler: { (policy:WKNavigationActionPolicy) -> Void in
+                            result = policy == .Allow
             })
         }
 
@@ -461,7 +460,7 @@ extension BraveWebView: UIWebViewDelegate {
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
             URL = request.URL
             #if DEBUG
-            print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
+                print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
             #endif
         }
 
@@ -513,10 +512,10 @@ extension BraveWebView: UIWebViewDelegate {
             {
                 let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? ""
                 if errorUrl.characters.count < 1 {
-#if DEBUG
-                    // This doesn't seem to happen on the top level doc, and when a resource is being repeatedly loaded and fails, this would show up repeatedly and block using the page
-                    BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
-#endif
+                    #if DEBUG
+                        // This doesn't seem to happen on the top level doc, and when a resource is being repeatedly loaded and fails, this would show up repeatedly and block using the page
+                        BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
+                    #endif
                     return
                 }
 
@@ -531,14 +530,14 @@ extension BraveWebView: UIWebViewDelegate {
                         self.goBack()
                         self.goForward()
                     }
-                })
+                    })
                 alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.Default) {
                     handler in
                     self.loadingUnvalidatedHTTPSPage = true;
                     if let url = NSURL(string: errorUrl) {
                         self.loadRequest(NSURLRequest(URL: url))
                     }
-                })
+                    })
 
                 #if !TEST
                     window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
@@ -546,12 +545,12 @@ extension BraveWebView: UIWebViewDelegate {
                 return
             }
         }
-        
+
         NSNotificationCenter.defaultCenter()
             .postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: self)
         if let nd = navigationDelegate {
             nd.webView?(nullWebView, didFailNavigation: nullWKNavigation,
-                withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
+                        withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
         }
         print("didFailLoadWithError: \(error)")
         progress?.didFailLoadWithError()

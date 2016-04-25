@@ -65,11 +65,11 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
 
         bookmarksButton.setImage(UIImage(named: "bookmarklist"), forState: .Normal)
-        bookmarksButton.addTarget(self, action: "showBookmarks", forControlEvents: .TouchUpInside)
+        bookmarksButton.addTarget(self, action: #selector(MainSidePanelViewController.showBookmarks), forControlEvents: .TouchUpInside)
         bookmarksButton.accessibilityLabel = NSLocalizedString("Show Bookmarks", comment: "Button to show the bookmarks list")
 
         historyButton.setImage(UIImage(named: "history"), forState: .Normal)
-        historyButton.addTarget(self, action: "showHistory", forControlEvents: .TouchUpInside)
+        historyButton.addTarget(self, action: #selector(MainSidePanelViewController.showHistory), forControlEvents: .TouchUpInside)
         historyButton.accessibilityLabel = NSLocalizedString("Show History", comment: "Button to show the history list")
 
         addBookmarkButton.addTarget(self, action: NSSelectorFromString(SEL_onClickBookmarksButton), forControlEvents: .TouchUpInside)
@@ -101,7 +101,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         if getApp().profile == nil {
             return
         }
-        
+
         let settingsTableViewController = BraveSettingsView(style: .Grouped)
         settingsTableViewController.profile = getApp().profile
 
@@ -251,13 +251,13 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         }
 
         let isFullWidth = fabs(view.frame.width - CGFloat(BraveUX.WidthOfSlideOut)) < 0.5
-        
+
         func complete() {
             if isFullWidth {
                 loc = CGFloat(-1)
                 return
             }
-            
+
             let shouldShow = view.frame.width / CGFloat(BraveUX.WidthOfSlideOut) > CGFloat(BraveUX.PanelClosingThresholdWhenDragging)
             if shouldShow {
                 showPanel(true)
@@ -266,12 +266,12 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 showPanel(false)
             }
         }
-        
+
         let isOnEdge = fabs(touchPoint.x - view.frame.width) < 10
         if !isOnEdge && loc < 0 && phase != .Began {
             return
         }
-        
+
         switch phase {
         case .Began:  // A finger touched the screen
             loc = isOnEdge ? touchPoint.x : CGFloat(-1)
@@ -281,7 +281,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 complete()
                 return
             }
-            
+
             view.snp_remakeConstraints {
                 make in
                 make.bottom.left.top.equalTo(self.view.superview!)
@@ -294,7 +294,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             break
         }
     }
-
+    
     func updateBookmarkStatus(isBookmarked: Bool) {
         addBookmarkButton.selected = isBookmarked
     }
