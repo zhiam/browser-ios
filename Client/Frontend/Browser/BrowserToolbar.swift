@@ -238,12 +238,6 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
     }
 
     func updateBookmarkStatus(isBookmarked: Bool) {
-        bookmarkButton.selected = isBookmarked
-
-        if let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController {
-            braveTopVC.updateBookmarkStatus(isBookmarked)
-        }
-
     }
 
     func updateReloadStatus(isLoading: Bool) {

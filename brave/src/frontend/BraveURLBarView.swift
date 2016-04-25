@@ -25,6 +25,18 @@ extension UILabel {
 }
 
 class ButtonWithUnderlayView : UIButton {
+    lazy var starView: UIImageView = {
+        self.setImage(UIImage(named: "listpanel")!.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+
+        let v = UIImageView()
+        v.contentMode = .Center
+        self.addSubview(v)
+        let rect = self.bounds
+        v.center = CGPointMake(rect.width / 2.0, rect.height / 2.0)
+        v.userInteractionEnabled = false
+        return v
+    }()
+
     lazy var underlay: UIView = {
         let v = UIView()
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
@@ -36,8 +48,18 @@ class ButtonWithUnderlayView : UIButton {
         }
         v.userInteractionEnabled = false
         v.hidden = true
+
         return v
     }()
+
+    func hideUnderlay(hide: Bool) {
+        underlay.hidden = hide
+        starView.hidden = !hide
+    }
+
+    func setStarImage(image: UIImage) {
+        starView.image = image
+    }
 }
 
 class BraveURLBarView : URLBarView {
@@ -380,6 +402,16 @@ class BraveURLBarView : URLBarView {
     }
 
     override func updateBookmarkStatus(isBookmarked: Bool) {
-        leftSidePanelButton.setImage(UIImage(named: isBookmarked ? "listpanel_bookmarked" : "listpanel"), forState: .Normal)
+        if let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController {
+            braveTopVC.updateBookmarkStatus(isBookmarked)
+        }
+        
+        let image: UIImage!
+        if isBookmarked {
+             image = UIImage(named: "listpanel_bookmarked_star")!.imageWithRenderingMode(.AlwaysOriginal)
+        } else {
+            image = UIImage(named: "listpanel_notbookmarked_star")!.imageWithRenderingMode(.AlwaysTemplate)
+        }
+        leftSidePanelButton.setStarImage(image)
     }
 }
