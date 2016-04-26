@@ -2551,7 +2551,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         actionSheetController.view.tag = BraveWebView.kContextMenuBlockNavigation
 
         if let url = elements.link, currentTab = tabManager.selectedTab {
-            dialogTitle = url.absoluteString
+            dialogTitle = url.absoluteString.regexReplacePattern("^mailto:", with: "")
             let isPrivate = currentTab.isPrivate
             let newTabTitle = NSLocalizedString("Open In Background", comment: "Context menu item for opening a link in a new tab")
             let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
@@ -2581,7 +2581,9 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             let copyTitle = NSLocalizedString("Copy Link", comment: "Context menu item for copying a link URL to the clipboard")
             let copyAction = UIAlertAction(title: copyTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
                 let pasteBoard = UIPasteboard.generalPasteboard()
-                pasteBoard.URL = url
+                if let dialogTitle = dialogTitle, url = NSURL(string: dialogTitle) {
+                    pasteBoard.URL = url
+                }
             }
             actionSheetController.addAction(copyAction)
 
