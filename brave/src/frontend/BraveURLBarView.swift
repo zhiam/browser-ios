@@ -358,6 +358,11 @@ class BraveURLBarView : URLBarView {
             make.trailing.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
+
+        delay(0.1) {
+            // init the bookmark button state, image overlays will position wrong if not performed after an event loop
+            self.updateBookmarkStatus(false)
+        }
     }
 
     var progressIsCompleting = false
