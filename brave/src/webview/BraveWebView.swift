@@ -412,6 +412,11 @@ extension BraveWebView: UIWebViewDelegate {
             assert(BraveWebView.webviewBuiltinUserAgent != nil)
         }
 
+        if let url = request.URL where url.scheme == "mailto" {
+            UIApplication.sharedApplication().openURL(url)
+            return false
+        }
+
         #if DEBUG
             if var printedUrl = request.URL?.absoluteString {
                 let maxLen = 100
