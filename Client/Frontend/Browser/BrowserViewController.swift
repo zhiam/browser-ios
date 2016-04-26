@@ -813,7 +813,6 @@ class BrowserViewController: UIViewController {
         // Dispatch to the main thread to update the UI
         dispatch_async(dispatch_get_main_queue()) { _ in
             self.animateBookmarkStar()
-            self.toolbar?.updateBookmarkStatus(true)
             self.urlBar.updateBookmarkStatus(true)
         }
     }
@@ -852,7 +851,6 @@ class BrowserViewController: UIViewController {
         profile.bookmarks.modelFactory >>== {
             $0.removeByURL(url).uponQueue(dispatch_get_main_queue()) { res in
                 if res.isSuccess {
-                    self.toolbar?.updateBookmarkStatus(false)
                     self.urlBar.updateBookmarkStatus(false)
                 }
             }
@@ -864,7 +862,6 @@ class BrowserViewController: UIViewController {
             if bookmark.url == urlBar.currentURL?.absoluteString {
                 if let userInfo = notification.userInfo as? Dictionary<String, Bool>{
                     if let added = userInfo["added"]{
-                        self.toolbar?.updateBookmarkStatus(added)
                         self.urlBar.updateBookmarkStatus(added)
                     }
                 }
@@ -971,7 +968,7 @@ class BrowserViewController: UIViewController {
                     return
                 }
 
-                self.navigationToolbar.updateBookmarkStatus(bookmarked)
+                self.urlBar.updateBookmarkStatus(bookmarked)
             }
         }
     }
@@ -1752,7 +1749,6 @@ extension BrowserViewController: TabManagerDelegate {
                                 return
                             }
 
-                            self.toolbar?.updateBookmarkStatus(isBookmarked)
                             self.urlBar.updateBookmarkStatus(isBookmarked)
                         }
                     }
