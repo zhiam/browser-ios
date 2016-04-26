@@ -26,14 +26,15 @@ extension UILabel {
 
 class ButtonWithUnderlayView : UIButton {
     lazy var starView: UIImageView = {
-        self.setImage(UIImage(named: "listpanel")!.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-
         let v = UIImageView()
         v.contentMode = .Center
         self.addSubview(v)
-        let rect = self.bounds
-        v.center = CGPointMake(rect.width / 2.0, rect.height / 2.0)
         v.userInteractionEnabled = false
+
+        v.snp_makeConstraints {
+            make in
+            make.center.equalTo(self.snp_center)
+        }
         return v
     }()
 
@@ -57,8 +58,12 @@ class ButtonWithUnderlayView : UIButton {
         starView.hidden = !hide
     }
 
-    func setStarImage(image: UIImage) {
-        starView.image = image
+    func setStarImageBookmarked(on: Bool) {
+        if on {
+            starView.image = UIImage(named: "listpanel_bookmarked_star")!.imageWithRenderingMode(.AlwaysOriginal)
+        } else {
+            starView.image = UIImage(named: "listpanel_notbookmarked_star")!.imageWithRenderingMode(.AlwaysTemplate)
+        }
     }
 }
 
@@ -79,10 +84,11 @@ class BraveURLBarView : URLBarView {
         super.commonInit()
 
         leftSidePanelButton.addTarget(self, action: NSSelectorFromString(SEL_onClickLeftSlideOut), forControlEvents: UIControlEvents.TouchUpInside)
-        leftSidePanelButton.setImage(UIImage(named: "listpanel"), forState: .Normal)
+        leftSidePanelButton.setImage(UIImage(named: "listpanel")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftSidePanelButton.setImage(UIImage(named: "listpanel_down")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Selected)
         leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
+        leftSidePanelButton.setStarImageBookmarked(false)
 
         braveButton.addTarget(self, action: NSSelectorFromString(SEL_onClickBraveButton) , forControlEvents: UIControlEvents.TouchUpInside)
         braveButton.setImage(UIImage(named: "bravePanelButton"), forState: .Normal)
@@ -358,11 +364,6 @@ class BraveURLBarView : URLBarView {
             make.trailing.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
-
-        delay(0.1) {
-            // init the bookmark button state, image overlays will position wrong if not performed after an event loop
-            self.updateBookmarkStatus(false)
-        }
     }
 
     var progressIsCompleting = false
@@ -410,13 +411,7 @@ class BraveURLBarView : URLBarView {
         if let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController {
             braveTopVC.updateBookmarkStatus(isBookmarked)
         }
-        
-        let image: UIImage!
-        if isBookmarked {
-             image = UIImage(named: "listpanel_bookmarked_star")!.imageWithRenderingMode(.AlwaysOriginal)
-        } else {
-            image = UIImage(named: "listpanel_notbookmarked_star")!.imageWithRenderingMode(.AlwaysTemplate)
-        }
-        leftSidePanelButton.setStarImage(image)
+
+        leftSidePanelButton.setStarImageBookmarked(isBookmarked)
     }
 }
