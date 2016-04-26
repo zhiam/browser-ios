@@ -38,6 +38,10 @@ class PicklistSettingOptionsView: UITableViewController {
         return cell
     }
 
+    override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return "Show a prompt to open your password manager when the current page has a login form."
+    }
+
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return headerTitle
     }
