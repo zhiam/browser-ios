@@ -927,18 +927,18 @@ class BrowserViewController: UIViewController {
         updateInContentHomePanel(tab.url)
         return // TODO Reader Mode hookup. Beware showToolbars is a performance killer.
 #endif
-        scrollController.showToolbars(animated: false)
-        if let url = tab.url {
-            if ReaderModeUtils.isReaderModeURL(url) {
-                showReaderModeBar(animated: false)
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BrowserViewController.SELDynamicFontChanged(_:)), name: NotificationDynamicFontChanged, object: nil)
-            } else {
-                hideReaderModeBar(animated: false)
-                NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
-            }
-
-            updateInContentHomePanel(url)
-        }
+//        scrollController.showToolbars(animated: false)
+//        if let url = tab.url {
+//            if ReaderModeUtils.isReaderModeURL(url) {
+//                showReaderModeBar(animated: false)
+//                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BrowserViewController.SELDynamicFontChanged(_:)), name: NotificationDynamicFontChanged, object: nil)
+//            } else {
+//                hideReaderModeBar(animated: false)
+//                NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
+//            }
+//
+//            updateInContentHomePanel(url)
+//        }
     }
 
     private func isWhitelistedUrl(url: NSURL) -> Bool {
@@ -1985,7 +1985,7 @@ extension BrowserViewController: WKNavigationDelegate {
                 log.warning("Implicitly unwrapped optional navigation was nil.")
             }
 
-            postLocationChangeNotificationForTab(tab, navigation: navigation)
+            updateProfileForLocationChange(tab, navigation: navigation)
 
             // Fire the readability check. This is here and not in the pageShow event handler in ReaderMode.js anymore
             // because that event wil not always fire due to unreliable page caching. This will either let us know that
@@ -2041,16 +2041,17 @@ extension BrowserViewController: WKNavigationDelegate {
         self.openInHelper = nil
     }
 
-    private func postLocationChangeNotificationForTab(tab: Browser, navigation: WKNavigation?) {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        var info = [NSObject: AnyObject]()
+    private func updateProfileForLocationChange(tab: Browser, navigation: WKNavigation?) {
+        var info = [String : AnyObject]()
         info["url"] = tab.displayURL
         info["title"] = tab.title
         if let visitType = self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
             info["visitType"] = visitType
         }
         info["isPrivate"] = tab.isPrivate
-        notificationCenter.postNotificationName(NotificationOnLocationChange, object: self, userInfo: info)
+        if !(tab.title?.isEmpty ?? true) {
+            (profile as? BrowserProfile)?.onLocationChange(info)
+        }
     }
 }
 

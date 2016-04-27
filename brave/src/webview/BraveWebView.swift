@@ -45,6 +45,7 @@ class BraveWebView: UIWebView {
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
 
+    var prevDocumentLocation = ""
     var estimatedProgress: Double = 0
     var title: String = "" {
         didSet {
@@ -54,7 +55,15 @@ class BraveWebView: UIWebView {
         }
     }
 
-    var URL: NSURL?
+    var URL: NSURL? {
+        didSet {
+            if URL?.absoluteString.endsWith("?") ?? false {
+                if let noQuery = URL?.absoluteString.componentsSeparatedByString("?")[0] {
+                    URL = NSURL(string: noQuery)
+                }
+            }
+        }
+    }
 
     var uniqueId = -1
 
@@ -121,7 +130,7 @@ class BraveWebView: UIWebView {
     // On page load, the contentSize of the webview is updated (**). If the webview has not been notified of a page change (i.e. shouldStartLoadWithRequest was never called) then 'loading' will be false, and we should check the page location using JS.
     // (** Not always updated, particularly on back/forward. For instance load duckduckgo.com, then google.com, and go back. No content size change detected.)
     func contentSizeChangeDetected() {
-        if triggeredLocationCheckTimer.valid || loading {
+        if triggeredLocationCheckTimer.valid {
             return
         }
 
@@ -130,24 +139,37 @@ class BraveWebView: UIWebView {
     }
 
     @objc func timeoutCheckLocation() {
+        assert(NSThread.isMainThread())
+
+        func performCompletionSteps() {
+            title = stringByEvaluatingJavaScriptFromString("document.title") ?? ""
+            internalIsLoadingEndedFlag = false // need to set this to bypass loadingCompleted() precondition
+            loadingCompleted()
+            kvoBroadcast()
+        }
+
         if loading {
+            let state = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase()")
+            if state == "complete" {
+                print("Page complete detected by content size change triggered timer")
+                performCompletionSteps()
+            }
             return
         }
+
         // Pushstate navigation can cause this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
         // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
         guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
         if location == currentUrl || location.contains("about:") || location.contains("//localhost") || URL?.host != NSURL(string: location)?.host {
             return
         }
+
+        print("Page change detected by content size change triggered timer: \(location)")
+
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
         URL = NSURL(string: location)
-        title = stringByEvaluatingJavaScriptFromString("document.title") ?? ""
-        internalIsLoadingEndedFlag = false // need to set this to bypass loadingCompleted() precondition
-        loadingCompleted()
-        kvoBroadcast()
-        #if DEBUG
-            print("Page change detected by content size change triggered timer: \(location)")
-        #endif
+
+        performCompletionSteps()
     }
 
     override init(frame: CGRect) {
@@ -242,21 +264,33 @@ class BraveWebView: UIWebView {
         }
         internalIsLoadingEndedFlag = true
 
-        if let nd = navigationDelegate {
-            BraveWebView.containerWebViewForCallbacks.legacyWebView = self
-            nd.webView?(BraveWebView.containerWebViewForCallbacks, didFinishNavigation: nullWKNavigation)
+        // There is a difficult-to-repro UIWebView bug where loaded page isn't scrollable
+        // I *think* it is correlated with JS execution immediately at page load completion
+        // which borks the page render step. I can't repro the bug if I delay JS injection.
+        delay(0.1) {
+            [weak self] in
+            guard let me = self else { return }
+            guard let docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href") else { return }
+            if docLoc != me.prevDocumentLocation {
+                if let nd = me.navigationDelegate {
+                    BraveWebView.containerWebViewForCallbacks.legacyWebView = me
+                    nd.webView?(BraveWebView.containerWebViewForCallbacks, didFinishNavigation: nullWKNavigation)
+                }
+            }
+            me.prevDocumentLocation = docLoc
+
+            me.configuration.userContentController.injectJsIntoPage()
+            NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: me)
+            LegacyUserContentController.injectJsIntoAllFrames(me, script: "document.body.style.webkitTouchCallout='none'")
+
+            print("Getting favicons")
+            me.stringByEvaluatingJavaScriptFromString("__firefox__.favicons.getFavicons()")
+
+            #if !TEST
+                me.replaceAdImages(me)
+            #endif
+
         }
-
-        configuration.userContentController.injectJsIntoPage()
-        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: self)
-        LegacyUserContentController.injectJsIntoAllFrames(self, script: "document.body.style.webkitTouchCallout='none'")
-
-        print("Getting favicons")
-        stringByEvaluatingJavaScriptFromString("__firefox__.favicons.getFavicons()")
-
-        #if !TEST
-            replaceAdImages(self)
-        #endif
     }
 
     var lastBroadcastedKvoUrl: String = ""
@@ -499,15 +533,17 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webViewDidFinishLoad(webView: UIWebView) {
         assert(NSThread.isMainThread())
-        backForwardList.update()
 
-        let readyState = stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
+        guard let pageInfo = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase() + '|' + document.title") else {
+            return
+        }
+        let pageInfoArray = pageInfo.componentsSeparatedByString("|")
 
-        //print("readyState:\(readyState)")
-
-        title = webView.stringByEvaluatingJavaScriptFromString("document.title") ?? ""
+        let readyState = pageInfoArray.first // ;print("readyState:\(readyState)")
+        title = pageInfoArray.last ?? ""
         progress?.webViewDidFinishLoad(documentReadyState: readyState)
 
+        backForwardList.update()
         kvoBroadcast()
     }
 
