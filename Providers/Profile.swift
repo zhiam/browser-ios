@@ -206,7 +206,6 @@ public class BrowserProfile: Profile {
         }
 
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: #selector(BrowserProfile.onLocationChange(_:)), name: NotificationOnLocationChange, object: nil)
         notificationCenter.addObserver(self, selector: #selector(BrowserProfile.onProfileDidFinishSyncing(_:)), name: NotificationProfileDidFinishSyncing, object: nil)
         notificationCenter.addObserver(self, selector: #selector(BrowserProfile.onPrivateDataClearedHistory(_:)), name: NotificationPrivateDataClearedHistory, object: nil)
 
@@ -249,14 +248,13 @@ public class BrowserProfile: Profile {
         }
     }
 
-    @objc
-    func onLocationChange(notification: NSNotification) {
-        if let v = notification.userInfo!["visitType"] as? Int,
+    func onLocationChange(info: [String : AnyObject]) {
+        if let v = info["visitType"] as? Int,
             let visitType = VisitType(rawValue: v),
-            let url = notification.userInfo!["url"] as? NSURL where !isIgnoredURL(url),
-            let title = notification.userInfo!["title"] as? NSString {
+            let url = info["url"] as? NSURL where !isIgnoredURL(url),
+            let title = info["title"] as? NSString {
             // Only record local vists if the change notification originated from a non-private tab
-            if !(notification.userInfo!["isPrivate"] as? Bool ?? false) {
+            if !(info["isPrivate"] as? Bool ?? false) {
                 // We don't record a visit if no type was specified -- that means "ignore me".
                 let site = Site(url: url.absoluteString, title: title as String)
                 let visit = SiteVisit(site: site, date: NSDate.nowMicroseconds(), type: visitType)
@@ -284,7 +282,6 @@ public class BrowserProfile: Profile {
     deinit {
         log.debug("Deiniting profile \(self.localName).")
         self.syncManager.endTimedSyncs()
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationOnLocationChange, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationProfileDidFinishSyncing, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationPrivateDataClearedHistory, object: nil)
     }

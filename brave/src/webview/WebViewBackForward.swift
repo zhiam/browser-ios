@@ -4,9 +4,23 @@ import Foundation
 
 class LegacyBackForwardListItem {
 
-    var URL: NSURL = NSURL()
+    var URL: NSURL = NSURL() {
+        didSet {
+            checkForLocalWebserver()
+        }
+    }
     var initialURL: NSURL = NSURL()
-    var title:String = ""
+    var title:String = "" {
+        didSet {
+            checkForLocalWebserver()
+        }
+    }
+
+    private func checkForLocalWebserver()  {
+        if AboutUtils.isAboutURL(URL) && !title.isEmpty {
+            title = ""
+        }
+    }
 
     init(url: NSURL) {
         URL = url

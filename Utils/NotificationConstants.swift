@@ -9,8 +9,5 @@ public let NotificationFirefoxAccountChanged = "FirefoxAccountChangedNotificatio
 
 public let NotificationPrivateDataClearedHistory = "PrivateDataClearedHistoryNotification"
 
-// Fired when the user finishes navigating to a page and the location has changed
-public let NotificationOnLocationChange = "OnLocationChange"
-
 // Fired when the login synchronizer has finished applying remote changes
 public let NotificationDataRemoteLoginChangesWereApplied = "NotificationDataRemoteLoginChangesWereApplied"

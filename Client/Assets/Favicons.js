@@ -22,20 +22,16 @@ window.__firefox__.favicons = function() {
   function getAll() {
     var favicons = {};
     favicons['documentLocation'] = document.location.href;
+    favicons[document.location.origin + '/favicon.ico'] = '' + GUESS;
 
     for (var selector in selectors) {
       var icons = document.head.querySelectorAll(selector);
       for (var i = 0; i < icons.length; i++) {
         var href = icons[i].href;
-        favicons[href] = '' +selectors[selector];
+        favicons[href] = '' + selectors[selector];
       }
     }
     
-    // If we didn't find anything in the page, look to see if a favicon.ico file exists for the domain
-    if (Object.keys(favicons).length === 0) {
-      var href = document.location.origin + "/favicon.ico";
-      favicons[href] = '' + GUESS;
-    }
     return favicons;
   }
   
