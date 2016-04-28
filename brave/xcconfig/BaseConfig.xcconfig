@@ -11,7 +11,7 @@ MOZ_APP_ID = braveios@brave.com
 // App Version
 MOZ_VERSION = 1.2.2
 MOZ_BUILD_ID = $(GENERATED_BUILD_ID)
-CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements
+//CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements
 
 FRAMEWORK_SEARCH_PATHS = $(PROJECT_DIR) "$(PROJECT_DIR)/Carthage/Build/iOS"
 
