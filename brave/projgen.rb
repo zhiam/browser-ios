@@ -89,11 +89,11 @@ Dir.chdir('..')
 ###################################
 
 brave = project.new_group('brave')
-## entitlements = brave.new_file('brave/Brave.entitlements')
+entitlements = brave.new_file('brave/Brave.entitlements')
 brave.new_file('brave/BraveInfo.plist')
-## $client_resources.push(entitlements)
+$client_resources.push(entitlements)
 
-## $target_hash['BraveShareTo']['target'].add_resources([entitlements])
+$target_hash['BraveShareTo']['target'].add_resources([entitlements])
 
 brave = brave.new_group('src')
 walk(project, '.', './brave/src', 'Client')
