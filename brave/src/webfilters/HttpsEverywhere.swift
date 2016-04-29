@@ -66,7 +66,7 @@ class HttpsEverywhere {
 
         func urlWithTrailingSlash(url: NSURL) -> String {
             let s = url.absoluteString
-            if (!s.endsWith("/") && String(url.path).isEmpty) {
+            if !s.endsWith("/") && !String(url.path).isEmpty {
                 return s + "/"
             }
             return s
@@ -107,7 +107,7 @@ class HttpsEverywhere {
                     let regex = try NSRegularExpression(pattern: from, options: [])
                     let newUrl = regex.stringByReplacingMatchesInString(urlString, options: [], range: NSMakeRange(0, urlString.characters.count), withTemplate: to)
 
-                    if newUrl != url {
+                    if !newUrl.startsWith(url.absoluteString) {
                         return NSURL(string: newUrl)
                     }
                 }
@@ -200,7 +200,7 @@ class HttpsEverywhere {
                     return nil
                 }
             }
-
+            
             return newUrl
         }
 
@@ -236,8 +236,8 @@ extension HttpsEverywhere {
                     }
                 }
 
-                let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d")!)
-                if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d") {
+                let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d/")!)
+                if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d/") {
                     BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
                 }
             }
