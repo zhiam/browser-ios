@@ -23,6 +23,11 @@ class PicklistSettingOptionsView: UITableViewController {
         super.init(style: style)
     }
 
+    // Here due to 8.x bug: https://openradar.appspot.com/23709930
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
