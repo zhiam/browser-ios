@@ -18,8 +18,8 @@ class WebServer {
         return "http://localhost:\(server.port)"
     }
 
-    static var port = 6571
-    static let kMaxPortNum = 7000
+    static var port = 5309
+    static let kMaxPortNum = 5400
 
     func start() throws -> Bool{
         if !server.running {
