@@ -64,6 +64,8 @@ class HttpsEverywhere {
         let contents = Expression<String>("contents")
         let id = Expression<Int>("id")
 
+        let query = table.select(contents).filter(ids.contains(id))
+
         func urlWithTrailingSlash(url: NSURL) -> String {
             let s = url.absoluteString
             if !s.endsWith("/") && !String(url.path).isEmpty {
@@ -72,9 +74,11 @@ class HttpsEverywhere {
             return s
         }
 
-        let urlString = urlWithTrailingSlash(url)
-
-        let query = table.select(contents).filter(ids.contains(id))
+        // HTTPSE ruleset expects trailing slash in certain cases, however NSURL makes no guarantee about 'canonicalizing' URLs to a particular form. We could either modify the regex slightly or just check against an input URL with a trailing slash
+        // Using latter method as matter of preference
+        let urlWithSlash = urlWithTrailingSlash(url)
+        let urlCandidates = urlWithSlash != url.absoluteString ?
+        [url.absoluteString, urlWithSlash] : [url.absoluteString]
 
         for row in db.prepare(query) {
             guard let data = row.get(contents).utf8EncodedData else { continue }
@@ -96,19 +100,24 @@ class HttpsEverywhere {
 
                 if let exclusion = ruleset["exclusion"] as? String {
                     let regex = try NSRegularExpression(pattern: exclusion, options: [])
-                    let result = regex.firstMatchInString(urlString, options: [], range: NSMakeRange(0, urlString.characters.count))
-                    if let result = result where result.range.location != NSNotFound {
-                        return nil
+                    for item in urlCandidates {
+                        let result = regex.firstMatchInString(item, options: [], range: NSMakeRange(0, item.characters.count))
+                        if let result = result where result.range.location != NSNotFound {
+                            return nil
+                        }
                     }
                 }
 
                 for rule in rules {
                     guard let props = rule["$"] as? NSDictionary, from = props["from"] as? String, to = props["to"] as? String else { return nil }
                     let regex = try NSRegularExpression(pattern: from, options: [])
-                    let newUrl = regex.stringByReplacingMatchesInString(urlString, options: [], range: NSMakeRange(0, urlString.characters.count), withTemplate: to)
 
-                    if !newUrl.startsWith(url.absoluteString) {
-                        return NSURL(string: newUrl)
+                    for item in urlCandidates {
+                        let newUrl = regex.stringByReplacingMatchesInString(item, options: [], range: NSMakeRange(0, item.characters.count), withTemplate: to)
+
+                        if !newUrl.startsWith(url.absoluteString) {
+                            return NSURL(string: newUrl)
+                        }
                     }
                 }
             } catch {
