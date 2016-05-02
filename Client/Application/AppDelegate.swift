@@ -317,28 +317,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    var closeDatabaseTimer:NSTimer = NSTimer()
+
+    func shutdownDB() {
+        ensureMainThread {
+            print("Close database")
+            self.profile?.shutdown()
+        }
+    }
+
     func applicationDidEnterBackground(application: UIApplication) {
-        self.profile?.syncManager.applicationDidEnterBackground()
-
-        var taskId: UIBackgroundTaskIdentifier = 0
-        taskId = application.beginBackgroundTaskWithExpirationHandler { _ in
-            log.warning("Running out of background time, but we have a profile shutdown pending.")
-            self.profile?.shutdown()
-            application.endBackgroundTask(taskId)
-        }
-
-        let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
-        self.profile?.syncManager.syncEverything().uponQueue(backgroundQueue) { _ in
-            self.profile?.shutdown()
-            application.endBackgroundTask(taskId)
-        }
-
-        // Workaround for crashing in the background when <select> popovers are visible (rdar://24571325).
-        let jsBlurSelect = "if (document.activeElement && document.activeElement.tagName === 'SELECT') { document.activeElement.blur(); }"
-        tabManager.selectedTab?.webView?.evaluateJavaScript(jsBlurSelect, completionHandler: nil)
+        closeDatabaseTimer = NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(shutdownDB), userInfo: nil, repeats: false)
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
+        closeDatabaseTimer.invalidate()
+
         // The reason we need to call this method here instead of `applicationDidBecomeActive`
         // is that this method is only invoked whenever the application is entering the foreground where as 
         // `applicationDidBecomeActive` will get called whenever the Touch ID authentication overlay disappears.
