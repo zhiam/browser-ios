@@ -327,6 +327,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
+        // 5 seconds to complete work. Give the app 4 seconds before closing the DB. Closing the DB just
+        // dereferences db handle, if no operations are active, the db is closed.
+        // This approach doesn't scale: as more operations are added upon app backgrounding then a proper BG queue should be setup (example: fx sync is indeterminate time)
+        // This simple approach will provide some info as to whether the incidence of #212 background crash decreases
         closeDatabaseTimer = NSTimer.scheduledTimerWithTimeInterval(4.0, target: self, selector: #selector(shutdownDB), userInfo: nil, repeats: false)
     }
 
