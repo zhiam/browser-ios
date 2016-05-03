@@ -35,7 +35,7 @@ build Brave scheme
 
 After a git pull (i.e. updating from the remote) run
 
-``` ./brave-proj.py ```
+``` ./projgen.rb ```
 
 The Xcode project is generated, so local changes won't persist. And if files are added/removed after updating, your project won't be in sync unless the above command is run. 
 
