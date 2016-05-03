@@ -9,7 +9,7 @@ struct IntroViewControllerUX {
     static let Width = 375
     static let Height = 667
 
-    static let CardSlides = ["page1", "page2", "page3", "page4", "page5"]
+    static let CardSlides = ["page1", "page2", "page3", "page4"]
     static let NumberOfCards = CardSlides.count
 
     static let PagerCenterOffsetFromScrollViewBottom = 20
@@ -32,9 +32,6 @@ struct IntroViewControllerUX {
 
     static let CardTitlePage4 = NSLocalizedString("In case you hit a speed bump", tableName: "Intro", comment: "")
     static let CardTextPage4 = NSLocalizedString("Brave makes it easy to temporarily disable ad blocking and privacy features.\nTap the Brave button to toggle shields up or down.", tableName: "Intro", comment: "")
-
-    static let CardTitlePage5 = NSLocalizedString("Ready?", tableName: "Intro", comment: "")
-    static let CardTextPage5 = NSLocalizedString("", tableName: "Intro", comment: "")
 
     static let CardTextSyncOffsetFromCenter = 25
     static let Card3ButtonOffsetFromCenter = -10
@@ -126,15 +123,11 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
 
         slideContainer = UIView()
         slideContainer.backgroundColor = bgColors[0]
-        var imageView: UIImageView? = nil
         for i in 0..<IntroViewControllerUX.NumberOfCards {
-            imageView = UIImageView(frame: CGRect(x: CGFloat(i)*scaledWidthOfSlide, y: 0, width: scaledWidthOfSlide, height: scaledHeightOfSlide))
-            imageView?.image = slides[i]
-            if let imageView = imageView {
-                slideContainer.addSubview(imageView)
-            }
+            var imageView = UIImageView(frame: CGRect(x: CGFloat(i)*scaledWidthOfSlide, y: 0, width: scaledWidthOfSlide, height: scaledHeightOfSlide))
+            imageView.image = slides[i]
+            slideContainer.addSubview(imageView)
         }
-        imageView?.alpha = 0.0
 
         scrollView.addSubview(slideContainer)
         scrollView.snp_makeConstraints { (make) -> Void in
@@ -166,7 +159,6 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         addCard(IntroViewControllerUX.CardTextPage2, title: IntroViewControllerUX.CardTitlePage2)
         addCard(IntroViewControllerUX.CardTextPage3, title: IntroViewControllerUX.CardTitlePage3)
         addCard(IntroViewControllerUX.CardTextPage4, title: IntroViewControllerUX.CardTitlePage4)
-        addCard(IntroViewControllerUX.CardTextPage5, title: IntroViewControllerUX.CardTitlePage5)
 
         titleLabels.last?.textAlignment = .Center
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
@@ -305,7 +297,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-    var lionHead: UIImageView?
+
     private func setActiveIntroView(newIntroView: UIView, forPage page: Int) {
         if introView != newIntroView {
             UIView.animateWithDuration(IntroViewControllerUX.FadeDuration, animations: { () -> Void in
@@ -313,60 +305,11 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
                 self.introView = newIntroView
                 newIntroView.alpha = 1.0
             }, completion: { _ in
-                        })
+            })
         }
 
         if page < bgColors.count {
             slideContainer.backgroundColor = bgColors[page]
-        }
-
-        if page == bgColors.count - 1 {
-            startBrowsingButton.contentHorizontalAlignment = .Center
-            startBrowsingButton.contentVerticalAlignment = .Center
-            startBrowsingButton.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
-
-            if lionHead == nil {
-                lionHead = UIImageView(image: UIImage(named: "lionhead"))
-            }
-            self.view.addSubview(lionHead!)
-            lionHead!.snp_remakeConstraints {
-                make in
-                make.centerX.equalTo(self.view)
-                make.centerY.equalTo(introView!.snp_top)
-            }
-//            delay(0) {
-//                UIView.animateWithDuration(0.2) {
-//                    if let v = self.slideContainer.subviews.last {
-//                        v.alpha = 10
-//                        v.transform = CGAffineTransformMakeTranslation(0, 40)
-//                    }
-//                }
-//            }
-            guard let arrow = arrow else { return }
-            pageControl.superview?.addSubview(arrow)
-            arrow.alpha = 0
-            arrow.snp_remakeConstraints {
-                make in
-                make.bottom.equalTo(pageControl).inset(15)
-                make.centerX.equalTo(arrow.superview!)
-            }
-
-            UIView.animateWithDuration(0.2) {
-                self.arrow?.alpha = 1.0
-                self.pageControl.alpha = 0
-            }
-        } else {
-            if lionHead?.superview != nil {
-                lionHead?.removeFromSuperview()
-            }
-
-            setupTextOnButton()
-            if let v = self.slideContainer.subviews.last {
-                v.alpha = 0
-                v.transform = CGAffineTransformMakeTranslation(0, 0)
-            }
-            arrow?.alpha = 0
-            pageControl.alpha = 1
         }
     }
 
@@ -411,9 +354,8 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
             let titleLabel = InsetLabel()
             if (title == IntroViewControllerUX.CardTitlePage1) {
                 titleLabel.textColor = BraveUX.BraveButtonMessageInUrlBarColor
-            } else if (title == IntroViewControllerUX.CardTitlePage5) {
-                titleLabel.transform = CGAffineTransformConcat(CGAffineTransformMakeScale(1.2, 1.2), CGAffineTransformMakeTranslation(30, 20))
             }
+
             titleLabel.numberOfLines = 0
             titleLabel.textAlignment = NSTextAlignment.Left
             titleLabel.lineBreakMode = .ByWordWrapping
