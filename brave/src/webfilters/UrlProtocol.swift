@@ -114,7 +114,9 @@ class URLProtocol: NSURLProtocol {
             }
         } else if SafeBrowsing.singleton.shouldBlock(request) {
             returnEmptyResponse()
-            BraveApp.getCurrentWebView()?.safeBrowsingCheckIsEmptyPage(request.URL)
+            ensureMainThread {
+                BraveApp.getCurrentWebView()?.safeBrowsingCheckIsEmptyPage(self.request.URL)
+            }
         } else {
             // Only other possibility of why we are here is ABP, SafeBrowsing, or TP is blocking
             self.connection = NSURLConnection(request: newRequest, delegate: self)
