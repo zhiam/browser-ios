@@ -41,7 +41,7 @@ The Xcode project is generated, so local changes won't persist. And if files are
 
 ## Crash reporting using Fabric
 
-To enable, add ~/.brave-fabric-keys with 2 lines, the API key and build secret. Re-run ./brave-proj.py and the project will be generated to use Fabric and Crashlytics frameworks.
+To enable, add ~/.brave-fabric-keys with 2 lines, the API key and build secret. Re-run setup.sh and the project will be generated to use Fabric and Crashlytics frameworks.
 
 ## Tests
 
