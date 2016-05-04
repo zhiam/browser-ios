@@ -7,6 +7,8 @@
 		<string>group.com.brave.ios.browser</string>
 	</array>
 	<key>keychain-access-groups</key>
-	<array/>
+	<array>
+		<string>KL8N8XSYF4.com.brave.ios.browser</string>
+	</array>
 </dict>
 </plist>
