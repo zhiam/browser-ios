@@ -6,6 +6,8 @@
 import Shared
 import OnePasswordExtension
 
+var debugWebViewScrollingBug = ""
+
 class BraveSettingsView : AppSettingsTableViewController {
 
     static var cachedIs3rdPartyPasswordManagerInstalled = false
@@ -55,6 +57,13 @@ class BraveSettingsView : AppSettingsTableViewController {
     }
 
     override func generateSettings() -> [SettingSection] {
+        if let wv = BraveApp.getCurrentWebView() {
+            let sc = wv.scrollView
+            let h = wv.stringByEvaluatingJavaScriptFromString("document.height + '|' + document.documentElement.scrollHeight") ?? "nil"
+
+            debugWebViewScrollingBug = "WebView height: \(wv.frame.size.height), ScrollView height: \(sc.contentSize.height), JS height: \(h)"
+        }
+
         BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -255,6 +264,22 @@ class BraveSupportLinkSetting: Setting{
     override func onClick(navigationController: UINavigationController?) {
         UIApplication.sharedApplication().openURL(NSURL(string: "mailto:support+ios@brave.com")!)
     }
+
+    override func onConfigureCell(cell: UITableViewCell) {
+        super.onConfigureCell(cell)
+        let g = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
+        cell.addGestureRecognizer(g)
+    }
+
+    @objc func longPress(g: UILongPressGestureRecognizer) {
+        if g.state != .Began {
+            return
+        }
+        // Use this to experiment with fixing bug where page is partially rendered
+        UIPasteboard.generalPasteboard().string = debugWebViewScrollingBug
+        BraveApp.showErrorAlert(title: "Copied, now tap again & paste into mail", error: debugWebViewScrollingBug)
+    }
+
 }
 
 class BravePrivacyPolicySetting: Setting {

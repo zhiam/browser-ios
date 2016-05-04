@@ -72,9 +72,9 @@ class BraveTopViewController : UIViewController {
 
         setupBrowserConstraints(useTopLayoutGuide: true)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: NSSelectorFromString(SEL_onClickLeftSlideOut), name: kNotificationLeftSlideOutClicked, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onClickLeftSlideOut), name: kNotificationLeftSlideOutClicked, object: nil)
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: NSSelectorFromString(SEL_onClickBraveButton), name: kNotificationBraveButtonClicked, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onClickBraveButton), name: kNotificationBraveButtonClicked, object: nil)
 
         clickDetectionView.addTarget(self, action: #selector(BraveTopViewController.dismissAllSidePanels(_:)), forControlEvents: UIControlEvents.TouchUpInside)
 
@@ -144,14 +144,12 @@ class BraveTopViewController : UIViewController {
         return leftPanelShowing()
     }
 
-    let SEL_onClickLeftSlideOut = "onClickLeftSlideOut:"
     func onClickLeftSlideOut(notification: NSNotification) {
         leftSidePanelButtonAndUnderlay = notification.object as? ButtonWithUnderlayView
         mainSidePanel.setupUI()
         togglePanel(mainSidePanel)
     }
 
-    let SEL_onClickBraveButton = "onClickBraveButton:"
     func onClickBraveButton(notification: NSNotification) {
         guard let button = notification.object as? UIButton else { return }
 
