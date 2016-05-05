@@ -118,14 +118,15 @@ class URLProtocol: NSURLProtocol {
             ensureMainThread {
                 BraveApp.getCurrentWebView()?.safeBrowsingCheckIsEmptyPage(self.request.URL)
             }
-        } else {
-            // Only other possibility of why we are here is ABP or TP is blocking
+        } else if TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request) {
             if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
                 // sites such as macworld.com need this, or links are not clickable
                 returnBlankPixel()
             } else {
                 returnEmptyResponse()
             }
+        } else if disableJavascript {
+            self.connection = NSURLConnection(request: newRequest, delegate: self)
         }
     }
 
