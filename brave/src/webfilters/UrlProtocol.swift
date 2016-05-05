@@ -6,11 +6,11 @@ import CoreData
 var requestCount = 0
 let markerRequestHandled = "request-already-handled"
 
+let disableJavascript = false // For development we can turn this on, until there is a class to manage it
+
 class URLProtocol: NSURLProtocol {
 
     var connection: NSURLConnection!
-    var mutableData: NSMutableData!
-    var response: NSURLResponse!
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         if (BraveApp.isBraveButtonBypassingFilters) {
@@ -28,6 +28,7 @@ class URLProtocol: NSURLProtocol {
 
         guard let url = request.URL else { return false }
         let useCustomUrlProtocol =
+            disableJavascript ||
             TrackingProtection.singleton.shouldBlock(request) ||
                 AdBlocker.singleton.shouldBlock(request) ||
                 SafeBrowsing.singleton.shouldBlock(request) ||
@@ -138,9 +139,13 @@ class URLProtocol: NSURLProtocol {
 
     // MARK: NSURLConnection
     func connection(connection: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
-        self.client!.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
-        self.response = response
-        self.mutableData = NSMutableData()
+        var returnedResponse: NSURLResponse = response
+        if let response = response as? NSHTTPURLResponse, url = response.URL where disableJavascript {
+            var fields = response.allHeaderFields as? [String : String] ?? [String : String]()
+            fields["X-WebKit-CSP"] = "script-src none"
+            returnedResponse = NSHTTPURLResponse(URL: url, statusCode: response.statusCode, HTTPVersion: "HTTP/1.1" /*not used*/, headerFields: fields)!
+        }
+        self.client!.URLProtocol(self, didReceiveResponse: returnedResponse, cacheStoragePolicy: .Allowed)
     }
 
     func connection(connection: NSURLConnection, willSendRequest request: NSURLRequest, redirectResponse response: NSURLResponse?) -> NSURLRequest?
@@ -153,13 +158,13 @@ class URLProtocol: NSURLProtocol {
 
     func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
         self.client!.URLProtocol(self, didLoadData: data)
-        self.mutableData.appendData(data)
+        //self.mutableData.appendData(data)
     }
-    
+
     func connectionDidFinishLoading(connection: NSURLConnection!) {
         self.client!.URLProtocolDidFinishLoading(self)
     }
-    
+
     func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
         self.client!.URLProtocol(self, didFailWithError: error)
         print("* Error url: \(self.request.URLString)\n* Details: \(error)")
