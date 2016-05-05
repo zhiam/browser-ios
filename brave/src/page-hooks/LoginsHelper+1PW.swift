@@ -58,7 +58,9 @@ extension LoginsHelper {
                         safeSelf.browser?.removeSnackbar(snackBar)
                     }
 
-                    safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with your password manager"), img: UIImage(named: "key"), buttons: [])
+                    let managerName = ThirdPartyPasswordManagerSetting.currentSetting?.displayName ?? "your password manager"
+
+                    safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with \(managerName)"), img: UIImage(named: "key"), buttons: [])
                     safeSelf.snackBar!.tag = tagFor1PwSnackbar
                     let button = UIButton()
                     button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -113,7 +115,12 @@ extension LoginsHelper {
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
         if !isIPad {
-            browser?.removeSnackbar(snackBar!)
+            UIView.animateWithDuration(0.2) {
+                // Hiding shows user feedback to the tap, don't remove, as snackbar should not show again until page change
+                // We don't hide on iPad, because if the autodetection of the cell to click fails, a popup is shown for the
+                // user to select their PW manager, and iPad needs a UIView to anchor the popup bubble
+                self.snackBar?.alpha = 0
+            }
             UIAlertController.hackyHideOn(true)
         }
 
@@ -126,6 +133,7 @@ extension LoginsHelper {
         OnePasswordExtension.sharedExtension().fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
             if isIPad {
                 iPadOffscreenView.removeFromSuperview()
+                self.browser?.removeSnackbar(self.snackBar!)
             } else {
                 UIAlertController.hackyHideOn(false)
             }
@@ -133,7 +141,6 @@ extension LoginsHelper {
             if success == false {
                 print("Failed to fill into webview: <\(error)>")
             }
-            self.browser?.removeSnackbar(self.snackBar!)
         }
 
         var found = false
