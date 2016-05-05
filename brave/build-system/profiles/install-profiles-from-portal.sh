@@ -11,5 +11,5 @@ rm adhoc/*.mobileprovision*
 [[ -e ~/.brave-apple-login ]] && source ~/.brave-apple-login
 
 sigh download_all -u dev@brave.com -a com.brave.ios.browser
-
+sigh manage -p "XC.*" -- force # remove XCode managed profiles
 rm -f *.mobileprovision
