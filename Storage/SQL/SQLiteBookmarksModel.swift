@@ -826,14 +826,15 @@ public class MergedSQLiteBookmarks: BookmarksModelFactorySource {
     // Note that we check *every time* -- we don't want to get stuck in a dead
     // end when you might sync soon.
     public var modelFactory: Deferred<Maybe<BookmarksModelFactory>> {
-        return self.local.hasOnlyUnmergedRemoteBookmarks() >>== { yes in
-            if yes {
-                log.debug("Only unmerged remote bookmarks; using fallback factory.")
-                return deferMaybe(UnsyncedBookmarksFallbackModelFactory(bookmarks: self.local))
-            }
-            log.debug("Using local+mirror bookmark factory.")
-            return self.local.modelFactory
-        }
+        return self.local.modelFactory
+//      Firefox:
+//        return self.local.hasOnlyUnmergedRemoteBookmarks() >>== { yes in
+//            if yes {
+//                log.debug("Only unmerged remote bookmarks; using fallback factory.")
+//                return deferMaybe(UnsyncedBookmarksFallbackModelFactory(bookmarks: self.local))
+//            }
+//            log.debug("Using local+mirror bookmark factory.")
+//        }
     }
 
     public init(db: BrowserDB) {

@@ -83,14 +83,14 @@ class BraveURLBarView : URLBarView {
         addSubview(braveButton)
         super.commonInit()
 
-        leftSidePanelButton.addTarget(self, action: NSSelectorFromString(SEL_onClickLeftSlideOut), forControlEvents: UIControlEvents.TouchUpInside)
+        leftSidePanelButton.addTarget(self, action: #selector(onClickLeftSlideOut), forControlEvents: UIControlEvents.TouchUpInside)
         leftSidePanelButton.setImage(UIImage(named: "listpanel")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftSidePanelButton.setImage(UIImage(named: "listpanel_down")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Selected)
         leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
         leftSidePanelButton.setStarImageBookmarked(false)
 
-        braveButton.addTarget(self, action: NSSelectorFromString(SEL_onClickBraveButton) , forControlEvents: UIControlEvents.TouchUpInside)
+        braveButton.addTarget(self, action: #selector(onClickBraveButton) , forControlEvents: UIControlEvents.TouchUpInside)
         braveButton.setImage(UIImage(named: "bravePanelButton"), forState: .Normal)
         braveButton.setImage(UIImage(named: "bravePanelButtonOff"), forState: .Selected)
         braveButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
@@ -144,14 +144,12 @@ class BraveURLBarView : URLBarView {
         self.superview?.alpha = alpha
     }
 
-    let SEL_onClickLeftSlideOut = "onClickLeftSlideOut"
-    func onClickLeftSlideOut() {
+    @objc func onClickLeftSlideOut() {
         leftSidePanelButton.selected = !leftSidePanelButton.selected
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationLeftSlideOutClicked, object: leftSidePanelButton)
     }
 
-    let SEL_onClickBraveButton = "onClickBraveButton"
-    func onClickBraveButton() {
+    @objc func onClickBraveButton() {
         if BraveApp.isAllBraveShieldPrefsOff() {
             return
         }
