@@ -10,16 +10,13 @@ fi
 
 sed -e "s/BUNDLE_ID_PLACEHOLDER/$app_id/" Brave.entitlements.template > Brave.entitlements
 
-# Replace the removed xcconfigs with ours
-(cd ../Client && rm -rf Configuration &&  ln -sfn ../brave/xcconfig Configuration)
-
 npm update
 
 echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"`  > xcconfig/build-id.xcconfig
 
 #create the xcode project
 [[ `gem list -i xcodeproj` == 'true' ]] || gem install xcodeproj --verbose
-./projgen.rb 
+./projgen.rb
 
 echo ""
 echo "If files are added/removed from the project, regenerate it with ./projgen.rb"
