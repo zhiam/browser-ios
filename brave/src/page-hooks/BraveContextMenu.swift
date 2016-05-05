@@ -110,7 +110,7 @@ class BraveContextMenu {
         pt.y = pt.y * f;// + offset.y;
 
         let result = webView.stringByEvaluatingJavaScriptFromString(contextMenuJs + "(\(pt.x), \(pt.y))")
-        print("\(result)")
+        print("\(result ?? "no match")")
 
         guard let response = result where response.characters.count > "{}".characters.count else {
             resetTimer()
@@ -121,8 +121,8 @@ class BraveContextMenu {
             do {
                 guard let json = try NSJSONSerialization.JSONObjectWithData((response.dataUsingEncoding(NSUTF8StringEncoding))!, options: [])
                     as? [String:AnyObject] else { return nil }
-                let image = json["imagesrc"] as? String
-                let url = json["link"] as? String
+                let image = (json["imagesrc"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+                let url = (json["link"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
                 return ContextMenuHelper.Elements(link: url != nil ? NSURL(string: url!) : nil, image: image != nil ? NSURL(string: image!) : nil)
             } catch {}
             return nil
