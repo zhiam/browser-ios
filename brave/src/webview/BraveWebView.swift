@@ -289,7 +289,49 @@ class BraveWebView: UIWebView {
             #if !TEST
                 me.replaceAdImages(me)
             #endif
+        }
 
+        // Returns (isBug, js document height)
+        func scrollheightBugDetected(webView: UIWebView) -> (Bool, Float) {
+            let scrollHeight = Float(webView.scrollView.contentSize.height)
+            let frameHeight = Float(webView.frame.size.height)
+            if scrollHeight - frameHeight  > frameHeight * 0.2 {
+                // scrollHeight is more the 20% larger than frame height, typically means the scrollHeight is setup correctly
+                // this bug is only when the scrollHeight is approx screen height, when it should be much larger
+                return (false, 0)
+            }
+
+            guard let jsStringHeight = webView.stringByEvaluatingJavaScriptFromString("document.body.offsetHeight"), jsHeight = Float(jsStringHeight) where jsHeight > 0 else {
+                return (false, 0)
+            }
+
+            if jsHeight - scrollHeight > jsHeight * 0.10 { // allow 10% variance
+                print("Scrollheight bug detected! js \(jsHeight) sc \(scrollHeight) fits \(webView.sizeThatFits(CGSizeZero).height)")
+                return (true, jsHeight)
+            }
+            return (false, 0)
+        }
+
+        delay(1.0) {
+            [weak self] in
+            guard let me = self else { return }
+            let (result, jsHeight) = scrollheightBugDetected(me)
+            if !result {
+                return
+            }
+            // Check again, if the js-reported height is changing, the page is still laying out, or a different page is showing
+            // Arguably would could keep checking, but a 2s window is sufficient time after page load
+            delay(1.0) {
+                [weak self] in
+                guard let me = self else { return }
+                let (result, jsHeightRechecked) = scrollheightBugDetected(me)
+                if !result || jsHeightRechecked != jsHeight {
+                    // if the js-reported height is changing, page is still laying out
+                    return
+                }
+                print("Webview scroll height hack")
+                me.scrollView.contentSize = CGSizeMake(me.scrollView.contentSize.width, me.sizeThatFits(CGSizeZero).height)
+            }
         }
     }
 

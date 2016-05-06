@@ -61,7 +61,7 @@ class BraveSettingsView : AppSettingsTableViewController {
             let sc = wv.scrollView
             let h = wv.stringByEvaluatingJavaScriptFromString("document.height + '|' + document.documentElement.scrollHeight") ?? "nil"
 
-            debugWebViewScrollingBug = "WebView height: \(wv.frame.size.height), ScrollView height: \(sc.contentSize.height), JS height: \(h)"
+            debugWebViewScrollingBug = "WebView height: \(wv.frame.size.height), ScrollView height: \(sc.contentSize.height), JS height: \(h), Fits: \(wv.sizeThatFits(CGSizeZero).height)"
         }
 
         BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
