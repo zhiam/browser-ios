@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>AppID</key>
-	<string>$(MOZ_APP_ID)</string>
 	<key>BuildID</key>
 	<string>$(MOZ_BUILD_ID)</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -69,8 +67,6 @@
 	<array>
     <string>$(CUSTOM_BUNDLE_ID).browsing</string>
 	</array>
-	<key>ReleaseChannel</key>
-	<string>$(MOZ_RELEASE_CHANNEL)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>CharisSILB.ttf</string>
@@ -139,7 +135,5 @@
 			<string></string>
 		</dict>
 	</array>
-	<key>Vendor</key>
-	<string>$(MOZ_VENDOR)</string>
 </dict>
 </plist>

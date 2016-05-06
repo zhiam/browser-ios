@@ -137,4 +137,6 @@ end
 $target_hash['Client']['target'].add_resources($client_resources)
 
 project.save
+system("cd Client.xcodeproj && sed -i '' -e 's/com.brave.ios.browser/" + bundle_id + "/' project.pbxproj")
+
 exit

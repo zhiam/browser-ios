@@ -4,9 +4,8 @@
 
 app_id=${1:-com.brave.ios.browser}
 echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/.bundle-id.xcconfig
-if [  -z $1 ] ; then
-  echo DevelopmentTeam = KL8N8XSYF4 >> xcconfig/.bundle-id.xcconfig
-fi
+# Custom IDs get the BETA property set automatically
+[[  -z $1 ]] || echo BETA=Beta >> xcconfig/.bundle-id.xcconfig
 
 sed -e "s/BUNDLE_ID_PLACEHOLDER/$app_id/" Brave.entitlements.template > Brave.entitlements
 
