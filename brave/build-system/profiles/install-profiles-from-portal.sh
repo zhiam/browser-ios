@@ -13,6 +13,6 @@ sigh download_all -u dev@brave.com -a com.brave.ios.browser
 sigh manage -p "XC.*" --force # remove XCode managed profiles
 
 [[ $1 == "beta" ]] &&  sigh manage -p "dist*" --force 
-[[ $1 == "release" ]] &&  sigh manage -p "brave-dev*" --force
+[[ $1 == "release" ]] &&  sigh manage -p "beta_*" --force
 
 rm -f *.mobileprovision
