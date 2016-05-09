@@ -80,14 +80,14 @@ class BraveContextMenu {
     }
 
     // This is called 2x, once at .25 seconds to ensure the native context menu is cancelled,
-    // then again at .5 seconds to show our context menu.
+    // then again at .5 seconds to show our context menu. (This code was borne of frustration, not ideal flow)
     @objc func tapAndHoldAction() {
         if !isBrowserTopmost() {
             resetTimer()
             return
         }
 
-        if let tappedElement = tappedElement {
+        func showContextMenuForElement(tappedElement:  ContextMenuHelper.Elements) {
             let info = ["point": NSValue(CGPoint: tapLocation)]
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationMainWindowTapAndHold, object: self, userInfo: info)
             guard let bvc = getApp().browserViewController else { return }
@@ -99,52 +99,60 @@ class BraveContextMenu {
             return
         }
 
-        guard let webView = BraveApp.getCurrentWebView() else { return }
-        var pt = webView.convertPoint(tapLocation, fromView: nil)
+        func extractElementAndBlockNativeMenu() {
+            guard let webView = BraveApp.getCurrentWebView() else { return }
+            var pt = webView.convertPoint(tapLocation, fromView: nil)
 
-        let viewSize = webView.frame.size
-        guard let (windowSize, _) = windowSizeAndScrollOffset(webView) else { return }
+            let viewSize = webView.frame.size
+            guard let (windowSize, _) = windowSizeAndScrollOffset(webView) else { return }
 
-        let f = windowSize.width / viewSize.width;
-        pt.x = pt.x * f;// + offset.x;
-        pt.y = pt.y * f;// + offset.y;
+            let f = windowSize.width / viewSize.width;
+            pt.x = pt.x * f;// + offset.x;
+            pt.y = pt.y * f;// + offset.y;
 
-        let result = webView.stringByEvaluatingJavaScriptFromString(contextMenuJs + "(\(pt.x), \(pt.y))")
-        print("\(result ?? "no match")")
+            let result = webView.stringByEvaluatingJavaScriptFromString(contextMenuJs + "(\(pt.x), \(pt.y))")
+            print("\(result ?? "no match")")
 
-        guard let response = result where response.characters.count > "{}".characters.count else {
-            resetTimer()
-            return
-        }
+            guard let response = result where response.characters.count > "{}".characters.count else {
+                resetTimer()
+                return
+            }
 
-        func responseToElement(response: String) -> ContextMenuHelper.Elements? {
-            do {
-                guard let json = try NSJSONSerialization.JSONObjectWithData((response.dataUsingEncoding(NSUTF8StringEncoding))!, options: [])
-                    as? [String:AnyObject] else { return nil }
-                let image = (json["imagesrc"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-                let url = (json["link"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-                return ContextMenuHelper.Elements(link: url != nil ? NSURL(string: url!) : nil, image: image != nil ? NSURL(string: image!) : nil)
-            } catch {}
-            return nil
-        }
+            func responseToElement(response: String) -> ContextMenuHelper.Elements? {
+                do {
+                    guard let json = try NSJSONSerialization.JSONObjectWithData((response.dataUsingEncoding(NSUTF8StringEncoding))!, options: [])
+                        as? [String:AnyObject] else { return nil }
+                    let image = (json["imagesrc"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+                    let url = (json["link"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+                    return ContextMenuHelper.Elements(link: url != nil ? NSURL(string: url!) : nil, image: image != nil ? NSURL(string: image!) : nil)
+                } catch {}
+                return nil
+            }
 
-        tappedElement = responseToElement(response)
+            tappedElement = responseToElement(response)
 
-        func blockOtherGestures(views: [UIView]?) {
-            guard let views = views else { return }
-            for view in views {
-                if let gestures = view.gestureRecognizers as [UIGestureRecognizer]! {
-                    for gesture in gestures {
-                        if gesture is UILongPressGestureRecognizer {
-                            // toggling gets the gesture to ignore this long press
-                            gesture.enabled = false
-                            gesture.enabled = true
+            func blockOtherGestures(views: [UIView]?) {
+                guard let views = views else { return }
+                for view in views {
+                    if let gestures = view.gestureRecognizers as [UIGestureRecognizer]! {
+                        for gesture in gestures {
+                            if gesture is UILongPressGestureRecognizer {
+                                // toggling gets the gesture to ignore this long press
+                                gesture.enabled = false
+                                gesture.enabled = true
+                            }
                         }
                     }
                 }
             }
+            
+            blockOtherGestures(webView.scrollView.subviews)
         }
-        
-        blockOtherGestures(webView.scrollView.subviews)
+
+        if let tappedElement = tappedElement {
+            showContextMenuForElement(tappedElement)
+        } else {
+            extractElementAndBlockNativeMenu()
+        }
     }
 }

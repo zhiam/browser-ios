@@ -4,11 +4,14 @@
 
 (function(x, y) {
   function parseUrl(url) {
-    if (url.startsWith('http')) {
+    function begins(str, startStr) { // in case no String.startsWith
+      return str.indexOf(startStr) == 0
+    }
+    if (begins(url, 'http')) {
       return url;
-    } else if (url.startsWith('mailto:')) {
+    } else if (begins(url, 'mailto:')) {
         return url;
-    } else if (url.startsWith('//')) {
+    } else if (begins(url, '//')) {
       return window.location.protocol + url;
     } else {
       return window.location.protocol + '//' + window.location.hostname + url;
