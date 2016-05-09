@@ -291,46 +291,66 @@ class BraveWebView: UIWebView {
             #endif
         }
 
-        // Returns (isBug, js document height)
-        func scrollheightBugDetected(webView: UIWebView) -> (Bool, Float) {
-            let scrollHeight = Float(webView.scrollView.contentSize.height)
-            let frameHeight = Float(webView.frame.size.height)
-            if scrollHeight - frameHeight  > frameHeight * 0.2 {
-                // scrollHeight is more the 20% larger than frame height, typically means the scrollHeight is setup correctly
-                // this bug is only when the scrollHeight is approx screen height, when it should be much larger
-                return (false, 0)
+        // Returns (isBug, js document size)
+        func scrollheightBugDetected(webView: UIWebView) -> (Bool, CGSize) {
+            let scrollHeight = webView.scrollView.contentSize.height
+            let frameHeight = webView.frame.size.height - UIConstants.ToolbarHeight * 2
+            if abs(scrollHeight - frameHeight) > 100 {
+                // This bug is only when the scrollHeight~=screenHeight, when it should be much larger
+                return (false, CGSizeZero)
             }
 
-            guard let jsStringHeight = webView.stringByEvaluatingJavaScriptFromString("document.body.offsetHeight"), jsHeight = Float(jsStringHeight) where jsHeight > 0 else {
-                return (false, 0)
+            func getFloatProp(wv: UIWebView, jsProperty: String) -> CGFloat {
+                if let jsResult = webView.stringByEvaluatingJavaScriptFromString(jsProperty), floatVal = Float(jsResult) {
+                    return CGFloat(floatVal)
+                }
+                return 0
+            }
+            let jsHeight = getFloatProp(webView, jsProperty: "document.body.offsetHeight")
+            let jsWidth = getFloatProp(webView, jsProperty: "document.body.offsetWidth")
+            if jsHeight == 0 || jsWidth == 0 {
+                return (false, CGSizeZero)
             }
 
-            if jsHeight - scrollHeight > jsHeight * 0.10 { // allow 10% variance
+            if jsWidth <= webView.frame.size.width // only seeing bug with doc width < screen width
+                && jsHeight - scrollHeight > 500 { // only seeing bug with heights much larger
                 print("Scrollheight bug detected! js \(jsHeight) sc \(scrollHeight) fits \(webView.sizeThatFits(CGSizeZero).height)")
-                return (true, jsHeight)
+                return (true, CGSizeMake(jsWidth, jsHeight))
             }
-            return (false, 0)
+            return (false, CGSizeZero)
         }
 
         delay(1.0) {
             [weak self] in
             guard let me = self else { return }
-            let (result, jsHeight) = scrollheightBugDetected(me)
+            let (result, jsSize) = scrollheightBugDetected(me)
             if !result {
                 return
             }
+
+#if DEBUG
+            let label = UILabel(frame: (CGRectMake(0, 0, 300, 30)))
+            label.center = me.frame.center
+            label.text = "JS:\(jsSize) WV:\(me.sizeThatFits(CGSizeZero))"
+            label.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+            me.superview?.addSubview(label)
+            delay(13.0) {
+                label.removeFromSuperview()
+            }
+#endif
+
             // Check again, if the js-reported height is changing, the page is still laying out, or a different page is showing
             // Arguably would could keep checking, but a 2s window is sufficient time after page load
             delay(1.0) {
                 [weak self] in
                 guard let me = self else { return }
-                let (result, jsHeightRechecked) = scrollheightBugDetected(me)
-                if !result || jsHeightRechecked != jsHeight {
+                let (result, jsSizeRechecked) = scrollheightBugDetected(me)
+                if !result || jsSizeRechecked.height != jsSize.height {
                     // if the js-reported height is changing, page is still laying out
                     return
                 }
-                print("Webview scroll height hack")
-                me.scrollView.contentSize = CGSizeMake(me.scrollView.contentSize.width, me.sizeThatFits(CGSizeZero).height)
+                print("Webview scroll height hack") // Set slightly larger than sizeThatFits to ensure redraw takes place
+                me.scrollView.contentSize = CGSizeMake(me.scrollView.contentSize.width, me.sizeThatFits(CGSizeZero).height + 1)
             }
         }
     }
