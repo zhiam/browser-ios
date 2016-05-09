@@ -45,7 +45,7 @@ class LegacyUserContentController
     func injectIntoMain() {
         guard let webView = webView else { return }
 
-        let result = webView.stringByEvaluatingJavaScriptFromString("Window.prototype.webkit.hasOwnProperty('messageHandlers')")
+        let result = webView.stringByEvaluatingJavaScriptFromString("Window.prototype.hasOwnProperty('webkit') && Window.prototype.webkit.hasOwnProperty('messageHandlers')")
         if result == "true" {
             // already injected into this context
             return
