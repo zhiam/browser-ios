@@ -382,6 +382,14 @@ class BraveWebView: UIWebView {
     }
 
     func reloadFromOrigin() {
+        // In trying to repro/fix issue #216, i found ping zooming in/out to extremes can cause the view to render badly
+        // which is similar. A reload, or a back/forward nav doesn't fix the view. Turning scalesPageToFit off and on works.
+        delay(0.5) {
+            self.scalesPageToFit = false
+            delay(0.2) {
+                self.scalesPageToFit = true
+            }
+        }
         progress?.setProgress(0.3)
         self.reload()
     }
