@@ -53,7 +53,7 @@ def walk(proj, base, start, override_target = nil)
     else
       folder = folder.gsub('./','')
       file_ref = proj[folder].new_file(path)
-      if path =~ /(\.js)|(\.html)|(\.txt)|(\.xib)/
+      if path =~ /(\.js)|(\.html)|(\.txt)|(\.xib)|(\.dat)/
         $client_resources.push(file_ref)
       else
         path = path.sub('./', '')

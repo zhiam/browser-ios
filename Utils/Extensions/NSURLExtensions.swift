@@ -25,7 +25,8 @@ private struct ETLDEntry: CustomStringConvertible {
 private typealias TLDEntryMap = [String:ETLDEntry]
 
 private func loadEntriesFromDisk() -> TLDEntryMap? {
-    if let bundle = NSBundle.mainBundle().bundleIdentifier, data = NSString.contentsOfFileWithResourceName("effective_tld_names", ofType: "dat", fromBundle: NSBundle(identifier: bundle + ".Shared")!, encoding: NSUTF8StringEncoding, error: nil) {
+    let bundle = NSBundle.mainBundle()
+    if let data = NSString.contentsOfFileWithResourceName("effective_tld_names", ofType: "dat", fromBundle: bundle, encoding: NSUTF8StringEncoding, error: nil) {
         let lines = data.componentsSeparatedByString("\n")
         let trimmedLines = lines.filter { !$0.hasPrefix("//") && $0 != "\n" && $0 != "" }
 
@@ -45,6 +46,16 @@ private func loadEntriesFromDisk() -> TLDEntryMap? {
             entries[key] = entry
         }
         return entries
+    } else {
+        #if DEBUG
+            let alert = UIAlertController(title: "Failed to load TLD", message: "\(bundle)", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Close", style: .Cancel, handler: nil))
+            let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
+            alertWindow.rootViewController = UIViewController()
+            alertWindow.windowLevel = UIWindowLevelAlert + 1;
+            alertWindow.makeKeyAndVisible()
+            alertWindow.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+        #endif
     }
     return nil
 }
