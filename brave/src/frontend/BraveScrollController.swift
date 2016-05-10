@@ -144,6 +144,8 @@ class BraveScrollController: NSObject {
             return
         }
 
+        removeTranslationAndSetLayout()
+
         let durationRatio = abs(headerTopOffset / headerFrame.height)
         let actualDuration = NSTimeInterval(ToolbarBaseAnimationDuration * durationRatio)
         self.animateToolbarsWithOffsets(
