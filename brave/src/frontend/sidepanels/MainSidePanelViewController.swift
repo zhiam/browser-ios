@@ -60,7 +60,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         triangleView.alpha = 0.9
 
         settingsButton.setImage(UIImage(named: "settings")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        settingsButton.addTarget(self, action: NSSelectorFromString(SEL_onClickSettingsButton), forControlEvents: .TouchUpInside)
+        settingsButton.addTarget(self, action: #selector(onClickSettingsButton), forControlEvents: .TouchUpInside)
         settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
 
         bookmarksButton.setImage(UIImage(named: "bookmarklist"), forState: .Normal)
@@ -71,7 +71,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         historyButton.addTarget(self, action: #selector(MainSidePanelViewController.showHistory), forControlEvents: .TouchUpInside)
         historyButton.accessibilityLabel = NSLocalizedString("Show History", comment: "Button to show the history list")
 
-        addBookmarkButton.addTarget(self, action: NSSelectorFromString(SEL_onClickBookmarksButton), forControlEvents: .TouchUpInside)
+        addBookmarkButton.addTarget(self, action: #selector(onClickBookmarksButton), forControlEvents: .TouchUpInside)
         addBookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
         addBookmarkButton.setImage(UIImage(named: "bookmarkMarked"), forState: .Selected)
         addBookmarkButton.accessibilityLabel = NSLocalizedString("Add Bookmark", comment: "Button to add a bookmark")
@@ -93,9 +93,19 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         if BraveUX.PanelShadowWidth > 0 {
             containerView.addSubview(shadow)
         }
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(historyItemAdded), name: kNotificationSiteAddedToHistory, object: nil)
     }
 
-    let SEL_onClickSettingsButton = "onClickSettingsButton"
+    @objc func historyItemAdded() {
+        delay(0.5) {
+            if self.view.hidden {
+                return
+            }
+            self.history.refresh()
+        }
+    }
+
     func onClickSettingsButton() {
         if getApp().profile == nil {
             return
@@ -110,7 +120,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         presentViewController(controller, animated: true, completion: nil)
     }
 
-    let SEL_onClickBookmarksButton = "onClickBookmarksButton"
     func onClickBookmarksButton() {
         guard let tab = browserViewController?.tabManager.selectedTab,
             let url = tab.displayURL?.absoluteString else {

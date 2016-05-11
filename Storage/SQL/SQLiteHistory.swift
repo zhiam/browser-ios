@@ -9,6 +9,8 @@ import Deferred
 
 private let log = Logger.syncLogger
 
+public let kNotificationSiteAddedToHistory = "kNotificationSiteAddedToHistory"
+
 class NoSuchRecordError: MaybeErrorType {
     let guid: GUID
     init(guid: GUID) {
@@ -171,7 +173,11 @@ extension SQLiteHistory: BrowserHistory {
             }
 
             // Insert instead.
-            return self.insertSite(site, atTime: now, withConnection: conn)
+            let j = self.insertSite(site, atTime: now, withConnection: conn)
+            if j > 0 {
+                NSNotificationCenter.defaultCenter().postNotificationName(kNotificationSiteAddedToHistory, object: nil)
+            }
+            return j
         }
 
         return failOrSucceed(error, op: "Record site")

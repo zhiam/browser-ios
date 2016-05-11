@@ -47,7 +47,6 @@ class BraveSettingsView : AppSettingsTableViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-    let SEL_prefsChanged = "prefsChanged:"
     static var isAllBraveShieldPrefsOff = false
     @objc func prefsChanged(notification: NSNotification) {
         BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
@@ -67,7 +66,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:NSSelectorFromString(SEL_prefsChanged), name: NSUserDefaultsDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(prefsChanged), name: NSUserDefaultsDidChangeNotification, object: nil)
 
         let prefs = profile.prefs
         var generalSettings = [

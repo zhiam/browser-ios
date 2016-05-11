@@ -151,6 +151,11 @@ class BraveTopViewController : UIViewController {
     }
 
     func onClickBraveButton(notification: NSNotification) {
+        #if FLEX_ON
+            FLEXManager.sharedManager().showExplorer()
+            return
+        #endif
+
         guard let button = notification.object as? UIButton else { return }
 
         NSURLCache.sharedURLCache().removeAllCachedResponses()
@@ -172,9 +177,6 @@ class BraveTopViewController : UIViewController {
     }
 
     func togglePanel(panel: SidePanelBaseViewController) {
-        #if FLEX_ON
-        FLEXManager.sharedManager().showExplorer()
-        #endif
         let willShow = panel.view.hidden
         leftSidePanelButtonAndUnderlay?.selected = willShow
         leftSidePanelButtonAndUnderlay?.hideUnderlay(!willShow)
