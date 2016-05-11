@@ -373,6 +373,23 @@ extension SQLiteHistory: BrowserHistory {
         return nil
     }
 
+    // Brave added: just use the built-in row names, fail to see advantage to renaming them (which seems confusing)
+    private class func iconNativeNamesColumnFactory(row: SDRow) -> Favicon? {
+        if  let iconType = row["type"] as? Int,
+            let iconURL = row["url"] as? String,
+            let iconDate = row["date"] as? Double,
+            let _ = row["id"] as? Int
+        {
+
+            let date = NSDate(timeIntervalSince1970: iconDate)
+            let f = Favicon(url: iconURL, date: date, type: IconType(rawValue: iconType)!)
+            f.width = row["width"] as? Int
+            f.height = row["height"] as? Int
+            return f
+        }
+        return nil
+    }
+
     private class func iconHistoryColumnFactory(row: SDRow) -> Site {
         let site = basicHistoryColumnFactory(row)
         site.icon = iconColumnFactory(row)
@@ -651,6 +668,13 @@ extension SQLiteHistory: BrowserHistory {
 }
 
 extension SQLiteHistory: Favicons {
+    public func getFavicon(forSite site: Site) -> Deferred<Maybe<Cursor<Favicon?>>> {
+        let sql = "SELECT favicons.* from history, favicons, favicon_sites WHERE favicon_sites.faviconID = favicons.id AND history.id = favicon_sites.siteID AND history.id = ?"
+        let args: Args = [site.id]
+
+        return db.runQuery(sql, args: args, factory: SQLiteHistory.iconNativeNamesColumnFactory)
+    }
+
     // These two getter functions are only exposed for testing purposes (and aren't part of the public interface).
     func getFaviconsForURL(url: String) -> Deferred<Maybe<Cursor<Favicon?>>> {
         let sql = "SELECT iconID AS id, iconURL AS url, iconDate AS date, iconType AS type, iconWidth AS width FROM " +
