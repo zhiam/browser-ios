@@ -50,7 +50,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
     var webView: BraveWebView?
     var browserDelegate: BrowserDelegate?
     var bars = [SnackBar]()
-    var favicons = [Favicon]()
+    var favicons = [String:Favicon]() // map baseDomain() to favicon
     var lastExecutedTime: Timestamp?
     var sessionData: SessionData?
     var lastRequest: NSURLRequest? = nil
@@ -281,12 +281,16 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     var displayFavicon: Favicon? {
+        assert(NSThread.isMainThread())
         var width = 0
         var largest: Favicon?
         for icon in favicons {
-            if icon.width > width {
-                width = icon.width!
-                largest = icon
+            if icon.0 != webView?.URL?.baseDomain() {
+                continue
+            }
+            if icon.1.width > width {
+                width = icon.1.width!
+                largest = icon.1
             }
         }
         return largest

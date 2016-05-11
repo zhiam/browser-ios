@@ -86,7 +86,7 @@ class FaviconManager : BrowserHelper {
                             self.makeFaviconAvailable(tab, atURL: currentUrl, favicon: fav, withImage: img)
                         }
                     }
-                    tab.favicons.append(fav)
+                    tab.favicons[currentUrl.baseDomain() ?? ""] = fav
                 })
             }
         }
