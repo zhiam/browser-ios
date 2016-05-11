@@ -226,7 +226,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         if let site = data[indexPath.row + category.offset] {
             if let cell = cell as? TwoLineTableViewCell {
                 cell.setLines(site.title, detailText: site.url)
-                cell.imageView?.setIcon(site.icon, withPlaceholder: FaviconFetcher.getDefaultFavicon(site.tileURL))
+                cell.imageView?.setIcon(site.icon, withPlaceholder: FaviconFetcher.defaultFavicon)
             }
         }
 
