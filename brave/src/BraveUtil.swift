@@ -126,7 +126,7 @@ func getBestFavicon(favicons: [Favicon]) -> Favicon? {
             continue
         }
 
-        if icon.type.isPreferredTo(best!.type) {
+        if icon.type.isPreferredTo(best!.type) || best!.url.endsWith(".svg") {
             best = icon
         } else if let width = icon.width, widthBest = best!.width where width > 0 && width > widthBest {
             best = icon
