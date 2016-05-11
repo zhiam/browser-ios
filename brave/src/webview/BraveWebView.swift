@@ -271,7 +271,22 @@ class BraveWebView: UIWebView {
             [weak self] in
             guard let me = self else { return }
             guard let docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href") else { return }
+
+            if me.URL?.absoluteString != docLoc {
+                me.internalIsLoadingEndedFlag = false
+                print("JS-reported location not yet insync with actual location")
+                delay(0.2) {
+                    [weak self] in
+                    self?.loadingCompleted()
+                }
+                return
+            }
+
             if docLoc != me.prevDocumentLocation {
+                me.title = me.stringByEvaluatingJavaScriptFromString("document.title") ?? NSURL(string: docLoc)?.baseDomain() ?? ""
+                #if DEBUG
+                print("Adding history, TITLE:\(me.title)")
+                #endif
                 if let nd = me.navigationDelegate {
                     BraveWebView.containerWebViewForCallbacks.legacyWebView = me
                     nd.webView?(BraveWebView.containerWebViewForCallbacks, didFinishNavigation: nullWKNavigation)
