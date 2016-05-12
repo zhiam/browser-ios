@@ -28,7 +28,6 @@ class SidePanelBaseViewController : UIViewController {
 
     func setupContainerViewSize() {
         containerView.frame = CGRectMake(0, 0, CGFloat(BraveUX.WidthOfSlideOut), self.view.frame.height)
-        viewAsScrollView().contentSize = CGSizeMake(containerView.frame.width, containerView.frame.height)
     }
 
     override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
