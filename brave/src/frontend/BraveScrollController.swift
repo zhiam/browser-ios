@@ -113,27 +113,46 @@ class BraveScrollController: NSObject {
         }
     }
 
+    // This causes issue #216 if contentInset changed during a load
     func checkHeightOfPageAndAdjustWebViewInsets() {
-        if !isScrollHeightIsLargeEnoughForScrolling() {
-            if (scrollView?.contentInset.bottom == 0) {
-                let h = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? UIConstants.ToolbarHeight * 2 : UIConstants.ToolbarHeight
-                setContentInset(top: 0, bottom: h)
+        struct StaticVar {
+            static var isRunningCheck = false
+        }
+
+        if self.browser?.webView?.loading ?? false {
+            if StaticVar.isRunningCheck {
+                return
+            }
+            StaticVar.isRunningCheck = true
+            delay(0.2) {
+                StaticVar.isRunningCheck = false
+                self.checkHeightOfPageAndAdjustWebViewInsets()
             }
         } else {
-            if (scrollView?.contentInset.bottom != 0) {
-                setContentInset(top: 0, bottom: 0)
+            StaticVar.isRunningCheck = false
+
+            if !isScrollHeightIsLargeEnoughForScrolling() {
+                if (scrollView?.contentInset.bottom == 0) {
+                    let h = BraveApp.isIPhonePortrait() ? UIConstants.ToolbarHeight * 2 : UIConstants.ToolbarHeight
+                    setContentInset(top: 0, bottom: h)
+                }
+            } else {
+                if (scrollView?.contentInset.bottom != 0) {
+                    setContentInset(top: 0, bottom: 0)
+                }
+            }
+
+            // https://github.com/brave/browser-ios/issues/125 workaround
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
+                    setContentInset(top: 0, bottom: 100)
+                    lockedContentInsets = true
+                } else {
+                    lockedContentInsets = false
+                }
             }
         }
 
-        // https://github.com/brave/browser-ios/issues/125 workaround
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
-                setContentInset(top: 0, bottom: 100)
-                lockedContentInsets = true
-            } else {
-                lockedContentInsets = false
-            }
-        }
     }
 
     func showToolbars(animated animated: Bool, completion: ((finished: Bool) -> Void)? = nil) {
