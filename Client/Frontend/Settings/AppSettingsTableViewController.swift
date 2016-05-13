@@ -108,9 +108,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
         }
 
         privacySettings += [
-            BoolSetting(prefs: prefs, prefKey: "crashreports.send.always", defaultValue: false,
-                titleText: NSLocalizedString("Send Crash Reports", comment: "Setting to enable the sending of crash reports"),
-                settingDidChange: { configureActiveCrashReporter($0) }),
+//            BoolSetting(prefs: prefs, prefKey: "crashreports.send.always", defaultValue: false,
+//                titleText: NSLocalizedString("Send Crash Reports", comment: "Setting to enable the sending of crash reports"),
+//                settingDidChange: { configureActiveCrashReporter($0) }),
             PrivacyPolicySetting()
         ]
 

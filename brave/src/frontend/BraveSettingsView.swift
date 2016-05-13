@@ -6,8 +6,6 @@
 import Shared
 import OnePasswordExtension
 
-var debugWebViewScrollingBug = ""
-
 class BraveSettingsView : AppSettingsTableViewController {
 
     static var cachedIs3rdPartyPasswordManagerInstalled = false
@@ -56,13 +54,6 @@ class BraveSettingsView : AppSettingsTableViewController {
     }
 
     override func generateSettings() -> [SettingSection] {
-        if let wv = BraveApp.getCurrentWebView() {
-            let sc = wv.scrollView
-            let h = wv.stringByEvaluatingJavaScriptFromString("document.height + '|' + document.documentElement.scrollHeight") ?? "nil"
-
-            debugWebViewScrollingBug = "WebView height: \(wv.frame.size.height), ScrollView height: \(sc.contentSize.height), JS height: \(h), Fits: \(wv.sizeThatFits(CGSizeZero).height)"
-        }
-
         BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -275,8 +266,7 @@ class BraveSupportLinkSetting: Setting{
             return
         }
         // Use this to experiment with fixing bug where page is partially rendered
-        UIPasteboard.generalPasteboard().string = debugWebViewScrollingBug
-        BraveApp.showErrorAlert(title: "Copied, now tap again & paste into mail", error: debugWebViewScrollingBug)
+        // TODO use this to add special debugging functions
     }
 
 }

@@ -4,8 +4,6 @@ import Foundation
 import WebKit
 import Shared
 
-func configureActiveCrashReporter(_:Bool?) {}
-
 let kNotificationPageUnload = "kNotificationPageUnload"
 
 func convertNavActionToWKType(type:UIWebViewNavigationType) -> WKNavigationType {
@@ -55,13 +53,29 @@ class BraveWebView: UIWebView {
         }
     }
 
-    var URL: NSURL? {
-        didSet {
-            if URL?.absoluteString.endsWith("?") ?? false {
-                if let noQuery = URL?.absoluteString.componentsSeparatedByString("?")[0] {
-                    URL = NSURL(string: noQuery)
-                }
+    private var _url: (url: NSURL?, isReliableSource: Bool, prevUrl: NSURL?) = (nil, false, nil)
+
+    func setUrl(url: NSURL?, reliableSource: Bool) {
+        _url.prevUrl = _url.url
+        _url.isReliableSource = reliableSource
+        if URL?.absoluteString.endsWith("?") ?? false {
+            if let noQuery = URL?.absoluteString.componentsSeparatedByString("?")[0] {
+                _url.url = NSURL(string: noQuery)
+                return
             }
+        }
+        _url.url = url
+    }
+
+    func isUrlSourceReliable() -> Bool {
+        return _url.isReliableSource
+    }
+
+    var previousUrl: NSURL? { get { return _url.prevUrl } }
+
+    var URL: NSURL? {
+        get {
+            return _url.url
         }
     }
 
@@ -138,38 +152,42 @@ class BraveWebView: UIWebView {
         triggeredLocationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(0.15, target: self, selector: #selector(timeoutCheckLocation), userInfo: nil, repeats: false)
     }
 
+    // Pushstate navigation may require this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
+    // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
     @objc func timeoutCheckLocation() {
         assert(NSThread.isMainThread())
 
-        func performCompletionSteps() {
+        func tryUpdateUrl() {
+            guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
+            if location == currentUrl || location.contains("about:") || location.contains("//localhost") || URL?.host != NSURL(string: location)?.host {
+                return
+            }
+
+            if isUrlSourceReliable() && location == previousUrl?.absoluteString {
+                return
+            }
+
+            print("Page change detected by content size change triggered timer: \(location)")
+
+            NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
+            setUrl(NSURL(string: location), reliableSource: false)
+
+            progress?.reset()
+        }
+
+        progress?.setProgress(0.3)
+        kvoBroadcast([KVOStrings.kvoEstimatedProgress])
+
+        tryUpdateUrl()
+
+        if (!loading ||
+            stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase()") == "complete") && !isUrlSourceReliable()
+        {
             title = stringByEvaluatingJavaScriptFromString("document.title") ?? ""
             internalIsLoadingEndedFlag = false // need to set this to bypass loadingCompleted() precondition
             loadingCompleted()
             kvoBroadcast()
         }
-
-        if loading {
-            let state = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase()")
-            if state == "complete" {
-                print("Page complete detected by content size change triggered timer")
-                performCompletionSteps()
-            }
-            return
-        }
-
-        // Pushstate navigation can cause this case (see brianbondy.com), as well as sites for which simple pushstate detection doesn't work:
-        // youtube and yahoo news are examples of this (http://stackoverflow.com/questions/24297929/javascript-to-listen-for-url-changes-in-youtube-html5-player)
-        guard let location = self.stringByEvaluatingJavaScriptFromString("window.location.href"), currentUrl = URL?.absoluteString else { return }
-        if location == currentUrl || location.contains("about:") || location.contains("//localhost") || URL?.host != NSURL(string: location)?.host {
-            return
-        }
-
-        print("Page change detected by content size change triggered timer: \(location)")
-
-        NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
-        URL = NSURL(string: location)
-
-        performCompletionSteps()
     }
 
     override init(frame: CGRect) {
@@ -253,7 +271,7 @@ class BraveWebView: UIWebView {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveWebView.internalProgressNotification(_:)), name: internalProgressChangedNotification, object: internalWebView)
 
         if let url = request.URL where !url.absoluteString.contains(specialStopLoadUrl) {
-            URL = request.URL
+            setUrl(url, reliableSource: true)
         }
         super.loadRequest(request)
     }
@@ -264,23 +282,11 @@ class BraveWebView: UIWebView {
         }
         internalIsLoadingEndedFlag = true
 
-        // There is a difficult-to-repro UIWebView bug where loaded page isn't scrollable
-        // I *think* it is correlated with JS execution immediately at page load completion
-        // which borks the page render step. I can't repro the bug if I delay JS injection.
+        // Wait a tiny bit in hopes the page contents are updated. Load completed doesn't mean the UIWebView has done any rendering (or even has the JS engine for the page ready, see the delay() below)
         delay(0.1) {
             [weak self] in
             guard let me = self else { return }
             guard let docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href") else { return }
-
-            if me.URL?.absoluteString != docLoc {
-                me.internalIsLoadingEndedFlag = false
-                print("JS-reported location not yet insync with actual location")
-                delay(0.2) {
-                    [weak self] in
-                    self?.loadingCompleted()
-                }
-                return
-            }
 
             if docLoc != me.prevDocumentLocation {
                 me.title = me.stringByEvaluatingJavaScriptFromString("document.title") ?? NSURL(string: docLoc)?.baseDomain() ?? ""
@@ -304,69 +310,6 @@ class BraveWebView: UIWebView {
             #if !TEST
                 me.replaceAdImages(me)
             #endif
-        }
-
-        // Returns (isBug, js document size)
-        func scrollheightBugDetected(webView: UIWebView) -> (Bool, CGSize) {
-            let scrollHeight = webView.scrollView.contentSize.height
-            let frameHeight = webView.frame.size.height - UIConstants.ToolbarHeight * 2
-            if abs(scrollHeight - frameHeight) > 100 {
-                // This bug is only when the scrollHeight~=screenHeight, when it should be much larger
-                return (false, CGSizeZero)
-            }
-
-            func getFloatProp(wv: UIWebView, jsProperty: String) -> CGFloat {
-                if let jsResult = webView.stringByEvaluatingJavaScriptFromString(jsProperty), floatVal = Float(jsResult) {
-                    return CGFloat(floatVal)
-                }
-                return 0
-            }
-            let jsHeight = getFloatProp(webView, jsProperty: "document.body.offsetHeight")
-            let jsWidth = getFloatProp(webView, jsProperty: "document.body.offsetWidth")
-            if jsHeight == 0 || jsWidth == 0 {
-                return (false, CGSizeZero)
-            }
-
-            if jsWidth <= webView.frame.size.width // only seeing bug with doc width < screen width
-                && jsHeight - scrollHeight > 500 { // only seeing bug with heights much larger
-                print("Scrollheight bug detected! js \(jsHeight) sc \(scrollHeight) fits \(webView.sizeThatFits(CGSizeZero).height)")
-                return (true, CGSizeMake(jsWidth, jsHeight))
-            }
-            return (false, CGSizeZero)
-        }
-
-        delay(1.0) {
-            [weak self] in
-            guard let me = self else { return }
-            let (result, jsSize) = scrollheightBugDetected(me)
-            if !result {
-                return
-            }
-
-#if DEBUG
-            let label = UILabel(frame: (CGRectMake(0, 0, 300, 30)))
-            label.center = me.frame.center
-            label.text = "JS:\(jsSize) WV:\(me.sizeThatFits(CGSizeZero))"
-            label.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-            me.superview?.addSubview(label)
-            delay(13.0) {
-                label.removeFromSuperview()
-            }
-#endif
-
-            // Check again, if the js-reported height is changing, the page is still laying out, or a different page is showing
-            // Arguably would could keep checking, but a 2s window is sufficient time after page load
-            delay(1.0) {
-                [weak self] in
-                guard let me = self else { return }
-                let (result, jsSizeRechecked) = scrollheightBugDetected(me)
-                if !result || jsSizeRechecked.height != jsSize.height {
-                    // if the js-reported height is changing, page is still laying out
-                    return
-                }
-                print("Webview scroll height hack") // Set slightly larger than sizeThatFits to ensure redraw takes place
-                me.scrollView.contentSize = CGSizeMake(me.scrollView.contentSize.width, me.sizeThatFits(CGSizeZero).height + 1)
-            }
         }
     }
 
@@ -397,14 +340,6 @@ class BraveWebView: UIWebView {
     }
 
     func reloadFromOrigin() {
-        // In trying to repro/fix issue #216, i found ping zooming in/out to extremes can cause the view to render badly
-        // which is similar. A reload, or a back/forward nav doesn't fix the view. Turning scalesPageToFit off and on works.
-        delay(0.5) {
-            self.scalesPageToFit = false
-            delay(0.2) {
-                self.scalesPageToFit = true
-            }
-        }
         progress?.setProgress(0.3)
         self.reload()
     }
@@ -491,7 +426,7 @@ class BraveWebView: UIWebView {
             }
             delay(0.2) {
                 [weak self] in
-                self?.URL = urlInfo
+                self?.setUrl(urlInfo, reliableSource: true)
                 self?.kvoBroadcast([KVOStrings.kvoURL])
             }
         }
@@ -547,7 +482,7 @@ extension BraveWebView: UIWebViewDelegate {
         #endif
 
         if AboutUtils.isAboutHomeURL(request.URL) {
-            URL = request.URL
+            setUrl(request.URL, reliableSource: true)
             progress?.completeProgress()
             return true
         }
@@ -589,7 +524,7 @@ extension BraveWebView: UIWebViewDelegate {
         if locationChanged {
             // TODO Maybe separate page unload from link clicked.
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
-            URL = request.URL
+            setUrl(request.URL, reliableSource: true)
             #if DEBUG
                 print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
             #endif

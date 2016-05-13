@@ -87,7 +87,7 @@ public class WebViewProgress
     func incrementProgress() {
         var progress = webView?.estimatedProgress ?? 0.0
         let maxProgress = interactiveCount > 0 ? finalProgressValue : interactiveProgressValue
-        let remainPercent = Double(loadingCount) / Double(maxLoadCount)
+        let remainPercent = Double(loadingCount) / Double(maxLoadCount > 0 ? maxLoadCount : 3)
         let increment = (maxProgress - progress) * remainPercent
         progress += increment
         progress = fmin(progress, maxProgress)

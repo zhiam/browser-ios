@@ -477,12 +477,12 @@ class BrowserViewController: UIViewController {
         let alert = UIAlertController.crashOptInAlert(
             sendReportCallback: { _ in
                 // Turn on uploading but don't save opt-in flag to profile because this is a one time send.
-                configureActiveCrashReporter(true)
+                //configureActiveCrashReporter(true)
                 self.showRestoreTabsAlert()
             },
             alwaysSendCallback: { _ in
                 self.profile.prefs.setBool(true, forKey: "crashreports.send.always")
-                configureActiveCrashReporter(true)
+                //configureActiveCrashReporter(true)
                 self.showRestoreTabsAlert()
             },
             dontSendCallback: { _ in
@@ -784,7 +784,7 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        tab.webView?.URL = url
+        tab.webView?.setUrl(url, reliableSource: true)
         urlBar.currentURL = url
         urlBar.leaveOverlayMode()
 
