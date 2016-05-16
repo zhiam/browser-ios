@@ -166,11 +166,16 @@ class BraveURLBarView : URLBarView {
         v.textAlignment = .Right
         locationContainer.addSubview(v)
         v.alpha = 0.0
+        self.stopReloadButton.alpha = 0
         UIView.animateWithDuration(0.25, animations: { v.alpha = 1.0 }, completion: {
             finished in
-            UIView.animateWithDuration(BraveUX.BraveButtonMessageInUrlBarFadeTime, delay: BraveUX.BraveButtonMessageInUrlBarShowTime, options: [], animations: { v.alpha = 0 }, completion: {
+            UIView.animateWithDuration(BraveUX.BraveButtonMessageInUrlBarFadeTime, delay: BraveUX.BraveButtonMessageInUrlBarShowTime, options: [], animations: {
+                v.alpha = 0
+                self.stopReloadButton.alpha = 1.0
+                }, completion: {
                 finished in
                 v.removeFromSuperview()
+                self.stopReloadButton.alpha = 1.0
             })
         })
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationBraveButtonClicked, object: braveButton)
@@ -213,7 +218,7 @@ class BraveURLBarView : URLBarView {
             self.tabsButton.hidden = false
         }
 
-        self.stopReloadButton.hidden = true
+        //self.stopReloadButton.hidden = true
         progressBar.hidden = true
         bookmarkButton.hidden = true
     }
@@ -321,6 +326,8 @@ class BraveURLBarView : URLBarView {
                 make.size.equalTo(UIConstants.ToolbarHeight)
             }
         }
+
+        bringSubviewToFront(stopReloadButton)
     }
 
     override func setupConstraints() {
@@ -362,6 +369,15 @@ class BraveURLBarView : URLBarView {
             make.trailing.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
+
+
+        stopReloadButton.snp_makeConstraints { make in
+            make.right.equalTo(self.locationView.snp_right).offset(6)
+            make.centerY.equalTo(self)
+            make.size.equalTo(UIConstants.ToolbarHeight)
+        }
+
+        bringSubviewToFront(stopReloadButton)
     }
 
     var progressIsCompleting = false

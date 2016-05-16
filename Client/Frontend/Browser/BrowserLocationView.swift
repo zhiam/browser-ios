@@ -208,7 +208,8 @@ class BrowserLocationView: UIView {
             }
 
             if readerModeButton.hidden {
-                make.right.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset)
+                make.right.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset
+                    + 20) // BRAVE added to make space for stopReloadButton
             } else {
                 make.right.equalTo(self.readerModeButton.snp_left)
             }

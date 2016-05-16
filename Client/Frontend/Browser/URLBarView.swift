@@ -305,33 +305,8 @@ class URLBarView: UIView {
 
     override func updateConstraints() {
         super.updateConstraints()
-        if inOverlayMode {
-            #if !BRAVE
-            // In overlay mode, we always show the location view full width
-            self.locationContainer.snp_remakeConstraints { make in
-                make.leading.equalTo(self).offset(URLBarViewUX.LocationLeftPadding)
-                make.trailing.equalTo(self.cancelButton.snp_leading)
-                make.height.equalTo(URLBarViewUX.LocationHeight)
-                make.centerY.equalTo(self)
-            }
-            #endif
-        } else {
-            self.locationContainer.snp_remakeConstraints { make in
-                if self.toolbarIsShowing {
-                    // If we are showing a toolbar, show the text field next to the forward button
-                    make.leading.equalTo(self.stopReloadButton.snp_trailing)
-                    make.trailing.equalTo(self.shareButton.snp_leading)
-                } else {
-                    // Otherwise, left align the location view
-                    make.leading.equalTo(self).offset(URLBarViewUX.LocationLeftPadding)
-                    make.trailing.equalTo(self.tabsButton.snp_leading).offset(-14)
-                }
 
-                make.height.equalTo(URLBarViewUX.LocationHeight)
-                make.centerY.equalTo(self)
-            }
-        }
-
+        // BRAVE removed
     }
 
     func createLocationTextField() {
@@ -547,7 +522,7 @@ class URLBarView: UIView {
         self.bookmarkButton.hidden = !self.toolbarIsShowing
         self.forwardButton.hidden = !self.toolbarIsShowing
         self.backButton.hidden = !self.toolbarIsShowing
-        self.stopReloadButton.hidden = !self.toolbarIsShowing
+        self.stopReloadButton.hidden = false
     }
 
     func transitionToOverlay(didCancel: Bool = false) {
@@ -594,7 +569,7 @@ class URLBarView: UIView {
         self.bookmarkButton.hidden = !self.toolbarIsShowing || inOverlayMode
         self.forwardButton.hidden = !self.toolbarIsShowing || inOverlayMode
         self.backButton.hidden = !self.toolbarIsShowing || inOverlayMode
-        self.stopReloadButton.hidden = !self.toolbarIsShowing || inOverlayMode
+        self.stopReloadButton.hidden = inOverlayMode
     }
 
     func animateToOverlayState(overlayMode overlay: Bool, didCancel cancel: Bool = false) {
@@ -672,7 +647,7 @@ extension URLBarView: BrowserToolbarProtocol {
                 if toolbarIsShowing {
                     return [backButton, forwardButton, stopReloadButton, locationView, shareButton, bookmarkButton, tabsButton, progressBar]
                 } else {
-                    return [locationView, tabsButton, progressBar]
+                    return [locationView, tabsButton, progressBar, stopReloadButton]
                 }
             }
         }
