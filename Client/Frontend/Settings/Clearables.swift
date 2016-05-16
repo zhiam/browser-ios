@@ -71,25 +71,30 @@ class CacheClearable: Clearable {
     }
 
     func clear() -> Success {
-        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
+        getApp().tabManager.removeAll()
 
-        NSURLCache.sharedURLCache().memoryCapacity = 0;
-        NSURLCache.sharedURLCache().diskCapacity = 0;
-        // Remove the basic cache.
-        NSURLCache.sharedURLCache().removeAllCachedResponses()
+        let result = Deferred<Maybe<()>>()
+        // need event loop to run to autorelease UIWebViews fully
+        delay(0.1) {
+            NSURLCache.sharedURLCache().memoryCapacity = 0;
+            NSURLCache.sharedURLCache().diskCapacity = 0;
+            // Remove the basic cache.
+            NSURLCache.sharedURLCache().removeAllCachedResponses()
 
-        for item in ["Caches", "Preferences", "Cookies", "WebKit"] {
-            do {
-                try deleteLibraryFolderContents(item, validateClearedExceptFor: ["Snapshots"])
-            } catch {
-                return deferMaybe(ClearableErrorType(err: error))
+            for item in ["Caches", "Preferences", "Cookies", "WebKit"] {
+                do {
+                    try deleteLibraryFolderContents(item, validateClearedExceptFor: ["Snapshots"])
+                } catch {
+                    return result.fill(Maybe<()>(failure: ClearableErrorType(err: error)))
+                }
             }
+
+            // Leave the cache off in the error cases above
+            BraveApp.setupCacheDefaults()
+            result.fill(Maybe<()>(success: ()))
         }
 
-        // Leave the cache off in the error cases above
-        BraveApp.setupCacheDefaults()
-
-        return succeed()
+        return result
     }
 }
 
@@ -171,25 +176,29 @@ class CookiesClearable: Clearable {
     }
 
     func clear() -> Success {
-        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
-
+        getApp().tabManager.removeAll()
         NSUserDefaults.standardUserDefaults().synchronize()
 
-        // Now we wipe the system cookie store (for our app).
-        let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-        if let cookies = storage.cookies {
-            for cookie in cookies {
-                storage.deleteCookie(cookie)
+        let result = Deferred<Maybe<()>>()
+        // need event loop to run to autorelease UIWebViews fully
+        delay(0.1) {
+            // Now we wipe the system cookie store (for our app).
+            let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+            if let cookies = storage.cookies {
+                for cookie in cookies {
+                    storage.deleteCookie(cookie)
+                }
             }
-        }
-        NSUserDefaults.standardUserDefaults().synchronize()
+            NSUserDefaults.standardUserDefaults().synchronize()
 
-        // And just to be safe, we also wipe the Cookies directory.
-        do {
-            try deleteLibraryFolderContents("Cookies", validateClearedExceptFor: [])
-        } catch {
-            return deferMaybe(ClearableErrorType(err: error))
+            // And just to be safe, we also wipe the Cookies directory.
+            do {
+                try deleteLibraryFolderContents("Cookies", validateClearedExceptFor: [])
+            } catch {
+                return result.fill(Maybe<()>(failure: ClearableErrorType(err: error)))
+            }
+            return result.fill(Maybe<()>(success: ()))
         }
-        return succeed()
+        return result
     }
 }
