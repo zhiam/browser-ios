@@ -95,6 +95,7 @@ class BraveURLBarView : URLBarView {
         braveButton.setImage(UIImage(named: "bravePanelButtonOff"), forState: .Selected)
         braveButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
         braveButton.tintColor = BraveUX.ActionButtonTintColor
+        braveButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 4)
 
         ToolbarTextField.appearance().clearButtonTintColor = nil
 
@@ -127,6 +128,8 @@ class BraveURLBarView : URLBarView {
         theme.textColor = BraveUX.LocationBarTextColor
         theme.buttonTintColor = BraveUX.ActionButtonTintColor
         URLBarViewUX.Themes[Theme.NormalMode] = theme
+
+        stopReloadButton.imageEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 0)
     }
 
     override func applyTheme(themeName: String) {
@@ -218,7 +221,6 @@ class BraveURLBarView : URLBarView {
             self.tabsButton.hidden = false
         }
 
-        //self.stopReloadButton.hidden = true
         progressBar.hidden = true
         bookmarkButton.hidden = true
     }
@@ -372,7 +374,7 @@ class BraveURLBarView : URLBarView {
 
 
         stopReloadButton.snp_makeConstraints { make in
-            make.right.equalTo(self.locationView.snp_right).offset(6)
+            make.right.equalTo(self.locationView.snp_right)
             make.centerY.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
