@@ -95,7 +95,6 @@ class BraveURLBarView : URLBarView {
         braveButton.setImage(UIImage(named: "bravePanelButtonOff"), forState: .Selected)
         braveButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
         braveButton.tintColor = BraveUX.ActionButtonTintColor
-        braveButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 4)
 
         ToolbarTextField.appearance().clearButtonTintColor = nil
 
