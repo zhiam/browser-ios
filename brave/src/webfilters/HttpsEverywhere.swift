@@ -98,12 +98,15 @@ class HttpsEverywhere {
                     }
                 }
 
-                if let exclusion = ruleset["exclusion"] as? String {
-                    let regex = try NSRegularExpression(pattern: exclusion, options: [])
-                    for item in urlCandidates {
-                        let result = regex.firstMatchInString(item, options: [], range: NSMakeRange(0, item.characters.count))
-                        if let result = result where result.range.location != NSNotFound {
-                            return nil
+                if let exclusion = ruleset["exclusion"] as? [NSDictionary] {
+                    for rule in exclusion {
+                        guard let props = rule["$"] as? NSDictionary, pattern = props["pattern"] as? String else { return nil }
+                        let regex = try NSRegularExpression(pattern: pattern, options: [])
+                        for item in urlCandidates {
+                            let result = regex.firstMatchInString(item, options: [], range: NSMakeRange(0, item.characters.count))
+                            if let result = result where result.range.location != NSNotFound {
+                                return nil
+                            }
                         }
                     }
                 }
