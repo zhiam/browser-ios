@@ -7,6 +7,11 @@
     function begins(str, startStr) { // in case no String.startsWith
       return str.indexOf(startStr) == 0
     }
+
+    if (begins(url, 'newtab:')) {
+        url = unescape(url.substring('newtab:'.length))
+    }
+
     if (begins(url, 'http')) {
       return url;
     } else if (begins(url, 'mailto:')) {

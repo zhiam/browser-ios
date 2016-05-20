@@ -42,6 +42,12 @@ class LegacyUserContentController
         self.webView = webView
     }
 
+    static var jsBlankTargetToNewTab:String = {
+        let path = NSBundle.mainBundle().pathForResource("BlankTargetToNewTab", ofType: "js")!
+        let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
+        return source
+    }()
+
     func injectIntoMain() {
         guard let webView = webView else { return }
 
@@ -51,8 +57,11 @@ class LegacyUserContentController
             return
         }
 
+        webView.stringByEvaluatingJavaScriptFromString(LegacyUserContentController.jsBlankTargetToNewTab)
+
         let js = LegacyJSContext()
         js.windowOpenOverride(webView)
+
         for (name, handler) in scriptHandlersMainFrame {
             if !name.lowercaseString.contains("reader") {
                 js.installHandlerForWebView(webView, handlerName: name, handler:handler)

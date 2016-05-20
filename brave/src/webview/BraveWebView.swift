@@ -33,7 +33,9 @@ enum KVOStrings: String {
         ensureMainThread {
             guard let wv = BraveApp.getCurrentWebView() else { return }
             let current = wv.URL
+            print("window.open")
             if let _url = NSURL(string: url, relativeToURL: current) {
+                wv.urlToIgnore = (url: _url, time: NSDate(timeIntervalSinceNow: 0))
                 getApp().tabManager.addTabAndSelect(NSURLRequest(URL: _url))
             }
         }
@@ -51,6 +53,7 @@ class BraveWebView: UIWebView {
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
+    var urlToIgnore: (url: NSURL, time: NSDate)?
 
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
@@ -471,14 +474,34 @@ extension BraveWebView: UIWebViewDelegate {
         }
     }
 
-
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
+        guard let url = request.URL else { return false }
+
+        if let ignored = urlToIgnore where ignored.url.absoluteString == url.absoluteString && ignored.time.timeIntervalSinceNow > -0.25 /* urlToIgnore must have been set in the last 250ms */ {
+            // window.open hook uses this, as our hook still causes navigation to proceed
+            return false
+        }
+
+        if let contextMenu = window?.rootViewController?.presentedViewController
+            where contextMenu.view.tag == BraveWebView.kContextMenuBlockNavigation {
+            // When showing a context menu, the webview will often still navigate (ex. news.google.com)
+            // We need to block navigation using this tag.
+            return false
+        }
+
+        if url.absoluteString.startsWith("newtab:") {
+            if let newlink = url.resourceSpecifier.stringByRemovingPercentEncoding, newurl = NSURL(string: newlink, relativeToURL: URL) {
+                getApp().tabManager.addTabAndSelect(NSURLRequest(URL: newurl))
+                return false
+            }
+        }
+
         if BraveWebView.webviewBuiltinUserAgent == nil {
             BraveWebView.webviewBuiltinUserAgent = request.valueForHTTPHeaderField("User-Agent")
             assert(BraveWebView.webviewBuiltinUserAgent != nil)
         }
 
-        if let url = request.URL where url.scheme == "mailto" {
+        if url.scheme == "mailto" {
             UIApplication.sharedApplication().openURL(url)
             return false
         }
@@ -489,25 +512,18 @@ extension BraveWebView: UIWebViewDelegate {
                 if printedUrl.characters.count > maxLen {
                     printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
                 }
-                // print("webview load: " + printedUrl)
+                print("webview load: " + printedUrl)
             }
         #endif
 
-        if AboutUtils.isAboutHomeURL(request.URL) {
-            setUrl(request.URL, reliableSource: true)
+        if AboutUtils.isAboutHomeURL(url) {
+            setUrl(url, reliableSource: true)
             progress?.completeProgress()
             return true
         }
 
-        if let url = request.URL where url.absoluteString.contains(specialStopLoadUrl) {
+        if url.absoluteString.contains(specialStopLoadUrl) {
             progress?.completeProgress()
-            return false
-        }
-
-        if let contextMenu = window?.rootViewController?.presentedViewController
-            where contextMenu.view.tag == BraveWebView.kContextMenuBlockNavigation {
-            // When showing a context menu, the webview will often still navigate (ex. news.google.com)
-            // We need to block navigation using this tag.
             return false
         }
 
@@ -532,11 +548,11 @@ extension BraveWebView: UIWebViewDelegate {
             })
         }
 
-        let locationChanged = BraveWebView.isTopFrameRequest(request) && request.URL?.absoluteString != URL?.absoluteString
+        let locationChanged = BraveWebView.isTopFrameRequest(request) && url.absoluteString != URL?.absoluteString
         if locationChanged {
             // TODO Maybe separate page unload from link clicked.
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
-            setUrl(request.URL, reliableSource: true)
+            setUrl(url, reliableSource: true)
             #if DEBUG
                 print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
             #endif
