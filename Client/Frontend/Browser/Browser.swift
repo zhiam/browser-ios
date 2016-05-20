@@ -26,6 +26,10 @@ protocol BrowserDelegate {
     func browser(browser: Browser, willDeleteWebView webView: BraveWebView)
 }
 
+struct DangerousReturnWKNavigation {
+    static let emptyNav = WKNavigation()
+}
+
 class Browser: NSObject, BrowserWebViewDelegate {
     private var _isPrivate: Bool = false
     internal private(set) var isPrivate: Bool {
@@ -359,9 +363,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
 #if !BRAVE
             return webView.loadRequest(request)
 #else
-            struct DangerousReturnWKNavigation {
-              static let emptyNav = WKNavigation()
-            }
             webView.loadRequest(request); return DangerousReturnWKNavigation.emptyNav;
 #endif
           }
