@@ -127,6 +127,16 @@ class BraveApp {
             CookieSetting.setupOnAppStart()
             ThirdPartyPasswordManagerSetting.setupOnAppStart()
         #endif
+
+        getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
+            ensureMainThread {
+                if let wv = getCurrentWebView(), url = wv.URL, base = url.baseDomain() where braveShieldForDomain[base] != nil
+                    && wv.braveShieldState?.state == 0 {
+                    wv.braveShieldState = BraveShieldState(state: braveShieldForDomain[base])
+                    wv.reloadFromOrigin()
+                }
+            }
+        }
     }
 
     // This can only be checked ONCE, the flag is cleared after this.

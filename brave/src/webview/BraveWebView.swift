@@ -54,6 +54,7 @@ class BraveWebView: UIWebView {
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
     var urlToIgnore: (url: NSURL, time: NSDate)?
+    var braveShieldState = BraveShieldState(state: 0)
 
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
@@ -126,6 +127,10 @@ class BraveWebView: UIWebView {
     static var webViewCounter = 0
     // Needed to identify webview in url protocol
     func generateUniqueUserAgent() {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         BraveWebView.webViewCounter += 1
         if let webviewBuiltinUserAgent = BraveWebView.webviewBuiltinUserAgent {
             let userAgent = webviewBuiltinUserAgent + String(format:" _id/%06d", BraveWebView.webViewCounter)
@@ -145,6 +150,10 @@ class BraveWebView: UIWebView {
     }
 
     static func userAgentToWebview(let ua: String?) -> BraveWebView? {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
         guard let ua = ua else { return nil }
         guard let loc = ua.rangeOfString("_id/") else {
             // the first created webview doesn't have this id set (see webviewBuiltinUserAgent to explain)
@@ -228,7 +237,6 @@ class BraveWebView: UIWebView {
             let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
             scrollView.setValue(NSValue(CGSize: CGSizeMake(rate, rate)), forKey: "_decelerationFactor")
         #endif
-
     }
 
     func internalProgressNotification(notification: NSNotification) {
@@ -285,9 +293,6 @@ class BraveWebView: UIWebView {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: internalProgressChangedNotification, object: internalWebView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveWebView.internalProgressNotification(_:)), name: internalProgressChangedNotification, object: internalWebView)
 
-        if let url = request.URL where !url.absoluteString.contains(specialStopLoadUrl) {
-            setUrl(url, reliableSource: true)
-        }
         super.loadRequest(request)
     }
 
@@ -507,13 +512,12 @@ extension BraveWebView: UIWebViewDelegate {
         }
 
         #if DEBUG
-            if var printedUrl = request.URL?.absoluteString {
-                let maxLen = 100
-                if printedUrl.characters.count > maxLen {
-                    printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
-                }
-                print("webview load: " + printedUrl)
+            var printedUrl = url.absoluteString
+            let maxLen = 100
+            if printedUrl.characters.count > maxLen {
+                printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
             }
+            //print("webview load: " + printedUrl)
         #endif
 
         if AboutUtils.isAboutHomeURL(url) {
@@ -556,6 +560,14 @@ extension BraveWebView: UIWebViewDelegate {
             #if DEBUG
                 print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
             #endif
+
+            if let url = request.URL, domain = url.baseDomain() {
+                braveShieldState = BraveShieldState(state: braveShieldForDomain[domain] ?? 0)
+                delay(0.2) { // update the UI, wait a bit for loading to have started
+                    let urlBar = getApp().browserViewController.urlBar as! BraveURLBarView
+                    urlBar.braveButton.selected = self.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue
+                }
+            }
         }
 
         kvoBroadcast()

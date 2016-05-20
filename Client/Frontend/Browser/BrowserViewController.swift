@@ -784,7 +784,6 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        tab.webView?.setUrl(url, reliableSource: true)
         urlBar.currentURL = url
         urlBar.leaveOverlayMode()
 
