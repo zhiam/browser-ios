@@ -21,4 +21,5 @@
 
 -(NSArray*)findNewFramesForWebView:(UIWebView *)webView withFrameContexts:(NSSet *)contexts;
 
+- (void)windowOpenOverride:(UIWebView *)webView;
 @end

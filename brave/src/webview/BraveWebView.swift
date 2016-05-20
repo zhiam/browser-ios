@@ -28,6 +28,18 @@ enum KVOStrings: String {
     static let allValuesExceptURL = [kvoCanGoBack, kvoCanGoForward, kvoLoading, kvoEstimatedProgress]
 }
 
+@objc class HandleJsWindowOpen : NSObject {
+    static func open(url: String) {
+        ensureMainThread {
+            guard let wv = BraveApp.getCurrentWebView() else { return }
+            let current = wv.URL
+            if let _url = NSURL(string: url, relativeToURL: current) {
+                getApp().tabManager.addTabAndSelect(NSURLRequest(URL: _url))
+            }
+        }
+    }
+}
+
 class BraveWebView: UIWebView {
     let specialStopLoadUrl = "http://localhost.stop.load"
     static let kNotificationWebViewLoadCompleteOrFailed = "kNotificationWebViewLoadCompleteOrFailed"

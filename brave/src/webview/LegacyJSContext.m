@@ -2,6 +2,7 @@
 
 #import "LegacyJSContext.h"
 #import <JavaScriptCore/JavaScriptCore.h>
+#import "Client-Swift.h"
 
 @interface FrameInfoWrapper : WKFrameInfo
 @property (atomic, retain) NSURLRequest* writableRequest;
@@ -142,6 +143,26 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
   JSContext* context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
   [self installHandlerForContext:context handlerName:handlerName handler:handler webView:webView];
 }
+
+- (void)windowOpenOverride:(UIWebView *)webView
+{
+    static NSUInteger prevContext = 0;
+    assert([NSThread isMainThread]);
+    JSContext* context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    if (!context) {
+        return;
+    }
+    NSUInteger hash = [context hash];
+    BOOL isInstalled = hash == prevContext;
+    prevContext = hash;
+    if (isInstalled) {
+        return;
+    }
+    context[@"window"][@"open"] = ^(NSString *url) {
+        [HandleJsWindowOpen open:url];
+    };
+}
+
 
 - (void)callOnContext:(id)context script:(NSString*)script
 {
