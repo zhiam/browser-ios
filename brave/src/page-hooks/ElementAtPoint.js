@@ -14,13 +14,15 @@
     } else if (begins(url, '//')) {
       return window.location.protocol + url;
     } else {
-      return window.location.protocol + '//' + window.location.hostname + url;
+      var path = window.location.hostname + '/' + url;
+      path = path.replace('//', '/')
+      return window.location.protocol + '//' + path;
     }
   }
 
   var e = document.elementFromPoint(x, y);
   var result = {}
-  while (e) {
+  for (var i = 0; e && i < 5; i++)  {
     if (!e.tagName) {
       e = e.parentNode;
       continue;
@@ -28,6 +30,8 @@
 
     if (e.tagName === 'A') {
       result['link'] = parseUrl(e.getAttribute('href'));
+      result['target'] = e.getAttribute('target');
+      break;
     } else if (e.tagName === 'IMG') {
       result['imagesrc'] = parseUrl(e.getAttribute('src'));
     }

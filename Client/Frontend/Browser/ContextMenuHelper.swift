@@ -34,15 +34,6 @@ class ContextMenuHelper: NSObject, BrowserHelper, UIGestureRecognizerDelegate {
         super.init()
 
         self.browser = browser
-
-        let path = NSBundle.mainBundle().pathForResource("ContextMenu", ofType: "js")!
-        let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
-        let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: false)
-        browser.webView!.configuration.userContentController.addUserScript(userScript)
-
-        // Add a gesture recognizer that disables the built-in context menu gesture recognizer.
-        gestureRecognizer.delegate = self
-        browser.webView!.addGestureRecognizer(gestureRecognizer)
     }
 
     func scriptMessageHandlerName() -> String? {
@@ -97,17 +88,6 @@ class ContextMenuHelper: NSObject, BrowserHelper, UIGestureRecognizerDelegate {
         return true
     }
 
-#if !BRAVE
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailByGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Hack to detect the built-in text selection gesture recognizer.
-        if let otherDelegate = otherGestureRecognizer.delegate where String(otherDelegate).contains("_UIKeyboardBasedNonEditableTextSelectionGestureController") {
-            selectionGestureRecognizer = otherGestureRecognizer
-        }
-
-        // Hack to detect the built-in context menu gesture recognizer.
-        return otherGestureRecognizer is UILongPressGestureRecognizer && otherGestureRecognizer.delegate?.description.rangeOfString("WKContentView") != nil
-    }
-#endif
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         return showCustomContextMenu
     }

@@ -9,12 +9,6 @@ class BraveContextMenu {
     var contextualMenuTimer: NSTimer = NSTimer()
     var tappedElement: ContextMenuHelper.Elements?
 
-    lazy var contextMenuJs:String = {
-        let path = NSBundle.mainBundle().pathForResource("BraveContextMenu", ofType: "js")!
-        let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
-        return source
-    }()
-
     func resetTimer() {
         contextualMenuTimer.invalidate()
         tappedElement = nil
@@ -62,23 +56,6 @@ class BraveContextMenu {
         }
     }
 
-    func windowSizeAndScrollOffset(webView: BraveWebView) ->(CGSize, CGPoint)? {
-        let response = webView.stringByEvaluatingJavaScriptFromString("JSON.stringify({ width: window.innerWidth, height: window.innerHeight, x: window.pageXOffset, y: window.pageYOffset })")
-        do {
-            guard let json = try NSJSONSerialization.JSONObjectWithData((response?.dataUsingEncoding(NSUTF8StringEncoding))!, options: [])
-                as? [String:AnyObject] else { return nil }
-            if let w = json["width"] as? CGFloat,
-                let h = json["height"] as? CGFloat,
-                let x = json["x"] as? CGFloat,
-                let y = json["y"] as? CGFloat {
-                return (CGSizeMake(w, h), CGPointMake(x, y))
-            }
-            return nil
-        } catch {
-            return nil
-        }
-    }
-
     // This is called 2x, once at .25 seconds to ensure the native context menu is cancelled,
     // then again at .5 seconds to show our context menu. (This code was borne of frustration, not ideal flow)
     @objc func tapAndHoldAction() {
@@ -100,36 +77,12 @@ class BraveContextMenu {
         }
 
         func extractElementAndBlockNativeMenu() {
-            guard let webView = BraveApp.getCurrentWebView() else { return }
-            var pt = webView.convertPoint(tapLocation, fromView: nil)
-
-            let viewSize = webView.frame.size
-            guard let (windowSize, _) = windowSizeAndScrollOffset(webView) else { return }
-
-            let f = windowSize.width / viewSize.width;
-            pt.x = pt.x * f;// + offset.x;
-            pt.y = pt.y * f;// + offset.y;
-
-            let result = webView.stringByEvaluatingJavaScriptFromString(contextMenuJs + "(\(pt.x), \(pt.y))")
-            print("\(result ?? "no match")")
-
-            guard let response = result where response.characters.count > "{}".characters.count else {
+            guard let hit = ElementAtPoint().getHit(tapLocation) else {
                 resetTimer()
                 return
             }
 
-            func responseToElement(response: String) -> ContextMenuHelper.Elements? {
-                do {
-                    guard let json = try NSJSONSerialization.JSONObjectWithData((response.dataUsingEncoding(NSUTF8StringEncoding))!, options: [])
-                        as? [String:AnyObject] else { return nil }
-                    let image = (json["imagesrc"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-                    let url = (json["link"] as? String)?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
-                    return ContextMenuHelper.Elements(link: url != nil ? NSURL(string: url!) : nil, image: image != nil ? NSURL(string: image!) : nil)
-                } catch {}
-                return nil
-            }
-
-            tappedElement = responseToElement(response)
+            tappedElement = ContextMenuHelper.Elements(link: hit.url != nil ? NSURL(string: hit.url!) : nil, image: hit.image != nil ? NSURL(string: hit.image!) : nil)
 
             func blockOtherGestures(views: [UIView]?) {
                 guard let views = views else { return }
@@ -145,8 +98,8 @@ class BraveContextMenu {
                     }
                 }
             }
-            
-            blockOtherGestures(webView.scrollView.subviews)
+
+            blockOtherGestures(BraveApp.getCurrentWebView()?.scrollView.subviews)
         }
 
         if let tappedElement = tappedElement {
