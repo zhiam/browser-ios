@@ -43,7 +43,7 @@ class LegacyUserContentController
     }
 
     static var jsBlankTargetToNewTab:String = {
-        let path = NSBundle.mainBundle().pathForResource("BlankTargetToNewTab", ofType: "js")!
+        let path = NSBundle.mainBundle().pathForResource("BlankTargetDetector", ofType: "js")!
         let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
         return source
     }()
