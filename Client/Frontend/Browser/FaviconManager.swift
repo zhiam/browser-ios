@@ -68,22 +68,24 @@ class FaviconManager : BrowserHelper {
                         date: NSDate(),
                         type: icon.type)
 
+                    let spotlight = tab.getHelper(name: "SpotlightHelper") as? SpotlightHelper
+
                     if let img = img {
                         fav.width = Int(img.size.width)
                         fav.height = Int(img.size.height)
                     } else {
                         if favicons.count == 1 && favicons[0].type == .Guess {
                             // No favicon is indicated in the HTML
-                            ///self.noFaviconAvailable(tab, atURL: tabUrl)
+                            spotlight?.updateImage(forURL: url)
                         }
                         downloadBestIcon()
                         return
                     }
 
                     if !tab.isPrivate {
-                        self.profile.favicons.addFavicon(fav, forSite: site)
+                        getApp().profile?.favicons.addFavicon(fav, forSite: site)
                         if tab.favicons.isEmpty {
-                            self.makeFaviconAvailable(tab, atURL: currentUrl, favicon: fav, withImage: img)
+                            spotlight?.updateImage(img, forURL: url)
                         }
                     }
                     tab.favicons[currentUrl.baseDomain() ?? ""] = fav
@@ -98,16 +100,5 @@ class FaviconManager : BrowserHelper {
         }
 
         downloadBestIcon()
-    }
-
-    func makeFaviconAvailable(tab: Browser, atURL url: NSURL, favicon: Favicon, withImage image: UIImage) {
-        let helper = tab.getHelper(name: "SpotlightHelper") as? SpotlightHelper
-        helper?.updateImage(image, forURL: url)
-    }
-
-    func noFaviconAvailable(tab: Browser, atURL url: NSURL) {
-        let helper = tab.getHelper(name: "SpotlightHelper") as? SpotlightHelper
-        helper?.updateImage(forURL: url)
-
     }
 }

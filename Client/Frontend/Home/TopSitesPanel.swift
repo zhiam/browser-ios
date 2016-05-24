@@ -187,19 +187,21 @@ class TopSitesPanel: UIViewController {
             deleteTileForSuggestedSite(site as! SuggestedSite)
         }
 
-        profile.history.removeSiteFromTopSites(site).uponQueue(dispatch_get_main_queue()) { result in
-            guard result.isSuccess else { return }
+        succeed().upon() { _ in // move off main thread
+            getApp().profile?.history.removeSiteFromTopSites(site).uponQueue(dispatch_get_main_queue()) { result in
+                guard result.isSuccess else { return }
 
-            // Remove the site from the current data source. Don't requery yet
-            // since a Sync or location change may have changed the data under us.
-            self.dataSource.sites = self.dataSource.sites.filter { $0 !== site }
+                // Remove the site from the current data source. Don't requery yet
+                // since a Sync or location change may have changed the data under us.
+                self.dataSource.sites = self.dataSource.sites.filter { $0 !== site }
 
-            // Update the UICollectionView.
-            self.deleteOrUpdateSites(indexPath) >>> {
-                // Finally, requery to pull in the latest sites.
-                self.profile.history.getTopSitesWithLimit(self.maxFrecencyLimit).uponQueue(dispatch_get_main_queue()) { result in
-                    self.updateDataSourceWithSites(result)
-                    self.collection?.userInteractionEnabled = true
+                // Update the UICollectionView.
+                self.deleteOrUpdateSites(indexPath) >>> {
+                    // Finally, requery to pull in the latest sites.
+                    self.profile.history.getTopSitesWithLimit(self.maxFrecencyLimit).uponQueue(dispatch_get_main_queue()) { result in
+                        self.updateDataSourceWithSites(result)
+                        self.collection?.userInteractionEnabled = true
+                    }
                 }
             }
         }

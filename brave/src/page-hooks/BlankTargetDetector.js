@@ -7,7 +7,8 @@
     var link = links[i];
     var target = link.getAttribute('target');
     if (target && target == '_blank') {
-      link.href = 'newtab:' + escape(link.href);
+        return true;
     }
   }
+  return false;
 })()

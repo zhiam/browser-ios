@@ -8,11 +8,13 @@ protocol WindowTouchFilter: class {
 class BraveMainWindow : UIWindow {
 
     let contextMenuHandler = BraveContextMenu()
+    let blankTargetLinkHandler = BlankTargetLinkHandler()
 
     weak var windowTouchFilter: WindowTouchFilter?
 
     override func sendEvent(event: UIEvent) {
         contextMenuHandler.sendEvent(event, window: self)
+        blankTargetLinkHandler.sendEvent(event, window: self)
 
         let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController
         if let braveTopVC = braveTopVC, touches = event.touchesForWindow(self), let touch = touches.first where touches.count == 1 {

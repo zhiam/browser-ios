@@ -55,6 +55,7 @@ class BraveWebView: UIWebView {
     var certificateInvalidConnection:NSURLConnection?
     var urlToIgnore: (url: NSURL, time: NSDate)?
     var braveShieldState = BraveShieldState(state: 0)
+    var blankTargetLinkDetectionOn = true
 
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
@@ -284,6 +285,12 @@ class BraveWebView: UIWebView {
         print("webview deinit \(title) ")
     }
 
+    var blankTargetUrl: String?
+
+    func urlBlankTargetTapped(url: String) {
+        blankTargetUrl = url
+    }
+
     let internalProgressStartedNotification = "WebProgressStartedNotification"
     let internalProgressChangedNotification = "WebProgressEstimateChangedNotification"
     let internalProgressFinishedNotification = "WebProgressFinishedNotification" // Not usable
@@ -489,6 +496,13 @@ extension BraveWebView: UIWebViewDelegate {
             return false
         }
 
+        if url.absoluteString == blankTargetUrl {
+            blankTargetUrl = nil
+            getApp().tabManager.addTabAndSelect(request)
+            return false
+        }
+        blankTargetUrl = nil
+
         if let contextMenu = window?.rootViewController?.presentedViewController
             where contextMenu.view.tag == BraveWebView.kContextMenuBlockNavigation {
             // When showing a context menu, the webview will often still navigate (ex. news.google.com)
@@ -556,6 +570,7 @@ extension BraveWebView: UIWebViewDelegate {
 
         let locationChanged = BraveWebView.isTopFrameRequest(request) && url.absoluteString != URL?.absoluteString
         if locationChanged {
+            blankTargetLinkDetectionOn = true
             // TODO Maybe separate page unload from link clicked.
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
             setUrl(url, reliableSource: true)

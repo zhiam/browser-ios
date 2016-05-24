@@ -78,7 +78,7 @@ class BraveSettingsView : AppSettingsTableViewController {
 
 //            ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
 //                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting"), statusText: nil, settingDidChange: { _ in
-//                    LinkTargetBlankHandler.updatedEnabledState() })
+//                    BlankTargetLinkHandler.updatedEnabledState() })
         ]
 
         #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR

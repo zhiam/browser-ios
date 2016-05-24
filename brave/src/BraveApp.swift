@@ -126,6 +126,7 @@ class BraveApp {
             PrivateBrowsing.singleton.startupCheckIfKilledWhileInPBMode()
             CookieSetting.setupOnAppStart()
             ThirdPartyPasswordManagerSetting.setupOnAppStart()
+            //BlankTargetLinkHandler.updatedEnabledState()
         #endif
 
         getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {

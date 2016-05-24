@@ -120,7 +120,13 @@ class ClearPrivateDataTableViewController: UITableViewController {
                     }
 
                     log.debug("Clearing \(pair.clearable).")
-                    return pair.clearable.clear()
+                    let res = Success()
+                    succeed().upon() { _ in // move off main thread
+                        pair.clearable.clear().upon() { result in
+                            res.fill(result)
+                        }
+                    }
+                    return res
                 }
                 .allSucceed()
                 .upon { result in
