@@ -382,10 +382,12 @@ class BraveWebView: UIWebView {
     }
 
     func evaluateJavaScript(javaScriptString: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
-        let wrapped = "var result = \(javaScriptString); JSON.stringify(result)"
-        let string = stringByEvaluatingJavaScriptFromString(wrapped)
-        let dict = convertStringToDictionary(string)
-        completionHandler?(dict, NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, userInfo: nil))
+        ensureMainThread() {
+            let wrapped = "var result = \(javaScriptString); JSON.stringify(result)"
+            let string = self.stringByEvaluatingJavaScriptFromString(wrapped)
+            let dict = self.convertStringToDictionary(string)
+            completionHandler?(dict, NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, userInfo: nil))
+        }
     }
 
     func goToBackForwardListItem(item: LegacyBackForwardListItem) {

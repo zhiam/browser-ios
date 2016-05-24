@@ -218,19 +218,20 @@ class LoginsHelper: BrowserHelper {
     }
 
     private func requestLogins(login: LoginData, requestId: String) {
-        profile.logins.getLoginsForProtectionSpace(login.protectionSpace).uponQueue(dispatch_get_main_queue()) { res in
-            var jsonObj = [String: AnyObject]()
-            if let cursor = res.successValue {
-                log.debug("Found \(cursor.count) logins.")
-                jsonObj["requestId"] = requestId
-                jsonObj["name"] = "RemoteLogins:loginsFound"
-                jsonObj["logins"] = cursor.map { $0!.toDict() }
-            }
+        succeed().upon() { _ in // move off main thread
+            getApp().profile?.logins.getLoginsForProtectionSpace(login.protectionSpace).uponQueue(dispatch_get_main_queue()) { res in
+                var jsonObj = [String: AnyObject]()
+                if let cursor = res.successValue {
+                    log.debug("Found \(cursor.count) logins.")
+                    jsonObj["requestId"] = requestId
+                    jsonObj["name"] = "RemoteLogins:loginsFound"
+                    jsonObj["logins"] = cursor.map { $0!.toDict() }
+                }
 
-            let json = JSON(jsonObj)
-            let src = "window.__firefox__.logins.inject(\(json.toString()))"
-            self.browser?.webView?.evaluateJavaScript(src, completionHandler: { (obj, err) -> Void in
-            })
+                let json = JSON(jsonObj)
+                let src = "window.__firefox__.logins.inject(\(json.toString()))"
+                self.browser?.webView?.evaluateJavaScript(src, completionHandler: nil)
+            }
         }
     }
 }
