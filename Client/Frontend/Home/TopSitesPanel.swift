@@ -365,7 +365,7 @@ class TopSitesLayout: UICollectionViewLayout {
 
     private var thumbnailRows: Int {
         assert(NSThread.isMainThread(), "Interacts with UIKit components - not thread-safe.")
-        return max(2, Int((self.collectionView?.frame.height ?? self.thumbnailHeight) / self.thumbnailHeight)) + 1 // BRAVE added one extra
+        return 2 // max(2, Int((self.collectionView?.frame.height ?? self.thumbnailHeight) / self.thumbnailHeight))
     }
 
     private var thumbnailCols: Int {
@@ -397,7 +397,7 @@ class TopSitesLayout: UICollectionViewLayout {
                 cols = 5;
             }
         }
-        return cols + 1 // BRAVE added one extra
+        return cols + 1
     }
 
     private var width: CGFloat {

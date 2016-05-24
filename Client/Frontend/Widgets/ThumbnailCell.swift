@@ -112,17 +112,27 @@ class ThumbnailCell: UICollectionViewCell {
 
     var image: UIImage? = nil {
         didSet {
-            if let image = image {
-                imageView.image = image
-                imageView.contentMode = UIViewContentMode.ScaleAspectFit
+            if var image = image {
+                print(image.size.width)
+                if image.size.width < 40 {
+                    func imageWithImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
+                        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+                        image.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height))
+                        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
+                        UIGraphicsEndImageContext()
+                        return newImage
+                    }
 
-                // Force nearest neighbor scaling for small favicons
-                if image.size.width < ThumbnailCellUX.NearestNeighbordScalingThreshold {
-                    imageView.layer.shouldRasterize = true
-                    imageView.layer.rasterizationScale = 2
-                    imageView.layer.minificationFilter = kCAFilterNearest
-                    imageView.layer.magnificationFilter = kCAFilterNearest
+                    var scale = CGFloat(2.0 * UIScreen.mainScreen().scale)
+                    if DeviceInfo.isIPadPro() {
+                        scale *= 2 // these are tiny on ipad pro without this
+                    }
+                    image = imageWithImage(image, scaledToSize: CGSizeMake(image.size.width * scale, image.size.height * scale))
+                    imageView.contentMode = .Center
+                } else {
+                    imageView.contentMode = UIViewContentMode.ScaleAspectFit
                 }
+                imageView.image = image
 
             } else {
                 imageView.image = ThumbnailCellUX.PlaceholderImage
@@ -214,12 +224,12 @@ class ThumbnailCell: UICollectionViewCell {
         addGestureRecognizer(longPressGesture)
 
         contentView.addSubview(imageWrapper)
-#if !BRAVE
+//#if !BRAVE
         imageWrapper.addSubview(backgroundImage)
         backgroundImage.snp_remakeConstraints { make in
             make.top.bottom.left.right.equalTo(self.imageWrapper)
         }
-#endif
+//#endif
         imageWrapper.addSubview(imageView)
         imageWrapper.addSubview(textWrapper)
         imageWrapper.addSubview(selectedOverlay)

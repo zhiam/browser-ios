@@ -75,6 +75,10 @@ public class DeviceInfo {
         return !lowGraphicsQualityModels.contains(specificModelName)
     }
 
+    public class func isIPadPro() -> Bool {
+        return ["iPad6,7", "iPad6,8"].contains(specificModelName)
+    }
+
     public class func hasConnectivity() -> Bool {
         let status = Reach().connectionStatus()
         switch status {
