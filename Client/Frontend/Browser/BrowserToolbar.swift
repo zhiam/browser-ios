@@ -159,6 +159,7 @@ public class BrowserToolbarHelper: NSObject {
     func SELdidClickStopReload() {
         if loading {
             toolbar.browserToolbarDelegate?.browserToolbarDidPressStop(toolbar, button: toolbar.stopReloadButton)
+            loading = false
         } else {
             toolbar.browserToolbarDelegate?.browserToolbarDidPressReload(toolbar, button: toolbar.stopReloadButton)
         }
