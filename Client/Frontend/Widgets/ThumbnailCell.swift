@@ -110,24 +110,49 @@ class ThumbnailCell: UICollectionViewCell {
         }
     }
 
+    static func imageWithSize(image: UIImage, size:CGSize, maxScale: CGFloat) -> UIImage {
+        var scaledImageRect = CGRect.zero;
+        var aspectWidth:CGFloat = size.width / image.size.width;
+        var aspectHeight:CGFloat = size.height / image.size.height;
+        if aspectWidth > maxScale || aspectHeight > maxScale {
+            let m = max(maxScale / aspectWidth, maxScale / aspectHeight)
+            aspectWidth *= m
+            aspectHeight *= m
+        }
+        let aspectRatio:CGFloat = min(aspectWidth, aspectHeight);
+        scaledImageRect.size.width = image.size.width * aspectRatio;
+        scaledImageRect.size.height = image.size.height * aspectRatio;
+        scaledImageRect.origin.x = (size.width - scaledImageRect.size.width) / 2.0;
+        scaledImageRect.origin.y = (size.height - scaledImageRect.size.height) / 2.0;
+        UIGraphicsBeginImageContextWithOptions(size, false, 0);
+        image.drawInRect(scaledImageRect);
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return scaledImage;
+    }
+
     var image: UIImage? = nil {
         didSet {
+            struct ContainerSize {
+                static var size: CGSize = CGSizeZero
+                static func scaledDown() -> CGSize {
+                    return CGSizeMake(size.width * 0.75, size.height * 0.75)
+                }
+            }
+
+            if imageView.frame.size.width > 0 {
+                ContainerSize.size = imageView.frame.size
+            }
+
             if var image = image {
-                print(image.size.width)
-                if image.size.width < 40 {
-                    func imageWithImage(image:UIImage, scaledToSize newSize:CGSize) -> UIImage{
-                        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
-                        image.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height))
-                        let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
-                        UIGraphicsEndImageContext()
-                        return newImage
+                if image.size.width < 24 && ContainerSize.size != CGSizeZero {
+                    var maxScale = CGFloat(4.0)
+                    if ContainerSize.size.width > 170 {
+                        // we are on iPad pro. Fragile, but no other way to detect this on simulator.
+                        maxScale *= 2.0
                     }
 
-                    var scale = CGFloat(2.0 * UIScreen.mainScreen().scale)
-                    if DeviceInfo.isIPadPro() {
-                        scale *= 2 // these are tiny on ipad pro without this
-                    }
-                    image = imageWithImage(image, scaledToSize: CGSizeMake(image.size.width * scale, image.size.height * scale))
+                    image = ThumbnailCell.imageWithSize(image, size: ContainerSize.scaledDown(), maxScale: maxScale)
                     imageView.contentMode = .Center
                 } else {
                     imageView.contentMode = UIViewContentMode.ScaleAspectFit
