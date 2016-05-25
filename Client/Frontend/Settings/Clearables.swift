@@ -71,8 +71,6 @@ class CacheClearable: Clearable {
     }
 
     func clear() -> Success {
-        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
-
         let result = Deferred<Maybe<()>>()
         // need event loop to run to autorelease UIWebViews fully
         delay(0.1) {
@@ -81,12 +79,16 @@ class CacheClearable: Clearable {
             // Remove the basic cache.
             NSURLCache.sharedURLCache().removeAllCachedResponses()
 
+            var err: ErrorType?
             for item in ["Caches", "Preferences", "Cookies", "WebKit"] {
                 do {
                     try deleteLibraryFolderContents(item, validateClearedExceptFor: ["Snapshots"])
                 } catch {
-                    return result.fill(Maybe<()>(failure: ClearableErrorType(err: error)))
+                    err = error
                 }
+            }
+            if let err = err {
+                return result.fill(Maybe<()>(failure: ClearableErrorType(err: err)))
             }
 
             // Leave the cache off in the error cases above
@@ -138,11 +140,6 @@ private func deleteLibraryFolder(folder: String) throws {
 
 // Removes all app cache storage.
 class SiteDataClearable: Clearable {
-    let tabManager: TabManager
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-    }
-
     var label: String {
         return NSLocalizedString("Offline Website Data", tableName: "ClearPrivateData", comment: "Settings item for clearing website data")
     }
@@ -152,9 +149,6 @@ class SiteDataClearable: Clearable {
             let dataTypes = Set([WKWebsiteDataTypeOfflineWebApplicationCache])
             WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(dataTypes, modifiedSince: NSDate.distantPast(), completionHandler: {})
         } else {
-            // First, close all tabs to make sure they don't hold anything in memory.
-            tabManager.removeAll()
-
             // Then we just wipe the WebKit directory from our Library.
             do {
                 try deleteLibraryFolder("WebKit")
@@ -176,7 +170,6 @@ class CookiesClearable: Clearable {
     }
 
     func clear() -> Success {
-        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
         NSUserDefaults.standardUserDefaults().synchronize()
 
         let result = Deferred<Maybe<()>>()

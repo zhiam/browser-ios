@@ -504,12 +504,17 @@ class TabTrayController: UIViewController {
             togglePrivateMode.layer.cornerRadius = 4.0
         } else {
             self.togglePrivateMode.backgroundColor = UIColor.clearColor()
-            tabManager.removeAllPrivateTabsAndNotify(false)
-            PrivateBrowsing.singleton.exit().upon {
-                res in 
-                delay(0.1) {
-                    getApp().tabManager.selectTab(getApp().tabManager.tabs.first)
-                }
+            view.userInteractionEnabled = false
+            view.alpha = 0.5
+            let activityView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            activityView.center = view.center
+            activityView.startAnimating()
+            self.view.addSubview(activityView)
+
+            PrivateBrowsing.singleton.exit().uponQueue(dispatch_get_main_queue()) {
+                self.view.userInteractionEnabled = true
+                self.view.alpha = 1.0
+                activityView.stopAnimating()
             }
         }
 #else

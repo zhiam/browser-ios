@@ -430,6 +430,10 @@ class TabManager : NSObject {
     /// - Parameter notify: if set to true, the delegate is called when a tab is
     ///   removed.
     func removeAllPrivateTabsAndNotify(notify: Bool) {
+        for tab in tabs {
+            tab.deleteWebView()
+        }
+        _selectedIndex = -1
         privateTabs.forEach{
             removeTab($0, flushToDisk: true, notify: notify, createTabIfNoneLeft: false)
         }

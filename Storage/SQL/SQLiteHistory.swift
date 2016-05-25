@@ -738,7 +738,7 @@ extension SQLiteHistory: Favicons {
      */
     public func addFavicon(icon: Favicon, forSite site: Site) -> Deferred<Maybe<Int>> {
         #if DEBUG
-        print("Adding favicon \(icon.url) for site \(site.url).")
+        //print("Adding favicon \(icon.url) for site \(site.url).")
         #endif
         func doChange(query: String, args: Args?) -> Deferred<Maybe<Int>> {
             var deferredId = Deferred<Maybe<Int>>()

@@ -5,6 +5,7 @@ import WebKit
 import Shared
 
 let kNotificationPageUnload = "kNotificationPageUnload"
+let kNotificationAllWebViewsDeallocated = "kNotificationAllWebViewsDeallocated"
 
 func convertNavActionToWKType(type:UIWebViewNavigationType) -> WKNavigationType {
     return WKNavigationType(rawValue: type.rawValue)!
@@ -125,22 +126,26 @@ class BraveWebView: UIWebView {
     }
 
     static let idToWebview = NSMapTable(keyOptions: .StrongMemory, valueOptions: .WeakMemory)
-    static var webViewCounter = 0
+
     // Needed to identify webview in url protocol
     func generateUniqueUserAgent() {
         // synchronize code from this point on.
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        BraveWebView.webViewCounter += 1
+        struct StaticCounter {
+            static var counter = 0
+        }
+
+        StaticCounter.counter += 1
         if let webviewBuiltinUserAgent = BraveWebView.webviewBuiltinUserAgent {
-            let userAgent = webviewBuiltinUserAgent + String(format:" _id/%06d", BraveWebView.webViewCounter)
+            let userAgent = webviewBuiltinUserAgent + String(format:" _id/%06d", StaticCounter.counter)
             let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
             defaults.registerDefaults(["UserAgent": userAgent ])
-            self.uniqueId = BraveWebView.webViewCounter
+            self.uniqueId = StaticCounter.counter
             BraveWebView.idToWebview.setObject(self, forKey: uniqueId)
         } else {
-            if BraveWebView.webViewCounter > 1 {
+            if StaticCounter.counter > 1 {
                 // We shouldn't get here, we allow the first webview to have no user agent, and we special-case the look up. The first webview inits the UA from its built in defaults
                 // If we get to more than one, just use a hard coded user agent, to avoid major bugs
                 let device = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? "iPhone" : "iPad"
@@ -220,11 +225,11 @@ class BraveWebView: UIWebView {
         commonInit()
     }
 
-    static var debugAllocCounter = 0 // Keep me, I am very handy
+    static var allocCounter = 0
 
     private func commonInit() {
-        BraveWebView.debugAllocCounter += 1
-        print("webview init  \(BraveWebView.debugAllocCounter)")
+        BraveWebView.allocCounter += 1
+        print("webview init  \(BraveWebView.allocCounter)")
         generateUniqueUserAgent()
 
         progress = WebViewProgress(parent: self)
@@ -263,8 +268,9 @@ class BraveWebView: UIWebView {
     }
 
     deinit {
-        BraveWebView.debugAllocCounter -= 1
-        if (BraveWebView.debugAllocCounter == 0) {
+        BraveWebView.allocCounter -= 1
+        if (BraveWebView.allocCounter == 0) {
+            NSNotificationCenter.defaultCenter().postNotificationName(kNotificationAllWebViewsDeallocated, object: nil)
             print("NO LIVE WEB VIEWS")
         }
 

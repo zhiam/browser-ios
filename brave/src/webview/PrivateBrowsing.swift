@@ -92,36 +92,55 @@ class PrivateBrowsing {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(PrivateBrowsing.cookiesChanged(_:)), name: NSHTTPCookieManagerCookiesChangedNotification, object: nil)
 
         webkitDirLocker(lock: true)
+
+        NSUserDefaults.standardUserDefaults().setBool(true, forKey: "WebKitPrivateBrowsingEnabled")
     }
 
+    private var exitDeferred = Deferred<()>()
     func exit() -> Deferred<()> {
-        let result = Deferred<()>()
+        exitDeferred = Deferred<()>()
         if !isOn {
-            result.fill(())
-            return result
+            exitDeferred.fill(())
+            return exitDeferred
         }
 
         isOn = false
+        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "WebKitPrivateBrowsingEnabled")
 
-        webkitDirLocker(lock: false)
-
-        BraveApp.setupCacheDefaults()
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
 
-        let result1 = CacheClearable().clear()
-        let result2 = CookiesClearable().clear()
-        let both = result1.both(result2)
-        both.uponQueue(dispatch_get_main_queue()) {
-            res in
-            self.cookiesFileDiskOperation(.DeletePublicBackup)
-            let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-            for cookie in self.nonprivateCookies {
-                storage.setCookie(cookie.0)
+        getApp().tabManager.removeAllPrivateTabsAndNotify(false)
+        if BraveWebView.allocCounter < 1 {
+            delay(0) {
+                self.allWebViewsKilled()
             }
-            self.nonprivateCookies = [NSHTTPCookie: Bool]()
-            result.fill()
         }
-        return result
+
+        return exitDeferred
+    }
+
+    @objc func allWebViewsKilled() {
+        delay(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
+
+            self.webkitDirLocker(lock: false)
+            BraveApp.setupCacheDefaults()
+
+            let clear: [Clearable] = [CacheClearable(), CookiesClearable()]
+            ClearPrivateDataTableViewController.clearPrivateData(clear).uponQueue(dispatch_get_main_queue()) { _ in
+                self.cookiesFileDiskOperation(.DeletePublicBackup)
+                let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+                for cookie in self.nonprivateCookies {
+                    storage.setCookie(cookie.0)
+                }
+                self.nonprivateCookies = [NSHTTPCookie: Bool]()
+                if getApp().tabManager.tabs.count < 1 {
+                     getApp().tabManager.addTab()
+                }
+                getApp().tabManager.selectTab(getApp().tabManager.tabs.first)
+                self.exitDeferred.fillIfUnfilled(())
+            }
+        }
     }
 
     @objc func cookiesChanged(info: NSNotification) {
