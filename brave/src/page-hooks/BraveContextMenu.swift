@@ -31,7 +31,7 @@ class BraveContextMenu {
                 resetTimer()
                 return
             }
-
+            webView.lastTappedTime = NSDate()
             switch touch.phase {
             case .Began:  // A finger touched the screen
                 tapLocation = touch.locationInView(window)

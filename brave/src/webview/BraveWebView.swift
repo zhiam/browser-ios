@@ -35,8 +35,13 @@ enum KVOStrings: String {
             guard let wv = BraveApp.getCurrentWebView() else { return }
             let current = wv.URL
             print("window.open")
+            guard let lastTappedTime = wv.lastTappedTime else { return }
+            if fabs(lastTappedTime.timeIntervalSinceNow) > 0.75 { // outside of the 3/4 sec time window and we ignore it 
+                print(lastTappedTime.timeIntervalSinceNow)
+                return
+            }
+            wv.lastTappedTime = nil
             if let _url = NSURL(string: url, relativeToURL: current) {
-                wv.urlToIgnore = (url: _url, time: NSDate(timeIntervalSinceNow: 0))
                 getApp().tabManager.addTabAndSelect(NSURLRequest(URL: _url))
             }
         }
@@ -54,10 +59,9 @@ class BraveWebView: UIWebView {
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
-    var urlToIgnore: (url: NSURL, time: NSDate)?
     var braveShieldState = BraveShieldState(state: 0)
     var blankTargetLinkDetectionOn = true
-
+    var lastTappedTime: NSDate?
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
 
@@ -496,11 +500,6 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
         guard let url = request.URL else { return false }
-
-        if let ignored = urlToIgnore where ignored.url.absoluteString == url.absoluteString && ignored.time.timeIntervalSinceNow > -0.25 /* urlToIgnore must have been set in the last 250ms */ {
-            // window.open hook uses this, as our hook still causes navigation to proceed
-            return false
-        }
 
         if url.absoluteString == blankTargetUrl {
             blankTargetUrl = nil
