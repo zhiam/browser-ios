@@ -423,7 +423,7 @@ class BraveURLBarView : URLBarView {
     }
 
     override func updateBookmarkStatus(isBookmarked: Bool) {
-        if let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController {
+        if let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController {
             braveTopVC.updateBookmarkStatus(isBookmarked)
         }
 

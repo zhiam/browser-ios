@@ -616,7 +616,7 @@ extension URLBarView: BrowserToolbarProtocol {
     func updateBookmarkStatus(isBookmarked: Bool) {
         bookmarkButton.selected = isBookmarked
 
-        if let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController {
+        if let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController {
             braveTopVC.updateBookmarkStatus(isBookmarked)
        }
     }
