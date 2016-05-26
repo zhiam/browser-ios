@@ -46,18 +46,19 @@ class TrackingProtection {
             var mainDocDomain = request.mainDocumentURL?.host else {
                 return false
         }
+        guard var host = url.host else { return false}
 
         if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
             return false
         }
 
-        // https://github.com/brave/browser-ios/issues/90
-        if url.absoluteString.contains("connect.facebook.com") {
+        let whitelist = ["connect.facebook.net", "connect.facebook.com", "staticxx.facebook.com", "www.facebook.com", "scontent.xx.fbcdn.net", "pbs.twimg.com"]
+        if whitelist.contains(host) {
             return false
         }
+
         mainDocDomain = stripGenericSubdomainPrefixFromUrl(stripLocalhostWebServer(mainDocDomain))
 
-        guard var host = url.host else { return false}
         if host.contains(mainDocDomain) {
             return false // ignore top level doc
         }
