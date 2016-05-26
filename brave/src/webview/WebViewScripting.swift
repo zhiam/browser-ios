@@ -65,7 +65,7 @@ class LegacyUserContentController
         }
 
         let js = LegacyJSContext()
-        js.windowOpenOverride(webView)
+        js.windowOpenOverride(webView, context:nil)
 
         for (name, handler) in scriptHandlersMainFrame {
             if !name.lowercaseString.contains("reader") {
@@ -83,6 +83,8 @@ class LegacyUserContentController
         let contexts = js.findNewFramesForWebView(webView, withFrameContexts: webView?.knownFrameContexts)
 
         for ctx in contexts {
+            js.windowOpenOverride(webView, context:ctx)
+
             webView?.knownFrameContexts.insert(ctx.hash)
 
             for (name, handler) in scriptHandlersSubFrames {

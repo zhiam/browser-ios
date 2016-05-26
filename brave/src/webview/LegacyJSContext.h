@@ -5,7 +5,6 @@
 @import WebKit;
 @import UIKit;
 
-
 @interface LegacyJSContext : NSObject
 
 -(void)installHandlerForWebView:(UIWebView *)wv
@@ -21,5 +20,5 @@
 
 -(NSArray*)findNewFramesForWebView:(UIWebView *)webView withFrameContexts:(NSSet *)contexts;
 
-- (void)windowOpenOverride:(UIWebView *)webView;
+- (void)windowOpenOverride:(UIWebView *)webView context:(id)context;
 @end
