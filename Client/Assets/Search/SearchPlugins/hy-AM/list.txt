@@ -4,3 +4,4 @@ google
 list-am
 wikipedia-hy-AM
 yahoo
+duckduckgo

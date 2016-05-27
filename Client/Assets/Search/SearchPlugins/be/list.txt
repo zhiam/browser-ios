@@ -3,4 +3,4 @@ bing
 google
 tut.by
 yahoo
-yandex.by
+yandex.byduckduckgo

@@ -4,3 +4,4 @@ google
 leit-is
 wikipedia-is
 yahoo
+duckduckgo

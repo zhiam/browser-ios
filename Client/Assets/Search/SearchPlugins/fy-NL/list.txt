@@ -1,3 +1,4 @@
 google
 wikipedia-fy-NL
 bolcom-fy-NL
+duckduckgo

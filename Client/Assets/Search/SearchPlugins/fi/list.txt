@@ -3,3 +3,4 @@ twitter
 wikipedia-fi
 yahoo-fi
 amazondotcom
+duckduckgo

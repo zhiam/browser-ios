@@ -1,3 +1,4 @@
 google
 wikipedia-fa
 yahoo
+duckduckgo

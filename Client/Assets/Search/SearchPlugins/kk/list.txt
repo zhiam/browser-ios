@@ -4,3 +4,4 @@ twitter
 wikipedia-kk
 yahoo
 yandex
+duckduckgo

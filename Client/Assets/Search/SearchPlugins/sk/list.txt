@@ -3,3 +3,4 @@ google
 slovnik-sk
 twitter
 wikipedia-sk
+duckduckgo

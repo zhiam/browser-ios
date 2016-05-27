@@ -1,3 +1,4 @@
 google
 wikipedia-ar
 twitter
+duckduckgo

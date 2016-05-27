@@ -3,3 +3,4 @@ sztaki-en-hu
 vatera
 twitter
 wikipedia-hu
+duckduckgo

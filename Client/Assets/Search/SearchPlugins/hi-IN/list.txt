@@ -4,3 +4,4 @@ google
 twitter
 wikipedia-hi
 yahoo-in
+duckduckgo
