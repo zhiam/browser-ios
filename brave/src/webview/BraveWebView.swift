@@ -44,7 +44,7 @@ enum KVOStrings: String {
             }
             wv.lastTappedTime = nil
             if let _url = NSURL(string: url, relativeToURL: current) {
-                getApp().tabManager.addTabAndSelect(NSURLRequest(URL: _url))
+                getApp().browserViewController.openURLInNewTab(_url)
             }
         }
     }
@@ -516,7 +516,7 @@ extension BraveWebView: UIWebViewDelegate {
 
         if url.absoluteString == blankTargetUrl {
             blankTargetUrl = nil
-            getApp().tabManager.addTabAndSelect(request)
+            getApp().browserViewController.openURLInNewTab(url)
             return false
         }
         blankTargetUrl = nil
@@ -526,13 +526,6 @@ extension BraveWebView: UIWebViewDelegate {
             // When showing a context menu, the webview will often still navigate (ex. news.google.com)
             // We need to block navigation using this tag.
             return false
-        }
-
-        if url.absoluteString.startsWith("newtab:") {
-            if let newlink = url.resourceSpecifier.stringByRemovingPercentEncoding, newurl = NSURL(string: newlink, relativeToURL: URL) {
-                getApp().tabManager.addTabAndSelect(NSURLRequest(URL: newurl))
-                return false
-            }
         }
 
         if BraveWebView.webviewBuiltinUserAgent == nil {
