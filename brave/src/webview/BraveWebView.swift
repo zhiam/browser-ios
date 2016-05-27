@@ -35,10 +35,12 @@ enum KVOStrings: String {
             guard let wv = BraveApp.getCurrentWebView() else { return }
             let current = wv.URL
             print("window.open")
-            guard let lastTappedTime = wv.lastTappedTime else { return }
-            if fabs(lastTappedTime.timeIntervalSinceNow) > 0.75 { // outside of the 3/4 sec time window and we ignore it 
-                print(lastTappedTime.timeIntervalSinceNow)
-                return
+            if BraveApp.getPrefs()?.boolForKey("blockPopups") ?? true {
+                guard let lastTappedTime = wv.lastTappedTime else { return }
+                if fabs(lastTappedTime.timeIntervalSinceNow) > 0.75 { // outside of the 3/4 sec time window and we ignore it
+                    print(lastTappedTime.timeIntervalSinceNow)
+                    return
+                }
             }
             wv.lastTappedTime = nil
             if let _url = NSURL(string: url, relativeToURL: current) {
@@ -48,11 +50,39 @@ enum KVOStrings: String {
     }
 }
 
-class BraveWebView: UIWebView {
-    let specialStopLoadUrl = "http://localhost.stop.load"
+class WebViewToUAMapper {
+    static private let idToWebview = NSMapTable(keyOptions: .StrongMemory, valueOptions: .WeakMemory)
+
+    static func setId(uniqueId: Int, webView: BraveWebView) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        idToWebview.setObject(webView, forKey: uniqueId)
+    }
+
+    static func userAgentToWebview(ua: String?) -> BraveWebView? {
+        // synchronize code from this point on.
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
+        guard let ua = ua else { return nil }
+        guard let loc = ua.rangeOfString("_id/") else {
+            // the first created webview doesn't have this id set (see webviewBuiltinUserAgent to explain)
+            return idToWebview.objectForKey(1) as? BraveWebView
+        }
+        let keyString = ua.substringWithRange(loc.endIndex..<loc.endIndex.advancedBy(6))
+        guard let key = Int(keyString) else { return nil }
+        return idToWebview.objectForKey(key) as? BraveWebView
+    }
+}
+
+struct BraveWebViewConstants {
     static let kNotificationWebViewLoadCompleteOrFailed = "kNotificationWebViewLoadCompleteOrFailed"
     static let kNotificationPageInteractive = "kNotificationPageInteractive"
     static let kContextMenuBlockNavigation = 8675309
+}
+
+class BraveWebView: UIWebView {
+    let specialStopLoadUrl = "http://localhost.stop.load"
     weak var navigationDelegate: WKNavigationDelegate?
     weak var UIDelegate: WKUIDelegate?
     lazy var configuration: BraveWebViewConfiguration = { return BraveWebViewConfiguration(webView: self) }()
@@ -105,12 +135,12 @@ class BraveWebView: UIWebView {
 
     var internalIsLoadingEndedFlag: Bool = false;
     var knownFrameContexts = Set<NSObject>()
-    static var containerWebViewForCallbacks = { return ContainerWebView() }()
+    private static var containerWebViewForCallbacks = { return ContainerWebView() }()
     // From http://stackoverflow.com/questions/14268230/has-anybody-found-a-way-to-load-https-pages-with-an-invalid-server-certificate-u
     var loadingUnvalidatedHTTPSPage: Bool = false
 
     // This gets set as soon as it is available from the first UIWebVew created
-    static var webviewBuiltinUserAgent: String?
+    private static var webviewBuiltinUserAgent: String?
 
     // To mimic WKWebView we need this property. And, to easily overrride where Firefox code is setting it, we hack the setter,
     // so that a custom agent is set always to our kDesktopUserAgent.
@@ -129,8 +159,6 @@ class BraveWebView: UIWebView {
         }
     }
 
-    static let idToWebview = NSMapTable(keyOptions: .StrongMemory, valueOptions: .WeakMemory)
-
     // Needed to identify webview in url protocol
     func generateUniqueUserAgent() {
         // synchronize code from this point on.
@@ -147,7 +175,7 @@ class BraveWebView: UIWebView {
             let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
             defaults.registerDefaults(["UserAgent": userAgent ])
             self.uniqueId = StaticCounter.counter
-            BraveWebView.idToWebview.setObject(self, forKey: uniqueId)
+            WebViewToUAMapper.setId(uniqueId, webView:self)
         } else {
             if StaticCounter.counter > 1 {
                 // We shouldn't get here, we allow the first webview to have no user agent, and we special-case the look up. The first webview inits the UA from its built in defaults
@@ -155,23 +183,8 @@ class BraveWebView: UIWebView {
                 let device = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? "iPhone" : "iPad"
                 BraveWebView.webviewBuiltinUserAgent = "Mozilla/5.0 (\(device)) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75"
             }
-            BraveWebView.idToWebview.setObject(self, forKey: 1) // the first webview, we don't have the user agent just yet
+            WebViewToUAMapper.idToWebview.setObject(self, forKey: 1) // the first webview, we don't have the user agent just yet
         }
-    }
-
-    static func userAgentToWebview(let ua: String?) -> BraveWebView? {
-        // synchronize code from this point on.
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-
-        guard let ua = ua else { return nil }
-        guard let loc = ua.rangeOfString("_id/") else {
-            // the first created webview doesn't have this id set (see webviewBuiltinUserAgent to explain)
-            return idToWebview.objectForKey(1) as? BraveWebView
-        }
-        let keyString = ua.substringWithRange(loc.endIndex..<loc.endIndex.advancedBy(6))
-        guard let key = Int(keyString) else { return nil }
-        return idToWebview.objectForKey(key) as? BraveWebView
     }
 
     var triggeredLocationCheckTimer = NSTimer()
@@ -338,7 +351,7 @@ class BraveWebView: UIWebView {
             me.prevDocumentLocation = docLoc
 
             me.configuration.userContentController.injectJsIntoPage()
-            NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: me)
+            NSNotificationCenter.defaultCenter().postNotificationName(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: me)
             LegacyUserContentController.injectJsIntoAllFrames(me, script: "document.body.style.webkitTouchCallout='none'")
 
             print("Getting favicons")
@@ -509,7 +522,7 @@ extension BraveWebView: UIWebViewDelegate {
         blankTargetUrl = nil
 
         if let contextMenu = window?.rootViewController?.presentedViewController
-            where contextMenu.view.tag == BraveWebView.kContextMenuBlockNavigation {
+            where contextMenu.view.tag == BraveWebViewConstants.kContextMenuBlockNavigation {
             // When showing a context menu, the webview will often still navigate (ex. news.google.com)
             // We need to block navigation using this tag.
             return false
@@ -677,7 +690,7 @@ extension BraveWebView: UIWebViewDelegate {
         }
 
         NSNotificationCenter.defaultCenter()
-            .postNotificationName(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: self)
+            .postNotificationName(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: self)
         if let nd = navigationDelegate {
             nd.webView?(nullWebView, didFailNavigation: nullWKNavigation,
                         withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))

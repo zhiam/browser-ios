@@ -76,9 +76,8 @@ class BraveSettingsView : AppSettingsTableViewController {
             BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
                 titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager"))
 
-//            ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
-//                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting"), statusText: nil, settingDidChange: { _ in
-//                    BlankTargetLinkHandler.updatedEnabledState() })
+            ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
+                titleText: NSLocalizedString("Block Popups", comment: "Setting to enable popup blocking"))
         ]
 
         #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
