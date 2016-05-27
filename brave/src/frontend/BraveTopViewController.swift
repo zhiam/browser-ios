@@ -157,8 +157,8 @@ class BraveTopViewController : UIViewController {
 
         guard let button = notification.object as? UIButton else { return }
 
-        let wv = browserViewController.tabManager.selectedTab?.webView
-        if let url = wv?.URL?.baseDomain() {
+
+        if let tab = browserViewController.tabManager.selectedTab, url = tab.webView?.URL?.baseDomain() where !tab.isPrivate {
             getApp().profile?.setBraveShieldForBaseDomain(url, state: button.selected ? BraveShieldState.allOff : 0)
         }
 
