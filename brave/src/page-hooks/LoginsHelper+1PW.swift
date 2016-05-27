@@ -22,7 +22,7 @@ extension LoginsHelper {
     func thirdPartyPasswordRegisterPageListeners() {
         guard let wv = browser?.webView else { return }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginsHelper.hideOnPageChange(_:)), name: kNotificationPageUnload, object: wv)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginsHelper.checkOnPageLoaded(_:)), name: BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: wv)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginsHelper.checkOnPageLoaded(_:)), name: BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: wv)
     }
 
     func thirdPartyPasswordSnackbar() {

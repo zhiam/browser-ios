@@ -25,7 +25,7 @@ class URLProtocol: NSURLProtocol {
         guard let url = request.URL else { return false }
 
         let ua = request.allHTTPHeaderFields?["User-Agent"]
-        if let webView = BraveWebView.userAgentToWebview(ua) {
+        if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
             if webView.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue {
                 return false // TODO: for now we aren't handling individual on/off states, assume all are off
             }
@@ -112,7 +112,7 @@ class URLProtocol: NSURLProtocol {
                 returnEmptyResponse()
                 let ua = request.allHTTPHeaderFields?["User-Agent"]
                 ensureMainThread() {
-                    BraveWebView.userAgentToWebview(ua)?.loadRequest(newRequest)
+                    WebViewToUAMapper.userAgentToWebview(ua)?.loadRequest(newRequest)
                 }
             } else {
                 self.connection = NSURLConnection(request: newRequest, delegate: self)

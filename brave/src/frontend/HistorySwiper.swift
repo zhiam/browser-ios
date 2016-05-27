@@ -117,8 +117,8 @@ class HistorySwiper : NSObject {
                             self.restoreWebview()
                         }
                         NSNotificationCenter.defaultCenter().removeObserver(self)
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebView.kNotificationPageInteractive, object: webview)
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: webview)
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebViewConstants.kNotificationPageInteractive, object: webview)
+                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: webview)
                     } else {
                         getApp().browserViewController.scrollController.edgeSwipingActive = false
 #if IMAGE_SWIPE_ON

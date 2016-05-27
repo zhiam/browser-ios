@@ -183,7 +183,7 @@ public class WebViewProgress
                 interactiveCount += 1
                 if let webView = webView {
                     if  interactiveCount == 1 {
-                        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebView.kNotificationPageInteractive, object: webView)
+                        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebViewConstants.kNotificationPageInteractive, object: webView)
                     }
                     if !webView.loading {
                         completeProgress()
