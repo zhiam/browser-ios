@@ -18,6 +18,7 @@
 #import "TrackingProtectionCpp.h"
 #import "SwizzlingToHideSharePicker.h"
 #import "ODRefreshControl.h"
+#import "WebViewDocScale.h"
 #if FLEX_ON
 #import "FLEXManager.h"
 #endif

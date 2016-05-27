@@ -239,6 +239,10 @@ private extension BraveScrollController {
             return
         }
 
+        if refreshControl?.hidden == false {
+            return
+        }
+
         let updatedOffset = toolbarsShowing ? clamp(verticalTranslation - delta, min: -UIConstants.ToolbarHeight, max: 0) :
             clamp(verticalTranslation - delta, min: 0, max: UIConstants.ToolbarHeight)
 
@@ -328,7 +332,66 @@ func blockOtherGestures(isBlocked: Bool, views: [UIView]) {
     }
 }
 
+var refreshControl:ODRefreshControl?
+// stop refresh interaction while animating
+var isInRefreshQuietPeriod:Bool = false
+// only allow refresh when scrolling with finger down, not from a momentum scrll
+var isRefreshBlockedDueToMomentumScroll = false
+
 extension BraveScrollController: UIScrollViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        guard let webView = browser?.webView else { return }
+        if (webViewIsZoomed(webView)) {
+            return;
+        }
+
+        let position = -webView.convertPoint(webView.frame.origin, fromView: nil).y
+        if contentOffset.y < 0 && !isInRefreshQuietPeriod && !isRefreshBlockedDueToMomentumScroll && verticalTranslation == 0 && toolbarsShowing {
+            if refreshControl == nil {
+                refreshControl = ODRefreshControl(inScrollView: getApp().rootViewController.view)
+                refreshControl?.backgroundColor = UIColor.blackColor()
+            }
+            refreshControl?.hidden = false
+            refreshControl?.frame = CGRectMake(0, position, refreshControl?.frame.size.width ?? 0, -contentOffset.y)
+
+            var pullToReloadDistance = CGFloat(-BraveUX.PullToReloadDistance)
+            if BraveApp.isIPhoneLandscape() {
+                // The "spring" is tighter in this case, make the distance shorter
+                pullToReloadDistance *= CGFloat(0.80)
+            }
+
+            if contentOffset.y < pullToReloadDistance && !keyboardIsShowing {
+                isInRefreshQuietPeriod = true
+
+                let currentOffset =  scrollView.contentOffset.y
+                blockOtherGestures(true, views: scrollView.subviews)
+                blockOtherGestures(true, views: [scrollView])
+                scrollView.contentOffset.y = currentOffset
+                refreshControl?.beginRefreshing()
+                browser?.webView?.reloadFromOrigin()
+                UIView.animateWithDuration(0.5, animations: { refreshControl?.backgroundColor = UIColor.clearColor() })
+                UIView.animateWithDuration(0.5, delay: 0.2, options: .AllowAnimatedContent, animations: {
+                    scrollView.contentOffset.y = 0
+                    refreshControl?.frame = CGRectMake(0, position, refreshControl?.frame.size.width ?? 0, 0)
+                    }, completion: {
+                        finished in
+                        blockOtherGestures(false, views: scrollView.subviews)
+                        blockOtherGestures(false, views: [scrollView])
+                        isInRefreshQuietPeriod = false
+                        refreshControl?.endRefreshing()
+                        refreshControl?.hidden = true
+                        refreshControl?.backgroundColor = UIColor.blackColor()
+                })
+            }
+        } else if refreshControl?.hidden == false {
+            refreshControl?.frame = CGRectMake(0, position, refreshControl?.frame.size.width ?? 0, -contentOffset.y)
+        }
+
+        if contentOffset.y >= 0 && refreshControl?.hidden == false && !isInRefreshQuietPeriod {
+            refreshControl?.hidden = true
+        }
+    }
+
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if browserIsLoading() {
             return
@@ -336,6 +399,8 @@ extension BraveScrollController: UIScrollViewDelegate {
 
         if (!decelerate) {
             removeTranslationAndSetLayout()
+        } else {
+            isRefreshBlockedDueToMomentumScroll = true
         }
     }
 
@@ -365,6 +430,7 @@ extension BraveScrollController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         self.removeTranslationAndSetLayout()
+        isRefreshBlockedDueToMomentumScroll = false
     }
     
     func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
