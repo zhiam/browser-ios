@@ -1914,11 +1914,37 @@ extension BrowserViewController: WKNavigationDelegate {
         // instead of being loaded in the webview. Note that there is no point in calling canOpenURL() here, because
         // iOS will always say yes. TODO Is this the same as isWhitelisted?
 
-        if isAppleMapsURL(url) || isStoreURL(url) {
+        if isAppleMapsURL(url) {
             UIApplication.sharedApplication().openURL(url)
             decisionHandler(WKNavigationActionPolicy.Cancel)
             return
         }
+
+
+        if let tab = tabManager.selectedTab where isStoreURL(url) {
+            let tag = 8675309
+            let hasOneAlready = tab.bars.contains({ $0.tag == tag })
+            if hasOneAlready ?? true {
+                return
+            }
+
+            let siteName = tab.displayURL?.hostWithGenericSubdomainPrefixRemoved() ?? "this site"
+            let snackBar = TimerSnackBar(attrText: NSAttributedString(string: NSLocalizedString("Allow \(siteName) to open iTunes?", comment: "Ask user if site can open iTunes store URL")),
+                                         img: nil,
+                                         buttons: [
+                                            SnackButton(title: "Open", accessibilityIdentifier: "", callback: { bar in
+                                                self.tabManager.selectedTab?.removeSnackbar(bar)
+                                                UIApplication.sharedApplication().openURL(url)
+                                            }),
+                                            SnackButton(title: "Not now", accessibilityIdentifier: "", callback: { bar in
+                                                self.tabManager.selectedTab?.removeSnackbar(bar)
+                                            })
+                ])
+            snackBar.tag = tag
+            tabManager.selectedTab?.addSnackbar(snackBar)
+            return
+        }
+
 
         // This is the normal case, opening a http or https url, which we handle by loading them in this WKWebView. We
         // always allow this.

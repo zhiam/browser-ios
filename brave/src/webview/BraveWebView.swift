@@ -579,6 +579,11 @@ extension BraveWebView: UIWebViewDelegate {
             })
         }
 
+        if url.scheme.startsWith("itms") || url.host == "itunes.apple.com" {
+            progress?.completeProgress()
+            return false
+        }
+
         let locationChanged = BraveWebView.isTopFrameRequest(request) && url.absoluteString != URL?.absoluteString
         if locationChanged {
             blankTargetLinkDetectionOn = true
