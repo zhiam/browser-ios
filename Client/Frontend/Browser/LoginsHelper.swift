@@ -119,25 +119,27 @@ class LoginsHelper: BrowserHelper {
             return
         }
 
-        profile.logins
-               .getLoginsForProtectionSpace(login.protectionSpace, withUsername: login.username)
-               .uponQueue(dispatch_get_main_queue()) { res in
-            if let data = res.successValue {
-                log.debug("Found \(data.count) logins.")
-                for saved in data {
-                    if let saved = saved {
-                        if saved.password == login.password {
-                            self.profile.logins.addUseOfLoginByGUID(saved.guid)
+        succeed().upon() { _ in // move off main
+            self.profile.logins
+                   .getLoginsForProtectionSpace(login.protectionSpace, withUsername: login.username)
+                   .uponQueue(dispatch_get_main_queue()) { res in
+                if let data = res.successValue {
+                    log.debug("Found \(data.count) logins.")
+                    for saved in data {
+                        if let saved = saved {
+                            if saved.password == login.password {
+                                self.profile.logins.addUseOfLoginByGUID(saved.guid)
+                                return
+                            }
+
+                            self.promptUpdateFromLogin(login: saved, toLogin: login)
                             return
                         }
-
-                        self.promptUpdateFromLogin(login: saved, toLogin: login)
-                        return
                     }
                 }
-            }
 
-            self.promptSave(login)
+                self.promptSave(login)
+            }
         }
     }
 
