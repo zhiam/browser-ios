@@ -185,7 +185,7 @@ class BraveScrollController: NSObject {
         defer {
             entrantGuard = false
         }
-        if keyPath == "contentSize" {
+        if (keyPath ?? "") == "contentSize" && browser?.webView?.scrollView === object {
             browser?.webView?.contentSizeChangeDetected()
             checkHeightOfPageAndAdjustWebViewInsets()
             if !isScrollHeightIsLargeEnoughForScrolling() && !toolbarsShowing {

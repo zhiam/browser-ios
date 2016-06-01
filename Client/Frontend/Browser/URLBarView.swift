@@ -450,22 +450,8 @@ class URLBarView: UIView {
 
     }
 
-    func updateProgressBar(progress: Float) {
-        if progress == 1.0 {
-            self.progressBar.setProgress(progress, animated: !isTransitioning)
-            UIView.animateWithDuration(1.5, animations: {
-                self.progressBar.alpha = 0.0
-            }, completion: { finished in
-                if finished {
-                    self.progressBar.setProgress(0.0, animated: false)
-                }
-            })
-        } else {
-            if self.progressBar.alpha < 1.0 {
-                self.progressBar.alpha = 1.0
-            }
-            self.progressBar.setProgress(progress, animated: (progress > progressBar.progress) && !isTransitioning)
-        }
+    func updateProgressBar(progress: Float, dueToTabChange: Bool = false) {
+        return // use Brave override only
     }
 
     func updateReaderModeState(state: ReaderModeState) {

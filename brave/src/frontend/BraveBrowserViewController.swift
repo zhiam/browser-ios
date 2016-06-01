@@ -54,6 +54,22 @@ class BraveBrowserViewController : BrowserViewController {
             selected.webView?.scrollView.panGestureRecognizer.requireGestureRecognizerToFail(swipe)
             scrollController.panGesture.requireGestureRecognizerToFail(swipe)
         }
+
+        if let webView = selected.webView {
+            webViewContainer.insertSubview(webView, atIndex: 0)
+            webView.snp_makeConstraints { make in
+                make.top.equalTo(webViewContainerToolbar.snp_bottom)
+                make.left.right.bottom.equalTo(self.webViewContainer)
+            }
+
+            urlBar.updateProgressBar(Float(webView.estimatedProgress), dueToTabChange: true)
+
+            // set the shield state
+            (urlBar as! BraveURLBarView).braveButton.selected = webView.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue
+
+            urlBar.updateReloadStatus(webView.loading)
+        }
+
     }
 
     override func SELtappedTopArea() {

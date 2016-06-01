@@ -46,7 +46,7 @@ class BrowserViewController: UIViewController {
     var homePanelIsInline = true
     private var searchLoader: SearchLoader!
     let snackBars = UIView()
-    private let webViewContainerToolbar = UIView()
+    let webViewContainerToolbar = UIView()
     private var findInPageBar: FindInPageBar?
     private let findInPageContainer = UIView()
 
@@ -1733,11 +1733,6 @@ extension BrowserViewController: TabManagerDelegate {
 
 #if BRAVE
             selectedTabChanged(tab)
-            webViewContainer.insertSubview(webView, atIndex: 0)
-            webView.snp_makeConstraints { make in
-                make.top.equalTo(webViewContainerToolbar.snp_bottom)
-                make.left.right.bottom.equalTo(self.webViewContainer)
-            }
 #endif
             addOpenInViewIfNeccessary(webView.URL)
 
@@ -1780,8 +1775,7 @@ extension BrowserViewController: TabManagerDelegate {
         navigationToolbar.updateReloadStatus(selected?.loading ?? false)
         navigationToolbar.updateBackStatus(selected?.canGoBack ?? false)
         navigationToolbar.updateForwardStatus(selected?.canGoForward ?? false)
-        self.urlBar.updateProgressBar(Float(selected?.estimatedProgress ?? 0))
-
+        
         if let readerMode = selected?.getHelper(name: ReaderMode.name()) as? ReaderMode {
             urlBar.updateReaderModeState(readerMode.state)
             if readerMode.state == .Active {

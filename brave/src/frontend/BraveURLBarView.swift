@@ -382,15 +382,20 @@ class BraveURLBarView : URLBarView {
     }
 
     var progressIsCompleting = false
-    override func updateProgressBar(progress: Float) {
-        let minProgress = locationView.frame.width / 3.0
-
+    override func updateProgressBar(progress: Float, dueToTabChange: Bool = false) {
         func setWidth(width: CGFloat) {
             var frame = locationView.braveProgressView.frame
             frame.size.width = width
             locationView.braveProgressView.frame = frame
         }
-        
+
+        if dueToTabChange && (progress == 1.0 || progress == 0.0) {
+            setWidth(0)
+            return
+        }
+
+        let minProgress = locationView.frame.width / 3.0
+
         if progress == 1.0 {
             if progressIsCompleting {
                 return
