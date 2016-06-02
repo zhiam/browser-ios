@@ -182,4 +182,16 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
   return result;
 }
 
+
+- (BOOL)setupWindowReferences:(UIWebView*)parent child:(UIWebView*)child
+{
+    id a = [parent valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    id b = [child valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    if (a && b) {
+        b[@"window"][@"opener"] = a[@"window"];
+        return YES;
+    }
+    return NO;
+}
+
 @end

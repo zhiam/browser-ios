@@ -45,6 +45,7 @@ enum KVOStrings: String {
             wv.lastTappedTime = nil
             if let _url = NSURL(string: url, relativeToURL: current) {
                 getApp().browserViewController.openURLInNewTab(_url)
+                getApp().tabManager.selectedTab?.webView?.openedNewTabWithParentWebView = wv
             }
         }
     }
@@ -94,7 +95,7 @@ class BraveWebView: UIWebView {
     var lastTappedTime: NSDate?
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
-
+    weak var openedNewTabWithParentWebView: UIWebView?
     var prevDocumentLocation = ""
     var estimatedProgress: Double = 0
     var title: String = "" {
@@ -622,6 +623,10 @@ extension BraveWebView: UIWebViewDelegate {
         #if !TEST
             HideEmptyImages.runJsInWebView(self)
         #endif
+
+        if let parent = openedNewTabWithParentWebView {
+            LegacyJSContext().setupWindowReferences(parent, child: self) 
+        }
     }
 
     func webViewDidFinishLoad(webView: UIWebView) {
@@ -638,6 +643,11 @@ extension BraveWebView: UIWebViewDelegate {
 
         backForwardList.update()
         kvoBroadcast()
+
+        if let parent = openedNewTabWithParentWebView where
+            LegacyJSContext().setupWindowReferences(parent, child: self) {
+            openedNewTabWithParentWebView = nil
+        }
     }
 
     func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {

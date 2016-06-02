@@ -7,7 +7,7 @@
 
 @interface LegacyJSContext : NSObject
 
--(void)installHandlerForWebView:(UIWebView *)wv
+- (void)installHandlerForWebView:(UIWebView *)wv
                     handlerName:(NSString *)handlerName
                         handler:(id<WKScriptMessageHandler>)handler;
 
@@ -18,7 +18,9 @@
 
 - (void)callOnContext:(id)context script:(NSString*)script;
 
--(NSArray*)findNewFramesForWebView:(UIWebView *)webView withFrameContexts:(NSSet *)contexts;
+- (NSArray*)findNewFramesForWebView:(UIWebView *)webView withFrameContexts:(NSSet *)contexts;
 
 - (void)windowOpenOverride:(UIWebView *)webView context:(id)context;
+
+- (BOOL)setupWindowReferences:(UIWebView*)parent child:(UIWebView*)child;
 @end
