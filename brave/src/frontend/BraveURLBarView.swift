@@ -96,7 +96,7 @@ class BraveURLBarView : URLBarView {
         braveButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
         braveButton.tintColor = BraveUX.ActionButtonTintColor
 
-        ToolbarTextField.appearance().clearButtonTintColor = nil
+        //ToolbarTextField.appearance().clearButtonTintColor = nil
 
         var theme = Theme()
         theme.URLFontColor = BraveUX.LocationBarTextColor_URLBaseComponent
@@ -118,6 +118,7 @@ class BraveURLBarView : URLBarView {
         theme = Theme()
         theme.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor_Private
         theme.textColor = BraveUX.LocationBarEditModeTextColor_Private
+        theme.buttonTintColor = UIColor.whiteColor()    
         ToolbarTextField.Themes[Theme.PrivateMode] = theme
 
         theme = Theme()
