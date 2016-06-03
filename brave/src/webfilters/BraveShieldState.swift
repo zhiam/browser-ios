@@ -94,6 +94,27 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
 var braveShieldForDomainTable:BraveShieldTable? = nil
 
 extension BrowserProfile {
+    public func clearBraveShieldHistory() ->  Success {
+        let deferred = Success()
+
+        if braveShieldForDomainTable == nil {
+            deferred.fill(Maybe(success: ()))
+            return deferred
+        }
+
+        var err: NSError? = nil
+        db.transaction(&err) { (conn, err) -> Bool in
+            err = conn.executeChange("DELETE FROM \(BraveShieldTable.tableName)", withArgs: nil)
+            if let err = err {
+                print("SQL operation failed: \(err.localizedDescription)")
+            }
+            braveShieldForDomain.removeAll()
+            deferred.fill(Maybe(success: ()))
+            return err == nil
+        }
+
+        return deferred
+    }
 
     public func loadBraveShieldsPerBaseDomain() -> Deferred<()> {
         let deferred = Deferred<()>()
