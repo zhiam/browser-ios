@@ -131,9 +131,9 @@ class BraveApp {
 
         getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
             ensureMainThread {
-                if let wv = getCurrentWebView(), url = wv.URL, base = url.baseDomain() where braveShieldForDomain[base] != nil
+                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost() where braveShieldPerNormalizedDomain[base] != nil
                     && wv.braveShieldState?.state == 0 {
-                    wv.braveShieldState = BraveShieldState(state: braveShieldForDomain[base])
+                    wv.braveShieldState = BraveShieldState(state: braveShieldPerNormalizedDomain[base])
                     wv.reloadFromOrigin()
                 }
             }

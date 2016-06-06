@@ -594,8 +594,8 @@ extension BraveWebView: UIWebViewDelegate {
                 print("Page changed by shouldStartLoad: \(URL?.absoluteString ?? "")")
             #endif
 
-            if let url = request.URL, domain = url.baseDomain() {
-                braveShieldState = BraveShieldState(state: braveShieldForDomain[domain] ?? 0)
+            if let url = request.URL, domain = url.normalizedHost() {
+                braveShieldState = BraveShieldState(state: braveShieldPerNormalizedDomain[domain] ?? 0)
                 delay(0.2) { // update the UI, wait a bit for loading to have started
                     let urlBar = getApp().browserViewController.urlBar as! BraveURLBarView
                     urlBar.braveButton.selected = self.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue

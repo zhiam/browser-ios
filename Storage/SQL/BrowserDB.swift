@@ -69,7 +69,7 @@ public class BrowserDB {
         log.debug("Try create \(table.name) version \(table.version)")
         if !table.create(conn) {
             // If creating failed, we'll bail without storing the table info
-            log.debug("Creation failed.")
+            print("Creation failed.")
             return .Failed
         }
 
@@ -138,7 +138,7 @@ public class BrowserDB {
             for table in tables {
                 log.debug("Create or update \(table.name) version \(table.version) on \(thread).")
                 if !table.exists(connection) {
-                    log.debug("Doesn't exist. Creating table \(table.name).")
+                    print("Doesn't exist. Creating table \(table.name).")
                     doCreate(table, connection)
                 } else {
                     // Otherwise, we'll update it

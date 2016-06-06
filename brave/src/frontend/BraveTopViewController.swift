@@ -158,8 +158,8 @@ class BraveTopViewController : UIViewController {
         guard let button = notification.object as? UIButton else { return }
 
 
-        if let tab = browserViewController.tabManager.selectedTab, url = tab.webView?.URL?.baseDomain() where !tab.isPrivate {
-            getApp().profile?.setBraveShieldForBaseDomain(url, state: button.selected ? BraveShieldState.allOff : 0)
+        if let tab = browserViewController.tabManager.selectedTab, url = tab.webView?.URL?.normalizedHost() where !tab.isPrivate {
+            getApp().profile?.setBraveShieldForNormalizedDomain(url, state: button.selected ? BraveShieldState.StateEnum.AllOff.rawValue : 0)
         }
 
         NSURLCache.sharedURLCache().removeAllCachedResponses()

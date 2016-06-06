@@ -4,11 +4,13 @@
 
 import Foundation
 
+public let kSchemaTableName = "tableList"
+
 // A table for holding info about other tables (also holds info about itself :)). This is used
 // to let us handle table upgrades when the table is first accessed, rather than when the database
 // itself is created.
 class SchemaTable: GenericTable<TableInfo> {
-    override var name: String { return "tableList" }
+    override var name: String { return kSchemaTableName }
     override var version: Int { return 1 }
 
     override var rows: String { return "id INTEGER PRIMARY KEY AUTOINCREMENT, " +

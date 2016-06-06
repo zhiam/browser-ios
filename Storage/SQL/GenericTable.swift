@@ -129,7 +129,7 @@ public class GenericTable<T>: BaseTable {
 
     public func create(db: SQLiteDBConnection) -> Bool {
         if let err = db.executeChange("CREATE TABLE IF NOT EXISTS \(name) (\(rows))") {
-            log.error("Error creating \(self.name) - \(err)")
+            print("Error creating \(self.name) - \(err)")
             return false
         }
         return true

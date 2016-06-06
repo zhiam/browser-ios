@@ -4,13 +4,13 @@ import Shared
 import Storage
 
 struct BraveShieldTableRow {
-    var baseDomain = ""
+    var normalizedDomain = ""
     var shieldState = BraveShieldState.StateEnum.AllOn.rawValue
 }
 
 class BraveShieldTable: GenericTable<BraveShieldTableRow> {
     static let tableName = "brave_shield_per_domain"
-    static let colDomain = "base_domain"
+    static let colDomain = "domain"
     static let colState = "state"
 
     var db: BrowserDB!
@@ -48,7 +48,7 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
     func makeArgs(item: BraveShieldTableRow) -> [AnyObject?] {
         var args = [AnyObject?]()
         args.append(item.shieldState)
-        args.append(item.baseDomain)
+        args.append(item.normalizedDomain)
         return args
     }
 
@@ -63,7 +63,7 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
     override func getDeleteAndArgs(inout item: BraveShieldTableRow?) -> (String, [AnyObject?])? {
         var args = [AnyObject?]()
         if let item = item {
-            args.append(item.baseDomain)
+            args.append(item.normalizedDomain)
             return ("DELETE FROM \(BraveShieldTable.tableName) WHERE \(BraveShieldTable.colDomain) = ?", args)
         }
         return ("DELETE FROM \(BraveShieldTable.tableName)", [])
@@ -73,7 +73,7 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
         return { row -> BraveShieldTableRow in
             var item = BraveShieldTableRow()
             if let domain = row[BraveShieldTable.colDomain] as? String, state = row[BraveShieldTable.colState] as? Int {
-                item.baseDomain = domain
+                item.normalizedDomain = domain
                 item.shieldState = state
             }
             return item
@@ -104,11 +104,17 @@ extension BrowserProfile {
 
         var err: NSError? = nil
         db.transaction(&err) { (conn, err) -> Bool in
-            err = conn.executeChange("DELETE FROM \(BraveShieldTable.tableName)", withArgs: nil)
+            err = conn.executeChange("DROP TABLE IF EXISTS \(BraveShieldTable.tableName)", withArgs: nil)
             if let err = err {
                 print("SQL operation failed: \(err.localizedDescription)")
             }
-            braveShieldForDomain.removeAll()
+
+            err = conn.executeChange("DELETE FROM \(kSchemaTableName) WHERE name = \(BraveShieldTable.tableName)", withArgs: nil)
+            if let err = err {
+                print("SQL operation failed: \(err.localizedDescription)")
+            }
+            
+            braveShieldPerNormalizedDomain.removeAll()
             deferred.fill(Maybe(success: ()))
             return err == nil
         }
@@ -127,7 +133,7 @@ extension BrowserProfile {
                 result in
                 if let rows = result.successValue {
                     for item in rows {
-                        braveShieldForDomain[item.baseDomain] = item.shieldState
+                        braveShieldPerNormalizedDomain[item.normalizedDomain] = item.shieldState
                     }
                 }
                 deferred.fill(())
@@ -136,11 +142,11 @@ extension BrowserProfile {
         return deferred
     }
 
-    public func setBraveShieldForBaseDomain(domain: String, state: Int) {
+    public func setBraveShieldForNormalizedDomain(domain: String, state: Int) {
         if state == 0 {
-            braveShieldForDomain.removeValueForKey(domain)
+            braveShieldPerNormalizedDomain.removeValueForKey(domain)
         } else {
-            braveShieldForDomain[domain] = state
+            braveShieldPerNormalizedDomain[domain] = state
         }
 
         succeed().upon() { _ in
@@ -149,7 +155,7 @@ extension BrowserProfile {
             }
 
             var t = BraveShieldTableRow()
-            t.baseDomain = domain
+            t.normalizedDomain = domain
             t.shieldState = state
             var err: NSError?
             self.db.transaction(synchronous: true, err: &err) { (connection, inout err:NSError?) -> Bool in
@@ -168,15 +174,17 @@ extension BrowserProfile {
     }
 }
 
-var braveShieldForDomain = [String: Int]()
+var braveShieldPerNormalizedDomain = [String: Int]()
 
 public class BraveShieldState {
     public enum StateEnum: Int  {
         case AllOn = 0
-        case AdblockOff = 1
-        case TPOff = 2
-        case HTTPSEOff = 4
-        case SafeBrowingOff = 8
+        case AllOff = 1
+        case AdblockOff = 2
+        case TPOff = 4
+        case HTTPSEOff = 8
+        case SafeBrowingOff = 16
+        case FingerprintProtectionOff = 32
     }
 
     public init?(state: Int?) {
@@ -188,8 +196,6 @@ public class BraveShieldState {
     }
 
     var state = StateEnum.AllOn.rawValue
-    static var allOff = BraveShieldState.StateEnum.AdblockOff.rawValue | BraveShieldState.StateEnum.HTTPSEOff.rawValue |
-        BraveShieldState.StateEnum.SafeBrowingOff.rawValue | BraveShieldState.StateEnum.TPOff.rawValue
 
     func isOnAdBlock() -> Bool {
         return state & StateEnum.AdblockOff.rawValue == 0
