@@ -20,9 +20,8 @@ CODE_SIGN_IDENTITY_Debug = iPhone Developer
 CODE_SIGN_IDENTITY_Release = iPhone Distribution
 CODE_SIGN_IDENTITY=$(CODE_SIGN_IDENTITY_$(CONFIGURATION))
 
-// YES is the default
-ENABLE_BITCODE_Debug = NO
-VALIDATE_PRODUCT = $(ENABLE_BITCODE_$(CONFIGURATION))
+// The pre-built ssl lib in FXA requires this off
+ENABLE_BITCODE = NO
 
 OTHER_SWIFT_FLAGS_Debug = -DDEBUG
 OTHER_SWIFT_FLAGS_Release =
