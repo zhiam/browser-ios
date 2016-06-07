@@ -26,7 +26,7 @@ class URLProtocol: NSURLProtocol {
 
         let ua = request.allHTTPHeaderFields?["User-Agent"]
         if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
-            if webView.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue {
+            if webView.braveShieldState.isAllOff() {
                 return false // TODO: for now we aren't handling individual on/off states, assume all are off
             }
         }

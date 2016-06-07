@@ -47,6 +47,10 @@ class BraveBrowserViewController : BrowserViewController {
         statusBarOverlay.backgroundColor = DeviceInfo.isBlurSupported() ? UIColor(white: 0.255, alpha: 1.0) : UIColor.blackColor()
     }
 
+    func updateBraveShieldButtonState() {
+        let isOn = tabManager.selectedTab?.webView?.braveShieldState.isAllOn() ?? true
+        (urlBar as! BraveURLBarView).braveButton.selected = !isOn
+    }
 
     override func selectedTabChanged(selected: Browser) {
         historySwiper.setup(topLevelView: self.view, webViewContainer: self.webViewContainer)
@@ -63,11 +67,8 @@ class BraveBrowserViewController : BrowserViewController {
             }
 
             urlBar.updateProgressBar(Float(webView.estimatedProgress), dueToTabChange: true)
-
-            // set the shield state
-            (urlBar as! BraveURLBarView).braveButton.selected = webView.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue
-
             urlBar.updateReloadStatus(webView.loading)
+            updateBraveShieldButtonState()
         }
         delay(0.1) {
             self.becomeFirstResponder()

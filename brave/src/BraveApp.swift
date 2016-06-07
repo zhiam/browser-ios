@@ -31,8 +31,6 @@ class BraveApp {
     // If app runs for this long, clear the saved pref that indicates it is safe to restore tabs
     static let kDelayBeforeDecidingAppHasBootedOk = (Int64(NSEC_PER_SEC) * 10) // 10 sec
 
-    static var isBraveButtonBypassingFilters = false
-
     class var singleton: BraveApp {
         return _singleton
     }
@@ -131,9 +129,10 @@ class BraveApp {
 
         getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
             ensureMainThread {
-                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost() where braveShieldPerNormalizedDomain[base] != nil
-                    && wv.braveShieldState?.state == 0 {
-                    wv.braveShieldState = BraveShieldState(state: braveShieldPerNormalizedDomain[base])
+                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = braveShieldPerNormalizedDomain[base]
+                    where wv.braveShieldState.isAllOn() {
+                    // on init, the webview's shield state doesn't match the db
+                    wv.braveShieldState = BraveShieldState(state: dbState)
                     wv.reloadFromOrigin()
                 }
             }

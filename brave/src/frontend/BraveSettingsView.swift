@@ -13,7 +13,7 @@ class BraveSettingsView : AppSettingsTableViewController {
     var debugToggleItemToTriggerCrashCount = 0
 
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section != 2 {
+        if section != 2 || getShieldFooterText() == nil {
             return nil
         }
 
@@ -22,20 +22,21 @@ class BraveSettingsView : AppSettingsTableViewController {
         footerView.rightInset = CGFloat(10)
         footerView.numberOfLines = 0
         footerView.font = UIFont.boldSystemFontOfSize(13)
+        footerView.text = getShieldFooterText()
+        return footerView
+    }
 
+    func getShieldFooterText() -> String? {
         if BraveSettingsView.isAllBraveShieldPrefsOff {
-            footerView.text = "The Brave Shield button is disabled when all settings are off."
-            return footerView
-        } else if BraveApp.isBraveButtonBypassingFilters {
-            footerView.text = "Brave Shields are currently down. These settings only take effect when shields are up."
-            return footerView
+            return "The Brave Shield button is disabled when all settings are off."
+        } else if (getApp().browserViewController.urlBar as! BraveURLBarView).braveButton.selected {
+            return "Brave Shields are currently down. These settings only take effect when shields are up."
         }
-
         return nil
     }
 
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section != 2 || !(BraveApp.isBraveButtonBypassingFilters || BraveSettingsView.isAllBraveShieldPrefsOff) {
+        if section != 2 || getShieldFooterText() == nil {
             return 0
         }
         return 40.0

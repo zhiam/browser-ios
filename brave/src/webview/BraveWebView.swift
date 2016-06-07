@@ -390,8 +390,13 @@ class BraveWebView: UIWebView {
     }
 
     func reloadFromOrigin() {
-        progress?.setProgress(0.3)
         self.reload()
+    }
+
+    override func reload() {
+        progress?.setProgress(0.3)
+        NSURLCache.sharedURLCache().removeAllCachedResponses()
+        super.reload()
     }
 
     override func stopLoading() {
@@ -597,8 +602,7 @@ extension BraveWebView: UIWebViewDelegate {
             if let url = request.URL, domain = url.normalizedHost() {
                 braveShieldState = BraveShieldState(state: braveShieldPerNormalizedDomain[domain] ?? 0)
                 delay(0.2) { // update the UI, wait a bit for loading to have started
-                    let urlBar = getApp().browserViewController.urlBar as! BraveURLBarView
-                    urlBar.braveButton.selected = self.braveShieldState?.state != BraveShieldState.StateEnum.AllOn.rawValue
+                    (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState()
                 }
             }
         }

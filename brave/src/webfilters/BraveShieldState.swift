@@ -109,11 +109,11 @@ extension BrowserProfile {
                 print("SQL operation failed: \(err.localizedDescription)")
             }
 
-            err = conn.executeChange("DELETE FROM \(kSchemaTableName) WHERE name = \(BraveShieldTable.tableName)", withArgs: nil)
+            err = conn.executeChange("DELETE FROM \(kSchemaTableName) WHERE name = '\(BraveShieldTable.tableName)'", withArgs: nil)
             if let err = err {
                 print("SQL operation failed: \(err.localizedDescription)")
             }
-            
+            braveShieldForDomainTable = nil
             braveShieldPerNormalizedDomain.removeAll()
             deferred.fill(Maybe(success: ()))
             return err == nil
@@ -184,18 +184,27 @@ public class BraveShieldState {
         case TPOff = 4
         case HTTPSEOff = 8
         case SafeBrowingOff = 16
-        case FingerprintProtectionOff = 32
+        case FingerprintProtectionOff = 32 // future support
     }
 
-    public init?(state: Int?) {
+    public init(state: Int?) {
         if let state = state {
             self.state = state
         } else {
-            return nil
+            self.state = 0
         }
     }
 
-    var state = StateEnum.AllOn.rawValue
+    private var state = StateEnum.AllOn.rawValue
+
+    func isAllOff() -> Bool {
+        return state != StateEnum.AllOn.rawValue
+    }
+
+    func isAllOn() -> Bool {
+        return state == StateEnum.AllOn.rawValue
+    }
+
 
     func isOnAdBlock() -> Bool {
         return state & StateEnum.AdblockOff.rawValue == 0
