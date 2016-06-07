@@ -14,9 +14,7 @@ class SidePanelBaseViewController : UIViewController {
     // Set false for a right side panel
     var isLeftSidePanel = true
 
-
     var parentSideConstraints: [Constraint?]?
-
 
     override func loadView() {
         self.view = UIScrollView(frame: UIScreen.mainScreen().bounds)

@@ -76,6 +76,8 @@ class PrivateBrowsing {
 
         isOn = true
 
+        getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
+
         cookiesFileDiskOperation(.SavePublicBackup)
 
         NSURLCache.sharedURLCache().memoryCapacity = 0;

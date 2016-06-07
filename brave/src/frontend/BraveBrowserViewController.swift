@@ -69,7 +69,9 @@ class BraveBrowserViewController : BrowserViewController {
 
             urlBar.updateReloadStatus(webView.loading)
         }
-
+        delay(0.1) {
+            self.becomeFirstResponder()
+        }
     }
 
     override func SELtappedTopArea() {
@@ -113,5 +115,52 @@ class BraveBrowserViewController : BrowserViewController {
     override func updateToolbarStateForTraitCollection(newCollection: UITraitCollection) {
         super.updateToolbarStateForTraitCollection(newCollection)
         braveWebContainerConstraintSetup()
+    }
+
+    override func showHomePanelController(inline inline:Bool) {
+        super.showHomePanelController(inline: inline)
+        delay(0.1) {
+            if UIResponder.currentFirstResponder() == nil {
+                self.becomeFirstResponder()
+            }
+        }
+    }
+
+    override func hideHomePanelController() {
+        super.hideHomePanelController()
+
+        // For bizzaro reasons, this can take a few delayed attempts. The first responder is getting set to nil -I *did* search the codebase for any resigns that could cause this.
+        func setSelfAsFirstResponder(attempt: Int) {
+            if UIResponder.currentFirstResponder() === self {
+                return
+            }
+            if attempt > 5 {
+                print("Failed to set BVC as first responder ;(")
+                return
+            }
+            delay(0.1) {
+                self.becomeFirstResponder()
+                setSelfAsFirstResponder(attempt + 1)
+            }
+        }
+
+        delay(0.1) {
+           setSelfAsFirstResponder(0)
+        }
+    }
+}
+
+weak var _firstResponder:UIResponder?
+extension UIResponder {
+    func findFirstResponder() {
+        _firstResponder = self
+    }
+
+    static func currentFirstResponder() -> UIResponder? {
+        if (UIApplication.sharedApplication().sendAction(#selector(findFirstResponder), to: nil, from: nil, forEvent: nil)) {
+            return _firstResponder
+        } else {
+            return nil
+        }
     }
 }

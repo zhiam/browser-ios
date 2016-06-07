@@ -664,7 +664,7 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    private func showHomePanelController(inline inline: Bool) {
+    func showHomePanelController(inline inline: Bool) {
         log.debug("BVC showHomePanelController.")
         homePanelIsInline = inline
 
@@ -710,7 +710,7 @@ class BrowserViewController: UIViewController {
         log.debug("BVC done with showHomePanelController.")
     }
 
-    private func hideHomePanelController() {
+    func hideHomePanelController() {
         if let controller = homePanelController {
             UIView.animateWithDuration(0.2, delay: 0, options: .BeginFromCurrentState, animations: { () -> Void in
                 controller.view.alpha = 0
@@ -976,6 +976,11 @@ class BrowserViewController: UIViewController {
 
     @available(iOS 9, *)
     func switchToPrivacyMode(isPrivate isPrivate: Bool ){
+        if isPrivate {
+            PrivateBrowsing.singleton.enter()
+        }
+        // exiting is async and non-trivial for Brave, not currently handled here
+        
         applyTheme(isPrivate ? Theme.PrivateMode : Theme.NormalMode)
 
         let tabTrayController = self.tabTrayController ?? TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
@@ -1016,8 +1021,8 @@ class BrowserViewController: UIViewController {
 
     func openBlankNewTabAndFocus(isPrivate isPrivate: Bool = false) {
         popToBrowser()
+        tabManager.selectTab(nil)
         openURLInNewTab(nil, isPrivate: isPrivate)
-        urlBar.browserLocationViewDidTapLocation(urlBar.locationView)
     }
 
     private func popToBrowser(forTab: Browser? = nil) {
@@ -1111,6 +1116,102 @@ class BrowserViewController: UIViewController {
         self.presentViewController(controller, animated: true, completion: nil)
     }
 
+    func reloadTab(){
+        if homePanelController == nil {
+            tabManager.selectedTab?.reload()
+        }
+    }
+
+    func goBack(){
+        if tabManager.selectedTab?.canGoBack == true && homePanelController == nil {
+            tabManager.selectedTab?.goBack()
+        }
+    }
+    func goForward(){
+        if tabManager.selectedTab?.canGoForward == true && homePanelController == nil {
+            tabManager.selectedTab?.goForward()
+        }
+    }
+
+    func findOnPage(){
+        if let tab = tabManager.selectedTab where homePanelController == nil {
+            browser(tab, didSelectFindInPageForSelection: "")
+        }
+    }
+
+    func selectLocationBar() {
+        urlBar.browserLocationViewDidTapLocation(urlBar.locationView)
+    }
+
+    func newTab() {
+        openBlankNewTabAndFocus(isPrivate: PrivateBrowsing.singleton.isOn)
+    }
+
+    func newPrivateTab() {
+        openBlankNewTabAndFocus(isPrivate: true)
+    }
+
+    func closeTab() {
+        guard let tab = tabManager.selectedTab else { return }
+        let priv = tab.isPrivate
+        nextOrPrevTabShortcut(isNext: false)
+        tabManager.removeTab(tab, createTabIfNoneLeft: !priv)
+        if priv && tabManager.privateTabs.count == 0 {
+            urlBarDidPressTabs(urlBar)
+        }
+    }
+
+    private func nextOrPrevTabShortcut(isNext isNext: Bool) {
+        guard let tab = tabManager.selectedTab else { return }
+        let step = isNext ? 1 : -1
+        let tabList: [Browser] = tab.isPrivate ? tabManager.privateTabs : tabManager.tabs
+        func wrappingMod(val:Int, mod:Int) -> Int {
+            return ((val % mod) + mod) % mod
+        }
+        assert(wrappingMod(-1, mod: 10) == 9)
+        let index = wrappingMod((tabList.indexOf(tab)! + step), mod: tabList.count)
+        tabManager.selectTab(tabList[index])
+    }
+
+    func nextTab() {
+        nextOrPrevTabShortcut(isNext: true)
+    }
+
+    func previousTab() {
+        nextOrPrevTabShortcut(isNext: false)
+    }
+
+    override var keyCommands: [UIKeyCommand]? {
+        if #available(iOS 9.0, *) {
+            return [
+                UIKeyCommand(input: "r", modifierFlags: .Command, action: #selector(BrowserViewController.reloadTab), discoverabilityTitle: Strings.ReloadPageTitle),
+                UIKeyCommand(input: "[", modifierFlags: .Command, action: #selector(BrowserViewController.goBack), discoverabilityTitle: Strings.BackTitle),
+                UIKeyCommand(input: "]", modifierFlags: .Command, action: #selector(BrowserViewController.goForward), discoverabilityTitle: Strings.ForwardTitle),
+
+                UIKeyCommand(input: "f", modifierFlags: .Command, action: #selector(BrowserViewController.findOnPage), discoverabilityTitle: Strings.FindTitle),
+                UIKeyCommand(input: "l", modifierFlags: .Command, action: #selector(BrowserViewController.selectLocationBar), discoverabilityTitle: Strings.SelectLocationBarTitle),
+                UIKeyCommand(input: "t", modifierFlags: .Command, action: #selector(BrowserViewController.newTab), discoverabilityTitle: Strings.NewTabTitle),
+                UIKeyCommand(input: "p", modifierFlags: [.Command, .Shift], action: #selector(BrowserViewController.newPrivateTab), discoverabilityTitle: Strings.NewPrivateTabTitle),
+                UIKeyCommand(input: "w", modifierFlags: .Command, action: #selector(BrowserViewController.closeTab), discoverabilityTitle: Strings.CloseTabTitle),
+                UIKeyCommand(input: "\t", modifierFlags: .Control, action: #selector(BrowserViewController.nextTab), discoverabilityTitle: Strings.ShowNextTabTitle),
+                UIKeyCommand(input: "\t", modifierFlags: [.Control, .Shift], action: #selector(BrowserViewController.previousTab), discoverabilityTitle: Strings.ShowPreviousTabTitle),
+            ]
+        } else {
+            // Fallback on earlier versions
+            return [
+                UIKeyCommand(input: "r", modifierFlags: .Command, action: #selector(BrowserViewController.reloadTab)),
+                UIKeyCommand(input: "[", modifierFlags: .Command, action: #selector(BrowserViewController.goBack)),
+                UIKeyCommand(input: "f", modifierFlags: .Command, action: #selector(BrowserViewController.findOnPage)),
+                UIKeyCommand(input: "l", modifierFlags: .Command, action: #selector(BrowserViewController.selectLocationBar)),
+                UIKeyCommand(input: "t", modifierFlags: .Command, action: #selector(BrowserViewController.newTab)),
+                UIKeyCommand(input: "p", modifierFlags: [.Command, .Shift], action: #selector(BrowserViewController.newPrivateTab)),
+                UIKeyCommand(input: "w", modifierFlags: .Command, action: #selector(BrowserViewController.closeTab)),
+                UIKeyCommand(input: "\t", modifierFlags: .Control, action: #selector(BrowserViewController.nextTab)),
+                UIKeyCommand(input: "\t", modifierFlags: [.Control, .Shift], action: #selector(BrowserViewController.previousTab))
+            ]
+        }
+    }
+
     private func updateFindInPageVisibility(visible visible: Bool) {
         if visible {
             if findInPageBar == nil {
@@ -1149,10 +1250,10 @@ class BrowserViewController: UIViewController {
         return true
     }
 
-    override func becomeFirstResponder() -> Bool {
-        // Make the web view the first responder so that it can show the selection menu.
-        return tabManager.selectedTab?.webView?.becomeFirstResponder() ?? false
-    }
+//    override func becomeFirstResponder() -> Bool {
+//        // Make the web view the first responder so that it can show the selection menu.
+//        return tabManager.selectedTab?.webView?.becomeFirstResponder() ?? false
+//    }
 }
 
 /**
@@ -1816,10 +1917,8 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func updateTabCountUsingTabManager(tabManager: TabManager, animated: Bool = true) {
-        if let selectedTab = tabManager.selectedTab {
-            let count = selectedTab.isPrivate ? tabManager.privateTabs.count : tabManager.normalTabs.count
-            urlBar.updateTabCount(max(count, 1), animated: animated)
-        }
+        let count = PrivateBrowsing.singleton.isOn ? tabManager.privateTabs.count : tabManager.normalTabs.count
+        urlBar.updateTabCount(max(count, 1), animated: animated)
     }
 }
 

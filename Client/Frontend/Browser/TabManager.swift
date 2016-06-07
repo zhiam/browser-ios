@@ -360,7 +360,7 @@ class TabManager : NSObject {
 
     // This method is duplicated to hide the flushToDisk option from consumers.
     func removeTab(tab: Browser, createTabIfNoneLeft: Bool) {
-        self.removeTab(tab, flushToDisk: true, notify: true, createTabIfNoneLeft: true)
+        self.removeTab(tab, flushToDisk: true, notify: true, createTabIfNoneLeft: createTabIfNoneLeft)
         hideNetworkActivitySpinner()
     }
 
@@ -372,38 +372,28 @@ class TabManager : NSObject {
             return
         }
 
-        // If the removed tab was selected, find the new tab to select.
-        if let index = getIndex(tab) where tab === selectedTab {
-            if index + 1 < tabCount {
-                selectTab(tabs[index + 1])
-            } else if index - 1 >= 0 {
-                selectTab(tabs[index - 1])
+        let tabToKeepSelected = selectedTab != tab ? selectedTab : nil
+
+        if selectedTab === tab {
+            let tabList: [Browser] = PrivateBrowsing.singleton.isOn ? privateTabs : tabs
+            if tabList.count > 1 {
+                selectTab(tabList[(tabList.count - 1) % tabList.count])
             } else {
-                assert(tabCount == 1, "Removing last tab")
                 selectTab(nil)
             }
         }
 
         let prevCount = tabCount
-        var removedIndex = -1
         for i in 0..<tabCount {
             if tabs[i] === tab {
                 tabs.removeAtIndex(i)
-                removedIndex = i
                 break
             }
         }
         assert(tabCount == prevCount - 1, "Tab removed")
 
-
-        #if BRAVE
-            if removedIndex < _selectedIndex {
-                _selectedIndex -= 1
-            }
-        #endif
-
-        if tab != selectedTab {
-            _selectedIndex = selectedTab == nil ? -1 : tabs.indexOf(selectedTab!) ?? 0
+        if let t = tabToKeepSelected {
+            selectTab(t)
         }
 
         // There's still some time between this and the webView being destroyed.

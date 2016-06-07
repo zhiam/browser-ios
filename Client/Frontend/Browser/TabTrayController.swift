@@ -414,6 +414,8 @@ class TabTrayController: UIViewController {
 
             if let tab = tabManager.selectedTab where tab.isPrivate {
                 privateMode = true
+            } else if PrivateBrowsing.singleton.isOn {
+                privateMode = true
             }
 
             // register for previewing delegate to enable peek and pop if force touch feature available
@@ -498,7 +500,6 @@ class TabTrayController: UIViewController {
         privateMode = !privateMode
 #if BRAVE
         if privateMode {
-            tabManager.tabs.forEach{ $0.deleteWebView() }
             PrivateBrowsing.singleton.enter()
             togglePrivateMode.backgroundColor = UIColor.whiteColor()
             togglePrivateMode.layer.cornerRadius = 4.0
