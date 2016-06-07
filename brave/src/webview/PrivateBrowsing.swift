@@ -123,6 +123,7 @@ class PrivateBrowsing {
     }
 
     @objc func allWebViewsKilled() {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
         delay(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
 
             self.webkitDirLocker(lock: false)

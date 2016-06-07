@@ -319,6 +319,8 @@ class TabTrayController: UIViewController {
              getApp().browserViewController.view.alpha = 1.0
              getApp().browserViewController.toolbar?.leavingTabTrayMode()
         }
+
+        getApp().browserViewController.updateTabCountUsingTabManager(getApp().tabManager)
     }
 #endif
 
