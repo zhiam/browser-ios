@@ -18,6 +18,29 @@ public class WeakList<T: AnyObject>: SequenceType {
 
     public init() {}
 
+    public func at(index: Int) -> T? {
+        if index < 0 || index > items.count {
+            return nil
+        }
+        let t = items[index]
+        return t.value
+    }
+
+    public func count() -> Int {
+        return items.count
+    }
+
+    public func indexOf(item: T) -> Int? {
+        return items.indexOf({ $0.value === item })
+    }
+
+    public func remove(index: Int) {
+        if index < 0 || index > items.count {
+            return
+        }
+        items.removeAtIndex(index)
+    }
+
     /**
      * Adds an item to the list.
      * Note that every insertion iterates through the list to find any "holes" (items that have
