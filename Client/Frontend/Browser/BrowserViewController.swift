@@ -2025,7 +2025,7 @@ extension BrowserViewController: WKNavigationDelegate {
             }
 
             let siteName = tab.displayURL?.hostWithGenericSubdomainPrefixRemoved() ?? "this site"
-            let snackBar = TimerSnackBar(attrText: NSAttributedString(string: NSLocalizedString("Allow \(siteName) to open iTunes?", comment: "Ask user if site can open iTunes store URL")),
+            let snackBar = TimerSnackBar(attrText: NSAttributedString(string: NSLocalizedString("  Allow \(siteName) to open iTunes?", comment: "Ask user if site can open iTunes store URL")),
                                          img: nil,
                                          buttons: [
                                             SnackButton(title: "Open", accessibilityIdentifier: "", callback: { bar in
