@@ -54,15 +54,16 @@ class ShareExtensionHelper: NSObject {
             findLoginExtensionItem()
         }
 
-        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
+        activityViewController.completionWithItemsHandler = {
+            [weak self] activityType, completed, returnedItems, activityError in
             if !completed {
                 completionHandler(completed)
                 return
             }
 
-            if self.isPasswordManagerActivityType(activityType) {
+            if self?.isPasswordManagerActivityType(activityType) ?? false {
                 if let logins = returnedItems {
-                    self.fillPasswords(logins)
+                    self?.fillPasswords(logins)
                 }
             }
 
@@ -127,14 +128,15 @@ private extension ShareExtensionHelper {
         }
 
         // Add 1Password to share sheet
-        OnePasswordExtension.sharedExtension().createExtensionItemForWebView(selectedWebView, completion: {(extensionItem, error) -> Void in
+        OnePasswordExtension.sharedExtension().createExtensionItemForWebView(selectedWebView, completion: {
+            [weak self] (extensionItem, error) -> Void in
             if extensionItem == nil {
                 log.error("Failed to create the password manager extension item: \(error).")
                 return
             }
 
             // Set the 1Password extension item property
-            self.onePasswordExtensionItem = extensionItem
+            self?.onePasswordExtensionItem = extensionItem
         })
     }
 
