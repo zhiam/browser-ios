@@ -1083,9 +1083,12 @@ class BrowserViewController: UIViewController {
 
         let helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
 
-        let controller = helper.createActivityViewController({ [unowned self] completed in
+        let controller = helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
             // After dismissing, check to see if there were any prompts we queued up
             self.showQueuedAlertIfAvailable()
+
+            self.displayedPopoverController = nil
+            self.updateDisplayedPopoverProperties = nil
 
             if completed {
                 // We don't know what share action the user has chosen so we simply always
@@ -1097,8 +1100,8 @@ class BrowserViewController: UIViewController {
             }
         })
 
-        let setupPopover = { [unowned self] in
-            if let popoverPresentationController = controller.popoverPresentationController {
+        let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
+            if let popoverPresentationController = controller?.popoverPresentationController {
                 popoverPresentationController.sourceView = sourceView
                 popoverPresentationController.sourceRect = sourceRect
                 popoverPresentationController.permittedArrowDirections = arrowDirection
