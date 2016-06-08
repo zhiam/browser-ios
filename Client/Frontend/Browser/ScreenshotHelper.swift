@@ -37,15 +37,17 @@ class ScreenshotHelper {
     /// Trying to take a screenshot immediately after didFinishNavigation results in a screenshot
     /// of the previous page, presumably due to an iOS bug. Adding a brief delay fixes this.
     func takeDelayedScreenshot(tab: Browser) {
-        delay(1) {
+        delay(1) { [weak self, weak tab = tab] in
             // If the view controller isn't visible, the screenshot will be blank.
             // Wait until the view controller is visible again to take the screenshot.
-            guard self.viewIsVisible else {
-                tab.pendingScreenshot = true
+            guard self?.viewIsVisible ?? false else {
+                tab?.pendingScreenshot = true
                 return
             }
 
-            self.takeScreenshot(tab)
+            if let tab = tab {
+                self?.takeScreenshot(tab)
+            }
         }
     }
 
