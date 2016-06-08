@@ -1,5 +1,6 @@
 import Shared
 import Deferred
+import Crashlytics
 
 private let _singleton = PrivateBrowsing()
 
@@ -108,21 +109,28 @@ class PrivateBrowsing {
 
         isOn = false
         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "WebKitPrivateBrowsingEnabled")
-
         NSNotificationCenter.defaultCenter().removeObserver(self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
 
         getApp().tabManager.removeAllPrivateTabsAndNotify(false)
-        if BraveWebView.allocCounter < 1 {
-            delay(0) {
-                self.allWebViewsKilled()
-            }
+        delay(2) {
+            Answers.logCustomEventWithName("PrivateBrowsing exit failed", customAttributes: nil)
+            self.allWebViewsKilled()
         }
 
         return exitDeferred
     }
 
     @objc func allWebViewsKilled() {
+        struct ReentrantGuard {
+            static var inFunc = false
+        }
+
+        if ReentrantGuard.inFunc {
+            return
+        }
+        ReentrantGuard.inFunc = true
+
         NSNotificationCenter.defaultCenter().removeObserver(self)
         delay(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
 
@@ -142,6 +150,7 @@ class PrivateBrowsing {
                 }
                 getApp().tabManager.selectTab(getApp().tabManager.tabs.first)
                 self.exitDeferred.fillIfUnfilled(())
+                ReentrantGuard.inFunc = false
             }
         }
     }
