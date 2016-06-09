@@ -374,8 +374,11 @@ class TabManager : NSObject {
 
         if selectedTab === tab {
             let tabList: [Browser] = PrivateBrowsing.singleton.isOn ? privateTabs : tabs
-            if tabList.count > 1 {
-                selectTab(tabList[(tabList.count - 1) % tabList.count])
+            let currIndex = tabList.indexOf(tab)
+            if let currIndex = currIndex where tabList.count > 1 {
+                let newIndex = currIndex > 0 ? currIndex - 1 : tabList.count - 1
+                assert(newIndex < tabList.count)
+                selectTab(tabList[newIndex])
             } else {
                 selectTab(nil)
             }
