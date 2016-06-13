@@ -226,8 +226,9 @@ class SearchEngines {
 
             let engine = parser.parse(fullPath)
             assert(engine != nil, "Engine at \(fullPath) successfully parsed")
-
-            engines.append(engine!)
+            if let engine = engine {
+                engines.append(engine)
+            }
         }
 
         let defaultEngineFile = (searchDirectory as NSString).stringByAppendingPathComponent("default.txt")

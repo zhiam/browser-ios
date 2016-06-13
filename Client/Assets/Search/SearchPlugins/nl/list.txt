@@ -1,3 +1,4 @@
 google
 wikipedia-nl
-bolcom-nlduckduckgo
+bolcom-nl
+duckduckgo
