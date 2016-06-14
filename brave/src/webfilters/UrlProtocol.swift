@@ -6,11 +6,10 @@ import CoreData
 var requestCount = 0
 let markerRequestHandled = "request-already-handled"
 
-let disableJavascript = false // For development we can turn this on, until there is a class to manage it
-
 class URLProtocol: NSURLProtocol {
 
-    var connection: NSURLConnection!
+    var connection: NSURLConnection?
+    var disableJavascript = false
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         //print("Request #\(requestCount++): URL = \(request.mainDocumentURL?.absoluteString)")
@@ -24,21 +23,38 @@ class URLProtocol: NSURLProtocol {
 
         guard let url = request.URL else { return false }
 
+        let shieldState = getShields(request)
+
+        let useCustomUrlProtocol =
+            shieldState.isOnScriptBlocking() ?? false ||
+            (shieldState.isOnAdBlockAndTp() ?? false && TrackingProtection.singleton.shouldBlock(request)) ||
+                (shieldState.isOnAdBlockAndTp() ?? false && AdBlocker.singleton.shouldBlock(request)) ||
+                (shieldState.isOnSafeBrowsing() ?? false && SafeBrowsing.singleton.shouldBlock(request)) ||
+                (shieldState.isOnHTTPSE() ?? false && HttpsEverywhere.singleton.tryRedirectingUrl(url) != nil)
+
+        return useCustomUrlProtocol
+    }
+
+    static func getShields(request: NSURLRequest) -> BraveShieldState {
         let ua = request.allHTTPHeaderFields?["User-Agent"]
+        var webViewShield:BraveShieldState? = nil
+        let shieldResult = BraveShieldState()
+
         if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
-            if webView.braveShieldState.isAllOff() {
-                return false // TODO: for now we aren't handling individual on/off states, assume all are off
+            webViewShield = webView.braveShieldState
+            if webViewShield!.isAllOff() {
+                shieldResult.setState(BraveShieldState.kAllOff, on: true)
+                return shieldResult
             }
         }
 
-        let useCustomUrlProtocol =
-            disableJavascript ||
-            TrackingProtection.singleton.shouldBlock(request) ||
-                AdBlocker.singleton.shouldBlock(request) ||
-                SafeBrowsing.singleton.shouldBlock(request) ||
-                HttpsEverywhere.singleton.tryRedirectingUrl(url) != nil
+        shieldResult.setState(BraveShieldState.kNoscript, on: webViewShield?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false))
 
-        return useCustomUrlProtocol
+        shieldResult.setState(BraveShieldState.kAdBlockAndTp, on: webViewShield?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled)
+        shieldResult.setState(BraveShieldState.kSafeBrowsing, on: webViewShield?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled)
+        shieldResult.setState(BraveShieldState.kHTTPSE, on: webViewShield?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled)
+
+        return shieldResult
     }
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
@@ -100,8 +116,10 @@ class URLProtocol: NSURLProtocol {
         let newRequest = URLProtocol.cloneRequest(request)
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
 
+        let shieldState = URLProtocol.getShields(request)
+
         // HttpsEverywhere re-checking is O(1) due to internal cache,
-        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) {
+        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) where shieldState.isOnHTTPSE() ?? false {
             // TODO handle https redirect loop
             newRequest.URL = redirectedUrl
             #if DEBUG
@@ -115,29 +133,33 @@ class URLProtocol: NSURLProtocol {
                     WebViewToUAMapper.userAgentToWebview(ua)?.loadRequest(newRequest)
                 }
             } else {
-                self.connection = NSURLConnection(request: newRequest, delegate: self)
+                connection = NSURLConnection(request: newRequest, delegate: self)
             }
-        } else if SafeBrowsing.singleton.shouldBlock(request) {
+            return
+        } else if shieldState.isOnSafeBrowsing() ?? false && SafeBrowsing.singleton.shouldBlock(request) {
             returnEmptyResponse()
             ensureMainThread {
                 BraveApp.getCurrentWebView()?.safeBrowsingCheckIsEmptyPage(self.request.URL)
             }
-        } else if TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request) {
+            return
+        } else if shieldState.isOnAdBlockAndTp() ?? false && (TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)) {
             if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {
                 // sites such as macworld.com need this, or links are not clickable
                 returnBlankPixel()
             } else {
                 returnEmptyResponse()
             }
-        } else if disableJavascript {
-            self.connection = NSURLConnection(request: newRequest, delegate: self)
+            return
+        }
+
+        disableJavascript = shieldState.isOnScriptBlocking() ?? false
+        if disableJavascript && connection == nil {
+            connection = NSURLConnection(request: newRequest, delegate: self)
         }
     }
 
     override func stopLoading() {
-        if self.connection != nil {
-            self.connection.cancel()
-        }
+        connection?.cancel()
         self.connection = nil
     }
 

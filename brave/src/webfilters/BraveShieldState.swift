@@ -5,13 +5,13 @@ import Storage
 
 struct BraveShieldTableRow {
     var normalizedDomain = ""
-    var shieldState = BraveShieldState.StateEnum.AllOn.rawValue
+    var shieldState = ""
 }
 
 class BraveShieldTable: GenericTable<BraveShieldTableRow> {
     static let tableName = "brave_shield_per_domain"
     static let colDomain = "domain"
-    static let colState = "state"
+    static let colState = "state_json"
 
     var db: BrowserDB!
     static func initialize(db: BrowserDB) -> BraveShieldTable? {
@@ -23,10 +23,22 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
         return table
     }
 
+    override var version: Int { return 1 }
     override var name: String { return BraveShieldTable.tableName }
     override var rows: String { return "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         " \(BraveShieldTable.colDomain) TEXT NOT NULL UNIQUE, " +
-        " \(BraveShieldTable.colState) TINYINT NOT NULL DEFAULT 0 " }
+        " \(BraveShieldTable.colState) TEXT " }
+
+    override func updateTable(db: SQLiteDBConnection, from: Int) -> Bool {
+        let to = self.version
+        print("Update table \(self.name) from \(from) to \(to)")
+        if from == 0 && to >= 1 {
+            // changed name/type of state to state_json
+            drop(db)
+            create(db)
+        }
+        return false
+    }
 
     func getRows() -> Deferred<Maybe<[BraveShieldTableRow]>> {
         var err: NSError?
@@ -72,7 +84,7 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
     override var factory: ((row: SDRow) -> BraveShieldTableRow)? {
         return { row -> BraveShieldTableRow in
             var item = BraveShieldTableRow()
-            if let domain = row[BraveShieldTable.colDomain] as? String, state = row[BraveShieldTable.colState] as? Int {
+            if let domain = row[BraveShieldTable.colDomain] as? String, state = row[BraveShieldTable.colState] as? String {
                 item.normalizedDomain = domain
                 item.shieldState = state
             }
@@ -114,7 +126,7 @@ extension BrowserProfile {
                 print("SQL operation failed: \(err.localizedDescription)")
             }
             braveShieldForDomainTable = nil
-            braveShieldPerNormalizedDomain.removeAll()
+            BraveShieldState.perNormalizedDomain.removeAll()
             deferred.fill(Maybe(success: ()))
             return err == nil
         }
@@ -133,7 +145,13 @@ extension BrowserProfile {
                 result in
                 if let rows = result.successValue {
                     for item in rows {
-                        braveShieldPerNormalizedDomain[item.normalizedDomain] = item.shieldState
+                        let jsonString = item.shieldState
+                        let json = JSON(string: jsonString)
+                        for (k, v) in json.asDictionary ?? [:] {
+                            if let on = v.asBool {
+                                BraveShieldState.forDomain(item.normalizedDomain, setState: (k, on))
+                            }
+                        }
                     }
                 }
                 deferred.fill(())
@@ -142,12 +160,9 @@ extension BrowserProfile {
         return deferred
     }
 
-    public func setBraveShieldForNormalizedDomain(domain: String, state: Int) {
-        if state == 0 {
-            braveShieldPerNormalizedDomain.removeValueForKey(domain)
-        } else {
-            braveShieldPerNormalizedDomain[domain] = state
-        }
+    public func setBraveShieldForNormalizedDomain(domain: String, state: (String, Bool?)) {
+        BraveShieldState.forDomain(domain, setState: state)
+        let persistentState = BraveShieldState.getStateForDomain(domain)
 
         succeed().upon() { _ in
             if braveShieldForDomainTable == nil {
@@ -156,10 +171,12 @@ extension BrowserProfile {
 
             var t = BraveShieldTableRow()
             t.normalizedDomain = domain
-            t.shieldState = state
+            if let state = persistentState, jsonString = state.toJsonString() {
+                t.shieldState = jsonString
+            }
             var err: NSError?
             self.db.transaction(synchronous: true, err: &err) { (connection, inout err:NSError?) -> Bool in
-                if state == 0 {
+                if persistentState == nil {
                     braveShieldForDomainTable?.delete(connection, item: t, err: &err)
                     return true
                 }
@@ -174,58 +191,83 @@ extension BrowserProfile {
     }
 }
 
-var braveShieldPerNormalizedDomain = [String: Int]()
-
+// These override the setting in the prefs
 public class BraveShieldState {
-    public enum StateEnum: Int  {
-        case AllOn = 0
-        case AllOff = 1
-        case AdblockOff = 2
-        case TPOff = 4
-        case HTTPSEOff = 8
-        case SafeBrowingOff = 16
-        case FingerprintProtectionOff = 32 // future support
+    static let kAllOff = "all_off"
+    static let kAdBlockAndTp = "adblock_and_tp"
+    //static let kTrackingProtection = "tp" // unused
+    static let kHTTPSE = "httpse"
+    static let kSafeBrowsing = "safebrowsing"
+    static let kFPProtection = "fp_protection"
+    static let kNoscript = "noscript"
+
+    typealias ShieldKey = String
+    typealias DomainKey = String
+    static var perNormalizedDomain = [DomainKey: BraveShieldState]()
+
+    static func forDomain(domain: String, setState state:(ShieldKey, Bool?)) {
+        var shields = perNormalizedDomain[domain]
+        if shields == nil {
+            if state.1 == nil {
+                return
+            }
+            shields = BraveShieldState()
+        }
+
+        shields!.setState(state.0, on: state.1)
+        perNormalizedDomain[domain] = shields!
     }
 
-    public init(state: Int?) {
-        if let state = state {
-            self.state = state
-        } else {
-            self.state = 0
+    static func getStateForDomain(domain: String) -> BraveShieldState? {
+        return perNormalizedDomain[domain]
+    }
+
+    public init(jsonStateFromDbRow: String) {
+        let js = JSON(string: jsonStateFromDbRow)
+        for (k,v) in (js.asDictionary ?? [:]) {
+            setState(k, on: v.asBool)
         }
     }
 
-    private var state = StateEnum.AllOn.rawValue
+    public init() {
+    }
+
+    func toJsonString() -> String? {
+        return JSON(state).toString()
+    }
+
+    func setState(key: ShieldKey, on: Bool?) {
+        if let on = on {
+            state[key] = on
+        } else {
+            state.removeValueForKey(key)
+        }
+    }
+
+    private var state = [ShieldKey:Bool]()
 
     func isAllOff() -> Bool {
-        return state != StateEnum.AllOn.rawValue
+        return state[BraveShieldState.kAllOff] ?? false
     }
 
-    func isAllOn() -> Bool {
-        return state == StateEnum.AllOn.rawValue
+    func isNotSet() -> Bool {
+        return state.count < 1
     }
 
-
-    func isOnAdBlock() -> Bool {
-        return state & StateEnum.AdblockOff.rawValue == 0
+    func isOnAdBlockAndTp() -> Bool? {
+        return state[BraveShieldState.kAdBlockAndTp] ?? nil
     }
 
-    func isOnTrackingProtection() -> Bool {
-        return state & StateEnum.TPOff.rawValue == 0
+    func isOnHTTPSE() -> Bool? {
+        return state[BraveShieldState.kHTTPSE] ?? nil
     }
 
-    func isOnHTTPSE() -> Bool {
-        return state & StateEnum.HTTPSEOff.rawValue == 0
+    func isOnSafeBrowsing() -> Bool? {
+        return state[BraveShieldState.kSafeBrowsing] ?? nil
     }
 
-    func isOnSafeBrowsing() -> Bool {
-        return state & StateEnum.SafeBrowingOff.rawValue == 0
+    func isOnScriptBlocking() -> Bool? {
+        return state[BraveShieldState.kNoscript] ?? nil
     }
 
-    func setState(states:[StateEnum]) {
-        state = 0
-        for s in states {
-            state |= s.rawValue
-        }
-    }
 }

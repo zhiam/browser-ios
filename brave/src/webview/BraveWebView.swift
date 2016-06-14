@@ -89,7 +89,7 @@ class BraveWebView: UIWebView {
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
-    var braveShieldState = BraveShieldState(state: 0)
+    var braveShieldState = BraveShieldState()
     var blankTargetLinkDetectionOn = true
     var lastTappedTime: NSDate?
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
@@ -323,6 +323,9 @@ class BraveWebView: UIWebView {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: internalProgressChangedNotification, object: internalWebView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveWebView.internalProgressNotification(_:)), name: internalProgressChangedNotification, object: internalWebView)
 
+        if let url = request.URL, domain = url.normalizedHost() {
+            braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
+        }
         super.loadRequest(request)
     }
 
@@ -396,7 +399,16 @@ class BraveWebView: UIWebView {
     override func reload() {
         progress?.setProgress(0.3)
         NSURLCache.sharedURLCache().removeAllCachedResponses()
+        NSURLCache.sharedURLCache().diskCapacity = 0
+        NSURLCache.sharedURLCache().memoryCapacity = 0
+
+        if let url = URL, domain = url.normalizedHost() {
+            braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
+            (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
+        }
         super.reload()
+        
+        BraveApp.setupCacheDefaults()
     }
 
     override func stopLoading() {
@@ -600,9 +612,9 @@ extension BraveWebView: UIWebViewDelegate {
             #endif
 
             if let url = request.URL, domain = url.normalizedHost() {
-                braveShieldState = BraveShieldState(state: braveShieldPerNormalizedDomain[domain] ?? 0)
+                braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
                 delay(0.2) { // update the UI, wait a bit for loading to have started
-                    (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState()
+                    (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
                 }
             }
         }

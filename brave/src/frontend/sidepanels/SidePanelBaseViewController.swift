@@ -11,8 +11,12 @@ class SidePanelBaseViewController : UIViewController {
     // add subviews to containerView not self.view
     let containerView = UIView()
 
+    var canShow: Bool { return true }
+
     // Set false for a right side panel
     var isLeftSidePanel = true
+
+    let shadow = UIImageView()
 
     var parentSideConstraints: [Constraint?]?
 
@@ -48,7 +52,37 @@ class SidePanelBaseViewController : UIViewController {
         view.hidden = true
     }
 
-    func setupConstraints() {}
+    func setupUIElements() {
+        shadow.image = UIImage(named: "panel_shadow")
+        shadow.contentMode = .ScaleToFill
+        shadow.alpha = 0.8
+
+        if !isLeftSidePanel {
+            shadow.transform = CGAffineTransformMakeScale(-1, 1)
+        }
+
+        if BraveUX.PanelShadowWidth > 0 {
+            view.addSubview(shadow)
+
+            shadow.snp_makeConstraints { make in
+                if isLeftSidePanel {
+                    make.right.top.equalTo(containerView)
+                } else {
+                    make.left.top.equalTo(view)
+                }
+                make.width.equalTo(BraveUX.PanelShadowWidth)
+
+                let b = UIScreen.mainScreen().bounds
+                make.height.equalTo(max(b.width, b.height))
+            }
+        }
+    }
+
+    func setupConstraints() {
+        if shadow.image == nil { // arbitrary item check to see if func needs calling
+            setupUIElements()
+        }
+    }
 
     func spaceForStatusBar() -> Double {
         let spacer = BraveApp.isIPhoneLandscape() ? 0.0 : 20.0
@@ -84,14 +118,20 @@ class SidePanelBaseViewController : UIViewController {
             }
 
             if let constraints = self.parentSideConstraints {
-                for c in constraints {
-                    if let c = c {
-                        c.updateOffset(self.isLeftSidePanel ? width : -width)
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                    if let c = constraints.first where c != nil && self.isLeftSidePanel {
+                        c!.updateOffset(width)
+                    } else if let c = constraints.last where c != nil && !self.isLeftSidePanel {
+                        c!.updateOffset(-width)
+                    }
+                } else {
+                    for c in constraints where c != nil {
+                        c!.updateOffset(self.isLeftSidePanel ? width : -width)
                     }
                 }
             }
+            
             superview.layoutIfNeeded()
-
             guard let topVC = getApp().rootViewController.visibleViewController else { return }
             topVC.setNeedsStatusBarAppearanceUpdate()
         }
