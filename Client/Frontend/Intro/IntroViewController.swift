@@ -31,7 +31,7 @@ struct IntroViewControllerUX {
     static let CardTextPage3 = NSLocalizedString("Browse with us and your privacy is protected, with nothing further to install, learn or configure.", tableName: "Intro", comment: "")
 
     static let CardTitlePage4 = NSLocalizedString("In case you hit a speed bump", tableName: "Intro", comment: "")
-    static let CardTextPage4 = NSLocalizedString("Brave makes it easy to temporarily disable ad blocking and privacy features.\nTap the Brave button to toggle shields up or down.", tableName: "Intro", comment: "")
+    static let CardTextPage4 = NSLocalizedString("Tap the Brave button to temporarily disable ad blocking and privacy features.", tableName: "Intro", comment: "")
 
     static let CardTextSyncOffsetFromCenter = 25
     static let Card3ButtonOffsetFromCenter = -10
