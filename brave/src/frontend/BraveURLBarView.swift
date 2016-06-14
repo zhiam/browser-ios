@@ -153,34 +153,6 @@ class BraveURLBarView : URLBarView {
     }
 
     @objc func onClickBraveButton() {
-        if BraveApp.isAllBraveShieldPrefsOff() {
-            return
-        }
-
-        braveButton.selected = !braveButton.selected
-        let v = InsetLabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
-        v.rightInset = CGFloat(20)
-        v.text = braveButton.selected ? BraveUX.TitleForBraveProtectionOff : BraveUX.TitleForBraveProtectionOn
-        if var range = v.text!.rangeOfString(" ", options:NSStringCompareOptions.BackwardsSearch) {
-            range.endIndex = v.text!.characters.endIndex
-            v.boldRange(range)
-        }
-        v.backgroundColor = BraveUX.BraveButtonMessageInUrlBarColor
-        v.textAlignment = .Right
-        locationContainer.addSubview(v)
-        v.alpha = 0.0
-        self.stopReloadButton.alpha = 0
-        UIView.animateWithDuration(0.25, animations: { v.alpha = 1.0 }, completion: {
-            finished in
-            UIView.animateWithDuration(BraveUX.BraveButtonMessageInUrlBarFadeTime, delay: BraveUX.BraveButtonMessageInUrlBarShowTime, options: [], animations: {
-                v.alpha = 0
-                self.stopReloadButton.alpha = 1.0
-                }, completion: {
-                finished in
-                v.removeFromSuperview()
-                self.stopReloadButton.alpha = 1.0
-            })
-        })
         NSNotificationCenter.defaultCenter().postNotificationName(kNotificationBraveButtonClicked, object: braveButton)
     }
 
@@ -433,5 +405,42 @@ class BraveURLBarView : URLBarView {
         }
 
         leftSidePanelButton.setStarImageBookmarked(isBookmarked)
+    }
+
+    func setBraveButtonState(shieldsUp shieldsUp: Bool, animated: Bool) {
+        let selected = !shieldsUp
+        if braveButton.selected == selected {
+            return
+        }
+        
+        braveButton.selected = selected
+
+        if !animated {
+            return
+        }
+
+        let v = InsetLabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
+        v.rightInset = CGFloat(40)
+        v.text = braveButton.selected ? BraveUX.TitleForBraveProtectionOff : BraveUX.TitleForBraveProtectionOn
+        if var range = v.text!.rangeOfString(" ", options:NSStringCompareOptions.BackwardsSearch) {
+            range.endIndex = v.text!.characters.endIndex
+            v.boldRange(range)
+        }
+        v.backgroundColor = braveButton.selected ? UIColor(white: 0.6, alpha: 1.0) : BraveUX.BraveButtonMessageInUrlBarColor
+        v.textAlignment = .Right
+        locationContainer.addSubview(v)
+        v.alpha = 0.0
+        self.stopReloadButton.alpha = 0
+        UIView.animateWithDuration(0.25, animations: { v.alpha = 1.0 }, completion: {
+            finished in
+            UIView.animateWithDuration(BraveUX.BraveButtonMessageInUrlBarFadeTime, delay: BraveUX.BraveButtonMessageInUrlBarShowTime, options: [], animations: {
+                v.alpha = 0
+                self.stopReloadButton.alpha = 1.0
+                }, completion: {
+                    finished in
+                    v.removeFromSuperview()
+                    self.stopReloadButton.alpha = 1.0
+            })
+        })
     }
 }
