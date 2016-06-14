@@ -6,8 +6,8 @@ import Shared
 private let _singleton = AdBlocker()
 
 class AdBlocker {
-    static let prefKeyAdBlockOn = "braveBlockAds"
-    static let prefKeyAdBlockOnDefaultValue = true
+    static let prefKey = "braveBlockAdsAndTracking"
+    static let prefKeyDefaultValue = true
     static let dataVersion = "1"
 
     lazy var abpFilterLibWrapper: ABPFilterLibWrapper = { return ABPFilterLibWrapper() }()
@@ -21,7 +21,7 @@ class AdBlocker {
     }()
 
     var fifoCacheOfUrlsChecked = FifoDict()
-    var isEnabled = true
+    var isNSPrefEnabled = true
 
     private init() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AdBlocker.prefsChanged(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
@@ -33,7 +33,7 @@ class AdBlocker {
     }
 
     func updateEnabledState() {
-        isEnabled = BraveApp.getPrefs()?.boolForKey(AdBlocker.prefKeyAdBlockOn) ?? AdBlocker.prefKeyAdBlockOnDefaultValue
+        isNSPrefEnabled = BraveApp.getPrefs()?.boolForKey(AdBlocker.prefKey) ?? AdBlocker.prefKeyDefaultValue
     }
 
     @objc func prefsChanged(info: NSNotification) {
@@ -110,10 +110,6 @@ class AdBlocker {
         // synchronize code from this point on.
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
-
-        if !isEnabled {
-            return false
-        }
 
         guard let url = request.URL,
             var mainDocDomain = request.mainDocumentURL?.host else {

@@ -11,9 +11,7 @@ let kNotificationBraveButtonClicked = "kNotificationBraveButtonClicked"
 class BraveTopViewController : UIViewController {
     var browserViewController:BraveBrowserViewController
     var mainSidePanel:MainSidePanelViewController
-    #if RIGHTPANEL
     var rightSidePanel:BraveRightSidePanelViewController
-    #endif
     var clickDetectionView = UIButton()
     var leftConstraint: Constraint? = nil
     var rightConstraint: Constraint? = nil
@@ -21,9 +19,7 @@ class BraveTopViewController : UIViewController {
     init(browserViewController:BraveBrowserViewController) {
         self.browserViewController = browserViewController
         mainSidePanel = MainSidePanelViewController()
-        #if RIGHTPANEL
-            rightSidePanel = BraveRightSidePanelViewController()
-        #endif
+        rightSidePanel = BraveRightSidePanelViewController()
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -45,9 +41,8 @@ class BraveTopViewController : UIViewController {
 
         addVC(browserViewController)
         addVC(mainSidePanel)
-        #if RIGHTPANEL
-            addVC(rightSidePanel)
-        #endif
+        addVC(rightSidePanel)
+
 
         mainSidePanel.view.snp_makeConstraints {
             make in
@@ -55,20 +50,13 @@ class BraveTopViewController : UIViewController {
             make.width.equalTo(0)
         }
 
-        #if RIGHTPANEL
-            rightSidePanel.view.snp_makeConstraints {
-                make in
-                make.bottom.right.top.equalTo(view)
-                make.width.equalTo(0)
-            }
-        #endif
+        rightSidePanel.view.snp_makeConstraints {
+            make in
+            make.bottom.right.top.equalTo(view)
+            make.width.equalTo(0)
+        }
 
-        //    clickDetectionView.layer.shadowColor = UIColor.redColor().CGColor
-        //    clickDetectionView.layer.shadowOffset = CGSizeMake(-4, 0)
-        //    clickDetectionView.layer.shadowOpacity = 0.7
-        //    clickDetectionView.layer.shadowRadius = 8.0
-
-        clickDetectionView.backgroundColor = UIColor(white: 100/255, alpha: 0.1)
+        clickDetectionView.backgroundColor = UIColor(white: 80/255, alpha: 0.3)
 
         setupBrowserConstraints(useTopLayoutGuide: true)
 
@@ -79,6 +67,10 @@ class BraveTopViewController : UIViewController {
         clickDetectionView.addTarget(self, action: #selector(BraveTopViewController.dismissAllSidePanels(_:)), forControlEvents: UIControlEvents.TouchUpInside)
 
         mainSidePanel.browserViewController = browserViewController
+
+        #if FLEX_ON
+        delay(5) { FLEXManager.sharedManager().showExplorer() }
+        #endif
     }
 
     @objc func dismissAllSidePanels(button: UIButton) {
@@ -87,12 +79,10 @@ class BraveTopViewController : UIViewController {
             leftSidePanelButtonAndUnderlay?.selected = false
             leftSidePanelButtonAndUnderlay?.underlay.hidden = true
         }
-        #if RIGHTPANEL
-            if rightPanelShowing() {
-                togglePanel(rightSidePanel)
-            }
 
-        #endif
+        if rightPanelShowing() {
+            togglePanel(rightSidePanel)
+        }
     }
 
     private func setupBrowserConstraints(useTopLayoutGuide useTopLayoutGuide: Bool) {
@@ -104,14 +94,21 @@ class BraveTopViewController : UIViewController {
             } else {
                 make.top.equalTo(view).inset(20)
             }
+
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
                 rightConstraint = make.right.equalTo(view).constraint
-                //   make.width.equalTo(view.snp_width)
+                leftConstraint = make.left.equalTo(view).constraint
             } else {
-                make.right.equalTo(view)
+                make.right.left.equalTo(view)
+
+                browserViewController.header.snp_remakeConstraints {
+                    make in
+                    leftConstraint = make.left.equalTo(view).constraint
+                    rightConstraint = make.right.equalTo(view).constraint
+                }
             }
-            leftConstraint = make.left.equalTo(view).constraint
         }
+
     }
 
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -122,12 +119,9 @@ class BraveTopViewController : UIViewController {
         return mainSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
     }
 
-    #if RIGHTPANEL
     func rightPanelShowing() -> Bool {
-    return rightSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
+        return rightSidePanel.view.frame.width == CGFloat(BraveUX.WidthOfSlideOut)
     }
-    #endif
-
 
     override func prefersStatusBarHidden() -> Bool {
         if UIDevice.currentDevice().userInterfaceIdiom != .Phone {
@@ -138,42 +132,22 @@ class BraveTopViewController : UIViewController {
             return true
         }
 
-        #if RIGHTPANEL
-            return leftPanelShowing() || rightPanelShowing()
-        #endif
-        return leftPanelShowing()
+        return leftPanelShowing() || rightPanelShowing()
     }
 
     func onClickLeftSlideOut(notification: NSNotification) {
         leftSidePanelButtonAndUnderlay = notification.object as? ButtonWithUnderlayView
-        mainSidePanel.setupUI()
+        if !rightSidePanel.view.hidden {
+            togglePanel(rightSidePanel)
+        }
         togglePanel(mainSidePanel)
     }
 
     func onClickBraveButton(notification: NSNotification) {
-        #if FLEX_ON
-            FLEXManager.sharedManager().showExplorer()
-        #endif
-
-        guard let button = notification.object as? UIButton else { return }
-
-        let shieldState = button.selected ? BraveShieldState.StateEnum.AllOff.rawValue : 0
-        if let tab = browserViewController.tabManager.selectedTab, url = tab.webView?.URL?.normalizedHost() where !tab.isPrivate {
-            getApp().profile?.setBraveShieldForNormalizedDomain(url, state: shieldState)
+        if !mainSidePanel.view.hidden {
+            togglePanel(mainSidePanel)
         }
-        browserViewController.tabManager.selectedTab?.webView?.braveShieldState = BraveShieldState(state: shieldState)
-
-        NSURLCache.sharedURLCache().removeAllCachedResponses()
-        NSURLCache.sharedURLCache().diskCapacity = 0
-        NSURLCache.sharedURLCache().memoryCapacity = 0
-
-        BraveApp.getCurrentWebView()?.reload()
-
-        BraveApp.setupCacheDefaults()
-
-        #if RIGHTPANEL
-            togglePanel(rightSidePanel)
-        #endif
+        togglePanel(rightSidePanel)
     }
 
     func specialTouchEventHandling(touchPoint: CGPoint, phase: UITouchPhase ) {
@@ -182,17 +156,39 @@ class BraveTopViewController : UIViewController {
 
     func togglePanel(panel: SidePanelBaseViewController) {
         let willShow = panel.view.hidden
-        leftSidePanelButtonAndUnderlay?.selected = willShow
-        leftSidePanelButtonAndUnderlay?.hideUnderlay(!willShow)
+        if panel === mainSidePanel {
+            leftSidePanelButtonAndUnderlay?.selected = willShow
+            leftSidePanelButtonAndUnderlay?.hideUnderlay(!willShow)
+        } else if !panel.canShow {
+            return
+        }
 
-        clickDetectionView.removeFromSuperview()
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && willShow {
+        if clickDetectionView.superview != nil {
+            clickDetectionView.userInteractionEnabled = false
+            UIView.animateWithDuration(0.2, animations: {
+                self.clickDetectionView.alpha = 0
+                }, completion: { _ in
+                    self.clickDetectionView.removeFromSuperview()
+            } )
+        }
+
+        if willShow && (UIDevice.currentDevice().userInterfaceIdiom == .Phone ||
+            panel === rightSidePanel) {
+            clickDetectionView.alpha = 0
+            clickDetectionView.userInteractionEnabled = true
+
             view.addSubview(clickDetectionView)
             clickDetectionView.snp_remakeConstraints {
                 make in
-                make.edges.equalTo(browserViewController.view)
+                make.top.bottom.equalTo(browserViewController.view)
+                make.right.equalTo(rightSidePanel.view.snp_left)
+                make.left.equalTo(mainSidePanel.view.snp_right)
             }
             clickDetectionView.layoutIfNeeded()
+
+            UIView.animateWithDuration(0.25) {
+                self.clickDetectionView.alpha = 1
+            }
         }
         panel.setHomePanelDelegate(self)
         panel.showPanel(willShow, parentSideConstraints: [leftConstraint, rightConstraint])

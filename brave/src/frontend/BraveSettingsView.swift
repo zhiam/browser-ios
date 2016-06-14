@@ -6,6 +6,9 @@
 import Shared
 import OnePasswordExtension
 
+let kPrefKeyNoScriptOn = "noscript_on"
+let kPrefKeyFingerprintProtection = "fingerprintprotection_on"
+
 class BraveSettingsView : AppSettingsTableViewController {
 
     static var cachedIs3rdPartyPasswordManagerInstalled = false
@@ -13,53 +16,23 @@ class BraveSettingsView : AppSettingsTableViewController {
     var debugToggleItemToTriggerCrashCount = 0
 
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section != 2 || getShieldFooterText() == nil {
-            return nil
-        }
-
         let footerView = InsetLabel(frame: CGRectMake(0, 0, tableView.frame.size.width, 40))
         footerView.leftInset = CGFloat(20)
         footerView.rightInset = CGFloat(10)
         footerView.numberOfLines = 0
         footerView.font = UIFont.boldSystemFontOfSize(13)
-        footerView.text = getShieldFooterText()
         return footerView
     }
 
-    func getShieldFooterText() -> String? {
-        if BraveSettingsView.isAllBraveShieldPrefsOff {
-            return "The Brave Shield button is disabled when all settings are off."
-        } else if (getApp().browserViewController.urlBar as! BraveURLBarView).braveButton.selected {
-            return "Brave Shields are currently down. These settings only take effect when shields are up."
-        }
-        return nil
-    }
-
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section != 2 || getShieldFooterText() == nil {
-            return 0
-        }
-        return 40.0
+        return 0
     }
 
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-    static var isAllBraveShieldPrefsOff = false
-    @objc func prefsChanged(notification: NSNotification) {
-        BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
-        delay(0.1) {
-            self.tableView.reloadData()
-        }
-    }
-
     override func generateSettings() -> [SettingSection] {
-        BraveSettingsView.isAllBraveShieldPrefsOff = BraveApp.isAllBraveShieldPrefsOff()
-
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(prefsChanged), name: NSUserDefaultsDidChangeNotification, object: nil)
-
         let prefs = profile.prefs
         var generalSettings = [
             SearchSetting(settings: self),
@@ -113,11 +86,12 @@ class BraveSettingsView : AppSettingsTableViewController {
                 [ClearPrivateDataSetting(settings: self), CookieSetting(profile: self.profile)]
 
             ),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Settings", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
-                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKeyAdBlockOn, defaultValue: true, titleText: "Block Ads"),
-                    BoolSetting(prefs: prefs, prefKey: TrackingProtection.prefKeyTrackingProtectionOn, defaultValue: true, titleText: "Tracking Protection"),
-                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKeyHttpsEverywhereOn, defaultValue: true, titleText: "HTTPS Everywhere"),
-                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: "Block Phishing and Malware")
+            SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Defaults", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
+                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKey, defaultValue: true, titleText: "Block Ads and Tracking"),
+                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKey, defaultValue: true, titleText: "HTTPS Everywhere"),
+                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: "Block Phishing and Malware"),
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyNoScriptOn, defaultValue: false, titleText: "Block Scripts"),
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyFingerprintProtection, defaultValue: false, titleText: "Fingerprinting Protection")
                 ])]
 
         //#if !DISABLE_INTRO_SCREEN

@@ -35,13 +35,6 @@ class BraveApp {
         return _singleton
     }
 
-    class func isAllBraveShieldPrefsOff() -> Bool {
-        let abOn = BraveApp.getPrefs()?.boolForKey(AdBlocker.prefKeyAdBlockOn) ?? true
-        let tpOn = BraveApp.getPrefs()?.boolForKey(TrackingProtection.prefKeyTrackingProtectionOn) ?? true
-        let httpseOn = BraveApp.getPrefs()?.boolForKey(HttpsEverywhere.prefKeyHttpsEverywhereOn) ?? true
-        return !abOn && !tpOn && !httpseOn
-    }
-
     #if !TEST
     class func getCurrentWebView() -> BraveWebView? {
         return getApp().browserViewController.tabManager.selectedTab?.webView
@@ -129,10 +122,9 @@ class BraveApp {
 
         getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
             ensureMainThread {
-                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = braveShieldPerNormalizedDomain[base]
-                    where wv.braveShieldState.isAllOn() {
+                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = BraveShieldState.perNormalizedDomain[base] where wv.braveShieldState.isNotSet() {
                     // on init, the webview's shield state doesn't match the db
-                    wv.braveShieldState = BraveShieldState(state: dbState)
+                    wv.braveShieldState = dbState
                     wv.reloadFromOrigin()
                 }
             }

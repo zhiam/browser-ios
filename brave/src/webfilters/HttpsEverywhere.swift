@@ -5,9 +5,10 @@ private let _singleton = HttpsEverywhere()
 
 class HttpsEverywhere {
     static let kNotificationDataLoaded = "kNotificationDataLoaded"
-    static let prefKeyHttpsEverywhereOn = "braveHttpsEverywhere"
+    static let prefKey = "braveHttpsEverywhere"
+    static let prefKeyDefaultValue = true
     static let dataVersion = "5.1.9"
-    var isEnabled = true
+    var isNSPrefEnabled = true
     var db: Connection?
     let fifoCacheOfRedirects = FifoDict()
 
@@ -51,7 +52,7 @@ class HttpsEverywhere {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        isEnabled = BraveApp.getPrefs()?.boolForKey(HttpsEverywhere.prefKeyHttpsEverywhereOn) ?? true
+        isNSPrefEnabled = BraveApp.getPrefs()?.boolForKey(HttpsEverywhere.prefKey) ?? true
     }
 
     @objc func prefsChanged(info: NSNotification) {
@@ -179,7 +180,7 @@ class HttpsEverywhere {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        if !isEnabled || url.scheme.startsWith("https") {
+        if url.scheme.startsWith("https") {
             return nil
         }
 
@@ -239,19 +240,17 @@ extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
 extension HttpsEverywhere {
     private func runtimeDebugOnlyTestDomainsRedirected() {
         #if DEBUG
-            if HttpsEverywhere.singleton.isEnabled {
-                let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
-                for url in urls {
-                    guard let _ =  HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!) else {
-                        BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
-                        return
-                    }
+            let urls = ["thestar.com", "thestar.com/", "www.thestar.com", "apple.com", "xkcd.com"]
+            for url in urls {
+                guard let _ =  HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!) else {
+                    BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed on url: \(url)")
+                    return
                 }
+            }
 
-                let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d/")!)
-                if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d/") {
-                    BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
-                }
+            let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d/")!)
+            if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d/") {
+                BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
             }
         #endif
     }

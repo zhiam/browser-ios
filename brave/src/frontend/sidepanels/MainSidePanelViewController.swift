@@ -23,24 +23,14 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
     let divider = UIView()
 
-    let shadow = UIImageView()
-
     override func viewDidLoad() {
         super.viewDidLoad()
     }
 
-    func setupUI() {
-        if shadow.image != nil {
-            return
-        }
-
-        shadow.image = UIImage(named: "panel_shadow")
-        shadow.contentMode = .ScaleToFill
-        shadow.alpha = 0.8
-
+    override func setupUIElements() {
+        super.setupUIElements()
+        
         tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
-        bookmarks.profile = getApp().profile
-        history.profile = getApp().profile
 
         containerView.addSubview(topButtonsView)
         containerView.addSubview(tabTitleViewContainer)
@@ -90,10 +80,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         containerView.bringSubviewToFront(topButtonsView)
 
-        if BraveUX.PanelShadowWidth > 0 {
-            containerView.addSubview(shadow)
-        }
-
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(historyItemAdded), name: kNotificationSiteAddedToHistory, object: nil)
     }
 
@@ -140,6 +126,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
 
     override func setupConstraints() {
+        super.setupConstraints()
+        
         topButtonsView.snp_remakeConstraints {
             make in
             make.top.equalTo(containerView).offset(spaceForStatusBar())
@@ -210,13 +198,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             make.left.right.bottom.equalTo(containerView)
             make.top.equalTo(tabTitleView.snp_bottom)
         }
-
-        if BraveUX.PanelShadowWidth > 0 {
-            shadow.snp_remakeConstraints { make in
-                make.right.top.bottom.equalTo(containerView)
-                make.width.equalTo(BraveUX.PanelShadowWidth)
-            }
-        }
     }
 
     func showBookmarks() {
@@ -244,6 +225,9 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
 
     override func setHomePanelDelegate(delegate: HomePanelDelegate?) {
+        bookmarks.profile = getApp().profile
+        history.profile = getApp().profile
+
         bookmarks.homePanelDelegate = delegate
         history.homePanelDelegate = delegate
         if (delegate != nil) {

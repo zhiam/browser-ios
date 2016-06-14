@@ -1,7 +1,8 @@
 private let _singleton = TrackingProtection()
 
 class TrackingProtection {
-    static let prefKeyTrackingProtectionOn = "braveTrackingProtection"
+    private static let prefKey: Bool? = nil // Use the prefkey from Adblock for both
+
     static let dataVersion = "1"
     var isEnabled = true
 
@@ -25,7 +26,7 @@ class TrackingProtection {
     }
 
     func updateEnabledState() {
-        isEnabled = BraveApp.getPrefs()?.boolForKey(TrackingProtection.prefKeyTrackingProtectionOn) ?? true
+        isEnabled = BraveApp.getPrefs()?.boolForKey(AdBlocker.prefKey) ?? AdBlocker.prefKeyDefaultValue
     }
 
     @objc func prefsChanged(info: NSNotification) {

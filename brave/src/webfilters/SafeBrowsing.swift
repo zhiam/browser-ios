@@ -21,7 +21,7 @@ class SafeBrowsing {
     }()
 
     var fifoCacheOfUrlsChecked = FifoDict()
-    var isEnabled = true
+    var isNSPrefEnabled = true
 
     private init() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SafeBrowsing.prefsChanged(_:)), name: NSUserDefaultsDidChangeNotification, object: nil)
@@ -33,7 +33,7 @@ class SafeBrowsing {
     }
 
     func updateEnabledState() {
-        isEnabled = BraveApp.getPrefs()?.boolForKey(SafeBrowsing.prefKey) ?? SafeBrowsing.prefKeyDefaultValue
+        isNSPrefEnabled = BraveApp.getPrefs()?.boolForKey(SafeBrowsing.prefKey) ?? SafeBrowsing.prefKeyDefaultValue
     }
 
     @objc func prefsChanged(info: NSNotification) {
@@ -44,10 +44,6 @@ class SafeBrowsing {
         // synchronize code from this point on.
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
-
-        if !isEnabled {
-            return false
-        }
 
         if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false ||
             request.URL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
