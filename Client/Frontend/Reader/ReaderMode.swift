@@ -218,10 +218,6 @@ class ReaderMode: BrowserHelper {
     var state: ReaderModeState = ReaderModeState.Unavailable
     private var originalURL: NSURL?
 
-    class func name() -> String {
-        return "ReaderMode"
-    }
-
     required init(browser: Browser) {
         self.browser = browser
 
@@ -242,7 +238,7 @@ class ReaderMode: BrowserHelper {
         }
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "readerModeMessageHandler"
     }
 

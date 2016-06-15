@@ -45,7 +45,7 @@ class ReadabilityOperation: NSOperation, WKNavigationDelegate, ReadabilityBrowse
 
             if let readabilityBrowserHelper = ReadabilityBrowserHelper(browser: self.browser) {
                 readabilityBrowserHelper.delegate = self
-                self.browser.addHelper(readabilityBrowserHelper, name: ReadabilityBrowserHelper.name())
+                self.browser.addHelper(readabilityBrowserHelper)
             }
 
             // Load the page in the webview. This either fails with a navigation error, or we get a readability

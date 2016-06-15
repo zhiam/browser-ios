@@ -23,7 +23,7 @@ class WindowCloseHelper: BrowserHelper {
         }
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "windowCloseHelper"
     }
 
@@ -33,9 +33,5 @@ class WindowCloseHelper: BrowserHelper {
                 self.delegate?.windowCloseHelper(self, didRequestToCloseBrowser: browser)
             }
         }
-    }
-
-    class func name() -> String {
-        return "WindowCloseHelper"
     }
 }

@@ -12,8 +12,7 @@ import XCGLogger
 private let log = Logger.browserLogger
 
 protocol BrowserHelper {
-    static func name() -> String
-    func scriptMessageHandlerName() -> String?
+    static func scriptMessageHandlerName() -> String?
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
 }
 
@@ -377,12 +376,16 @@ class Browser: NSObject, BrowserWebViewDelegate {
         webView?.reloadFromOrigin()
     }
 
-    func addHelper(helper: BrowserHelper, name: String) {
-        helperManager!.addHelper(helper, name: name)
+    func addHelper(helper: BrowserHelper) {
+        helperManager!.addHelper(helper)
     }
 
-    func getHelper(name name: String) -> BrowserHelper? {
-        return helperManager?.getHelper(name: name)
+    func getHelper<T>(classType: T.Type) -> T? {
+        return helperManager?.getHelper(classType)
+    }
+
+    func removeHelper<T>(classType: T.Type) {
+        helperManager?.removeHelper(classType)
     }
 
     func hideContent(animated: Bool = false) {
@@ -488,7 +491,7 @@ private class HelperManager: NSObject, WKScriptMessageHandler {
 
     @objc func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         for helper in helpers.values {
-            if let scriptMessageHandlerName = helper.scriptMessageHandlerName() {
+            if let scriptMessageHandlerName = helper.dynamicType.scriptMessageHandlerName() {
                 if scriptMessageHandlerName == message.name {
                     helper.userContentController(userContentController, didReceiveScriptMessage: message)
                     return
@@ -497,22 +500,29 @@ private class HelperManager: NSObject, WKScriptMessageHandler {
         }
     }
 
-    func addHelper(helper: BrowserHelper, name: String) {
-        if let _ = helpers[name] {
-            assertionFailure("Duplicate helper added: \(name)")
+    func addHelper(helper: BrowserHelper) {
+        if let _ = helpers["\(helper.dynamicType)"] {
+            assertionFailure("Duplicate helper added: \(helper.dynamicType)")
         }
 
-        helpers[name] = helper
+        helpers["\(helper.dynamicType)"] = helper
 
         // If this helper handles script messages, then get the handler name and register it. The Browser
         // receives all messages and then dispatches them to the right BrowserHelper.
-        if let scriptMessageHandlerName = helper.scriptMessageHandlerName() {
+        if let scriptMessageHandlerName = helper.dynamicType.scriptMessageHandlerName() {
             webView?.configuration.userContentController.addScriptMessageHandler(self, name: scriptMessageHandlerName)
         }
     }
 
-    func getHelper(name name: String) -> BrowserHelper? {
-        return helpers[name]
+    func getHelper<T>(classType: T.Type) -> T? {
+        return helpers["\(classType)"] as? T
+    }
+
+    func removeHelper<T>(classType: T.Type) {
+        if let t = T.self as? BrowserHelper.Type, name = t.scriptMessageHandlerName() {
+            webView?.configuration.userContentController.removeScriptMessageHandler(name: name)
+        }
+        helpers.removeValueForKey("\(classType)")
     }
 }
 

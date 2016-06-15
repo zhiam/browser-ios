@@ -9,10 +9,6 @@ import WebKit
 class PrintHelper: BrowserHelper {
     private weak var browser: Browser?
 
-    class func name() -> String {
-        return "PrintHelper"
-    }
-
     required init(browser: Browser) {
         self.browser = browser
         if let path = NSBundle.mainBundle().pathForResource("PrintHelper", ofType: "js"), source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String {
@@ -21,7 +17,7 @@ class PrintHelper: BrowserHelper {
         }
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "printHandler"
     }
 

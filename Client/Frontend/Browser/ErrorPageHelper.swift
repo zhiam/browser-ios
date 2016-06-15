@@ -272,11 +272,8 @@ class ErrorPageHelper {
 }
 
 extension ErrorPageHelper: BrowserHelper {
-    static func name() -> String {
-        return "ErrorPageHelper"
-    }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "errorPageHelperMessageManager"
     }
 

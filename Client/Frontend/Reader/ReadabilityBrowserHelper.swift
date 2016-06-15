@@ -12,10 +12,6 @@ protocol ReadabilityBrowserHelperDelegate {
 class ReadabilityBrowserHelper: BrowserHelper {
     var delegate: ReadabilityBrowserHelperDelegate?
 
-    class func name() -> String {
-        return "ReadabilityBrowserHelper"
-    }
-
     init?(browser: Browser) {
         if let readabilityPath = NSBundle.mainBundle().pathForResource("Readability", ofType: "js"),
            let readabilitySource = try? NSMutableString(contentsOfFile: readabilityPath, encoding: NSUTF8StringEncoding),
@@ -27,7 +23,7 @@ class ReadabilityBrowserHelper: BrowserHelper {
         }
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "readabilityMessageHandler"
     }
 

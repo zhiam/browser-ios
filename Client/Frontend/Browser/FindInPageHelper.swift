@@ -15,10 +15,6 @@ class FindInPageHelper: BrowserHelper {
     weak var delegate: FindInPageHelperDelegate?
     private weak var browser: Browser?
 
-    class func name() -> String {
-        return "FindInPage"
-    }
-
     required init(browser: Browser) {
         self.browser = browser
 
@@ -28,7 +24,7 @@ class FindInPageHelper: BrowserHelper {
         }
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "findInPageHandler"
     }
 

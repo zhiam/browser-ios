@@ -17,7 +17,7 @@ class SessionRestoreHelper: BrowserHelper {
         self.browser = browser
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "sessionRestoreHelper"
     }
 
@@ -29,9 +29,5 @@ class SessionRestoreHelper: BrowserHelper {
                 }
             }
         }
-    }
-
-    class func name() -> String {
-        return "SessionRestoreHelper"
     }
 }

@@ -19,10 +19,6 @@ class ContextMenuHelper: NSObject, BrowserHelper, UIGestureRecognizerDelegate {
         let image: NSURL?
     }
 
-    class func name() -> String {
-        return "ContextMenuHelper"
-    }
-
     /// Clicking an element with VoiceOver fires touchstart, but not touchend, causing the context
     /// menu to appear when it shouldn't (filed as rdar://22256909). As a workaround, disable the custom
     /// context menu for VoiceOver users.
@@ -36,7 +32,7 @@ class ContextMenuHelper: NSObject, BrowserHelper, UIGestureRecognizerDelegate {
         self.browser = browser
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "contextMenuMessageHandler"
     }
 

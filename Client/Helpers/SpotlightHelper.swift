@@ -120,11 +120,7 @@ extension SpotlightHelper: NSUserActivityDelegate {
 }
 
 extension SpotlightHelper: BrowserHelper {
-    static func name() -> String {
-        return "SpotlightHelper"
-    }
-
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "spotlightMessageHandler"
     }
 

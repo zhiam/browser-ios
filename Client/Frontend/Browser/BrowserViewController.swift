@@ -724,7 +724,7 @@ class BrowserViewController: UIViewController {
                     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil)
 
                     // Refresh the reading view toolbar since the article record may have changed
-                    if let readerMode = self.tabManager.selectedTab?.getHelper(name: ReaderMode.name()) as? ReaderMode where readerMode.state == .Active {
+                    if let readerMode = self.tabManager.selectedTab?.getHelper(ReaderMode.self) where readerMode.state == .Active {
                         self.showReaderModeBar(animated: false)
                     }
                 }
@@ -1325,7 +1325,7 @@ extension BrowserViewController: URLBarDelegate {
 
     func urlBarDidPressReaderMode(urlBar: URLBarView) {
         if let tab = tabManager.selectedTab {
-            if let readerMode = tab.getHelper(name: "ReaderMode") as? ReaderMode {
+            if let readerMode = tab.getHelper(ReaderMode.self) {
                 switch readerMode.state {
                 case .Available:
                     enableReaderMode()
@@ -1473,7 +1473,7 @@ extension BrowserViewController: BrowserToolbarDelegate {
             return
         }
 
-        guard let tab = tabManager.selectedTab where tab.webView?.URL != nil && (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active else {
+        guard let tab = tabManager.selectedTab where tab.webView?.URL != nil && tab.getHelper(ReaderMode.self)?.state != .Active else {
             return
         }
 
@@ -1567,13 +1567,13 @@ extension BrowserViewController: BrowserDelegate {
 #endif
         let readerMode = ReaderMode(browser: browser)
         readerMode.delegate = self
-        browser.addHelper(readerMode, name: ReaderMode.name())
+        browser.addHelper(readerMode)
 
         let favicons = FaviconManager(browser: browser, profile: profile)
-        browser.addHelper(favicons, name: FaviconManager.name())
+        browser.addHelper(favicons)
 
         let logins = LoginsHelper(browser: browser, profile: profile)
-        browser.addHelper(logins, name: LoginsHelper.name())
+        browser.addHelper(logins)
 
 #if !BRAVE
         let contextMenuHelper = ContextMenuHelper(browser: browser)
@@ -1582,33 +1582,32 @@ extension BrowserViewController: BrowserDelegate {
 #endif
       
         let errorHelper = ErrorPageHelper()
-        browser.addHelper(errorHelper, name: ErrorPageHelper.name())
+        browser.addHelper(errorHelper)
 
         let windowCloseHelper = WindowCloseHelper(browser: browser)
         windowCloseHelper.delegate = self
-        browser.addHelper(windowCloseHelper, name: WindowCloseHelper.name())
+        browser.addHelper(windowCloseHelper)
 
         let sessionRestoreHelper = SessionRestoreHelper(browser: browser)
         sessionRestoreHelper.delegate = self
-        browser.addHelper(sessionRestoreHelper, name: SessionRestoreHelper.name())
+        browser.addHelper(sessionRestoreHelper)
 
         let findInPageHelper = FindInPageHelper(browser: browser)
         findInPageHelper.delegate = self
-        browser.addHelper(findInPageHelper, name: FindInPageHelper.name())
+        browser.addHelper(findInPageHelper)
 
         let printHelper = PrintHelper(browser: browser)
-        browser.addHelper(printHelper, name: PrintHelper.name())
+        browser.addHelper(printHelper)
 
         let openURL = {(url: NSURL) -> Void in
             self.switchToTabForURLOrOpen(url)
         }
         let spotlightHelper = SpotlightHelper(browser: browser, openURL: openURL)
-        browser.addHelper(spotlightHelper, name: SpotlightHelper.name())
+        browser.addHelper(spotlightHelper)
 
       #if BRAVE
         let pageUnload = BravePageUnloadHelper(browser: browser)
-        pageUnload.delegate = self
-        browser.addHelper(pageUnload, name: BravePageUnloadHelper.name())
+        browser.addHelper(pageUnload)
       #endif
     }
 
@@ -1880,7 +1879,7 @@ extension BrowserViewController: TabManagerDelegate {
         navigationToolbar.updateBackStatus(selected?.canGoBack ?? false)
         navigationToolbar.updateForwardStatus(selected?.canGoForward ?? false)
         
-        if let readerMode = selected?.getHelper(name: ReaderMode.name()) as? ReaderMode {
+        if let readerMode = selected?.getHelper(ReaderMode.self) {
             urlBar.updateReaderModeState(readerMode.state)
             if readerMode.state == .Active {
                 showReaderModeBar(animated: false)
@@ -2354,7 +2353,7 @@ extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
         // Change the reader mode style on all tabs that have reader mode active
         for tabIndex in 0..<tabManager.tabCount {
             if let tab = tabManager[tabIndex] {
-                if let readerMode = tab.getHelper(name: "ReaderMode") as? ReaderMode {
+                if let readerMode = tab.getHelper(ReaderMode.self) {
                     if readerMode.state == ReaderModeState.Active {
                         readerMode.style = style
                     }
@@ -2496,7 +2495,7 @@ extension BrowserViewController: ReaderModeBarViewDelegate {
     func readerModeBar(readerModeBar: ReaderModeBarView, didSelectButton buttonType: ReaderModeBarButtonType) {
         switch buttonType {
         case .Settings:
-            if let readerMode = tabManager.selectedTab?.getHelper(name: "ReaderMode") as? ReaderMode where readerMode.state == ReaderModeState.Active {
+            if let readerMode = tabManager.selectedTab?.getHelper(ReaderMode.self) where readerMode.state == ReaderModeState.Active {
                 var readerModeStyle = DefaultReaderModeStyle
                 if let dict = profile.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
                     if let style = ReaderModeStyle(dict: dict) {

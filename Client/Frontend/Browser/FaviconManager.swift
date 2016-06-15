@@ -24,11 +24,7 @@ class FaviconManager : BrowserHelper {
         }
     }
 
-    class func name() -> String {
-        return "FaviconsManager"
-    }
-
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "faviconsMessageHandler"
     }
 
@@ -68,7 +64,7 @@ class FaviconManager : BrowserHelper {
                         date: NSDate(),
                         type: icon.type)
 
-                    let spotlight = tab.getHelper(name: "SpotlightHelper") as? SpotlightHelper
+                    let spotlight = tab.getHelper(SpotlightHelper.self)
 
                     if let img = img {
                         fav.width = Int(img.size.width)

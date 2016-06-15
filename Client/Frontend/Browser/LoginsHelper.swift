@@ -21,10 +21,6 @@ class LoginsHelper: BrowserHelper {
         return profile.logins
     }
 
-    class func name() -> String {
-        return "LoginsHelper"
-    }
-
     required init(browser: Browser, profile: Profile) {
         self.browser = browser
         self.profile = profile
@@ -42,7 +38,7 @@ class LoginsHelper: BrowserHelper {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
-    func scriptMessageHandlerName() -> String? {
+    static func scriptMessageHandlerName() -> String? {
         return "loginsManagerMessageHandler"
     }
 
