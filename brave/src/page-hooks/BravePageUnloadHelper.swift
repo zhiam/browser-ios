@@ -2,11 +2,6 @@
 
 class BravePageUnloadHelper: NSObject, BrowserHelper {
     private weak var browser: Browser?
-    weak var delegate: ContextMenuHelperDelegate?
-
-    class func name() -> String {
-        return "PageUnloadHelper"
-    }
 
     required init(browser: Browser) {
         super.init()
@@ -19,7 +14,7 @@ class BravePageUnloadHelper: NSObject, BrowserHelper {
         browser.webView!.configuration.userContentController.addUserScript(userScript)
     }
 
-    func scriptMessageHandlerName() -> String? {
+    class func scriptMessageHandlerName() -> String? {
         return "pageUnloadMessageHandler"
     }
 

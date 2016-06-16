@@ -11,25 +11,23 @@ class LegacyUserContentController
 {
     var scriptHandlersMainFrame = [String:WKScriptMessageHandler]()
     var scriptHandlersSubFrames = [String:WKScriptMessageHandler]()
-    let whitelistSubFrameScripts = ["contextMenuMessageHandler"]
+
     var scripts:[WKUserScript] = []
     weak var webView: BraveWebView?
 
     func addScriptMessageHandler(scriptMessageHandler: WKScriptMessageHandler, name: String) {
         scriptHandlersMainFrame[name] = scriptMessageHandler
-
-        if hasWhitelistedSubFrameHandlerInString(name) {
-            scriptHandlersSubFrames[name] = scriptMessageHandler
-        }
     }
 
-    func hasWhitelistedSubFrameHandlerInString(script: String) -> Bool {
-        return whitelistSubFrameScripts.filter({ script.contains($0) }).count > 0
+    func removeScriptMessageHandler(name name: String) {
+        scriptHandlersMainFrame.removeValueForKey(name)
+        scriptHandlersSubFrames.removeValueForKey(name)
     }
 
     func addUserScript(script:WKUserScript) {
         var mainFrameOnly = true
-        if !script.forMainFrameOnly && hasWhitelistedSubFrameHandlerInString(script.source) {
+        if !script.forMainFrameOnly {
+            print("Inject to subframes")
             // Only contextMenu injection to subframes for now,
             // whitelist this explicitly, don't just inject scripts willy-nilly into frames without
             // careful consideration. For instance, there are security implications with password management in frames
@@ -42,7 +40,7 @@ class LegacyUserContentController
         self.webView = webView
     }
 
-    static var jsBlankTargetToNewTab:String = {
+    static var jsPageHasBlankTargets:String = {
         let path = NSBundle.mainBundle().pathForResource("BlankTargetDetector", ofType: "js")!
         let source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
         return source
@@ -51,7 +49,7 @@ class LegacyUserContentController
     func injectIntoMain() {
         guard let webView = webView else { return }
 
-        let result = webView.stringByEvaluatingJavaScriptFromString("Window.prototype.hasOwnProperty('webkit') && Window.prototype.webkit.hasOwnProperty('messageHandlers')")
+        let result = webView.stringByEvaluatingJavaScriptFromString("window.hasOwnProperty('webkit') && webkit.hasOwnProperty('messageHandlers') && window.hasOwnProperty('__firefox__')")
         if result == "true" {
             // already injected into this context
             return
@@ -59,7 +57,7 @@ class LegacyUserContentController
 
         // use tap detection until this returns false/
         // on page start reset enableBlankTargetTapDetection, then set it off when page loaded
-        if webView.stringByEvaluatingJavaScriptFromString(LegacyUserContentController.jsBlankTargetToNewTab) != "true" {
+        if webView.stringByEvaluatingJavaScriptFromString(LegacyUserContentController.jsPageHasBlankTargets) != "true" {
             // no _blank
             webView.blankTargetLinkDetectionOn = false
         }
@@ -75,6 +73,21 @@ class LegacyUserContentController
 
         for script in scripts {
             webView.stringByEvaluatingJavaScriptFromString(script.source)
+        }
+    }
+
+    func injectFingerprintProtection() {
+        guard let webView = webView,
+              let handler = scriptHandlersMainFrame[FingerprintingProtection.scriptMessageHandlerName()!] else { return }
+
+        let js = LegacyJSContext()
+        js.installHandlerForWebView(webView, handlerName: FingerprintingProtection.scriptMessageHandlerName(), handler:handler)
+        webView.stringByEvaluatingJavaScriptFromString(FingerprintingProtection.script)
+
+        let frames = js.findNewFramesForWebView(webView, withFrameContexts: nil)
+        for ctx in frames {
+            js.installHandlerForContext(ctx, handlerName: FingerprintingProtection.scriptMessageHandlerName(), handler:handler, webView:webView)
+            js.callOnContext(ctx, script: FingerprintingProtection.script)
         }
     }
 
@@ -101,10 +114,8 @@ class LegacyUserContentController
     static func injectJsIntoAllFrames(webView: BraveWebView, script: String) {
         webView.stringByEvaluatingJavaScriptFromString(script)
         let js = LegacyJSContext()
-        let contexts = js.findNewFramesForWebView(webView, withFrameContexts: webView.knownFrameContexts)
-
+        let contexts = js.findNewFramesForWebView(webView, withFrameContexts: nil)
         for ctx in contexts {
-            webView.knownFrameContexts.insert(ctx.hash)
             js.callOnContext(ctx, script: script)
         }
     }

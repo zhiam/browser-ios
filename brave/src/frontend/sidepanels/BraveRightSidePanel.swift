@@ -190,6 +190,8 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             setKeys(HttpsEverywhere.prefKey, HttpsEverywhere.prefKeyDefaultValue, BraveShieldState.kHTTPSE)
         case shieldToggle:
             setKeys("", false, BraveShieldState.kAllOff)
+        case toggleBlockFingerprinting:
+            setKeys(kPrefKeyFingerprintProtection, false, BraveShieldState.kFPProtection)
         default:
             break
         }
@@ -205,7 +207,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
         toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
         toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
-        //toggleBlockFingerprinting.on = state?.isOnF() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+        toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
     }

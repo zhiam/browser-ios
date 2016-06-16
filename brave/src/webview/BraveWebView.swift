@@ -89,7 +89,22 @@ class BraveWebView: UIWebView {
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
-    var braveShieldState = BraveShieldState()
+    var braveShieldState = BraveShieldState() {
+        didSet {
+            if let fpOn = braveShieldState.isOnFingerprintProtection(), browser = getApp().tabManager.tabForWebView(self) where fpOn {
+                if browser.getHelper(FingerprintingProtection.self) == nil {
+                    let fp = FingerprintingProtection(browser: browser)
+                    browser.addHelper(fp)
+                }
+            } else {
+                getApp().tabManager.tabForWebView(self)?.removeHelper(FingerprintingProtection.self)
+            }
+
+            delay(0.2) { // update the UI, wait a bit for loading to have started
+                (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
+            }
+        }
+    }
     var blankTargetLinkDetectionOn = true
     var lastTappedTime: NSDate?
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
@@ -357,8 +372,7 @@ class BraveWebView: UIWebView {
             NSNotificationCenter.defaultCenter().postNotificationName(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: me)
             LegacyUserContentController.injectJsIntoAllFrames(me, script: "document.body.style.webkitTouchCallout='none'")
 
-            print("Getting favicons")
-            me.stringByEvaluatingJavaScriptFromString("__firefox__.favicons.getFavicons()")
+            me.stringByEvaluatingJavaScriptFromString("console.log('get favicons'); __firefox__.favicons.getFavicons()")
 
             #if !TEST
                 me.replaceAdImages(me)
@@ -613,9 +627,6 @@ extension BraveWebView: UIWebViewDelegate {
 
             if let url = request.URL, domain = url.normalizedHost() {
                 braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
-                delay(0.2) { // update the UI, wait a bit for loading to have started
-                    (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
-                }
             }
         }
 
@@ -638,6 +649,8 @@ extension BraveWebView: UIWebViewDelegate {
         #if !TEST
             HideEmptyImages.runJsInWebView(self)
         #endif
+
+        configuration.userContentController.injectFingerprintProtection()
     }
 
     func webViewDidFinishLoad(webView: UIWebView) {

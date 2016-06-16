@@ -270,4 +270,7 @@ public class BraveShieldState {
         return state[BraveShieldState.kNoscript] ?? nil
     }
 
+    func isOnFingerprintProtection() -> Bool? {
+        return state[BraveShieldState.kFPProtection] ?? nil
+    }
 }
