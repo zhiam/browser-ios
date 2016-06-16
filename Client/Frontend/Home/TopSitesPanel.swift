@@ -688,8 +688,10 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
 
     private func mergeSuggestedSites() {
         suggestedSites = SuggestedSites.asArray()
-        for url in profile.prefs.arrayForKey("topSites.deletedSuggestedSites") as! [String] {
-            suggestedSites = suggestedSites.filter { extractDomainURL($0.url) != extractDomainURL(url) }
+        if let deleted = profile.prefs.arrayForKey("topSites.deletedSuggestedSites") as? [String] {
+            for url in deleted {
+                suggestedSites = suggestedSites.filter { extractDomainURL($0.url) != extractDomainURL(url) }
+            }
         }
 
         sites = sites.map { site in
