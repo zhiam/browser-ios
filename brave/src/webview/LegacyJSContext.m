@@ -86,6 +86,8 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
   }
 
   result =  ^(NSDictionary* message) {
+      NSData* archivedData = [NSKeyedArchiver archivedDataWithRootObject:message];
+
     dispatch_async(dispatch_get_main_queue(), ^{
 #ifdef DEBUG
       //NSLog(@"%@ %@", handlerName, message);
@@ -95,7 +97,7 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
         userContentController_ = [WKUserContentController new];
       }
 
-      message_.writeableBody = message;
+      message_.writeableBody = [NSKeyedUnarchiver unarchiveObjectWithData:archivedData];
       message_.writableName = handlerName;
       if (handlerToWebview_) {
         UIWebView *webView = [handlerToWebview_ objectForKey:objToKey(handler)];
@@ -183,3 +185,83 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
 }
 
 @end
+
+
+NSString *js_ = @"function reportBlock(e){Window.prototype.hasOwnProperty('webkit')&&Window.prototype.webkit.hasOwnProperty('messageHandlers')&&Window.prototype.webkit.messageHandlers.hasOwnProperty('fingerprinting')&&webkit.messageHandlers.fingerprinting.postMessage(e)}function trapInstanceMethod(e){e.obj[e.propName]=function(o){return function(){var o={obj:e.objName,prop:e.propName};console.log('blocking canvas read',o),reportBlock(o)}}(e.obj[e.propName])}function trapIFrameMethods(e){var o=[{type:'Canvas',propName:'createElement',obj:e},{type:'Canvas',propName:'createElementNS',obj:e}];o.forEach(function(e){var o=e.obj[e.propName];e.obj[e.propName]=function(){var t=arguments,a=t[t.length-1];return a&&'canvas'===a.toLowerCase()?void reportBlock({obj:'document',propName:e.propName}):o.apply(this,t)}})}function inIFrame(){try{return window.self!==window.top}catch(e){return!0}}var methods=[],canvasMethods=['getImageData','getLineDash','measureText'];canvasMethods.forEach(function(e){var o={type:'Canvas',objName:'CanvasRenderingContext2D.prototype',propName:e,obj:window.CanvasRenderingContext2D.prototype};methods.push(o)});var canvasElementMethods=['toDataURL','toBlob'];canvasElementMethods.forEach(function(e){var o={type:'Canvas',objName:'HTMLCanvasElement.prototype',propName:e,obj:window.HTMLCanvasElement.prototype};methods.push(o)});var webglMethods=['getSupportedExtensions','getParameter','getContextAttributes','getShaderPrecisionFormat','getExtension'];webglMethods.forEach(function(e){var o={type:'WebGL',objName:'WebGLRenderingContext.prototype',propName:e,obj:window.WebGLRenderingContext.prototype};methods.push(o)});var audioBufferMethods=['copyFromChannel','getChannelData'];audioBufferMethods.forEach(function(e){var o={type:'AudioContext',objName:'AudioBuffer.prototype',propName:e,obj:window.AudioBuffer.prototype};methods.push(o)});var analyserMethods=['getFloatFrequencyData','getByteFrequencyData','getFloatTimeDomainData','getByteTimeDomainData'];analyserMethods.forEach(function(e){var o={type:'AudioContext',objName:'AnalyserNode.prototype',propName:e,obj:window.AnalyserNode.prototype};methods.push(o)}),methods.forEach(trapInstanceMethod),inIFrame()&&trapIFrameMethods(document);";
+
+@protocol webframe<NSObject>
+- (id)parentFrame;
+@end
+
+@interface OBS : NSObject
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context;
+@end
+@implementation OBS
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    NSLog(@"here");
+}
+
+@end
+
+OBS* obs = nil;
+
+@implementation NSObject(JSContextSniffer)
+- (void)webView:(id)webView didCreateJavaScriptContext:(JSContext *)context forFrame:(id<webframe>)frame
+{
+    if (!obs) obs = [OBS new];
+
+    if (![frame respondsToSelector: @selector(parentFrame)] || [frame parentFrame] == nil) {
+        [webView addObserver:obs
+                  forKeyPath:@"mainFrame.childFrames"
+                     options:NSKeyValueObservingOptionNew
+                     context:NULL];
+        return;
+    }
+
+ //   [context evaluateScript:@"parent !== window && (document.createElement = {})"];
+//    context[@"document"][@"createElement"] = ^(JSValue *tag) {
+//        NSLog(@"BLOCKED %@", tag);
+//    };
+}
+
+@end
+
+
+
+#import "Swizzling.h"
+@implementation NSMutableArray(SafeKit)
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        SwizzleInstanceMethods(NSClassFromString(@"__NSArrayM"), @selector(addObject:), @selector(_addObject:));
+    });
+}
+
+
+-(void)_addObject:(id)anObject
+{
+    if (!anObject) {
+        return;
+    }
+    if ([NSStringFromClass([anObject class]) isEqualToString:@"WebFrame"]) {
+        NSLog(@"-");
+    }
+
+    [self _addObject:anObject];
+}
+
+
+
+@end
+
+
+
+
