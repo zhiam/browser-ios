@@ -55,7 +55,7 @@ class SidePanelBaseViewController : UIViewController {
     func setupUIElements() {
         shadow.image = UIImage(named: "panel_shadow")
         shadow.contentMode = .ScaleToFill
-        shadow.alpha = 0.8
+        shadow.alpha = 0.5
 
         if !isLeftSidePanel {
             shadow.transform = CGAffineTransformMakeScale(-1, 1)

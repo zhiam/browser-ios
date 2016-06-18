@@ -22,6 +22,7 @@ class FingerprintingProtection: NSObject, BrowserHelper {
     }
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        browser?.webView?.shieldStatUpdate(.fpIncrement)
         print("fingerprint \(message.body)")
     }
 }

@@ -117,6 +117,7 @@ class URLProtocol: NSURLProtocol {
         NSURLProtocol.setProperty(true, forKey: markerRequestHandled, inRequest: newRequest)
 
         let shieldState = URLProtocol.getShields(request)
+        let ua = request.allHTTPHeaderFields?["User-Agent"]
 
         // HttpsEverywhere re-checking is O(1) due to internal cache,
         if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) where shieldState.isOnHTTPSE() ?? false {
@@ -128,12 +129,14 @@ class URLProtocol: NSURLProtocol {
 
             if url == request.mainDocumentURL {
                 returnEmptyResponse()
-                let ua = request.allHTTPHeaderFields?["User-Agent"]
                 ensureMainThread() {
                     WebViewToUAMapper.userAgentToWebview(ua)?.loadRequest(newRequest)
                 }
             } else {
                 connection = NSURLConnection(request: newRequest, delegate: self)
+                ensureMainThread() {
+                    WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
+                }
             }
             return
         } else if shieldState.isOnSafeBrowsing() ?? false && SafeBrowsing.singleton.shouldBlock(request) {
@@ -149,12 +152,10 @@ class URLProtocol: NSURLProtocol {
             } else {
                 returnEmptyResponse()
             }
+            ensureMainThread() {
+                WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.abAndTpIncrement)
+            }
             return
-        }
-
-        disableJavascript = shieldState.isOnScriptBlocking() ?? false
-        if disableJavascript && connection == nil {
-            connection = NSURLConnection(request: newRequest, delegate: self)
         }
     }
 

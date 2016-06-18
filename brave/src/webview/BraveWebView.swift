@@ -234,6 +234,8 @@ class BraveWebView: UIWebView {
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationPageUnload, object: self)
             setUrl(NSURL(string: location), reliableSource: false)
 
+            shieldStatUpdate(.reset)
+
             progress?.reset()
         }
 
@@ -275,6 +277,15 @@ class BraveWebView: UIWebView {
             let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
             scrollView.setValue(NSValue(CGSize: CGSizeMake(rate, rate)), forKey: "_decelerationFactor")
         #endif
+    }
+
+    func checkScriptBlockedAndBroadcastStats() {
+        if braveShieldState.isOnScriptBlocking() ?? false {
+            let jsBlocked = Int(stringByEvaluatingJavaScriptFromString("document.getElementsByTagName('script').length") ?? "0") ?? 0
+            shieldStatUpdate(.jsSetValue, jsBlocked)
+        } else {
+            shieldStatUpdate(.broadcastOnly)
+        }
     }
 
     func internalProgressNotification(notification: NSNotification) {
@@ -377,6 +388,8 @@ class BraveWebView: UIWebView {
             #if !TEST
                 me.replaceAdImages(me)
             #endif
+
+            me.checkScriptBlockedAndBroadcastStats()
         }
     }
 
@@ -411,6 +424,7 @@ class BraveWebView: UIWebView {
     }
 
     override func reload() {
+        shieldStatUpdate(.reset)
         progress?.setProgress(0.3)
         NSURLCache.sharedURLCache().removeAllCachedResponses()
         NSURLCache.sharedURLCache().diskCapacity = 0
@@ -521,6 +535,41 @@ class BraveWebView: UIWebView {
         }
         safeBrowsingCheckIsEmptyPageTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(safeBrowsingCheckIsEmptyPageTimeout), userInfo: url, repeats: false)
     }
+
+    enum ShieldStatUpdate {
+        case reset
+        case broadcastOnly
+        case httpseIncrement
+        case abAndTpIncrement
+        case jsSetValue
+        case fpIncrement
+    }
+
+    var shieldStats = ShieldBlockedStats()
+
+    func shieldStatUpdate(stat: ShieldStatUpdate, _ value: Int = 1) {
+
+        switch stat {
+        case .broadcastOnly:
+            break
+        case .reset:
+            shieldStats = ShieldBlockedStats()
+        case .httpseIncrement:
+            shieldStats.httpse += value
+        case .abAndTpIncrement:
+            shieldStats.abAndTp += value
+        case .jsSetValue:
+            shieldStats.js = value
+        case .fpIncrement:
+            shieldStats.fp += value
+        }
+
+        delay(0.2) { [weak self] in
+            if let me = self where BraveApp.getCurrentWebView() === me {
+                (getApp().rootViewController.visibleViewController as? BraveTopViewController)?.rightSidePanel.setShieldBlockedStats(me.shieldStats)
+            }
+        }
+    }
 }
 
 extension BraveWebView: UIWebViewDelegate {
@@ -628,6 +677,8 @@ extension BraveWebView: UIWebViewDelegate {
             if let url = request.URL, domain = url.normalizedHost() {
                 braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
             }
+
+            shieldStatUpdate(.reset)
         }
 
         kvoBroadcast()
@@ -655,6 +706,9 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webViewDidFinishLoad(webView: UIWebView) {
         assert(NSThread.isMainThread())
+
+        // browserleaks canvas requires injection at this point
+        configuration.userContentController.injectFingerprintProtection()
 
         guard let pageInfo = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase() + '|' + document.title") else {
             return

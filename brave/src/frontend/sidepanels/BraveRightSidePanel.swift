@@ -3,6 +3,13 @@
 import Storage
 import SnapKit
 
+struct ShieldBlockedStats {
+    var abAndTp = 0
+    var httpse = 0
+    var js = 0
+    var fp = 0
+}
+
 class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
     let heading = UILabel()
@@ -19,11 +26,18 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let toggleBlockMalwareTitle =  UILabel()
     let toggleBlockFingerprinting = UISwitch()
     let toggleBlockFingerprintingTitle =  UILabel()
-    var views_toggles = [UISwitch]()
-    var views_labels = [UILabel]()
 
     let togglesContainer = UIView()
     let headerContainer = UIView()
+    let siteNameContainer = UIView()
+    let statsContainer = UIView()
+
+    let statAdsBlocked = UILabel()
+    let statHttpsUpgrades = UILabel()
+    let statFPBlocked = UILabel()
+    let statScriptsBlocked = UILabel()
+
+    let ui_edgeInset = 15
 
     override var canShow: Bool {
         let site = BraveApp.getCurrentWebView()?.URL?.normalizedHost()
@@ -36,33 +50,71 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
 
     override func setupContainerViewSize() {
-        containerView.frame = CGRectMake(0, 0, CGFloat(BraveUX.WidthOfSlideOut), 450)
+        var h = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)
+        h = min(700, h)
+        containerView.frame = CGRectMake(0, 0, CGFloat(BraveUX.WidthOfSlideOut), h)
         viewAsScrollView().contentSize = CGSizeMake(containerView.frame.width, containerView.frame.height)
+    }
+
+    private func isTinyScreen() -> Bool{
+        let h = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)
+        return h < 500
     }
 
     override func setupUIElements() {
         super.setupUIElements()
-        
-        viewAsScrollView().scrollEnabled = true
 
-        togglesContainer.backgroundColor = UIColor.init(white: 238.0/255.0, alpha: 1.0)
+        let sections = [headerContainer, siteNameContainer, statsContainer, togglesContainer]
+        sections.forEach { containerView.addSubview($0) }
+        sections.enumerate().forEach { i, section in
+            section.snp_makeConstraints(closure: { (make) in
+                make.left.right.equalTo(section.superview!)
+
+                if i == 0 {
+                    make.top.equalTo(section.superview!)
+                    make.height.equalTo(44 + spaceForStatusBar())
+                } else if i == sections.count - 1 {
+                    make.bottom.equalTo(section.superview!)
+                } else {
+                    make.top.equalTo(sections[i - 1].snp_bottom)
+                    make.bottom.equalTo(sections[i + 1].snp_top)
+                }
+
+                if section === siteNameContainer {
+                    make.height.equalTo(80)
+                } else if section === statsContainer {
+                    make.height.equalTo(isTinyScreen() ? 140 : 180)
+                }
+            })
+        }
+
+        headerContainer.backgroundColor = UIColor(white: 77/255.0, alpha: 1.0)
+        siteNameContainer.backgroundColor = UIColor(white: 238/255.0, alpha: 1.0)
+        togglesContainer.backgroundColor = UIColor.init(white: 250.0/255.0, alpha: 1.0)
+        statsContainer.backgroundColor = UIColor(white: 238/255.0, alpha: 1.0)
+
+        viewAsScrollView().scrollEnabled = true
+        viewAsScrollView().bounces = false
+
         view.backgroundColor = togglesContainer.backgroundColor
         containerView.backgroundColor = togglesContainer.backgroundColor
 
         func setupHeaderSection() {
-            headerContainer.backgroundColor = UIColor(white: 77/255.0, alpha: 1.0)
-            
-            containerView.addSubview(headerContainer)
-            headerContainer.snp_makeConstraints {
-                make in
-                make.top.left.right.equalTo(headerContainer.superview!)
-                make.height.equalTo(130)
-            }
+            headerContainer.addSubview(heading)
 
-            heading.text = "Brave Shields for"
+            heading.text = "Brave shield site settings"
             heading.textColor = UIColor.whiteColor()
             heading.font = UIFont.boldSystemFontOfSize(18)
-            siteName.textColor = UIColor.whiteColor()
+
+            heading.snp_makeConstraints { (make) in
+                make.right.equalTo(heading.superview!)
+                make.bottom.equalTo(heading.superview!).inset(12)
+                make.left.equalTo(heading.superview!).offset(ui_edgeInset)
+            }
+        }
+        setupHeaderSection()
+
+        func setupSiteNameSection() {
             siteName.font = UIFont.boldSystemFontOfSize(22)
 
             let down = UILabel()
@@ -70,27 +122,24 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             let up = UILabel()
             up.text = "Up"
 
-            [heading, siteName, up, down, shieldToggle].forEach { headerContainer.addSubview($0) }
-            heading.snp_makeConstraints {
-                make in
-                make.left.equalTo(heading.superview!).inset(20)
-                make.bottom.equalTo(siteName.snp_top).inset(-2)
-            }
+            [siteName, up, down, shieldToggle].forEach { siteNameContainer.addSubview($0) }
 
             siteName.snp_makeConstraints {
                 make in
-                make.left.equalTo(heading)
+                make.left.equalTo(siteName.superview!).inset(ui_edgeInset)
+                make.right.equalTo(siteName.superview!).inset(ui_edgeInset)
                 make.bottom.equalTo(shieldToggle.snp_top).inset(-8)
             }
 
+            siteName.adjustsFontSizeToFitWidth = true
+
             [down, up].forEach {
-                $0.textColor = UIColor.whiteColor()
                 $0.font = UIFont.boldSystemFontOfSize(14)
             }
 
             down.snp_makeConstraints {
                 make in
-                make.left.equalTo(down.superview!).inset(22)
+                make.left.equalTo(down.superview!).inset(ui_edgeInset + 2)
                 make.centerY.equalTo(shieldToggle)
             }
 
@@ -103,61 +152,132 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             shieldToggle.snp_makeConstraints {
                 make in
                 make.left.equalTo(down.snp_right).offset(8)
-                make.bottom.equalTo(shieldToggle.superview!).inset(20)
+                make.top.equalTo(shieldToggle.superview!.snp_centerY)
             }
             shieldToggle.onTintColor = BraveUX.BraveOrange
             shieldToggle.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
-
         }
-        setupHeaderSection()
+        setupSiteNameSection()
 
-        containerView.addSubview(togglesContainer)
+        func setupSwitchesSection() {
+            let views_toggles = [toggleBlockAds, toggleHttpse, toggleBlockMalware, toggleBlockScripts, toggleBlockFingerprinting]
+            let views_labels = [toggleBlockAdsTitle, toggleHttpseTitle, toggleBlockMalwareTitle, toggleBlockScriptsTitle, toggleBlockFingerprintingTitle]
+            let labelTitles = ["Block Ads & Tracking", "HTTPS Everywhere", "Block Phishing", "Block Scripts", "Fingerprinting\nProtection"]
 
-        togglesContainer.snp_makeConstraints {
-            make in
-            make.left.right.equalTo(containerView)
-            make.top.equalTo(headerContainer.snp_bottom)
-            make.bottom.equalTo(containerView)
+            func layoutSwitch(switchItem: UISwitch, label: UILabel) -> UIView {
+                let row = UIView()
+                togglesContainer.addSubview(row)
+                row.addSubview(switchItem)
+                row.addSubview(label)
+                
+                switchItem.snp_makeConstraints { (make) in
+                    make.left.equalTo(row)
+                    make.centerY.equalTo(row)
+                }
+
+                label.snp_makeConstraints { make in
+                    make.left.equalTo(switchItem.snp_right).offset(10)
+                    make.centerY.equalTo(switchItem.snp_centerY)
+                }
+
+                return row
+            }
+
+            var rows = [UIView]()
+            for (i, item) in views_toggles.enumerate() {
+                item.onTintColor = BraveUX.BraveOrange.colorWithAlphaComponent(0.8)
+                item.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
+                views_labels[i].text = labelTitles[i]
+                rows.append(layoutSwitch(item, label: views_labels[i]))
+            }
+
+            let topAndBottomSpace = isTinyScreen() ? 4 : ui_edgeInset
+            rows.enumerate().forEach { i, row in
+                row.snp_makeConstraints(closure: { (make) in
+                    make.left.right.equalTo(row.superview!).inset(ui_edgeInset)
+                    if i == 0 {
+                        make.top.equalTo(row.superview!).offset(topAndBottomSpace)
+                        make.bottom.equalTo(rows[i + 1].snp_top)
+                    } else if i == rows.count - 1 {
+                        make.top.greaterThanOrEqualTo(rows[i - 1].snp_bottom)
+                        make.bottom.equalTo(row.superview!).inset(topAndBottomSpace)
+                    } else {
+                        make.top.greaterThanOrEqualTo(rows[i - 1].snp_bottom)
+                        make.bottom.equalTo(rows[i + 1].snp_top)
+                    }
+                    if i > 0 {
+                        make.height.equalTo(rows[0])
+                    }
+                })
+            }
+
+            toggleBlockFingerprintingTitle.lineBreakMode = .ByWordWrapping
+            toggleBlockFingerprintingTitle.numberOfLines = 2
         }
 
-        views_toggles = [toggleBlockAds, toggleHttpse, toggleBlockMalware, toggleBlockScripts, toggleBlockFingerprinting]
-        views_toggles.forEach { togglesContainer.addSubview($0) }
-        views_labels = [toggleBlockAdsTitle, toggleHttpseTitle, toggleBlockMalwareTitle, toggleBlockScriptsTitle, toggleBlockFingerprintingTitle]
-        let labelTitles = ["Block Ads & Tracking", "HTTPS Everywhere", "Block Phishing", "Block Scripts", "Fingerprinting\nProtection"]
-        views_labels.forEach { togglesContainer.addSubview($0) }
+        setupSwitchesSection()
 
-        func layoutSwitch(item: UIView, below: UIView?) {
-            item.snp_makeConstraints {
-                make in
-                make.left.equalTo(item.superview!.snp_left).inset(14)
-                if let below = below {
-                    make.top.equalTo(below.snp_bottom).offset(22)
-                } else {
-                    make.top.equalTo(item.superview!.snp_top).offset(22)
+        func setupStatsSection() {
+            let line = UIView()
+            line.backgroundColor = view.backgroundColor
+            containerView.addSubview(line)
+            line.snp_makeConstraints { (make) in
+                make.left.right.equalTo(line.superview!)
+                make.centerY.equalTo(statsContainer.snp_top)
+                make.height.equalTo(4)
+            }
+
+            let statTitles = ["Ads & Trackers Blocked", "HTTPS Upgrades", "Scripts Blocked",  "Fingerprinting Methods\nBlocked"]
+            let statViews = [statAdsBlocked, statHttpsUpgrades, statScriptsBlocked, statFPBlocked]
+            let statColors = [UIColor(red:234/255.0, green:90/255.0, blue:45/255.0, alpha:1),
+                              UIColor(red:242/255.0, green:142/255.0, blue:45/255.0, alpha:1),
+                              UIColor(red:26/255.0, green:152/255.0, blue:252/255.0, alpha:1),
+                              UIColor.init(white: 140/255.0, alpha: 1)]
+            var prevTitle:UIView? = nil
+            for (i, stat) in statViews.enumerate() {
+                let label = UILabel()
+                label.text = statTitles[i]
+                statsContainer.addSubview(label)
+                statsContainer.addSubview(stat)
+
+                stat.text = "0"
+                stat.font = UIFont.boldSystemFontOfSize(28)
+                stat.adjustsFontSizeToFitWidth = true
+                stat.textColor = statColors[i]
+
+                stat.snp_makeConstraints {
+                    make in
+                    make.left.equalTo(stat.superview!).offset(ui_edgeInset)
+                    if let prevTitle = prevTitle {
+                        if i == statViews.count - 1 {
+                            make.bottom.equalTo(stat.superview!)
+                        }
+                        make.top.equalTo(prevTitle.snp_bottom)
+
+                    } else {
+                        make.top.equalTo(stat.superview!)
+                    }
+                    make.width.equalTo(40)
+                    make.height.equalTo(statViews[0])
+                }
+
+                label.snp_makeConstraints(closure: { (make) in
+                    make.left.equalTo(stat.snp_right).offset(6)
+                    make.centerY.equalTo(stat)
+                })
+
+                prevTitle = label
+
+                if label.text?.contains("Fingerprint") ?? false {
+                    label.lineBreakMode = .ByWordWrapping
+                    label.numberOfLines = 2
+                    if isTinyScreen() {
+                        label.font = UIFont.systemFontOfSize(14)
+                    }
                 }
             }
         }
-
-        var i = 0
-        views_toggles.forEach { item in
-            item.onTintColor = BraveUX.BraveOrange
-            item.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
-            layoutSwitch(item, below: i > 0 ? views_toggles[i - 1] : nil)
-            i += 1
-        }
-
-        i = 0
-        views_labels.forEach { item in
-            item.text = labelTitles[i]
-            item.snp_makeConstraints {
-                make in
-                make.left.equalTo(views_toggles[i].snp_right).offset(10)
-                make.centerY.equalTo(views_toggles[i].snp_centerY)
-            }
-            i += 1
-        }
-        toggleBlockFingerprintingTitle.lineBreakMode = .ByWordWrapping
-        toggleBlockFingerprintingTitle.numberOfLines = 2
+        setupStatsSection()
     }
 
     @objc func switchToggled(sender: UISwitch) {
@@ -199,19 +319,34 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
 
     override func showPanel(showing: Bool, parentSideConstraints: [Constraint?]?) {
-        siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
+        if showing {
+            siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
 
-        let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
-        shieldToggle.on = !(state?.isAllOff() ?? false)
-        toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
-        toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
-        toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
-        toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
-        toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+            let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
+            shieldToggle.on = !(state?.isAllOff() ?? false)
+            toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
+            toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
+            toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
+            toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
+            toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+        } else {
+            headerContainer.snp_removeConstraints()
+        }
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
+
+        if showing {
+            headerContainer.snp_remakeConstraints { make in
+                make.top.left.right.equalTo(headerContainer.superview!)
+                make.height.equalTo(44 + spaceForStatusBar())
+            }
+        }
     }
-    
+
+    func setShieldBlockedStats(shieldStats: ShieldBlockedStats) {
+        statAdsBlocked.text = String(shieldStats.abAndTp)
+        statHttpsUpgrades.text = String(shieldStats.httpse)
+        statFPBlocked.text = String(shieldStats.fp)
+        statScriptsBlocked.text = String(shieldStats.js)
+    }
 }
-
-

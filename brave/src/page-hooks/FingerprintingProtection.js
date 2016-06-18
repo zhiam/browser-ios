@@ -93,6 +93,7 @@ methods.forEach(trapInstanceMethod)
  * @param {HTMLIFrameElement} frame
  */
 function trapIFrameMethods (frame) {
+    console.log('trapIFrameMethods')
     var items = [{
             type: 'Canvas',
             objName: 'contentDocument',
@@ -112,7 +113,7 @@ function trapIFrameMethods (frame) {
             if (lastArg && lastArg.toLowerCase() === 'canvas') {
                 // Prevent fingerprinting using contentDocument.createElement('canvas'),
                 // which evades trapInstanceMethod when the iframe is sandboxed
-                reportBlock({ obj: objName, propName: item.propName })
+                reportBlock({ obj: item.objName, propName: item.propName })
             } else {
                 // Otherwise apply the original method
                 return orig.apply(this, args)

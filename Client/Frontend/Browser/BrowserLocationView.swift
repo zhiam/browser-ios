@@ -158,19 +158,6 @@ class BrowserLocationView: UIView {
         addSubview(lockImageView)
         addSubview(readerModeButton)
 
-        privateBrowsingIconLayout()
-
-        lockImageView.snp_makeConstraints { make in
-            make.centerY.equalTo(self)
-            make.left.equalTo(self.privateBrowsingIconView.snp_right).offset(BrowserLocationViewUX.LocationContentInset)
-            make.width.equalTo(self.lockImageView.intrinsicContentSize().width)
-        }
-
-        readerModeButton.snp_makeConstraints { make in
-            make.right.centerY.equalTo(self)
-            make.width.equalTo(self.readerModeButton.intrinsicContentSize().width)
-        }
-
         braveProgressView.accessibilityLabel = "braveProgressView"
         braveProgressView.backgroundColor = BraveUX.ProgressBarColor
         braveProgressView.layer.cornerRadius = CGFloat(BraveUX.TextFieldCornerRadius)
@@ -194,6 +181,18 @@ class BrowserLocationView: UIView {
 
     override func updateConstraints() {
         privateBrowsingIconLayout()
+
+        lockImageView.snp_makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.left.equalTo(self.privateBrowsingIconView.snp_right).offset(BrowserLocationViewUX.LocationContentInset)
+            make.width.equalTo(self.lockImageView.intrinsicContentSize().width)
+        }
+
+        readerModeButton.snp_makeConstraints { make in
+            make.right.centerY.equalTo(self)
+            make.width.equalTo(self.readerModeButton.intrinsicContentSize().width)
+        }
+        
 
         urlTextField.snp_remakeConstraints { make in
             make.top.bottom.equalTo(self)

@@ -269,8 +269,7 @@ class BraveURLBarView : URLBarView {
                     make.leading.equalTo(self.leftSidePanelButton.snp_trailing)
                     make.trailing.equalTo(self).inset(UIConstants.ToolbarHeight * 3)
                 } else {
-                    make.left.equalTo(self).inset(UIConstants.ToolbarHeight)
-                    make.right.equalTo(self).inset(UIConstants.ToolbarHeight)
+                    make.left.right.equalTo(self).inset(UIConstants.ToolbarHeight)
                 }
 
                 make.height.equalTo(URLBarViewUX.LocationHeight)
