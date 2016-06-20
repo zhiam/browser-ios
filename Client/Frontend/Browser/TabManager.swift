@@ -298,7 +298,6 @@ class TabManager : NSObject {
             if let t = browser.lastExecutedTime where t < oldestTime {
                 oldestTime = t
                 oldestBrowser = browser
-                print("\(browser.title): \(t)")
             }
         }
         if let browser = oldestBrowser {
