@@ -152,6 +152,7 @@ class BraveTopViewController : UIViewController {
             return
         }
 
+        browserViewController.tabManager.selectedTab?.webView?.checkScriptBlockedAndBroadcastStats()
         togglePanel(rightSidePanel)
     }
 
