@@ -70,6 +70,8 @@ class BraveBrowserViewController : BrowserViewController {
             urlBar.updateProgressBar(Float(webView.estimatedProgress), dueToTabChange: true)
             urlBar.updateReloadStatus(webView.loading)
             updateBraveShieldButtonState(animated: false)
+
+            (getApp().rootViewController.visibleViewController as? BraveTopViewController)?.rightSidePanel.setShieldBlockedStats(webView.shieldStats)
         }
         delay(0.1) {
             self.becomeFirstResponder()

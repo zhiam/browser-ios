@@ -279,9 +279,16 @@ class BraveWebView: UIWebView {
         #endif
     }
 
+    var jsBlockedStatLastUrl: String? = nil
     func checkScriptBlockedAndBroadcastStats() {
-        if braveShieldState.isOnScriptBlocking() ?? false {
+        if braveShieldState.isOnScriptBlocking() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false {
             let jsBlocked = Int(stringByEvaluatingJavaScriptFromString("document.getElementsByTagName('script').length") ?? "0") ?? 0
+
+            if request?.URL?.absoluteString == jsBlockedStatLastUrl && jsBlocked == 0 {
+                return
+            }
+            jsBlockedStatLastUrl = request?.URL?.absoluteString
+
             shieldStatUpdate(.jsSetValue, jsBlocked)
         } else {
             shieldStatUpdate(.broadcastOnly)

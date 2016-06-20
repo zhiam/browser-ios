@@ -328,8 +328,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 return urlComponents.URL
             }
 
-
-            if !AboutUtils.isAboutURL(url) {
+            if !AboutUtils.isAboutURL(url) && !url.absoluteString.contains(WebServer.sharedInstance.base) {
                 return url
             }
         }

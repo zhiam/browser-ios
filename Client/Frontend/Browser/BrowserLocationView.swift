@@ -258,12 +258,7 @@ class BrowserLocationView: UIView {
     }
 
     private func updateTextWithURL() {
-        func urlShouldNotBeDisplayed(url: NSURL?) -> Bool {
-            guard let href = url?.absoluteString else { return true }
-            return href.hasPrefix("about:") || href.hasPrefix(WebServer.sharedInstance.base)
-        }
-
-        if urlShouldNotBeDisplayed(url) {
+        if url == nil {
             urlTextField.text = ""
             return
         }

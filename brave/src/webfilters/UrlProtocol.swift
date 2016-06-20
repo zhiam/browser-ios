@@ -157,6 +157,15 @@ class URLProtocol: NSURLProtocol {
             }
             return
         }
+
+        disableJavascript = shieldState.isOnScriptBlocking() ?? false
+
+        if let url = request.URL?.absoluteString where disableJavascript && (url.contains(".js?") || url.contains(".js#") || url.endsWith(".js")) {
+            returnEmptyResponse()
+            return
+        }
+
+        self.connection = NSURLConnection(request: newRequest, delegate: self)
     }
 
     override func stopLoading() {
@@ -167,7 +176,10 @@ class URLProtocol: NSURLProtocol {
     // MARK: NSURLConnection
     func connection(connection: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
         var returnedResponse: NSURLResponse = response
-        if let response = response as? NSHTTPURLResponse, url = response.URL where disableJavascript {
+        if let response = response as? NSHTTPURLResponse,
+            url = response.URL
+            where disableJavascript && !AboutUtils.isAboutURL(url)
+        {
             var fields = response.allHeaderFields as? [String : String] ?? [String : String]()
             fields["X-WebKit-CSP"] = "script-src none"
             returnedResponse = NSHTTPURLResponse(URL: url, statusCode: response.statusCode, HTTPVersion: "HTTP/1.1" /*not used*/, headerFields: fields)!
