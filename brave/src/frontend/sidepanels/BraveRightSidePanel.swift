@@ -61,6 +61,15 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         return h < 500
     }
 
+    private func setGrayTextColor(v: UIView) {
+        if let label = v as? UILabel {
+            if label.textColor == UIColor.blackColor() {
+                label.textColor = UIColor(white: 96/255, alpha: 1.0)
+            }
+        }
+        v.subviews.forEach { setGrayTextColor($0) }
+    }
+
     override func setupUIElements() {
         super.setupUIElements()
 
@@ -282,6 +291,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             }
         }
         setupStatsSection()
+
+        setGrayTextColor(togglesContainer)
+        setGrayTextColor(statsContainer)
     }
 
     @objc func switchToggled(sender: UISwitch) {
