@@ -188,6 +188,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 item.onTintColor = BraveUX.BraveOrange.colorWithAlphaComponent(0.8)
                 item.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
                 views_labels[i].text = labelTitles[i]
+                if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
+                    views_labels[i].font = UIFont.systemFontOfSize(UIFont.systemFontSize() - 1)
+                }
                 rows.append(layoutSwitch(item, label: views_labels[i]))
             }
 
@@ -268,12 +271,13 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
                 prevTitle = label
 
+                if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
+                    label.font = UIFont.systemFontOfSize(UIFont.systemFontSize() - 1)
+                }
+
                 if label.text?.contains("Fingerprint") ?? false {
                     label.lineBreakMode = .ByWordWrapping
                     label.numberOfLines = 2
-                    if isTinyScreen() {
-                        label.font = UIFont.systemFontOfSize(14)
-                    }
                 }
             }
         }
@@ -329,7 +333,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
             toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
             toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
-        } 
+        }
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
 
