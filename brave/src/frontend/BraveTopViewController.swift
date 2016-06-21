@@ -174,8 +174,7 @@ class BraveTopViewController : UIViewController {
             } )
         }
 
-        if willShow && (UIDevice.currentDevice().userInterfaceIdiom == .Phone ||
-            panel === rightSidePanel) {
+        if willShow {
             clickDetectionView.alpha = 0
             clickDetectionView.userInteractionEnabled = true
 

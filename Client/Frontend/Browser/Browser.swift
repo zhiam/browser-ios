@@ -178,7 +178,8 @@ class Browser: NSObject, BrowserWebViewDelegate {
 #endif
             lastExecutedTime = NSDate.now()
 
-            if let html = deletedWebViewHtml, session = session where html.characters.count > 200 {
+            let minSizeOfRealPage = 200 // An empty page of tags is almost 100 chars, do rudimentary check that the page contained enough data to bother loading old HTML
+            if let html = deletedWebViewHtml, session = session where html.characters.count > minSizeOfRealPage {
                 let i = session.urls.count + session.currentPage - 1 // currentpage is 0, -1, -2, etc.
                 if case 0..<session.urls.count = i {
                     print("Loading stored html")

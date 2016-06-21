@@ -329,9 +329,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
             toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
             toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
-        } else {
-            headerContainer.snp_removeConstraints()
-        }
+        } 
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
 
