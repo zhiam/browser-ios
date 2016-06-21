@@ -133,6 +133,11 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if self.tableView(tableView, hasFullWidthSeparatorForRowAtIndexPath: indexPath) {
             cell.separatorInset = UIEdgeInsetsZero
         }
+        
+        cell.gestureRecognizers?.forEach { cell.removeGestureRecognizer($0) }
+        let lp = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
+        cell.addGestureRecognizer(lp)
+
         return cell
     }
 
@@ -150,5 +155,33 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
     func tableView(tableView: UITableView, hasFullWidthSeparatorForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return false
+    }
+
+    @objc func longPressOnCell(gesture: UILongPressGestureRecognizer) {
+        if gesture.state != .Began {
+            return
+        }
+
+        guard let cell = gesture.view as? UITableViewCell else { return }
+        var url:NSURL? = nil
+
+        if let bookmarks = self as? BookmarksPanel,
+            source = bookmarks.source,
+            let indexPath = tableView.indexPathForCell(cell) {
+            let bookmark = source.current[indexPath.row]
+            if let b = bookmark as? BookmarkItem {
+                url = NSURL(string: b.url)
+            }
+
+        } else if let path = cell.detailTextLabel?.text {
+            url = NSURL(string: path)
+        }
+
+        guard let _ = url else { return }
+
+        let tappedElement = ContextMenuHelper.Elements(link: url, image: nil)
+        var p = getApp().window!.convertPoint(cell.center, fromView:cell.superview!)
+        p.x += cell.frame.width * 0.33
+        getApp().browserViewController.showContextMenu(elements: tappedElement, touchPoint: p)
     }
 }
