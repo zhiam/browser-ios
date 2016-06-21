@@ -1148,10 +1148,16 @@ class BrowserViewController: UIViewController {
 
     func newTab() {
         openBlankNewTabAndFocus(isPrivate: PrivateBrowsing.singleton.isOn)
+        delay(0.2) {
+            self.selectLocationBar()
+        }
     }
 
     func newPrivateTab() {
         openBlankNewTabAndFocus(isPrivate: true)
+        delay(0.2) {
+            self.selectLocationBar()
+        }
     }
 
     func closeTab() {
