@@ -961,14 +961,17 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        profile.bookmarks.modelFactory >>== {
-            $0.isBookmarked(url).uponQueue(dispatch_get_main_queue()) { result in
-                guard let bookmarked = result.successValue else {
-                    log.error("Error getting bookmark status: \(result.failureValue).")
-                    return
+        succeed().upon { _ in
+            self.profile.bookmarks.modelFactory >>== {
+                $0.isBookmarked(url).uponQueue(dispatch_get_main_queue()) { result in
+                    guard let bookmarked = result.successValue else {
+                        log.error("Error getting bookmark status: \(result.failureValue).")
+                        return
+                    }
+                    ensureMainThread {
+                        self.urlBar.updateBookmarkStatus(bookmarked)
+                    }
                 }
-
-                self.urlBar.updateBookmarkStatus(bookmarked)
             }
         }
     }
