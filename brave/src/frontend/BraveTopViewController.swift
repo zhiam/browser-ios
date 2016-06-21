@@ -67,10 +67,6 @@ class BraveTopViewController : UIViewController {
         clickDetectionView.addTarget(self, action: #selector(BraveTopViewController.dismissAllSidePanels(_:)), forControlEvents: UIControlEvents.TouchUpInside)
 
         mainSidePanel.browserViewController = browserViewController
-
-        #if FLEX_ON
-        delay(5) { FLEXManager.sharedManager().showExplorer() }
-        #endif
     }
 
     @objc func dismissAllSidePanels(button: UIButton) {

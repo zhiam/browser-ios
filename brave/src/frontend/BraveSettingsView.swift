@@ -241,6 +241,10 @@ class BraveSupportLinkSetting: Setting{
         }
         // Use this to experiment with fixing bug where page is partially rendered
         // TODO use this to add special debugging functions
+
+        #if FLEX_ON
+           FLEXManager.sharedManager().showExplorer()
+        #endif
     }
 
 }

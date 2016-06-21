@@ -1,5 +1,6 @@
 [[ $1 == 'beta' ]] && bundle='com.brave.ios.browser.dev'
 (cd .. && ./setup.sh $bundle)
+[[ $1 == 'beta' ]] && (cd ..; ./projgen.rb flex)
 (cd profiles && sh install-profiles-from-portal.sh $1) || exit 1 
 sh strip-arch.sh
 (cd -- "$(dirname -- "$0")" && cd ../.. && \
