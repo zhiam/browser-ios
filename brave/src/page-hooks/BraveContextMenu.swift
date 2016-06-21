@@ -9,17 +9,21 @@ class BraveContextMenu {
     var contextualMenuTimer: NSTimer = NSTimer()
     var tappedElement: ContextMenuHelper.Elements?
 
-    func resetTimer() {
+    private func resetTimer() {
         contextualMenuTimer.invalidate()
         tappedElement = nil
     }
 
-    func isBrowserTopmost() -> Bool {
-        return getApp().rootViewController.visibleViewController as? BraveTopViewController != nil
+    private func isBrowserTopmostAndNoPanelsOpen() ->  Bool {
+        guard let top = getApp().rootViewController.visibleViewController as? BraveTopViewController else {
+            return false
+        }
+
+        return top.mainSidePanel.view.hidden && top.rightSidePanel.view.hidden
     }
 
     func sendEvent(event: UIEvent, window: UIWindow) {
-        if !isBrowserTopmost() {
+        if !isBrowserTopmostAndNoPanelsOpen() {
             resetTimer()
             return
         }
@@ -59,7 +63,7 @@ class BraveContextMenu {
     // This is called 2x, once at .25 seconds to ensure the native context menu is cancelled,
     // then again at .5 seconds to show our context menu. (This code was borne of frustration, not ideal flow)
     @objc func tapAndHoldAction() {
-        if !isBrowserTopmost() {
+        if !isBrowserTopmostAndNoPanelsOpen() {
             resetTimer()
             return
         }

@@ -156,10 +156,6 @@ class BraveTopViewController : UIViewController {
         togglePanel(rightSidePanel)
     }
 
-    func specialTouchEventHandling(touchPoint: CGPoint, phase: UITouchPhase ) {
-        //     mainSidePanel.onTouchToHide(touchPoint, phase: phase)
-    }
-
     func togglePanel(panel: SidePanelBaseViewController) {
         let willShow = panel.view.hidden
         if panel === mainSidePanel {
