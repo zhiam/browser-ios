@@ -37,7 +37,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let statFPBlocked = UILabel()
     let statScriptsBlocked = UILabel()
 
-    let ui_edgeInset = 15
+    let ui_edgeInset = 25
 
     override var canShow: Bool {
         let site = BraveApp.getCurrentWebView()?.URL?.normalizedHost()
@@ -51,7 +51,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
     override func setupContainerViewSize() {
         var h = max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width)
-        h = min(700, h)
+        h = min(600, h)
         containerView.frame = CGRectMake(0, 0, CGFloat(BraveUX.WidthOfSlideOut), h)
         viewAsScrollView().contentSize = CGSizeMake(containerView.frame.width, containerView.frame.height)
     }
@@ -64,7 +64,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     private func setGrayTextColor(v: UIView) {
         if let label = v as? UILabel {
             if label.textColor == UIColor.blackColor() {
-                label.textColor = UIColor(white: 96/255, alpha: 1.0)
+                label.textColor = UIColor(white: 88/255, alpha: 1.0)
             }
         }
         v.subviews.forEach { setGrayTextColor($0) }
@@ -111,7 +111,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         func setupHeaderSection() {
             headerContainer.addSubview(heading)
 
-            heading.text = "Brave shield site settings"
+            heading.text = "Site shield settings"
             heading.textColor = UIColor.whiteColor()
             heading.font = UIFont.boldSystemFontOfSize(18)
 
@@ -144,6 +144,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
             [down, up].forEach {
                 $0.font = UIFont.boldSystemFontOfSize(14)
+                setGrayTextColor($0)
             }
 
             down.snp_makeConstraints {
@@ -194,16 +195,16 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
             var rows = [UIView]()
             for (i, item) in views_toggles.enumerate() {
-                item.onTintColor = BraveUX.BraveOrange.colorWithAlphaComponent(0.8)
+                item.onTintColor = UIColor(white: 137/255, alpha: 1.0)
                 item.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
                 views_labels[i].text = labelTitles[i]
                 if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
-                    views_labels[i].font = UIFont.systemFontOfSize(UIFont.systemFontSize() - 1)
+                    views_labels[i].font = UIFont.systemFontOfSize(15)
                 }
                 rows.append(layoutSwitch(item, label: views_labels[i]))
             }
 
-            let topAndBottomSpace = isTinyScreen() ? 4 : ui_edgeInset
+            let topAndBottomSpace = isTinyScreen() ? 4 : 15
             rows.enumerate().forEach { i, row in
                 row.snp_makeConstraints(closure: { (make) in
                     make.left.right.equalTo(row.superview!).inset(ui_edgeInset)
@@ -281,7 +282,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 prevTitle = label
 
                 if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
-                    label.font = UIFont.systemFontOfSize(UIFont.systemFontSize() - 1)
+                    label.font = UIFont.systemFontOfSize(15)
                 }
 
                 if label.text?.contains("Fingerprint") ?? false {
