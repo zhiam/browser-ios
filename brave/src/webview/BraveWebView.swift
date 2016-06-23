@@ -783,6 +783,17 @@ extension BraveWebView: UIWebViewDelegate {
             nd.webView?(nullWebView, didFailNavigation: nullWKNavigation,
                         withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
         }
+
+        if let error = error, urlString = error.userInfo["NSErrorFailingURLStringKey"] as? String
+            where error.code == -1009 /*kCFURLErrorNotConnectedToInternet*/ {
+            if let url = NSURL(string: urlString)  {
+                let cache = NSURLCache.sharedURLCache().cachedResponseForRequest(NSURLRequest(URL: url))
+                if let html = cache?.data.utf8EncodedString {
+                    loadHTMLString(html, baseURL: url)
+                }
+            }
+        }
+
         print("didFailLoadWithError: \(error)")
         progress?.didFailLoadWithError()
         kvoBroadcast()
