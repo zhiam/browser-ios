@@ -165,7 +165,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
             webView.navigationDelegate = navigationDelegate
             helperManager = HelperManager(webView: webView)
 
-            let session = sessionData
             restore(webView)
 
             self.webView = webView
@@ -177,16 +176,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
             lastTitle = nil
 #endif
             lastExecutedTime = NSDate.now()
-
-            let minSizeOfRealPage = 200 // An empty page of tags is almost 100 chars, do rudimentary check that the page contained enough data to bother loading old HTML
-            if let html = deletedWebViewHtml, session = session where html.characters.count > minSizeOfRealPage {
-                let i = session.urls.count + session.currentPage - 1 // currentpage is 0, -1, -2, etc.
-                if case 0..<session.urls.count = i {
-                    print("Loading stored html")
-                    webView.loadHTMLString(html, baseURL: session.urls[i])
-                }
-                deletedWebViewHtml = nil
-            }
         }
     }
 
@@ -221,7 +210,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
     }
 
-    var deletedWebViewHtml: String?
     func deleteWebView() {
         assert(NSThread.isMainThread())
         if !NSThread.isMainThread() {
@@ -239,7 +227,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 let urls = (backList + [currentItem] + forwardList).map { $0.URL }
                 let currentPage = -forwardList.count
                 self.sessionData = SessionData(currentPage: currentPage, currentTitle: title, urls: urls, lastUsedTime: lastExecutedTime ?? NSDate.now())
-                deletedWebViewHtml = webView.stringByEvaluatingJavaScriptFromString("document.documentElement.outerHTML")
             }
             browserDelegate?.browser(self, willDeleteWebView: webView)
             self.webView = nil
