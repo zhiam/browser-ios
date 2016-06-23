@@ -57,10 +57,12 @@ class LegacyUserContentController
 
         // use tap detection until this returns false/
         // on page start reset enableBlankTargetTapDetection, then set it off when page loaded
+        webView.blankTargetLinkDetectionOn = true
         if webView.stringByEvaluatingJavaScriptFromString(LegacyUserContentController.jsPageHasBlankTargets) != "true" {
             // no _blank
             webView.blankTargetLinkDetectionOn = false
         }
+        print("has blank targets \(webView.blankTargetLinkDetectionOn)")
 
         let js = LegacyJSContext()
         js.windowOpenOverride(webView, context:nil)
