@@ -6,13 +6,29 @@ import CoreData
 var requestCount = 0
 let markerRequestHandled = "request-already-handled"
 
+class URLCache: NSURLCache {
+    override func cachedResponseForRequest(request: NSURLRequest) -> NSCachedURLResponse? {
+        let r = super.cachedResponseForRequest(request)
+        if r == nil {
+            print("😀 \(request.URL!.absoluteString) not cached")
+        }
+        return r
+    }
+    
+    override func storeCachedResponse(cachedResponse: NSCachedURLResponse, forRequest request: NSURLRequest) {
+        //if cachedResponse.response.MIMEType?.contains("javascript") ?? false {
+            print("😍 \(request.URL!.absoluteString)")
+            let r = NSURLRequest(URL: request.URL!)
+            super.storeCachedResponse(cachedResponse, forRequest: r)
+    }
+}
+
 class URLProtocol: NSURLProtocol {
 
     var connection: NSURLConnection?
     var disableJavascript = false
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
-        //print("Request #\(requestCount++): URL = \(request.mainDocumentURL?.absoluteString)")
         if let scheme = request.URL?.scheme where !scheme.startsWith("http") {
             return false
         }
@@ -21,6 +37,10 @@ class URLProtocol: NSURLProtocol {
             return false
         }
 
+        //if (request.mainDocumentURL?.absoluteString == request.URL?.absoluteString) {
+         //   print("💙 Request #\(requestCount++): URL = \(request.URL?.absoluteString)")
+       // }
+        
         guard let url = request.URL else { return false }
 
         let shieldState = getShields(request)
@@ -59,6 +79,11 @@ class URLProtocol: NSURLProtocol {
 
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
         return request
+    }
+
+    override class func requestIsCacheEquivalent(a: NSURLRequest,
+                                                   toRequest b: NSURLRequest) -> Bool {
+        return super.requestIsCacheEquivalent(a, toRequest: b)
     }
 
     private class func cloneRequest(request: NSURLRequest) -> NSMutableURLRequest {
@@ -124,7 +149,7 @@ class URLProtocol: NSURLProtocol {
             // TODO handle https redirect loop
             newRequest.URL = redirectedUrl
             #if DEBUG
-                //print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
+               // print(url.absoluteString + " [HTTPE to] " + redirectedUrl.absoluteString)
             #endif
 
             if url == request.mainDocumentURL {
@@ -134,6 +159,7 @@ class URLProtocol: NSURLProtocol {
                 }
             } else {
                 connection = NSURLConnection(request: newRequest, delegate: self)
+
                 ensureMainThread() {
                     WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
                 }
@@ -165,7 +191,10 @@ class URLProtocol: NSURLProtocol {
             return
         }
 
-        self.connection = NSURLConnection(request: newRequest, delegate: self)
+
+        //if !tryReturnCached(newRequest) {
+            self.connection = NSURLConnection(request: newRequest, delegate: self)
+        //}
     }
 
     override func stopLoading() {
@@ -173,8 +202,21 @@ class URLProtocol: NSURLProtocol {
         self.connection = nil
     }
 
-    // MARK: NSURLConnection
-    func connection(connection: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
+    private func tryReturnCached(request: NSURLRequest) -> Bool {
+        let cached = NSURLCache.sharedURLCache().cachedResponseForRequest(request)
+        if let cached = cached {
+            print("💜 cached \(request.URL?.absoluteString)")
+            client?.URLProtocol(self, didReceiveResponse: cached.response, cacheStoragePolicy: .Allowed)
+            client?.URLProtocol(self, didLoadData: cached.data)
+            client?.URLProtocolDidFinishLoading(self)
+            return true
+        }
+        return false
+    }
+}
+
+extension URLProtocol : NSURLConnectionDelegate, NSURLConnectionDataDelegate {
+    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
         var returnedResponse: NSURLResponse = response
         if let response = response as? NSHTTPURLResponse,
             url = response.URL
@@ -184,27 +226,29 @@ class URLProtocol: NSURLProtocol {
             fields["X-WebKit-CSP"] = "script-src none"
             returnedResponse = NSHTTPURLResponse(URL: url, statusCode: response.statusCode, HTTPVersion: "HTTP/1.1" /*not used*/, headerFields: fields)!
         }
-        self.client!.URLProtocol(self, didReceiveResponse: returnedResponse, cacheStoragePolicy: .Allowed)
+        
+        client?.URLProtocol(self, didReceiveResponse: returnedResponse, cacheStoragePolicy: .Allowed)
     }
 
     func connection(connection: NSURLConnection, willSendRequest request: NSURLRequest, redirectResponse response: NSURLResponse?) -> NSURLRequest?
     {
         if let response = response {
             client?.URLProtocol(self, wasRedirectedToRequest: request, redirectResponse: response)
+            //tryReturnCached(request)
         }
         return request
     }
 
-    func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
+    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
         self.client!.URLProtocol(self, didLoadData: data)
         //self.mutableData.appendData(data)
     }
 
-    func connectionDidFinishLoading(connection: NSURLConnection!) {
+    func connectionDidFinishLoading(connection: NSURLConnection) {
         self.client!.URLProtocolDidFinishLoading(self)
     }
 
-    func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
+    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
         self.client!.URLProtocol(self, didFailWithError: error)
         print("* Error url: \(self.request.URLString)\n* Details: \(error)")
     }

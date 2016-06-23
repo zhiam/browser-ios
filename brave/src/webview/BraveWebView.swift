@@ -786,10 +786,12 @@ extension BraveWebView: UIWebViewDelegate {
 
         if let error = error, urlString = error.userInfo["NSErrorFailingURLStringKey"] as? String
             where error.code == -1009 /*kCFURLErrorNotConnectedToInternet*/ {
-            if let url = NSURL(string: urlString)  {
-                let cache = NSURLCache.sharedURLCache().cachedResponseForRequest(NSURLRequest(URL: url))
-                if let html = cache?.data.utf8EncodedString {
-                    loadHTMLString(html, baseURL: url)
+
+            if let tab = getApp().tabManager.tabForWebView(self), deletedWebViewHtml = tab.deletedWebViewHtml {
+                let minSizeOfRealPage = 200 // An empty page of tags is almost 100 chars, do rudimentary check that the page is valid
+                if let nsurl = NSURL(string: deletedWebViewHtml.url)
+                    where deletedWebViewHtml.html.characters.count > minSizeOfRealPage && deletedWebViewHtml.url == urlString {
+                    webView.loadHTMLString(deletedWebViewHtml.html, baseURL: nsurl)
                 }
             }
         }

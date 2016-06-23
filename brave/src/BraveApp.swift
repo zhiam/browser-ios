@@ -107,6 +107,8 @@ class BraveApp {
                         BraveApp.getPrefs()?.removeObjectForKey(kAppBootingIncompleteFlag)
         })
 
+        NSURLCache.setSharedURLCache(URLCache())
+
         AdBlocker.singleton.networkFileLoader.loadData()
         SafeBrowsing.singleton.networkFileLoader.loadData()
         TrackingProtection.singleton.networkFileLoader.loadData()
