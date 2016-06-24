@@ -245,7 +245,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             let statColors = [UIColor(red:234/255.0, green:90/255.0, blue:45/255.0, alpha:1),
                               UIColor(red:242/255.0, green:142/255.0, blue:45/255.0, alpha:1),
                               UIColor(red:26/255.0, green:152/255.0, blue:252/255.0, alpha:1),
-                              UIColor.init(white: 140/255.0, alpha: 1)]
+                              UIColor.init(white: 90/255.0, alpha: 1)]
             var prevTitle:UIView? = nil
             for (i, stat) in statViews.enumerate() {
                 let label = UILabel()
