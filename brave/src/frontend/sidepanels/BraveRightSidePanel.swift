@@ -37,7 +37,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let statFPBlocked = UILabel()
     let statScriptsBlocked = UILabel()
 
-    let ui_edgeInset = 25
+    let ui_edgeInset = 20
+
+    let screenHeightRequiredForSectionHeader = CGFloat(600)
 
     override var canShow: Bool {
         let site = BraveApp.getCurrentWebView()?.URL?.normalizedHost()
@@ -169,10 +171,31 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         }
         setupSiteNameSection()
 
+        func sectionHeaderTitle(container: UIView) -> UILabel {
+            let topTitle = UILabel()
+            topTitle.font = UIFont.systemFontOfSize(15)
+            topTitle.alpha = 0.6
+            container.addSubview(topTitle)
+            topTitle.snp_makeConstraints { (make) in
+                make.right.equalTo(topTitle.superview!)
+                make.top.equalTo(topTitle.superview!).offset(8)
+                make.left.equalTo(topTitle.superview!).offset(ui_edgeInset)
+                make.height.equalTo(18)
+            }
+            return topTitle
+        }
+
         func setupSwitchesSection() {
             let views_toggles = [toggleBlockAds, toggleHttpse, toggleBlockMalware, toggleBlockScripts, toggleBlockFingerprinting]
             let views_labels = [toggleBlockAdsTitle, toggleHttpseTitle, toggleBlockMalwareTitle, toggleBlockScriptsTitle, toggleBlockFingerprintingTitle]
             let labelTitles = ["Block Ads & Tracking", "HTTPS Everywhere", "Block Phishing", "Block Scripts", "Fingerprinting\nProtection"]
+
+            var topTitle: UILabel? = nil
+            
+            if screenHeightRequiredForSectionHeader < max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width) {
+                topTitle = sectionHeaderTitle(togglesContainer)
+                topTitle?.text = "Individual Controls"
+            }
 
             func layoutSwitch(switchItem: UISwitch, label: UILabel) -> UIView {
                 let row = UIView()
@@ -204,6 +227,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 rows.append(layoutSwitch(item, label: views_labels[i]))
             }
 
+            if let topTitle = topTitle {
+                rows.insert(topTitle, atIndex: 0)
+            }
             let topAndBottomSpace = isTinyScreen() ? 4 : 15
             rows.enumerate().forEach { i, row in
                 row.snp_makeConstraints(closure: { (make) in
@@ -240,13 +266,16 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 make.height.equalTo(4)
             }
 
-            let statTitles = ["Ads & Trackers Blocked", "HTTPS Upgrades", "Scripts Blocked",  "Fingerprinting Methods\nBlocked"]
+            let topTitle = sectionHeaderTitle(statsContainer)
+            topTitle.text = "Blocking Monitor"
+
+            let statTitles = ["Ads and Trackers ", "HTTPS Upgrades", "Scripts Blocked",  "Fingerprinting Methods"]
             let statViews = [statAdsBlocked, statHttpsUpgrades, statScriptsBlocked, statFPBlocked]
             let statColors = [UIColor(red:234/255.0, green:90/255.0, blue:45/255.0, alpha:1),
                               UIColor(red:242/255.0, green:142/255.0, blue:45/255.0, alpha:1),
                               UIColor(red:26/255.0, green:152/255.0, blue:252/255.0, alpha:1),
                               UIColor.init(white: 90/255.0, alpha: 1)]
-            var prevTitle:UIView? = nil
+            var prevTitle:UIView? = topTitle
             for (i, stat) in statViews.enumerate() {
                 let label = UILabel()
                 label.text = statTitles[i]
@@ -257,6 +286,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 stat.font = UIFont.boldSystemFontOfSize(28)
                 stat.adjustsFontSizeToFitWidth = true
                 stat.textColor = statColors[i]
+                stat.textAlignment = .Right
 
                 stat.snp_makeConstraints {
                     make in
@@ -265,8 +295,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                         if i == statViews.count - 1 {
                             make.bottom.equalTo(stat.superview!)
                         }
-                        make.top.equalTo(prevTitle.snp_bottom)
 
+                        let topOffset = prevTitle === topTitle ? -4 : 0
+                        make.top.equalTo(prevTitle.snp_bottom).offset(topOffset)
                     } else {
                         make.top.equalTo(stat.superview!)
                     }
@@ -275,7 +306,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 }
 
                 label.snp_makeConstraints(closure: { (make) in
-                    make.left.equalTo(stat.snp_right).offset(6)
+                    make.left.equalTo(stat.snp_right).offset(6 + 14)
                     make.centerY.equalTo(stat)
                 })
 
@@ -285,10 +316,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                     label.font = UIFont.systemFontOfSize(15)
                 }
 
-                if label.text?.contains("Fingerprint") ?? false {
-                    label.lineBreakMode = .ByWordWrapping
-                    label.numberOfLines = 2
-                }
+//                if label.text?.contains("Fingerprint") ?? false {
+//                    label.lineBreakMode = .ByWordWrapping
+//                    label.numberOfLines = 2
+//                }
             }
         }
         setupStatsSection()
