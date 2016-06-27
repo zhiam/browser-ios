@@ -1,5 +1,8 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+let TabsBarHeight = CGFloat(26)
+var showTabsBar = true
+
 // To hide the curve effect
 class HideCurveView : CurveView {
     override func drawRect(rect: CGRect) {}
@@ -69,9 +72,13 @@ class ButtonWithUnderlayView : UIButton {
 
 class BraveURLBarView : URLBarView {
 
+    static var CurrentHeight = UIConstants.ToolbarHeight
+
     private static weak var currentInstance: BraveURLBarView?
     lazy var leftSidePanelButton: ButtonWithUnderlayView = { return ButtonWithUnderlayView() }()
     lazy var braveButton = { return UIButton() }()
+
+    let tabsBarController = TabsBarViewController()
 
     override func commonInit() {
         BraveURLBarView.currentInstance = self
@@ -130,6 +137,13 @@ class BraveURLBarView : URLBarView {
         URLBarViewUX.Themes[Theme.NormalMode] = theme
 
         stopReloadButton.imageEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 0)
+
+        if (showTabsBar) {
+            addSubview(tabsBarController.view)
+            getApp().browserViewController.addChildViewController(tabsBarController)
+            tabsBarController.didMoveToParentViewController(getApp().browserViewController)
+            BraveURLBarView.CurrentHeight = TabsBarHeight + UIConstants.ToolbarHeight
+        }
     }
 
     override func applyTheme(themeName: String) {
@@ -227,6 +241,14 @@ class BraveURLBarView : URLBarView {
     override func updateConstraints() {
         super.updateConstraints()
 
+        if showTabsBar {
+            bringSubviewToFront(tabsBarController.view)
+            tabsBarController.view.snp_makeConstraints { (make) in
+                make.bottom.left.right.equalTo(self)
+                make.height.equalTo(TabsBarHeight)
+            }
+        }
+
         leftSidePanelButton.underlay.snp_makeConstraints {
             make in
             make.left.right.equalTo(leftSidePanelButton).inset(4)
@@ -241,7 +263,7 @@ class BraveURLBarView : URLBarView {
         func pinLeftPanelButtonToLeft() {
             leftSidePanelButton.snp_remakeConstraints { make in
                 make.left.equalTo(self)
-                make.centerY.equalTo(self)
+                make.centerY.equalTo(self.locationContainer)
                 make.size.equalTo(UIConstants.ToolbarHeight)
             }
         }
@@ -252,7 +274,7 @@ class BraveURLBarView : URLBarView {
                 make.left.equalTo(self.leftSidePanelButton.snp_right)//.offset(URLBarViewUX.LocationLeftPadding)
                 make.right.equalTo(self.cancelButton.snp_left)
                 make.height.equalTo(URLBarViewUX.LocationHeight)
-                make.centerY.equalTo(self)
+                make.top.equalTo(self).inset(8)
             }
             pinLeftPanelButtonToLeft()
         } else {
@@ -266,13 +288,13 @@ class BraveURLBarView : URLBarView {
                 }
 
                 make.height.equalTo(URLBarViewUX.LocationHeight)
-                make.centerY.equalTo(self)
+                make.top.equalTo(self).inset(8)
             }
 
             if self.toolbarIsShowing {
                 leftSidePanelButton.snp_remakeConstraints { make in
                     make.left.equalTo(self.forwardButton.snp_right)
-                    make.centerY.equalTo(self)
+                    make.centerY.equalTo(self.locationContainer)
                     make.size.equalTo(UIConstants.ToolbarHeight)
                 }
             } else {
@@ -281,7 +303,7 @@ class BraveURLBarView : URLBarView {
 
             braveButton.snp_remakeConstraints { make in
                 make.left.equalTo(self.locationContainer.snp_right)
-                make.centerY.equalTo(self)
+                make.centerY.equalTo(self.locationContainer)
                 make.size.equalTo(UIConstants.ToolbarHeight)
             }
         }
@@ -291,20 +313,22 @@ class BraveURLBarView : URLBarView {
 
     override func setupConstraints() {
 
+
         backButton.snp_makeConstraints { make in
-            make.left.centerY.equalTo(self)
+            make.centerY.equalTo(self.locationContainer)
+            make.left.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
 
         forwardButton.snp_makeConstraints { make in
             make.left.equalTo(self.backButton.snp_right)
-            make.centerY.equalTo(self)
+            make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(backButton)
         }
 
         leftSidePanelButton.snp_makeConstraints { make in
             make.left.equalTo(self.forwardButton.snp_right)
-            make.centerY.equalTo(self)
+            make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
 
@@ -319,7 +343,7 @@ class BraveURLBarView : URLBarView {
 
         shareButton.snp_remakeConstraints { make in
             make.right.equalTo(self.tabsButton.snp_left).offset(0)
-            make.centerY.equalTo(self)
+            make.centerY.equalTo(self.locationContainer)
             make.width.equalTo(UIConstants.ToolbarHeight)
         }
 
@@ -332,7 +356,7 @@ class BraveURLBarView : URLBarView {
 
         stopReloadButton.snp_makeConstraints { make in
             make.right.equalTo(self.locationView.snp_right)
-            make.centerY.equalTo(self)
+            make.centerY.equalTo(self.locationContainer)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
 

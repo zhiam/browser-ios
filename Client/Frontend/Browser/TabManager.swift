@@ -11,7 +11,7 @@ private let log = Logger.browserLogger
 
 protocol TabManagerDelegate: class {
     func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?, previous: Browser?)
-    func tabManager(tabManager: TabManager, didCreateTab tab: Browser)
+    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser)
     func tabManager(tabManager: TabManager, didAddTab tab: Browser)
     func tabManager(tabManager: TabManager, didRemoveTab tab: Browser)
     func tabManagerDidRestoreTabs(tabManager: TabManager)
@@ -341,19 +341,18 @@ class TabManager : NSObject {
         assert(NSThread.isMainThread())
         limitInMemoryTabs()
 
-        for delegate in delegates {
-            delegate.get()?.tabManager(self, didCreateTab: tab)
-        }
-
         tabs.append(tab)
 
         for delegate in delegates {
             delegate.get()?.tabManager(self, didAddTab: tab)
         }
 
-        if !zombie {
-            tab.createWebview()
+        tab.createWebview()
+
+        for delegate in delegates {
+            delegate.get()?.tabManager(self, didCreateWebView: tab)
         }
+
         tab.navigationDelegate = self.navDelegate
         tab.loadRequest(request ?? defaultNewTabRequest)
 
@@ -653,12 +652,7 @@ extension TabManager {
                 continue
             }
 
-            let tab: Browser
-            if #available(iOS 9, *) {
-                tab = self.addTab(flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
-            } else {
-                tab = self.addTab(flushToDisk: false, zombie: true)
-            }
+            let tab = self.addTab(flushToDisk: false, zombie: true)
             tab.lastExecutedTime = savedTab.sessionData?.lastUsedTime
 
             // Set the UUID for the tab, asynchronously fetch the UIImage, then store
@@ -679,6 +673,10 @@ extension TabManager {
 
             tab.sessionData = savedTab.sessionData
             tab.lastTitle = savedTab.title
+
+            if let w = tab.webView {
+                tab.restore(w)
+            }
         }
 
         if tabToSelect == nil {
@@ -698,8 +696,6 @@ extension TabManager {
         if let tab = tabToSelect {
             log.debug("Selecting a tab.")
             selectTab(tab)
-            log.debug("Creating webview for selected tab.")
-            tab.createWebview()
         }
 
         log.debug("Done.")

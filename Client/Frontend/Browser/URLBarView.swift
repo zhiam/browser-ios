@@ -229,67 +229,10 @@ class URLBarView: UIView {
         updateViewsForOverlayModeAndToolbarChanges()
     }
 
-    func setupConstraints() {
-        scrollToTopButton.snp_makeConstraints { make in
-            make.top.equalTo(self)
-            make.left.right.equalTo(self.locationContainer)
-        }
-
-        locationView.snp_makeConstraints { make in
-            make.edges.equalTo(self.locationContainer)
-        }
-
-        cancelButton.snp_makeConstraints { make in
-            make.centerY.equalTo(self.locationContainer)
-            make.trailing.equalTo(self)
-        }
-
-        tabsButton.snp_makeConstraints { make in
-            make.centerY.equalTo(self.locationContainer)
-            make.trailing.equalTo(self)
-            make.size.equalTo(UIConstants.ToolbarHeight)
-        }
-
-        curveShape.snp_makeConstraints { make in
-            make.top.left.bottom.equalTo(self)
-            self.rightBarConstraint = make.right.equalTo(self).constraint
-            self.rightBarConstraint?.updateOffset(defaultRightOffset)
-        }
-
-        backButton.snp_makeConstraints { make in
-            make.left.centerY.equalTo(self)
-            make.size.equalTo(UIConstants.ToolbarHeight)
-        }
-
-        forwardButton.snp_makeConstraints { make in
-            make.left.equalTo(self.backButton.snp_right)
-            make.centerY.equalTo(self)
-            make.size.equalTo(backButton)
-        }
-
-        stopReloadButton.snp_makeConstraints { make in
-            make.left.equalTo(self.forwardButton.snp_right)
-            make.centerY.equalTo(self)
-            make.size.equalTo(backButton)
-        }
-
-        shareButton.snp_makeConstraints { make in
-            make.right.equalTo(self.bookmarkButton.snp_left)
-            make.centerY.equalTo(self)
-            make.size.equalTo(backButton)
-        }
-
-        bookmarkButton.snp_makeConstraints { make in
-            make.right.equalTo(self.tabsButton.snp_left).offset(URLBarViewUX.URLBarCurveOffsetLeft)
-            make.centerY.equalTo(self)
-            make.size.equalTo(backButton)
-        }
-    }
+    func setupConstraints() {}
 
     override func updateConstraints() {
         super.updateConstraints()
-
-        // BRAVE removed
     }
 
     func createLocationTextField() {
@@ -715,87 +658,7 @@ extension URLBarView: Themeable {
 }
 
 /* Code for drawing the urlbar curve */
-// Curve's aspect ratio
-private let ASPECT_RATIO = 0.729
-
-// Width multipliers
-private let W_M1 = 0.343
-private let W_M2 = 0.514
-private let W_M3 = 0.49
-private let W_M4 = 0.545
-private let W_M5 = 0.723
-
-// Height multipliers
-private let H_M1 = 0.25
-private let H_M2 = 0.5
-private let H_M3 = 0.72
-private let H_M4 = 0.961
-
-/* Code for drawing the urlbar curve */
-class CurveView: UIView {
-    private lazy var leftCurvePath: UIBezierPath = {
-        var leftArc = UIBezierPath(arcCenter: CGPoint(x: 5, y: 5), radius: CGFloat(5), startAngle: CGFloat(-M_PI), endAngle: CGFloat(-M_PI_2), clockwise: true)
-        leftArc.addLineToPoint(CGPoint(x: 0, y: 0))
-        leftArc.addLineToPoint(CGPoint(x: 0, y: 5))
-        leftArc.closePath()
-        return leftArc
-    }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-
-    private func commonInit() {
-        self.opaque = false
-        self.contentMode = .Redraw
-    }
-
-    private func getWidthForHeight(height: Double) -> Double {
-        return height * ASPECT_RATIO
-    }
-
-    private func drawFromTop(path: UIBezierPath) {
-        let height: Double = Double(UIConstants.ToolbarHeight)
-        let width = getWidthForHeight(height)
-        let from = (Double(self.frame.width) - width * 2 - Double(URLBarViewUX.URLBarCurveOffset - URLBarViewUX.URLBarCurveBounceBuffer), Double(0))
-
-        path.moveToPoint(CGPoint(x: from.0, y: from.1))
-        path.addCurveToPoint(CGPoint(x: from.0 + width * W_M2, y: from.1 + height * H_M2),
-              controlPoint1: CGPoint(x: from.0 + width * W_M1, y: from.1),
-              controlPoint2: CGPoint(x: from.0 + width * W_M3, y: from.1 + height * H_M1))
-
-        path.addCurveToPoint(CGPoint(x: from.0 + width,        y: from.1 + height),
-              controlPoint1: CGPoint(x: from.0 + width * W_M4, y: from.1 + height * H_M3),
-              controlPoint2: CGPoint(x: from.0 + width * W_M5, y: from.1 + height * H_M4))
-    }
-
-    private func getPath() -> UIBezierPath {
-        let path = UIBezierPath()
-        self.drawFromTop(path)
-        path.addLineToPoint(CGPoint(x: self.frame.width, y: UIConstants.ToolbarHeight))
-        path.addLineToPoint(CGPoint(x: self.frame.width, y: 0))
-        path.addLineToPoint(CGPoint(x: 0, y: 0))
-        path.closePath()
-        return path
-    }
-
-    override func drawRect(rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
-        CGContextSaveGState(context)
-        CGContextClearRect(context, rect)
-        CGContextSetFillColorWithColor(context, URLBarViewUX.backgroundColorWithAlpha(1).CGColor)
-        getPath().fill()
-        leftCurvePath.fill()
-        CGContextDrawPath(context, CGPathDrawingMode.Fill)
-        CGContextRestoreGState(context)
-    }
-}
+class CurveView: UIView {}
 
 class ToolbarTextField: AutocompleteTextField {
     static var Themes: [String: Theme] = {
