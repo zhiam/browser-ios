@@ -96,7 +96,7 @@ class BraveWebView: UIWebView {
                     let fp = FingerprintingProtection(browser: browser)
                     browser.addHelper(fp)
                 }
-            } else {
+            } else if !(BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? true) {
                 getApp().tabManager.tabForWebView(self)?.removeHelper(FingerprintingProtection.self)
             }
 

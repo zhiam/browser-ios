@@ -1617,6 +1617,12 @@ extension BrowserViewController: BrowserDelegate {
       #if BRAVE
         let pageUnload = BravePageUnloadHelper(browser: browser)
         browser.addHelper(pageUnload)
+
+        if BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false {
+           let fp = FingerprintingProtection(browser: browser)
+            browser.addHelper(fp)
+        }
+
       #endif
     }
 

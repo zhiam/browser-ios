@@ -32,6 +32,17 @@ class BraveSettingsView : AppSettingsTableViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false {
+            if let tab = getApp().tabManager.selectedTab where tab.getHelper(FingerprintingProtection.self) == nil {
+                let fp = FingerprintingProtection(browser: tab)
+                tab.addHelper(fp)
+            }
+        }
+    }
+
     override func generateSettings() -> [SettingSection] {
         let prefs = profile.prefs
         var generalSettings = [
