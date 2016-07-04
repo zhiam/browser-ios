@@ -137,36 +137,47 @@ class BraveURLBarView : URLBarView {
 
         stopReloadButton.imageEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 0)
 
-        updateTabsBarShowing()
+        tabsBarController.view.alpha = 0.0
+        addSubview(tabsBarController.view)
+        getApp().browserViewController.addChildViewController(tabsBarController)
+        tabsBarController.didMoveToParentViewController(getApp().browserViewController)
     }
 
     func updateTabsBarShowing() {
-        if (BraveApp.getPrefs()?.boolForKey(kPrefKeyTabsBarOn) ?? kPrefKeyTabsBarOnDefaultValue) {
-            if tabsBarController.view.superview == nil {
-                addSubview(tabsBarController.view)
-                getApp().browserViewController.addChildViewController(tabsBarController)
-                tabsBarController.didMoveToParentViewController(getApp().browserViewController)
-                BraveURLBarView.CurrentHeight = TabsBarHeight + UIConstants.ToolbarHeight
-            }
-        } else if tabsBarController.view.superview != nil {
-            tabsBarController.view.removeFromSuperview()
-            tabsBarController.willMoveToParentViewController(nil)
-            tabsBarController.removeFromParentViewController()
-            BraveURLBarView.CurrentHeight = UIConstants.ToolbarHeight
+        var tabCount = getApp().tabManager.privateTabs.count
+        if (tabCount < 1) {
+            tabCount = getApp().tabManager.tabCount
         }
 
-        getApp().browserViewController.headerHeightConstraint?.updateOffset(BraveURLBarView.CurrentHeight)
-        getApp().browserViewController.webViewContainerTopOffset?.updateOffset(BraveURLBarView.CurrentHeight)
+        let isShowing = tabsBarController.view.alpha > 0
+
+        let shouldShow = (BraveApp.getPrefs()?.boolForKey(kPrefKeyTabsBarOn) ?? kPrefKeyTabsBarOnDefaultValue)
+            && tabCount > 1
+
+        func updateOffsets() {
+            getApp().browserViewController.headerHeightConstraint?.updateOffset(BraveURLBarView.CurrentHeight)
+            getApp().browserViewController.webViewContainerTopOffset?.updateOffset(BraveURLBarView.CurrentHeight)
+        }
+
+        if !isShowing && shouldShow {
+            self.tabsBarController.view.alpha = 1
+            BraveURLBarView.CurrentHeight = TabsBarHeight + UIConstants.ToolbarHeight
+            updateOffsets()
+        } else if isShowing && !shouldShow  {
+            UIView.animateWithDuration(0.1, animations: {
+                self.tabsBarController.view.alpha = 0
+                }, completion: { _ in
+                    BraveURLBarView.CurrentHeight = UIConstants.ToolbarHeight
+                    UIView.animateWithDuration(0.2) {
+                        updateOffsets()
+                        getApp().browserViewController.view.layoutIfNeeded()
+                    }
+            })
+        }
     }
 
     override func applyTheme(themeName: String) {
         super.applyTheme(themeName)
-//        if themeName == Theme.NormalMode {
-//            backgroundColor = BraveUX.LocationBarBackgroundColor
-//        }
-//        if themeName == Theme.PrivateMode {
-//            backgroundColor = BraveUX.LocationBarBackgroundColor_PrivateMode
-//        }
     }
 
     override func updateAlphaForSubviews(alpha: CGFloat) {
@@ -254,7 +265,7 @@ class BraveURLBarView : URLBarView {
     override func updateConstraints() {
         super.updateConstraints()
 
-        if BraveApp.getPrefs()?.boolForKey(kPrefKeyTabsBarOn) ?? kPrefKeyTabsBarOnDefaultValue {
+        if tabsBarController.view.superview != nil {
             bringSubviewToFront(tabsBarController.view)
             tabsBarController.view.snp_makeConstraints { (make) in
                 make.bottom.left.right.equalTo(self)

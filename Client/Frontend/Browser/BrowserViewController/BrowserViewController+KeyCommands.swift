@@ -84,6 +84,9 @@ extension BrowserViewController {
                 UIKeyCommand(input: "f", modifierFlags: .Command, action: #selector(BrowserViewController.findOnPage), discoverabilityTitle: Strings.FindTitle),
                 UIKeyCommand(input: "l", modifierFlags: .Command, action: #selector(BrowserViewController.selectLocationBar), discoverabilityTitle: Strings.SelectLocationBarTitle),
                 UIKeyCommand(input: "t", modifierFlags: .Command, action: #selector(BrowserViewController.newTab), discoverabilityTitle: Strings.NewTabTitle),
+                //#if DEBUG
+                    UIKeyCommand(input: "t", modifierFlags: .Control, action: #selector(BrowserViewController.newTab), discoverabilityTitle: Strings.NewTabTitle),
+                //#endif
                 UIKeyCommand(input: "p", modifierFlags: [.Command, .Shift], action: #selector(BrowserViewController.newPrivateTab), discoverabilityTitle: Strings.NewPrivateTabTitle),
                 UIKeyCommand(input: "w", modifierFlags: .Command, action: #selector(BrowserViewController.closeTab), discoverabilityTitle: Strings.CloseTabTitle),
                 UIKeyCommand(input: "\t", modifierFlags: .Control, action: #selector(BrowserViewController.nextTab), discoverabilityTitle: Strings.ShowNextTabTitle),

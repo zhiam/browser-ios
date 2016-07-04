@@ -173,7 +173,7 @@ class TabsBarViewController: UIViewController {
         tabs.removeAtIndex(removedIndex)
 
         let w = calcTabWidth(tabs.count)
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animateWithDuration(0.3, animations: {
             tab.alpha = 0
             tab.widthConstraint?.updateOffset(0)
             self.tabs.forEach {
@@ -282,11 +282,14 @@ extension TabsBarViewController: TabManagerDelegate {
         if tabs.find({ $0.browser === tab }) != nil {
             return
         }
+
         let t = addTab(browser: tab)
         if let url = url {
             let title = url.baseDomain()
             t.setTitle(title)
         }
+
+        (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
     }
 
     func tabManager(tabManager: TabManager, didAddTab tab: Browser) {}
@@ -298,6 +301,8 @@ extension TabsBarViewController: TabManagerDelegate {
                 removeTab(tabWidget)
             }
         }
+
+        (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
     }
 
     func tabManagerDidRestoreTabs(tabManager: TabManager) {
@@ -305,6 +310,7 @@ extension TabsBarViewController: TabManagerDelegate {
             self?.tabs.forEach {
                 $0.updateTitle_throttled()
             }
+            (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
         }
     }
 
