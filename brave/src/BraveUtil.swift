@@ -60,8 +60,11 @@ class FifoDict {
 class InsetLabel: UILabel {
     var leftInset = CGFloat(0)
     var rightInset = CGFloat(0)
+    var topInset = CGFloat(0)
+    var bottomInset = CGFloat(0)
+
     override func drawTextInRect(rect: CGRect) {
-        super.drawTextInRect(UIEdgeInsetsInsetRect(rect, UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: rightInset)))
+        super.drawTextInRect(UIEdgeInsetsInsetRect(rect, UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)))
     }
 }
 
