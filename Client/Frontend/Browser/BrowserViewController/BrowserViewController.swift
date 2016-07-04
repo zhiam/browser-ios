@@ -926,7 +926,7 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openURLInNewTab(url: NSURL?, isPrivate: Bool = false) {
+    func openURLInNewTab(url: NSURL?, isPrivate ignored:Bool = false) {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
         }
@@ -937,6 +937,9 @@ class BrowserViewController: UIViewController {
         } else {
             request = nil
         }
+
+        let isPrivate = PrivateBrowsing.singleton.isOn
+
         if #available(iOS 9, *) {
             switchToPrivacyMode(isPrivate: isPrivate)
             tabManager.addTabAndSelect(request, isPrivate: isPrivate)
