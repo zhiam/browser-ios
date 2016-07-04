@@ -262,7 +262,7 @@ extension TabsBarViewController: TabManagerDelegate {
 
         tabManager.tabs.forEach {
             let t = addTab(browser: $0)
-            t.title.setTitle($0.lastTitle, forState: .Normal)
+            t.setTitle($0.lastTitle)
             if tabManager.selectedTab === $0 {
                 tabWidgetSelected(t)
             }
@@ -278,11 +278,15 @@ extension TabsBarViewController: TabManagerDelegate {
         }
     }
 
-    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser) {
+    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser, url: NSURL?) {
         if tabs.find({ $0.browser === tab }) != nil {
             return
         }
-        addTab(browser: tab)
+        let t = addTab(browser: tab)
+        if let url = url {
+            let title = url.baseDomain()
+            t.setTitle(title)
+        }
     }
 
     func tabManager(tabManager: TabManager, didAddTab tab: Browser) {}

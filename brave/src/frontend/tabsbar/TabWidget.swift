@@ -25,7 +25,7 @@ class TabWidget : UIView {
 
         close.addTarget(self, action: #selector(clicked), forControlEvents: .TouchUpInside)
         title.addTarget(self, action: #selector(selected), forControlEvents: .TouchUpInside)
-        title.setTitle(NSLocalizedString("New tab", comment: "Default title in tabs bar for a tab"), forState: .Normal)
+        title.setTitle("", forState: .Normal)
         [close, title, bar].forEach { addSubview($0) }
 
         close.setImage(UIImage(named: "stop")!, forState: .Normal)
@@ -93,8 +93,19 @@ class TabWidget : UIView {
         delay(0.2) { [weak self] in
             self?.titleUpdateScheduled = false
             if let t = self?.browser?.webView?.title where !t.isEmpty {
-                self?.title.setTitle(t, forState: .Normal)
+                self?.setTitle(t)
             }
+        }
+    }
+
+    func setTitle(title: String?) {
+        if browser?.url?.absoluteString.contains(WebServer.sharedInstance.base) ?? false {
+            return
+        }
+        if let title = title {
+            self.title.setTitle(title, forState: .Normal)
+        } else {
+            self.title.setTitle("", forState: .Normal)
         }
     }
 }
@@ -103,6 +114,10 @@ extension TabWidget : BrowserTabStateDelegate {
     func browserUrlChanged(browser: Browser) {
         if browser !== self.browser {
             return
+        }
+
+        if let t = browser.url?.baseDomain() where  title.titleLabel?.text?.isEmpty ?? true {
+            setTitle(t)
         }
 
         updateTitle_throttled()

@@ -11,7 +11,7 @@ private let log = Logger.browserLogger
 
 protocol TabManagerDelegate: class {
     func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?, previous: Browser?)
-    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser)
+    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser, url: NSURL?)
     func tabManager(tabManager: TabManager, didAddTab tab: Browser)
     func tabManager(tabManager: TabManager, didRemoveTab tab: Browser)
     func tabManagerDidRestoreTabs(tabManager: TabManager)
@@ -350,7 +350,7 @@ class TabManager : NSObject {
         tab.createWebview()
 
         for delegate in delegates {
-            delegate.get()?.tabManager(self, didCreateWebView: tab)
+            delegate.get()?.tabManager(self, didCreateWebView: tab, url: request?.URL)
         }
 
         tab.navigationDelegate = self.navDelegate

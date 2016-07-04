@@ -110,8 +110,7 @@ extension BrowserViewController: TabManagerDelegate {
         updateInContentHomePanel(selected?.url)
     }
 
-    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser) {
-    }
+    func tabManager(tabManager: TabManager, didCreateWebView tab: Browser, url: NSURL?) {}
 
     func tabManager(tabManager: TabManager, didAddTab tab: Browser) {
         // If we are restoring tabs then we update the count once at the end

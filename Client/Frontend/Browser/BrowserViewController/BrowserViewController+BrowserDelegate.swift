@@ -31,48 +31,52 @@ class WeakBrowserTabStateDelegate {
 extension BrowserViewController: BrowserDelegate {
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        ///let webView = object as! WKWebView
-        if object !== tabManager.selectedTab?.webView {
-            return
-        }
         guard let path = keyPath else { assertionFailure("Unhandled KVO key: \(keyPath)"); return }
+
+        guard let wv = object as? UIWebView, tab = tabManager.tabForWebView(wv) else { return }
+
         switch path {
         case KVOEstimatedProgress:
             guard let progress = change?[NSKeyValueChangeNewKey] as? Float else { break }
-            urlBar.updateProgressBar(progress)
-
-            if let tab = tabManager.selectedTab {
-                for delegate in delegates {
-                    delegate.get()?.browserProgressChanged(tab)
-                }
+            if tab === tabManager.selectedTab {
+                urlBar.updateProgressBar(progress)
             }
 
+            for delegate in delegates {
+                delegate.get()?.browserProgressChanged(tab)
+            }
         case KVOLoading:
             guard let loading = change?[NSKeyValueChangeNewKey] as? Bool else { break }
-            toolbar?.updateReloadStatus(loading)
-            urlBar.updateReloadStatus(loading)
+            if tab === tabManager.selectedTab {
+                toolbar?.updateReloadStatus(loading)
+                urlBar.updateReloadStatus(loading)
+            }
 
         case KVOURL:
-            if let tab = tabManager.selectedTab {
-                if tab.webView?.URL == nil {
+            if let selected = tabManager.selectedTab {
+                if selected.webView?.URL == nil {
                     log.debug("URL is nil!")
                 }
 
-                if tab.webView === object && !tab.restoring {
+                if selected === tab && !tab.restoring {
                     updateUIForReaderHomeStateForTab(tab)
                 }
+            }
 
-                for delegate in delegates {
-                    delegate.get()?.browserUrlChanged(tab)
-                }
+            for delegate in delegates {
+                delegate.get()?.browserUrlChanged(tab)
             }
 
         case KVOCanGoBack:
             guard let canGoBack = change?[NSKeyValueChangeNewKey] as? Bool else { break }
-            navigationToolbar.updateBackStatus(canGoBack)
+            if tab === tabManager.selectedTab {
+                navigationToolbar.updateBackStatus(canGoBack)
+            }
         case KVOCanGoForward:
             guard let canGoForward = change?[NSKeyValueChangeNewKey] as? Bool else { break }
-            navigationToolbar.updateForwardStatus(canGoForward)
+            if tab === tabManager.selectedTab {
+                navigationToolbar.updateForwardStatus(canGoForward)
+            }
         default:
             assertionFailure("Unhandled KVO key: \(keyPath)")
         }

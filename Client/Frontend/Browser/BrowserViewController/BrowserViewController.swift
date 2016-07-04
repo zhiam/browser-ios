@@ -754,6 +754,10 @@ class BrowserViewController: UIViewController {
         if let nav = tab.loadRequest(NSURLRequest(URL: url)) {
             self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
         }
+
+        delegates.forEach {
+            $0.get()?.browserUrlChanged(tab)
+        }
     }
 
     func addBookmark(url: String, title: String?) {
