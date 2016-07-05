@@ -1003,10 +1003,12 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openURLInNewTab(url: NSURL?, isPrivate: Bool = false) {
+    func openURLInNewTab(url: NSURL?, isPrivate unused: Bool = false) {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
         }
+
+        let isPrivate = PrivateBrowsing.singleton.isOn
 
         let request: NSURLRequest?
         if let url = url {
