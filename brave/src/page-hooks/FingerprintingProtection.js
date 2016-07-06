@@ -85,16 +85,6 @@ analyserMethods.forEach(function (method) {
     methods.push(item)
 })
 
-var webrtcMethods = ['createOffer', 'createAnswer', 'setLocalDescription', 'setRemoteDescription']
-webrtcMethods.forEach(function (method) {
-    var item = {
-        type: 'WebRTC',
-        objName: 'webkitRTCPeerConnection',
-        propName: method,
-        obj: webkitRTCPeerConnection
-    }
-    methods.push(item)
-})
 methods.forEach(trapInstanceMethod)
 
 
