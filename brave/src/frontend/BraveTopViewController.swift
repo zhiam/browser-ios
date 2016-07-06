@@ -64,12 +64,12 @@ class BraveTopViewController : UIViewController {
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onClickBraveButton), name: kNotificationBraveButtonClicked, object: nil)
 
-        clickDetectionView.addTarget(self, action: #selector(BraveTopViewController.dismissAllSidePanels(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        clickDetectionView.addTarget(self, action: #selector(BraveTopViewController.dismissAllSidePanels), forControlEvents: UIControlEvents.TouchUpInside)
 
         mainSidePanel.browserViewController = browserViewController
     }
 
-    @objc func dismissAllSidePanels(button: UIButton) {
+    @objc func dismissAllSidePanels() {
         if leftPanelShowing() {
             togglePanel(mainSidePanel)
             leftSidePanelButtonAndUnderlay?.selected = false

@@ -211,9 +211,6 @@ class TabManager : NSObject {
             }
 
             self.limitInMemoryTabs()
-
-            let bvc = getApp().browserViewController as! BraveBrowserViewController
-            bvc.updateBraveShieldButtonState(animated: false)
         }
     }
 

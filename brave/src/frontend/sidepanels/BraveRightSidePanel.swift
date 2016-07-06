@@ -51,6 +51,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
     override func viewDidLoad() {
         isLeftSidePanel = false
+         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(pageChanged), name: kNotificationPageUnload, object: nil)
         super.viewDidLoad()
     }
 
@@ -59,6 +60,14 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         h = min(600, h)
         containerView.frame = CGRectMake(0, 0, CGFloat(BraveUX.WidthOfSlideOut), h)
         viewAsScrollView().contentSize = CGSizeMake(containerView.frame.width, containerView.frame.height)
+    }
+
+    @objc func pageChanged() {
+        delay(0.4) {
+            if !self.view.hidden {
+                self.updateSitenameAndTogglesState()
+            }
+        }
     }
 
     private func isTinyScreen() -> Bool{
@@ -371,17 +380,21 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
     }
 
+    func updateSitenameAndTogglesState() {
+        siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
+
+        let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
+        shieldToggle.on = !(state?.isAllOff() ?? false)
+        toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
+        toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
+        toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
+        toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
+        toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+    }
+
     override func showPanel(showing: Bool, parentSideConstraints: [Constraint?]?) {
         if showing {
-            siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
-
-            let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
-            shieldToggle.on = !(state?.isAllOff() ?? false)
-            toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
-            toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
-            toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
-            toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
-            toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+            updateSitenameAndTogglesState()
         }
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
