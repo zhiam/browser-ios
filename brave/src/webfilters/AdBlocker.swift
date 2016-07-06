@@ -111,8 +111,7 @@ class AdBlocker {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        guard let url = request.URL,
-            var mainDocDomain = request.mainDocumentURL?.host else {
+        guard let url = request.URL else {
                 return false
         }
 
@@ -135,13 +134,14 @@ class AdBlocker {
             return false
         }
 
+        var mainDocDomain = request.mainDocumentURL?.host ?? ""
         mainDocDomain = stripLocalhostWebServer(mainDocDomain)
 
         if isWhitelistedUrl(url.absoluteString, forMainDocDomain: mainDocDomain) {
             return false
         }
 
-        if url.absoluteString.contains(mainDocDomain) {
+        if !mainDocDomain.isEmpty && url.absoluteString.contains(mainDocDomain) {
             return false // ignore top level doc
         }
 

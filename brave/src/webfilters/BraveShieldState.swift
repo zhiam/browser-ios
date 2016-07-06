@@ -273,4 +273,12 @@ public class BraveShieldState {
     func isOnFingerprintProtection() -> Bool? {
         return state[BraveShieldState.kFPProtection] ?? nil
     }
+
+    func setStateFromPerPageShield(pageState: BraveShieldState?) {
+        setState(BraveShieldState.kNoscript, on: pageState?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false))
+        setState(BraveShieldState.kAdBlockAndTp, on: pageState?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled)
+        setState(BraveShieldState.kSafeBrowsing, on: pageState?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled)
+        setState(BraveShieldState.kHTTPSE, on: pageState?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled)
+        setState(BraveShieldState.kFPProtection, on: pageState?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false))
+    }
 }

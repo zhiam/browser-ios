@@ -24,7 +24,10 @@ class URLProtocol: NSURLProtocol {
         guard let url = request.URL else { return false }
 
         let shieldState = getShields(request)
-
+        if shieldState.isAllOff() {
+            return false
+        }
+        
         let useCustomUrlProtocol =
             shieldState.isOnScriptBlocking() ?? false ||
             (shieldState.isOnAdBlockAndTp() ?? false && TrackingProtection.singleton.shouldBlock(request)) ||
@@ -35,6 +38,8 @@ class URLProtocol: NSURLProtocol {
         return useCustomUrlProtocol
     }
 
+    // Tries to use the UA to match to requesting webview.
+    // If it fails use current selected webview
     static func getShields(request: NSURLRequest) -> BraveShieldState {
         let ua = request.allHTTPHeaderFields?["User-Agent"]
         var webViewShield:BraveShieldState? = nil
@@ -42,18 +47,16 @@ class URLProtocol: NSURLProtocol {
 
         if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
             webViewShield = webView.braveShieldState
-            if webViewShield!.isAllOff() {
-                shieldResult.setState(BraveShieldState.kAllOff, on: true)
-                return shieldResult
-            }
+        } else {
+            webViewShield = getApp().tabManager.selectedTab?.webView?.braveShieldState
         }
 
-        shieldResult.setState(BraveShieldState.kNoscript, on: webViewShield?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false))
+        if let webViewShield = webViewShield where webViewShield.isAllOff() {
+            shieldResult.setState(BraveShieldState.kAllOff, on: true)
+            return shieldResult
+        }
 
-        shieldResult.setState(BraveShieldState.kAdBlockAndTp, on: webViewShield?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled)
-        shieldResult.setState(BraveShieldState.kSafeBrowsing, on: webViewShield?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled)
-        shieldResult.setState(BraveShieldState.kHTTPSE, on: webViewShield?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled)
-
+        shieldResult.setStateFromPerPageShield(webViewShield)
         return shieldResult
     }
 
