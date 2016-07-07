@@ -1,6 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import SnapKit
 
 class BraveBrowserViewController : BrowserViewController {
     var historySwiper = HistorySwiper()
@@ -85,17 +86,19 @@ class BraveBrowserViewController : BrowserViewController {
      //   scrollController.showToolbars(animated: true)
     }
 
-    func braveWebContainerConstraintSetup() {
-        webViewContainer.snp_remakeConstraints { make in
-            make.left.right.equalTo(self.view)
-            make.height.equalTo(self.view.snp_height).offset(-BraveApp.statusBarHeight())
-            webViewContainerTopOffset = make.top.equalTo(self.statusBarOverlay.snp_bottom).offset(BraveURLBarView.CurrentHeight).constraint
-        }
-    }
-
+    var heightConstraint: Constraint?
     override func setupConstraints() {
         super.setupConstraints()
-        braveWebContainerConstraintSetup()
+
+        if heightConstraint == nil {
+            webViewContainer.snp_makeConstraints { make in
+                make.left.right.equalTo(self.view)
+                heightConstraint = make.height.equalTo(self.view.snp_height).constraint
+                webViewContainerTopOffset = make.top.equalTo(self.statusBarOverlay.snp_bottom).offset(BraveURLBarView.CurrentHeight).constraint
+            }
+        }
+
+        heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
     }
 
     override func updateViewConstraints() {
@@ -106,7 +109,7 @@ class BraveBrowserViewController : BrowserViewController {
             make.edges.equalTo(self.footerBackground!)
         }
 
-        braveWebContainerConstraintSetup()
+        heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
     }
 
     override func viewDidLayoutSubviews() {
@@ -121,7 +124,8 @@ class BraveBrowserViewController : BrowserViewController {
     
     override func updateToolbarStateForTraitCollection(newCollection: UITraitCollection) {
         super.updateToolbarStateForTraitCollection(newCollection)
-        braveWebContainerConstraintSetup()
+
+        heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
     }
 
     override func showHomePanelController(inline inline:Bool) {

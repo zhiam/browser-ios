@@ -5,7 +5,7 @@ import SnapKit
 let kPrefKeyTabsBarOn = "kPrefKeyTabsBarOn"
 let kPrefKeyTabsBarOnDefaultValue = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
-let minTabWidth = CGFloat(180)
+let minTabWidth =  UIDevice.currentDevice().userInterfaceIdiom == .Pad ? CGFloat(180) : CGFloat(160)
 let tabHeight = CGFloat(24)
 
 class TabsBarViewController: UIViewController {

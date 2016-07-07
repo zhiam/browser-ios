@@ -37,7 +37,7 @@ class ElementAtPoint {
         pt.y = pt.y * f;// + offset.y;
 
         let result = webView.stringByEvaluatingJavaScriptFromString(ElementAtPoint.javascript + "(\(pt.x), \(pt.y))")
-        print("\(result ?? "no match")")
+        //print("\(result ?? "no match")")
 
         guard let response = result where response.characters.count > "{}".characters.count else {
             return nil

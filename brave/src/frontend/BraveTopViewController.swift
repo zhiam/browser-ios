@@ -58,7 +58,7 @@ class BraveTopViewController : UIViewController {
 
         clickDetectionView.backgroundColor = UIColor(white: 80/255, alpha: 0.3)
 
-        setupBrowserConstraints(useTopLayoutGuide: true)
+        setupBrowserConstraints()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(onClickLeftSlideOut), name: kNotificationLeftSlideOutClicked, object: nil)
 
@@ -81,28 +81,26 @@ class BraveTopViewController : UIViewController {
         }
     }
 
-    private func setupBrowserConstraints(useTopLayoutGuide useTopLayoutGuide: Bool) {
-        browserViewController.view.snp_remakeConstraints {
+    private func setupBrowserConstraints() {
+        browserViewController.view.snp_makeConstraints {
             make in
             make.bottom.equalTo(view)
-            if useTopLayoutGuide {
-                make.top.equalTo(snp_topLayoutGuideTop)
-            } else {
-                make.top.equalTo(view).inset(20)
-            }
+            make.top.equalTo(snp_topLayoutGuideTop)
+            let _rightConstraint = make.right.equalTo(view).constraint
+            let _leftConstraint = make.left.equalTo(view).constraint
 
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                rightConstraint = make.right.equalTo(view).constraint
-                leftConstraint = make.left.equalTo(view).constraint
-            } else {
-                make.right.left.equalTo(view)
+                rightConstraint = _rightConstraint
+                leftConstraint = _leftConstraint
             }
         }
 
         if UIDevice.currentDevice().userInterfaceIdiom != .Phone {
             browserViewController.header.snp_makeConstraints { make in
-                leftConstraint = make.left.equalTo(view).constraint
-                rightConstraint = make.right.equalTo(view).constraint
+                if rightConstraint == nil {
+                    leftConstraint = make.left.equalTo(view).constraint
+                    rightConstraint = make.right.equalTo(view).constraint
+                }
             }
         }
     }
