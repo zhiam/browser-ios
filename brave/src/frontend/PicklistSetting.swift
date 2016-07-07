@@ -11,12 +11,14 @@ class PicklistSettingOptionsView: UITableViewController {
     var headerTitle = ""
     var delegate: PicklistSettingOptionsViewDelegate?
     var initialIndex = -1
+    var footerMessage = ""
 
-    convenience init(options: [(displayName: String, id: Int)], title: String, current: Int) {
+    convenience init(options: [(displayName: String, id: Int)], title: String, current: Int, footerMessage: String) {
         self.init(style: UITableViewStyle.Grouped)
         self.options = options
         self.headerTitle = title
         self.initialIndex = current
+        self.footerMessage = footerMessage
     }
 
     override init(style: UITableViewStyle) {
@@ -44,7 +46,7 @@ class PicklistSettingOptionsView: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return "Show a prompt to open your password manager when the current page has a login form."
+        return footerMessage
     }
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -86,11 +88,11 @@ class PicklistSettingMainItem<T>: Setting, PicklistSettingOptionsViewDelegate {
     let prefName: String
     let displayName: String
     let options: [Choice<T>]
+    var picklistFooterMessage = ""
     override var accessoryType: UITableViewCellAccessoryType { return .DisclosureIndicator }
     override var style: UITableViewCellStyle { return .Value1 }
     override var status: NSAttributedString {
-        let prefs = profile.prefs
-        let currentId = prefs.intForKey(prefName) ?? 0
+        let currentId = getCurrent()
         let option = lookupOptionById(Int(currentId))
         return NSAttributedString(string: option?.item().displayName ?? "", attributes: [ NSFontAttributeName: UIFont.systemFontOfSize(13)])
     }
@@ -104,6 +106,10 @@ class PicklistSettingMainItem<T>: Setting, PicklistSettingOptionsViewDelegate {
         return nil
     }
 
+    func getCurrent() -> Int {
+        return Int(BraveApp.getPrefs()?.intForKey(prefName) ?? 0)
+    }
+
     init(profile: Profile, displayName: String, prefName: String, options: [Choice<T>]) {
         self.profile = profile
         self.displayName = displayName
@@ -114,15 +120,13 @@ class PicklistSettingMainItem<T>: Setting, PicklistSettingOptionsViewDelegate {
 
     var picklist: PicklistSettingOptionsView? // on iOS8 there is a crash, seems like it requires this to be retained
     override func onClick(navigationController: UINavigationController?) {
-        let current = BraveApp.getPrefs()?.intForKey(prefName) ?? 0
-        picklist = PicklistSettingOptionsView(options: options.map { ($0.item().displayName,  $0.item().optionId) }, title: displayName, current: Int(current))
+        picklist = PicklistSettingOptionsView(options: options.map { ($0.item().displayName,  $0.item().optionId) }, title: displayName, current: getCurrent(), footerMessage: picklistFooterMessage)
         navigationController?.pushViewController(picklist!, animated: true)
         picklist!.delegate = self
     }
 
     func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
-        let prefs = profile.prefs
-        prefs.setInt(Int32(pickedOptionId), forKey: prefName)
+        profile.prefs.setInt(Int32(pickedOptionId), forKey: prefName)
     }
 }
 

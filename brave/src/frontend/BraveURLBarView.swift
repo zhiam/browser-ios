@@ -143,20 +143,26 @@ class BraveURLBarView : URLBarView {
         tabsBarController.didMoveToParentViewController(getApp().browserViewController)
     }
 
-    func updateTabsBarShowing() {
+    override func updateTabsBarShowing() {
         var tabCount = getApp().tabManager.privateTabs.count
         if (tabCount < 1) {
             tabCount = getApp().tabManager.tabCount
         }
 
+        let showingPolicy = TabsBarShowPolicy(rawValue: Int(BraveApp.getPrefs()?.intForKey(kPrefKeyTabsBarShowPolicy) ?? Int32(kPrefKeyTabsBarOnDefaultValue.rawValue))) ?? kPrefKeyTabsBarOnDefaultValue
+
+        let bvc = getApp().browserViewController
+        let noShowDueToPortrait =  UIDevice.currentDevice().userInterfaceIdiom == .Phone &&
+            bvc.shouldShowFooterForTraitCollection(bvc.traitCollection) &&
+            showingPolicy == TabsBarShowPolicy.LandscapeOnly
+
         let isShowing = tabsBarController.view.alpha > 0
 
-        let shouldShow = (BraveApp.getPrefs()?.boolForKey(kPrefKeyTabsBarOn) ?? kPrefKeyTabsBarOnDefaultValue)
-            && tabCount > 1
+        let shouldShow = showingPolicy != TabsBarShowPolicy.Never && tabCount > 1 && !noShowDueToPortrait
 
         func updateOffsets() {
-            getApp().browserViewController.headerHeightConstraint?.updateOffset(BraveURLBarView.CurrentHeight)
-            getApp().browserViewController.webViewContainerTopOffset?.updateOffset(BraveURLBarView.CurrentHeight)
+            bvc.headerHeightConstraint?.updateOffset(BraveURLBarView.CurrentHeight)
+            bvc.webViewContainerTopOffset?.updateOffset(BraveURLBarView.CurrentHeight)
         }
 
         if !isShowing && shouldShow {
@@ -170,7 +176,7 @@ class BraveURLBarView : URLBarView {
                     BraveURLBarView.CurrentHeight = UIConstants.ToolbarHeight
                     UIView.animateWithDuration(0.2) {
                         updateOffsets()
-                        getApp().browserViewController.view.layoutIfNeeded()
+                        bvc.view.layoutIfNeeded()
                     }
             })
         }

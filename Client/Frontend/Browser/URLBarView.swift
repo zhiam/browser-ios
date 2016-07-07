@@ -195,6 +195,9 @@ class URLBarView: UIView {
         }
     }
 
+    func updateTabsBarShowing() {}
+
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()

@@ -126,6 +126,10 @@ class BraveBrowserViewController : BrowserViewController {
         super.updateToolbarStateForTraitCollection(newCollection)
 
         heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
+
+        delay(0) {
+            self.urlBar.updateTabsBarShowing()
+        }
     }
 
     override func showHomePanelController(inline inline:Bool) {

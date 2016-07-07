@@ -2,8 +2,14 @@
 import UIKit
 import SnapKit
 
-let kPrefKeyTabsBarOn = "kPrefKeyTabsBarOn"
-let kPrefKeyTabsBarOnDefaultValue = UIDevice.currentDevice().userInterfaceIdiom == .Pad
+enum TabsBarShowPolicy : Int {
+    case Never
+    case Always
+    case LandscapeOnly
+}
+
+let kPrefKeyTabsBarShowPolicy = "kPrefKeyTabsBarShowPolicy"
+let kPrefKeyTabsBarOnDefaultValue = UIDevice.currentDevice().userInterfaceIdiom == .Pad ? TabsBarShowPolicy.Always : TabsBarShowPolicy.LandscapeOnly
 
 let minTabWidth =  UIDevice.currentDevice().userInterfaceIdiom == .Pad ? CGFloat(180) : CGFloat(160)
 let tabHeight = CGFloat(24)
@@ -289,7 +295,7 @@ extension TabsBarViewController: TabManagerDelegate {
             t.setTitle(title)
         }
 
-        (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
+        getApp().browserViewController.urlBar.updateTabsBarShowing()
     }
 
     func tabManager(tabManager: TabManager, didAddTab tab: Browser) {}
@@ -302,7 +308,7 @@ extension TabsBarViewController: TabManagerDelegate {
             }
         }
 
-        (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
+        getApp().browserViewController.urlBar.updateTabsBarShowing()
     }
 
     func tabManagerDidRestoreTabs(tabManager: TabManager) {
@@ -310,7 +316,7 @@ extension TabsBarViewController: TabManagerDelegate {
             self?.tabs.forEach {
                 $0.updateTitle_throttled()
             }
-            (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
+            getApp().browserViewController.urlBar.updateTabsBarShowing()
         }
     }
 

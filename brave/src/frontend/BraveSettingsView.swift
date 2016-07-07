@@ -47,7 +47,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         let prefs = profile.prefs
         var generalSettings = [
             SearchSetting(settings: self),
-            BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyIsToolbarHidingEnabled , defaultValue: true, titleText: "Hide toolbar when scrolling", statusText: nil, settingDidChange:  { value in
+            BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyIsToolbarHidingEnabled , defaultValue: true, titleText: NSLocalizedString("Hide toolbar when scrolling", comment: ""), statusText: nil, settingDidChange:  { value in
                 BraveScrollController.hideShowToolbarEnabled = value
 
                 // Hidden way to trigger a crash for testing
@@ -63,13 +63,19 @@ class BraveSettingsView : AppSettingsTableViewController {
 
             ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
                 titleText: NSLocalizedString("Block Popups", comment: "Setting to enable popup blocking"))
+        ]
 
-            ,BoolSetting(prefs: prefs, prefKey: kPrefKeyTabsBarOn, defaultValue: kPrefKeyTabsBarOnDefaultValue,
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefKeyTabsBarShowPolicy, defaultValue: true,
                 titleText: NSLocalizedString("Show Tabs Bar", comment: "Setting to show/hide the tabs bar"), statusText: nil,
                 settingDidChange: { value in
-                    (getApp().browserViewController.urlBar as? BraveURLBarView)?.updateTabsBarShowing()
-            })
-        ]
+                    getApp().browserViewController.urlBar.updateTabsBarShowing()
+                }
+            ))
+        } else {
+            generalSettings.append(TabsBarIPhoneSetting(profile: self.profile))
+        }
+
 
         #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
             if BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
@@ -104,11 +110,11 @@ class BraveSettingsView : AppSettingsTableViewController {
 
             ),
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Defaults", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
-                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKey, defaultValue: true, titleText: "Block Ads and Tracking"),
-                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKey, defaultValue: true, titleText: "HTTPS Everywhere"),
-                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: "Block Phishing and Malware"),
-                    BoolSetting(prefs: prefs, prefKey: kPrefKeyNoScriptOn, defaultValue: false, titleText: "Block Scripts"),
-                    BoolSetting(prefs: prefs, prefKey: kPrefKeyFingerprintProtection, defaultValue: false, titleText: "Fingerprinting Protection")
+                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKey, defaultValue: true, titleText: NSLocalizedString("Block Ads and Tracking", comment: "")),
+                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKey, defaultValue: true, titleText: NSLocalizedString("HTTPS Everywhere", comment: "")),
+                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: NSLocalizedString("Block Phishing and Malware", comment: "")),
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyNoScriptOn, defaultValue: false, titleText: NSLocalizedString("Block Scripts", comment: "")),
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyFingerprintProtection, defaultValue: false, titleText: NSLocalizedString("Fingerprinting Protection", comment: ""))
                 ])]
 
         //#if !DISABLE_INTRO_SCREEN
@@ -144,8 +150,8 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
     static var currentSetting: (displayName: String, cellLabel: String, prefId: Int)?
 
-    static let _prefName = kPrefName3rdPartyPasswordShortcutEnabled
-    static let _options =  [
+    private static let _prefName = kPrefName3rdPartyPasswordShortcutEnabled
+    private static let _options =  [
         Choice<String> { ThirdPartyPasswordManagers.UseBuiltInInstead },
         Choice<String> { ThirdPartyPasswordManagers.OnePassword },
         Choice<String> { ThirdPartyPasswordManagers.LastPass }
@@ -165,6 +171,7 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
     init(profile: Profile) {
         super.init(profile: profile, displayName: "", prefName: ThirdPartyPasswordManagerSetting._prefName, options: ThirdPartyPasswordManagerSetting._options)
+        picklistFooterMessage = NSLocalizedString("Show a prompt to open your password manager when the current page has a login form.", comment: "Footer message on picker for 3rd party password manager setting")
     }
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
@@ -180,11 +187,11 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
 // Opens the search settings pane
 class CookieSetting: PicklistSettingMainItem<UInt> {
-    static let _prefName = "braveAcceptCookiesPref"
-    static let _options =  [
-        Choice<UInt> { (displayName: "Block 3rd party cookies", object: UInt(NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain.rawValue), optionId: 0) },
-        Choice<UInt> { (displayName: "Block all cookies", object: UInt(NSHTTPCookieAcceptPolicy.Never.rawValue), optionId: 1) },
-        Choice<UInt> { (displayName: "Don't block cookies", object: UInt( NSHTTPCookieAcceptPolicy.Always.rawValue), optionId: 2) }
+    private static let _prefName = "braveAcceptCookiesPref"
+    private static let _options =  [
+        Choice<UInt> { (displayName: NSLocalizedString("Block 3rd party cookies", comment: "cookie settings option"), object: UInt(NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain.rawValue), optionId: 0) },
+        Choice<UInt> { (displayName: NSLocalizedString("Block all cookies", comment: "cookie settings option"), object: UInt(NSHTTPCookieAcceptPolicy.Never.rawValue), optionId: 1) },
+        Choice<UInt> { (displayName: NSLocalizedString("Don't block cookies", comment: "cookie settings option"), object: UInt( NSHTTPCookieAcceptPolicy.Always.rawValue), optionId: 2) }
     ]
 
     static func setPolicyFromOptionId(optionId: Int) {
@@ -201,7 +208,7 @@ class CookieSetting: PicklistSettingMainItem<UInt> {
     }
 
     init(profile: Profile) {
-        super.init(profile: profile, displayName: "Cookie Control", prefName: CookieSetting._prefName, options: CookieSetting._options)
+        super.init(profile: profile, displayName: NSLocalizedString("Cookie Control", comment: "Cookie settings option title"), prefName: CookieSetting._prefName, options: CookieSetting._options)
     }
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
@@ -209,6 +216,35 @@ class CookieSetting: PicklistSettingMainItem<UInt> {
         CookieSetting.setPolicyFromOptionId(pickedOptionId)
     }
 }
+
+// Opens the search settings pane
+class TabsBarIPhoneSetting: PicklistSettingMainItem<Int> {
+    private static func getOptions() -> [Choice<Int>] {
+        let opt = [
+            Choice<Int> { (displayName: NSLocalizedString("Never show", comment: "tabs bar show/hide option"), object: TabsBarShowPolicy.Never.rawValue, optionId: 0) },
+            Choice<Int> { (displayName: NSLocalizedString("Always show", comment: "tabs bar show/hide option"), object: TabsBarShowPolicy.Always.rawValue, optionId: 1) },
+            Choice<Int> { (displayName: NSLocalizedString("Show in landscape only", comment: "tabs bar show/hide option"), object: TabsBarShowPolicy.LandscapeOnly.rawValue, optionId: 2) }
+        ]
+        return opt
+
+    }
+
+    init(profile: Profile) {
+        super.init(profile: profile, displayName: NSLocalizedString("Show Tabs Bar", comment:"tabs bar show/hide setting title"), prefName: kPrefKeyTabsBarShowPolicy, options: TabsBarIPhoneSetting.getOptions())
+    }
+
+    override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
+        super.picklistSetting(setting, pickedOptionId: pickedOptionId)
+        getApp().browserViewController.urlBar.updateTabsBarShowing()
+    }
+
+    override func getCurrent() -> Int {
+        return Int(BraveApp.getPrefs()?.intForKey(prefName) ?? Int32(kPrefKeyTabsBarOnDefaultValue.rawValue))
+    }
+}
+
+
+
 
 // Clear all stored passwords. This will clear SQLite storage and the system shared credential storage.
 class PasswordsClearable: Clearable {
