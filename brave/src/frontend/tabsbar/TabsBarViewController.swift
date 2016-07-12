@@ -18,6 +18,7 @@ class TabsBarViewController: UIViewController {
     var scrollView: UIScrollView!
 
     var tabs = [TabWidget]()
+    var spacerLeftmost = UIView() // Hiddens space on the left used during drag-and-drop
 
     var leftOverflowIndicator : CAGradientLayer = CAGradientLayer()
     var rightOverflowIndicator : CAGradientLayer = CAGradientLayer()
@@ -37,6 +38,13 @@ class TabsBarViewController: UIViewController {
         }
 
         getApp().tabManager.addDelegate(self)
+
+        scrollView.addSubview(spacerLeftmost)
+        spacerLeftmost.snp_makeConstraints { (make) in
+            make.top.left.equalTo(scrollView)
+            make.height.equalTo(tabHeight)
+            make.width.equalTo(0)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -54,13 +62,25 @@ class TabsBarViewController: UIViewController {
         return overflow > 0 ? overflow : 0
     }
 
+    func updateTabWidthConstraint(width width: CGFloat) {
+        tabs.forEach {
+            $0.widthConstraint?.updateOffset(width)
+        }
+
+        delay(0) {
+            self.tabs.forEach {
+                if width > 0 {
+                    $0.reinstallConstraints()
+                }
+            }
+        }
+    }
+
     func updateContentSize(tabCount: Int) {
         struct staticWidth { static var val = CGFloat(0) }
         if abs(staticWidth.val - view.bounds.width) > 10 {
             let w = calcTabWidth(tabs.count)
-            tabs.forEach {
-                $0.widthConstraint?.updateOffset(w)
-            }
+            updateTabWidthConstraint(width: w)
             overflowIndicators()
         }
         staticWidth.val = view.bounds.width
@@ -101,15 +121,13 @@ class TabsBarViewController: UIViewController {
         }
 
         let w = calcTabWidth(tabs.count)
-        tabs.forEach {
-            $0.widthConstraint?.updateOffset(w)
-        }
+        updateTabWidthConstraint(width: w)
         updateContentSize(tabs.count)
         overflowIndicators()
     }
 
     func addTab(browser browser: Browser) -> TabWidget {
-        let t = TabWidget(browser: browser)
+        let t = TabWidget(browser: browser, parentScrollView: scrollView)
         t.delegate = self
 
         scrollView.addSubview(t)
@@ -118,9 +136,7 @@ class TabsBarViewController: UIViewController {
         let w = calcTabWidth(tabs.count + 1)
 
         UIView.animateWithDuration(0.2, animations: {
-            self.tabs.forEach {
-                $0.widthConstraint?.updateOffset(w)
-            }
+            self.updateTabWidthConstraint(width: w)
             self.scrollView.layoutIfNeeded()
             }, completion: { _ in
                 UIView.animateWithDuration(0.2) {
@@ -129,18 +145,7 @@ class TabsBarViewController: UIViewController {
             }
         )
 
-        t.snp_makeConstraints {
-            make in
-            make.top.equalTo(t.superview!)
-            t.widthConstraint = make.width.equalTo(w).constraint
-            make.height.equalTo(tabHeight)
-
-            if let prev = tabs.last where prev !== t {
-                make.left.equalTo(prev.snp_right)
-            } else {
-                make.left.equalTo(t.superview!)
-            }
-        }
+        t.remakeLayout(prev: tabs.last?.spacerRight != nil ? tabs.last!.spacerRight : spacerLeftmost, width: w, scrollView: scrollView)
 
         tabs.append(t)
         updateContentSize(tabs.count)
@@ -164,46 +169,52 @@ class TabsBarViewController: UIViewController {
         return c > 0 ? c : UIScreen.mainScreen().bounds.width
     }
 
+    func neighborSpacer(i: Int) -> UIView? {
+        if i < 0 {
+            return self.spacerLeftmost
+        }
+        return 0 ..< self.tabs.count ~= i ? self.tabs[i].spacerRight : nil
+    }
+
+    func neighborTab(i: Int) -> TabWidget? {
+        return 0 ..< self.tabs.count ~= i ? self.tabs[i] : nil
+    }
+
     func removeTab(tab: TabWidget) {
-        guard let removedIndex = tabs.indexOf(tab) else { return }
+        let w = calcTabWidth(tabs.count - 1)
+        var index = 0
 
         tab.title.snp_removeConstraints()
         tab.title.hidden = true
-
-        func at(i: Int) -> TabWidget? {
-            return 0 ..< self.tabs.count ~= i ? self.tabs[i] : nil
-        }
-
-        let prev = at(removedIndex - 1)
-        let next = at(removedIndex + 1)
-        tabs.removeAtIndex(removedIndex)
-
-        let w = calcTabWidth(tabs.count)
-        UIView.animateWithDuration(0.3, animations: {
+        
+        UIView.animateWithDuration(0.2, animations: {
             tab.alpha = 0
-            tab.widthConstraint?.updateOffset(0)
-            self.tabs.forEach {
-                $0.widthConstraint?.updateOffset(w)
-            }
-            self.scrollView.layoutIfNeeded()
-        }) { _ in
-            if prev == nil && next == nil {
-                return
+            for (i, item) in self.tabs.enumerate() {
+                if item === tab {
+                    index = i
+                    item.widthConstraint?.updateOffset(0)
+                } else {
+                    item.widthConstraint?.updateOffset(w)
+                }
             }
 
+            self.scrollView.setNeedsLayout()
             self.updateContentSize(self.tabs.count - 1)
-
+        }) { _ in
+            let prev = self.neighborSpacer(index - 1)
+            let next = self.neighborTab(index + 1)
             next?.snp_makeConstraints(closure: { (make) in
                 if let prev = prev {
                     make.left.equalTo(prev.snp_right)
-                } else {
-                    make.left.equalTo(self.view)
                 }
             })
 
+            tab.spacerRight.removeFromSuperview()
             tab.removeFromSuperview()
+            self.tabs.removeAtIndex(index)
             self.overflowIndicators()
         }
+
     }
 
     func addLeftRightScrollHint(isRightSide isRightSide: Bool, maskLayer: CAGradientLayer) {
@@ -322,4 +333,196 @@ extension TabsBarViewController: TabManagerDelegate {
 
     func tabManagerDidAddTabs(tabManager: TabManager) {}
 }
+// MARK: Drag and drop support
+
+var tabXPositions: [CGFloat]?
+var lastHitSpacerDuringDrag: UIView? // the spacer the tab is dragged over
+
+extension TabsBarViewController {
+    func moveTab(tab: TabWidget, index: Int) {
+        guard let oldIndex = tabs.indexOf(tab) else { return }
+
+        tabs.removeAtIndex(oldIndex)
+        tabs.insert(tab, atIndex: index)
+
+        let w = calcTabWidth(tabs.count)
+
+        var prev = spacerLeftmost
+        for t in tabs {
+            t.alpha = 1
+            if let dragClone = t.dragClone {
+                dragClone.alpha = 0
+                dragClone.removeFromSuperview()
+                t.dragClone = nil
+            }
+            t.remakeLayout(prev: prev, width: w, scrollView: scrollView)
+            prev = t.spacerRight
+        }
+    }
+
+
+    func modifyWidth(view: UIView?, width: CGFloat) {
+        if let tab = view as? TabWidget {
+            if width < 1 {
+                tab.breakConstraintsForShrinking()
+            }
+        }
+        UIView.animateWithDuration(0.5, animations: {
+            view?.snp_updateConstraints{ (make) in
+                make.width.equalTo(width)
+            }
+            self.view.layoutIfNeeded()
+        }, completion : { _ in
+            if let tab = view as? TabWidget {
+                if width > 0 {
+                    tab.reinstallConstraints()
+                }
+            }})
+
+    }
+
+    func newIndexOfMovedTab(indexOfMovedTab indexOfMovedTab: Int, dragDistance: CGFloat) -> Int {
+        var newIndex = -1
+        guard let tabXPositions = tabXPositions else { assert(false); return 0 }
+        assert(0 ..< tabXPositions.count ~= indexOfMovedTab)
+        let moveTabPos = tabXPositions[indexOfMovedTab]
+        let tabWidth = calcTabWidth(tabs.count)
+        for (i, x) in tabXPositions.enumerate() {
+            if i == indexOfMovedTab {
+                continue
+            }
+            let newX = moveTabPos + dragDistance
+            if dragDistance > 0 && x > moveTabPos {
+                if newX > x - tabWidth * 0.5 + 10 {
+                    newIndex = i
+                }
+            } else if dragDistance < 0 && x < moveTabPos {
+                if newX < x + tabWidth * 0.5 - 10 {
+                    newIndex = i
+                    break
+                }
+            }
+        }
+        return newIndex
+    }
+
+    func handleDraggingEnded(tab: TabWidget, dragDistance: CGFloat) {
+        if tabXPositions == nil {
+            tab.alpha = 1.0
+            return
+        }
+
+        guard let movedIndex = tabs.indexOf(tab) else { print("ERROR"); return }
+        let newIndex = newIndexOfMovedTab(indexOfMovedTab: movedIndex, dragDistance: dragDistance)
+
+        let moveCloneTo = newIndex < 0 ? tab.dragClone?.lastLocation : CGPoint(x: tabXPositions![newIndex], y: tab.center.y)
+
+        if let clone = tab.dragClone where clone.lastLocation != nil {
+            UIView.animateWithDuration(0.2, animations: {
+                tab.dragClone?.alpha = 1.0
+                if let p = moveCloneTo {
+                    tab.dragClone?.center = p
+                }
+                }, completion: {_ in
+                    if newIndex > -1 {
+                        self.spacerLeftmost.snp_updateConstraints { (make) in
+                            make.width.equalTo(0)
+                        }
+                        self.moveTab(tab, index: newIndex)
+                    }
+                    tab.alpha = 1.0
+                    delay(0.5) {
+                        tab.dragClone?.removeFromSuperview()
+                        tab.dragClone = nil
+                    }
+            })
+        }
+
+        lastHitSpacerDuringDrag = nil
+        scrollView.scrollEnabled = true
+        tabXPositions = nil
+
+        // Returning to original spot, set widths back (animated)
+        if newIndex < 0 {
+            modifyWidth(tab, width:self.calcTabWidth(self.tabs.count))
+            modifyWidth(spacerLeftmost, width: 0)
+            for t in tabs {
+                modifyWidth(t.spacerRight, width: 0)
+            }
+        }
+
+        delay(0.3) {
+           tab.reinstallConstraints()
+        }
+        // Ensure tab is re-shown
+        delay(0.5) {
+            tab.alpha = 1
+            tab.superview!.bringSubviewToFront(tab)
+        }
+    }
+
+    func tabWidgetDragStarted(tab: TabWidget) {
+        scrollView.scrollEnabled = false
+    }
+
+    func tabWidgetDragMoved(tab: TabWidget, distance: CGFloat, isEnding: Bool) {
+        let tabWidth = calcTabWidth(tabs.count)
+
+        guard let movedIndex = tabs.indexOf(tab) else { print("ERROR"); return }
+
+        if isEnding {
+            handleDraggingEnded(tab, dragDistance: distance)
+            return
+        }
+
+        if tabXPositions == nil {
+            tabXPositions = tabs.map { $0.center.x }
+            lastHitSpacerDuringDrag = tab.spacerRight
+        }
+
+        if abs(distance) < 1 {
+            return
+        }
+        //let newPoint = CGPointMake(, tab.center.y)
+
+        var hitSpacer: UIView? = tab.spacerRight
+        let newIndex = newIndexOfMovedTab(indexOfMovedTab: movedIndex, dragDistance: distance)
+
+        if newIndex < 0 {
+            hitSpacer = tab.spacerRight
+        } else {
+            if distance > 0 {
+                hitSpacer = neighborSpacer(newIndex)
+            } else {
+                if newIndex > 0 {
+                    hitSpacer = neighborSpacer(newIndex - 1)
+                } else {
+                    hitSpacer = spacerLeftmost
+                }
+            }
+        }
+
+        let isChanged = lastHitSpacerDuringDrag !== hitSpacer
+        lastHitSpacerDuringDrag = hitSpacer
+        if !isChanged {
+            return
+        }
+
+        for t in tabs {
+            if t.spacerRight !== hitSpacer {
+                modifyWidth(t.spacerRight, width: 0)
+            }
+        }
+
+        if hitSpacer != spacerLeftmost {
+            modifyWidth(spacerLeftmost, width: 0)
+        }
+        
+        modifyWidth(tab.spacerRight, width: hitSpacer !== tab.spacerRight ? 0 : tabWidth)
+        modifyWidth(tab, width: 0)
+        modifyWidth(hitSpacer, width: tabWidth)
+    }
+}
+
+
 
