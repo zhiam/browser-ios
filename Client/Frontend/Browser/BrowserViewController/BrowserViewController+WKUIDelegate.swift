@@ -103,7 +103,8 @@ extension BrowserViewController: WKUIDelegate {
         }
 
         if let url = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
-            ErrorPageHelper().showPage(error, forUrl: url, inWebView: webView)
+            guard let uiwebview = (webView as? ContainerWebView)?.legacyWebView else { assert(false) ; return }
+            ErrorPageHelper().showPage(error, forUrl: url, inWebView: uiwebview)
 
             // If the local web server isn't working for some reason (Firefox cellular data is
             // disabled in settings, for example), we'll fail to load the session restore URL.
@@ -132,7 +133,8 @@ extension BrowserViewController: WKUIDelegate {
         }
 
         let error = NSError(domain: ErrorPageHelper.MozDomain, code: Int(ErrorPageHelper.MozErrorDownloadsNotEnabled), userInfo: [NSLocalizedDescriptionKey: "Downloads aren't supported in Brave yet (but we're working on it)."])
-        ErrorPageHelper().showPage(error, forUrl: navigationResponse.response.URL!, inWebView: webView)
+        guard let uiwebview = (webView as? ContainerWebView)?.legacyWebView else { assert(false) ; return }
+        ErrorPageHelper().showPage(error, forUrl: navigationResponse.response.URL!, inWebView: uiwebview)
         decisionHandler(WKNavigationResponsePolicy.Allow)
     }
 }

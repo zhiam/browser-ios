@@ -256,4 +256,28 @@ extension BrowserViewController: WKNavigationDelegate {
             (profile as? BrowserProfile)?.onLocationChange(info)
         }
     }
+
+
+    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+        // Ignore the "Frame load interrupted" error that is triggered when we cancel a request
+        // to open an external application and hand it over to UIApplication.openURL(). The result
+        // will be that we switch to the external app, for example the app store, while keeping the
+        // original web page in the tab instead of replacing it with an error page.
+        if error.domain == "WebKitErrorDomain" && error.code == 102 {
+            return
+        }
+        guard let uiwebview = (webView as? ContainerWebView)?.legacyWebView else { assert(false) ; return }
+
+        if error.code == Int(CFNetworkErrors.CFURLErrorCancelled.rawValue) {
+            if let tab = tabManager.tabForWebView(uiwebview) where tab === tabManager.selectedTab {
+                urlBar.currentURL = tab.displayURL
+            }
+            return
+        }
+
+        if let url = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
+            ErrorPageHelper().showPage(error, forUrl: url, inWebView: uiwebview)
+        }
+    }
+
 }

@@ -57,7 +57,7 @@ def walk(proj, base, start, override_target = nil)
     else
       folder = folder.gsub('./','')
       file_ref = proj[folder].new_file(path)
-      if path =~ /(\.js)|(\.html)|(\.txt)|(\.xib)|(\.dat)/
+      if path =~ /(\.js)|(\.html)|(\.css)|(\.txt)|(\.xib)|(\.dat)/
         $client_resources.push(file_ref)
       else
         # file was added to xcode file listing, if an optional target is set, it gets added to a build target

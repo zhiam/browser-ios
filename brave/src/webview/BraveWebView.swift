@@ -15,7 +15,7 @@ class ContainerWebView : WKWebView {
     weak var legacyWebView: BraveWebView?
 }
 
-var nullWebView: WKWebView = WKWebView()
+var globalContainerWebView = ContainerWebView()
 var nullWKNavigation: WKNavigation = WKNavigation()
 
 enum KVOStrings: String {
@@ -667,7 +667,8 @@ extension BraveWebView: UIWebViewDelegate {
             let action:LegacyNavigationAction =
                 LegacyNavigationAction(type: convertNavActionToWKType(navigationType), request: request)
 
-            nd.webView?(nullWebView, decidePolicyForNavigationAction: action,
+            globalContainerWebView.legacyWebView = self
+            nd.webView?(globalContainerWebView, decidePolicyForNavigationAction: action,
                         decisionHandler: { (policy:WKNavigationActionPolicy) -> Void in
                             result = policy == .Allow
             })
@@ -706,7 +707,8 @@ extension BraveWebView: UIWebViewDelegate {
 
         if let nd = navigationDelegate {
             // this triggers the network activity spinner
-            nd.webView?(nullWebView, didStartProvisionalNavigation: nullWKNavigation)
+            globalContainerWebView.legacyWebView = self
+            nd.webView?(globalContainerWebView, didStartProvisionalNavigation: nullWKNavigation)
         }
         progress?.webViewDidStartLoad()
         kvoBroadcast([KVOStrings.kvoLoading])
@@ -744,6 +746,8 @@ extension BraveWebView: UIWebViewDelegate {
             return
         }
 
+        print("didFailLoadWithError: \(error)")
+
         if (error?.domain == NSURLErrorDomain) {
             if (error?.code == NSURLErrorServerCertificateHasBadDate      ||
                 error?.code == NSURLErrorServerCertificateUntrusted         ||
@@ -752,10 +756,10 @@ extension BraveWebView: UIWebViewDelegate {
             {
                 let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? ""
                 if errorUrl.characters.count < 1 {
-                    #if DEBUG
-                        // This doesn't seem to happen on the top level doc, and when a resource is being repeatedly loaded and fails, this would show up repeatedly and block using the page
-                        BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
-                    #endif
+//                    #if DEBUG
+//                        // This doesn't seem to happen on the top level doc, and when a resource is being repeatedly loaded and fails, this would show up repeatedly and block using the page
+//                        BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
+//                    #endif
                     return
                 }
 
@@ -788,22 +792,27 @@ extension BraveWebView: UIWebViewDelegate {
 
         NSNotificationCenter.defaultCenter()
             .postNotificationName(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: self)
-        if let nd = navigationDelegate {
-            nd.webView?(nullWebView, didFailNavigation: nullWKNavigation,
-                        withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
-        }
 
-        if let error = error, urlString = error.userInfo["NSErrorFailingURLStringKey"] as? String
-            where error.code == -1009 /*kCFURLErrorNotConnectedToInternet*/ {
-            if let url = NSURL(string: urlString)  {
-                let cache = NSURLCache.sharedURLCache().cachedResponseForRequest(NSURLRequest(URL: url))
-                if let html = cache?.data.utf8EncodedString {
-                    loadHTMLString(html, baseURL: url)
+        // The error may not be the main document that failed to load. Check if the failing URL matches the URL being loaded
+
+        if let error = error, errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
+            var handled = false
+            if error.code == -1009 /*kCFURLErrorNotConnectedToInternet*/ {
+                let cache = NSURLCache.sharedURLCache().cachedResponseForRequest(NSURLRequest(URL: errorUrl))
+                if let html = cache?.data.utf8EncodedString where html.characters.count > 100 {
+                    loadHTMLString(html, baseURL: errorUrl)
+                    handled = true
+                }
+            }
+
+            if !handled && URL?.absoluteString == errorUrl.absoluteString {
+                if let nd = navigationDelegate {
+                    globalContainerWebView.legacyWebView = self
+                    nd.webView?(globalContainerWebView, didFailNavigation: nullWKNavigation,
+                                withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
                 }
             }
         }
-
-        print("didFailLoadWithError: \(error)")
         progress?.didFailLoadWithError()
         kvoBroadcast()
     }
