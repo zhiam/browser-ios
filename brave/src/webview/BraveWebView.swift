@@ -754,16 +754,9 @@ extension BraveWebView: UIWebViewDelegate {
                 error?.code == NSURLErrorServerCertificateHasUnknownRoot    ||
                 error?.code == NSURLErrorServerCertificateNotYetValid)
             {
-                let errorUrl = error?.userInfo["NSErrorFailingURLKey"] as? String ?? ""
-                if errorUrl.characters.count < 1 {
-//                    #if DEBUG
-//                        // This doesn't seem to happen on the top level doc, and when a resource is being repeatedly loaded and fails, this would show up repeatedly and block using the page
-//                        BraveApp.showErrorAlert(title: "Certificate Error", error: "Unable to load site due to invalid certificate")
-//                    #endif
-                    return
-                }
+                guard let errorUrl = error?.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
 
-                let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(errorUrl) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
+                let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(errorUrl.absoluteString) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
                     handler in
                     self.stopLoading()
@@ -778,9 +771,7 @@ extension BraveWebView: UIWebViewDelegate {
                 alert.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.Default) {
                     handler in
                     self.loadingUnvalidatedHTTPSPage = true;
-                    if let url = NSURL(string: errorUrl) {
-                        self.loadRequest(NSURLRequest(URL: url))
-                    }
+                    self.loadRequest(NSURLRequest(URL: errorUrl))
                     })
 
                 #if !TEST
@@ -823,6 +814,8 @@ extension BraveWebView : NSURLConnectionDelegate, NSURLConnectionDataDelegate {
         guard let trust = challenge.protectionSpace.serverTrust else { return }
         let cred = NSURLCredential(forTrust: trust)
         challenge.sender?.useCredential(cred, forAuthenticationChallenge: challenge)
+        challenge.sender?.continueWithoutCredentialForAuthenticationChallenge(challenge)
+        loadingUnvalidatedHTTPSPage = false
     }
     
     func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
