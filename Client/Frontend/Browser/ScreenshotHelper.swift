@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import Shared
 
 /**
  * Handles screenshots for a given browser, including pages with non-webview content.
@@ -24,9 +25,21 @@ class ScreenshotHelper {
                 if let homePanel = controller?.homePanelController {
                     screenshot = homePanel.view.screenshot()
                 }
-            } else {
-                let offset = CGPointMake(0, -(tab.webView?.scrollView.contentInset.top ?? 0))
-                screenshot = tab.webView?.screenshot(offset: offset)
+            } else if let wv = tab.webView {
+                let offset = CGPointMake(0, -wv.scrollView.contentInset.top)
+                // If webview is hidden, need to add it for screenshot. On slow devices, don't do this
+                let showForScreenshot = wv.superview == nil && DeviceInfo.isBlurSupported()
+                if showForScreenshot {
+                    getApp().rootViewController.view.insertSubview(wv, atIndex: 0)
+                }
+                delay(0.1) { [weak tab] in
+                    screenshot = tab?.webView?.screenshot(offset: offset)
+                    tab?.setScreenshot(screenshot)
+                    if showForScreenshot {
+                        tab?.webView?.removeFromSuperview()
+                    }
+                }
+                return
             }
         }
 
