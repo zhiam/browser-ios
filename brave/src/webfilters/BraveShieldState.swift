@@ -200,6 +200,7 @@ public class BraveShieldState {
     static let kSafeBrowsing = "safebrowsing"
     static let kFPProtection = "fp_protection"
     static let kNoscript = "noscript"
+    static let kNoImages = "noimages"
 
     typealias ShieldKey = String
     typealias DomainKey = String
@@ -270,11 +271,20 @@ public class BraveShieldState {
         return state[BraveShieldState.kNoscript] ?? nil
     }
 
+    func isOnImageBlocking() -> Bool? {
+        if DeviceInfo.isCellularDataConnection() {
+            return false
+        }
+
+        return state[BraveShieldState.kNoImages] ?? nil
+    }
+
     func isOnFingerprintProtection() -> Bool? {
         return state[BraveShieldState.kFPProtection] ?? nil
     }
 
     func setStateFromPerPageShield(pageState: BraveShieldState?) {
+        setState(BraveShieldState.kNoImages, on: pageState?.isOnImageBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyImageBlockingOn) ?? false))
         setState(BraveShieldState.kNoscript, on: pageState?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false))
         setState(BraveShieldState.kAdBlockAndTp, on: pageState?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled)
         setState(BraveShieldState.kSafeBrowsing, on: pageState?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled)

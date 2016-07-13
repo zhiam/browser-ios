@@ -370,7 +370,7 @@ extension BraveScrollController: UIScrollViewDelegate {
                 blockOtherGestures(true, views: [scrollView])
                 scrollView.contentOffset.y = currentOffset
                 refreshControl?.beginRefreshing()
-                browser?.webView?.reloadFromOrigin()
+                browser?.webView?.reloadFromOrigin(true)
                 UIView.animateWithDuration(0.5, animations: { refreshControl?.backgroundColor = UIColor.clearColor() })
                 UIView.animateWithDuration(0.5, delay: 0.2, options: .AllowAnimatedContent, animations: {
                     scrollView.contentOffset.y = 0

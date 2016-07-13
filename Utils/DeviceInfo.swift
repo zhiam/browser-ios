@@ -90,4 +90,14 @@ public class DeviceInfo {
             return false
         }
     }
+
+    public class func isCellularDataConnection() -> Bool {
+        let status = Reach().connectionStatus()
+        switch status {
+        case .Online(.WiFi), .Offline:
+            return false
+        default:
+            return true
+        }
+    }
 }

@@ -8,6 +8,7 @@ import OnePasswordExtension
 
 let kPrefKeyNoScriptOn = "noscript_on"
 let kPrefKeyFingerprintProtection = "fingerprintprotection_on"
+let kPrefKeyImageBlockingOn = "blockimages_on"
 
 class BraveSettingsView : AppSettingsTableViewController {
 
@@ -63,6 +64,7 @@ class BraveSettingsView : AppSettingsTableViewController {
 
             ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
                 titleText: NSLocalizedString("Block Popups", comment: "Setting to enable popup blocking"))
+            , BoolSetting(prefs: prefs, prefKey: kPrefKeyImageBlockingOn, defaultValue: false, titleText: NSLocalizedString("Pull-to-reload loads images", comment: ""))
         ]
 
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {

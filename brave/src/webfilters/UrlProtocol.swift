@@ -30,6 +30,7 @@ class URLProtocol: NSURLProtocol {
         
         let useCustomUrlProtocol =
             shieldState.isOnScriptBlocking() ?? false ||
+            shieldState.isOnImageBlocking() ?? false ||
             (shieldState.isOnAdBlockAndTp() ?? false && TrackingProtection.singleton.shouldBlock(request)) ||
                 (shieldState.isOnAdBlockAndTp() ?? false && AdBlocker.singleton.shouldBlock(request)) ||
                 (shieldState.isOnSafeBrowsing() ?? false && SafeBrowsing.singleton.shouldBlock(request)) ||
@@ -186,6 +187,13 @@ class URLProtocol: NSURLProtocol {
             var fields = response.allHeaderFields as? [String : String] ?? [String : String]()
             fields["X-WebKit-CSP"] = "script-src none"
             returnedResponse = NSHTTPURLResponse(URL: url, statusCode: response.statusCode, HTTPVersion: "HTTP/1.1" /*not used*/, headerFields: fields)!
+        }
+
+        if let response = response as? NSHTTPURLResponse {
+            if let mime = response.allHeaderFields["Content-Type"] as? String where !mime.contains("text") {
+                print("image block")
+                returnBlankPixel()
+            }
         }
         self.client!.URLProtocol(self, didReceiveResponse: returnedResponse, cacheStoragePolicy: .Allowed)
     }

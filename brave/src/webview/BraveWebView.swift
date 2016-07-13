@@ -434,8 +434,17 @@ class BraveWebView: UIWebView {
         return self.canGoForward
     }
 
-    func reloadFromOrigin() {
-        self.reload()
+    func reloadFromOrigin(dueToPullToReload:Bool = false) {
+       
+        if dueToPullToReload {
+            shieldStatUpdate(.reset)
+            progress?.setProgress(0.3)
+            BraveApp.setupCacheDefaults()
+            braveShieldState.setState(BraveShieldState.kNoImages, on: false)
+            super.reload()
+        } else {
+            self.reload()
+        }
     }
 
     override func reload() {
