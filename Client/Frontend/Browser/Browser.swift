@@ -470,7 +470,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
 #endif
         guard let screenshot = screenshot else { return }
 
-        self.screenshot = screenshot
+        self.screenshot.image = screenshot
         if revUUID {
             self.screenshotUUID = NSUUID()
         }
