@@ -24,33 +24,34 @@ class ScreenshotHelper {
             if AboutUtils.isAboutHomeURL(url) {
                 if let homePanel = controller?.homePanelController {
                     screenshot = homePanel.view.screenshot()
+                    tab.setScreenshot(screenshot)
                 }
             } else if let wv = tab.webView {
                 let offset = CGPointMake(0, -wv.scrollView.contentInset.top)
-                // If webview is hidden, need to add it for screenshot. On slow devices, don't do this
-                let showForScreenshot = wv.superview == nil && DeviceInfo.isBlurSupported()
+                // If webview is hidden, need to add it for screenshot.
+                let showForScreenshot = wv.superview == nil
                 if showForScreenshot {
                     getApp().rootViewController.view.insertSubview(wv, atIndex: 0)
-                }
-                delay(0.1) { [weak tab] in
-                    screenshot = tab?.webView?.screenshot(offset: offset)
-                    tab?.setScreenshot(screenshot)
-                    if showForScreenshot {
+                    wv.frame = controller?.tabManager.selectedTab?.webView?.frame ?? CGRectZero
+                    wv.frame = wv.convertRect(wv.frame, toView: nil)
+                    delay(0.1) { [weak tab] in
+                        screenshot = tab?.webView?.screenshot(offset: offset)
+                        tab?.setScreenshot(screenshot)
                         tab?.webView?.removeFromSuperview()
                     }
+                } else {
+                    screenshot = tab.webView?.screenshot(offset: offset)
+                    tab.setScreenshot(screenshot)
                 }
-                return
             }
         }
-
-        tab.setScreenshot(screenshot)
     }
 
     /// Takes a screenshot after a small delay.
     /// Trying to take a screenshot immediately after didFinishNavigation results in a screenshot
     /// of the previous page, presumably due to an iOS bug. Adding a brief delay fixes this.
     func takeDelayedScreenshot(tab: Browser) {
-        delay(1) { [weak self, weak tab = tab] in
+        delay(2) { [weak self, weak tab = tab] in
             // If the view controller isn't visible, the screenshot will be blank.
             // Wait until the view controller is visible again to take the screenshot.
             guard self?.viewIsVisible ?? false else {

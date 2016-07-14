@@ -632,7 +632,7 @@ extension TabManager {
             if let savedTab = SavedTab(browser: tab, isSelected: tabIndex == _selectedIndex) {
                 savedTabs.append(savedTab)
 
-                if let screenshot = tab.screenshot,
+                if let screenshot = tab.screenshot.image,
                    let screenshotUUID = tab.screenshotUUID
                 {
                     savedUUIDs.insert(screenshotUUID.UUIDString)

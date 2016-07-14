@@ -55,9 +55,9 @@ extension BrowserViewController: URLBarDelegate {
         updateFindInPageVisibility(visible: false)
 
         let tabTrayController = TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
-
-        if let tab = tabManager.selectedTab {
-            screenshotHelper.takeScreenshot(tab)
+        
+        for t in tabManager.tabs {
+            screenshotHelper.takeScreenshot(t)
         }
 
         //self.navigationController?.pushViewController(tabTrayController, animated: true)

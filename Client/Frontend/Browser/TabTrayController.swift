@@ -840,7 +840,9 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
             tabCell.favicon.image = nil
         }
         
-        tabCell.background.image = tab.screenshot
+        tabCell.background.image = tab.screenshot.image
+        tab.screenshot.listenerImages.append(UIImageWithNotify.WeakImageView(tabCell.background))
+        
         return tabCell
     }
 

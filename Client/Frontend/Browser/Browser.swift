@@ -29,6 +29,25 @@ struct DangerousReturnWKNavigation {
     static let emptyNav = WKNavigation()
 }
 
+class UIImageWithNotify {
+    struct WeakImageView {
+        weak var view : UIImageView?
+        init(_ i: UIImageView?) {
+            self.view = i
+        }
+    }
+    var image: UIImage? {
+        didSet {
+            // notify listeners, and remove dead ones
+            listenerImages = listenerImages.filter {
+                $0.view?.image = image
+                return $0.view != nil
+            }
+        }
+    }
+    var listenerImages = [WeakImageView]()
+}
+
 class Browser: NSObject, BrowserWebViewDelegate {
     private var _isPrivate: Bool = false
     internal private(set) var isPrivate: Bool {
@@ -67,7 +86,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
     /// be managed by the web view's navigation delegate.
     var desktopSite: Bool = false
 
-    private(set) var screenshot: UIImage?
+    private(set) var screenshot = UIImageWithNotify()
     var screenshotUUID: NSUUID?
 
     private var helperManager: HelperManager? = nil
@@ -450,12 +469,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
 #endif
         guard let screenshot = screenshot else { return }
-        let cg = screenshot.CGImage
-        let cim:CIImage? = cg != nil ? CIImage(CGImage: cg!) : nil
-        if cim == nil {
-            // screenshot is empty
-            return
-        }
 
         self.screenshot = screenshot
         if revUUID {
