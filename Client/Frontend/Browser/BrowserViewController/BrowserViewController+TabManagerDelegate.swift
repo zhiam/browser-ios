@@ -135,7 +135,7 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func updateTabCountUsingTabManager(tabManager: TabManager, animated: Bool = true) {
-        let count = PrivateBrowsing.singleton.isOn ? tabManager.privateTabs.count : tabManager.normalTabs.count
+        let count = tabManager.normalOrPrivateTabList.count
         urlBar.updateTabCount(max(count, 1), animated: animated)
     }
 }

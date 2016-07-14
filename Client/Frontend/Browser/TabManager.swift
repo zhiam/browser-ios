@@ -113,6 +113,10 @@ class TabManager : NSObject {
         }
     }
 
+    var normalOrPrivateTabList: [Browser] {
+        return PrivateBrowsing.singleton.isOn ? privateTabs : tabs
+    }
+
     init(defaultNewTabRequest: NSURLRequest, prefs: Prefs, imageStore: DiskImageStore?) {
         debugNoteIfNotMainThread()
 
@@ -391,20 +395,7 @@ class TabManager : NSObject {
             return
         }
 
-        let tabToKeepSelected = selectedTab != tab ? selectedTab : nil
-
-        if selectedTab === tab {
-            let tabList: [Browser] = PrivateBrowsing.singleton.isOn ? privateTabs : tabs
-            let currIndex = tabList.indexOf(tab)
-            if let currIndex = currIndex where tabList.count > 1 {
-                let newIndex = currIndex > 0 ? currIndex - 1 : tabList.count - 1
-                assert(newIndex < tabList.count)
-                selectTab(tabList[newIndex])
-            } else {
-                selectTab(nil)
-            }
-        }
-
+        let tabWasTheSelectedTabWithIndex = selectedTab === tab ? normalOrPrivateTabList.indexOf(tab) : nil
         let prevCount = tabCount
         for i in 0..<tabCount {
             if tabs[i] === tab {
@@ -414,8 +405,12 @@ class TabManager : NSObject {
         }
         assert(tabCount == prevCount - 1, "Tab removed")
 
-        if let t = tabToKeepSelected {
-            selectTab(t)
+        if let index = tabWasTheSelectedTabWithIndex {
+            selectTab(nil)
+            let prevIndex = index.advancedBy(-1)
+            if 0..<normalOrPrivateTabList.count ~= prevIndex {
+                selectTab(normalOrPrivateTabList[prevIndex])
+            }
         }
 
         // There's still some time between this and the webView being destroyed.
@@ -431,6 +426,10 @@ class TabManager : NSObject {
         if !tab.isPrivate && normalTabs.count == 0 && createTabIfNoneLeft {
             let tab = addTab()
             selectTab(tab)
+        }
+        
+        if !tab.isPrivate && !(0..<tabs.count ~= _selectedIndex) {
+            selectTab(tabs.first)
         }
 
         if flushToDisk {
