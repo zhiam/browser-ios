@@ -232,31 +232,31 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
     }
 
-    func deleteWebView() {
-        assert(NSThread.isMainThread())
-        if !NSThread.isMainThread() {
-            return
-        }
+    func deleteWebView(isTabDeleted isTabDeleted: Bool) {
+        assert(NSThread.isMainThread()) // to find and remove these cases in debug
+        guard let wv = webView else { return }
 
-        if let webView = webView {
-            lastTitle = title
-            let currentItem: LegacyBackForwardListItem! = webView.backForwardList.currentItem
-            // Freshly created web views won't have any history entries at all.
-            // If we have no history, abort.
-            if currentItem != nil {
-                let backList = webView.backForwardList.backList ?? []
-                let forwardList = webView.backForwardList.forwardList ?? []
-                let urls = (backList + [currentItem] + forwardList).map { $0.URL }
-                let currentPage = -forwardList.count
-                self.sessionData = SessionData(currentPage: currentPage, currentTitle: title, urls: urls, lastUsedTime: lastExecutedTime ?? NSDate.now())
+        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            if !isTabDeleted {
+                self.lastTitle = self.title
+                let currentItem: LegacyBackForwardListItem! = wv.backForwardList.currentItem
+                // Freshly created web views won't have any history entries at all.
+                // If we have no history, abort.
+                if currentItem != nil {
+                    let backList = wv.backForwardList.backList ?? []
+                    let forwardList = wv.backForwardList.forwardList ?? []
+                    let urls = (backList + [currentItem] + forwardList).map { $0.URL }
+                    let currentPage = -forwardList.count
+                    self.sessionData = SessionData(currentPage: currentPage, currentTitle: self.title, urls: urls, lastUsedTime: self.lastExecutedTime ?? NSDate.now())
+                }
             }
-            browserDelegate?.browser(self, willDeleteWebView: webView)
+            self.browserDelegate?.browser(self, willDeleteWebView: wv)
             self.webView = nil
         }
     }
 
     deinit {
-        deleteWebView()
+        deleteWebView(isTabDeleted: true)
     }
 
     var loading: Bool {

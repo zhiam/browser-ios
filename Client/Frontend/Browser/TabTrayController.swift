@@ -755,7 +755,7 @@ extension TabTrayController: SwipeAnimatorDelegate {
 
             if privateMode && tabsToDisplay.count == 0 {
                 // tabManager.removeTab will have selected a tab, which created a non-private webview, so delete it
-                getApp().tabManager.tabs.forEach{ $0.deleteWebView() }
+                getApp().tabManager.tabs.forEach{ $0.deleteWebView(isTabDeleted: false) }
             }
         }
     }
@@ -798,7 +798,7 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         for (i, tab) in tabs.enumerate() {
             if tabToRemove === tab {
                 index = i
-                tab.deleteWebView()
+                tab.deleteWebView(isTabDeleted: true)
                 break
             }
         }

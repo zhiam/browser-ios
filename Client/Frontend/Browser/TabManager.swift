@@ -283,7 +283,7 @@ class TabManager : NSObject {
                 }
 
                 if self.selectedTab != browser {
-                    browser.deleteWebView()
+                    browser.deleteWebView(isTabDeleted: false)
                 }
             }
         }
@@ -320,7 +320,7 @@ class TabManager : NSObject {
         }
         if let browser = oldestBrowser {
             if selectedTab != browser {
-                browser.deleteWebView()
+                browser.deleteWebView(isTabDeleted: false)
             } else {
                 print("limitInMemoryTabs: tab to delete is selected!")
             }
@@ -443,7 +443,7 @@ class TabManager : NSObject {
     func removeAllPrivateTabsAndNotify(notify: Bool) {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
         for tab in tabs {
-            tab.deleteWebView()
+            tab.deleteWebView(isTabDeleted: false)
         }
         _selectedIndex = -1
         privateTabs.forEach{
@@ -749,7 +749,7 @@ extension TabManager {
     // Only call from PB class
     func enterPrivateBrowsingMode(_: PrivateBrowsing) {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
-        tabs.forEach{ $0.deleteWebView() }
+        tabs.forEach{ $0.deleteWebView(isTabDeleted: false) }
         delegates.forEach {
             $0.get()?.tabManagerDidEnterPrivateBrowsingMode(self)
         }
