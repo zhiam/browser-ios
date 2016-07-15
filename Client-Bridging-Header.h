@@ -18,6 +18,10 @@
 #import "HttpsEverywhereObjC.h"
 #import "NSFileManager+Tar.h"
 #import "NSData+GZIP.h"
+
+#import "DashlaneExtensionRequestHelper.h"
+#import "DashlaneExtensionConstants.h"
+
 #import "LegacyJSContext.h"
 #import "ABPFilterLibWrapper.h"
 #import "TrackingProtectionCpp.h"

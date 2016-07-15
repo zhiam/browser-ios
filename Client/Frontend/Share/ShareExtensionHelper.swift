@@ -38,6 +38,13 @@ class ShareExtensionHelper: NSObject {
         }
         activityItems.append(self)
 
+        if let url = selectedTab?.webView?.URL where DashlaneExtensionRequestHelper.isDashlaneAppExtensionAvailable() {
+            let extHelper = DashlaneExtensionRequestHelper(appName: DeviceInfo.appName())
+            extHelper.addRequest(DASHLANE_EXTENSION_REQUEST_LOGIN, matchingString: url.absoluteString)
+            let extItem = extHelper.extensionItemForCurrentRequests()
+            activityItems.append(extItem)
+        }
+
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: activities)
 
         // Hide 'Add to Reading List' which currently uses Safari.
@@ -46,6 +53,7 @@ class ShareExtensionHelper: NSObject {
         activityViewController.excludedActivityTypes = [
             UIActivityTypeAddToReadingList,
         ]
+
 
         // This needs to be ready by the time the share menu has been displayed and
         // activityViewController(activityViewController:, activityType:) is called,
