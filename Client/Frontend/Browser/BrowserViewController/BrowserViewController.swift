@@ -1000,6 +1000,7 @@ class BrowserViewController: UIViewController {
 #endif
 
     func presentActivityViewController(url: NSURL, tab: Browser? = nil, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
+
         var activities = [UIActivity]()
 
         let findInPageActivity = FindInPageActivity() { [unowned self] in

@@ -38,7 +38,9 @@ class ShareExtensionHelper: NSObject {
         }
         activityItems.append(self)
 
-        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: activities)
+        let _activities = DashlaneExtensionRequestHelper.isDashlaneAppExtensionAvailable() ? activities + [DashlaneActivity()] : activities
+
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: _activities)
 
         // Hide 'Add to Reading List' which currently uses Safari.
         // We would also hide View Later, if possible, but the exclusion list doesn't currently support
@@ -46,6 +48,7 @@ class ShareExtensionHelper: NSObject {
         activityViewController.excludedActivityTypes = [
             UIActivityTypeAddToReadingList,
         ]
+
 
         // This needs to be ready by the time the share menu has been displayed and
         // activityViewController(activityViewController:, activityType:) is called,

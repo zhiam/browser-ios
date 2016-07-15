@@ -56,7 +56,8 @@ def walk(proj, base, start, override_target = nil)
       end
     else
       folder = folder.gsub('./','')
-      file_ref = proj[folder].new_file(path)
+      group = proj[folder]
+      file_ref = group.new_file(path)
       if path =~ /(\.js)|(\.html)|(\.css)|(\.txt)|(\.xib)|(\.dat)/
         $client_resources.push(file_ref)
       else
@@ -95,9 +96,12 @@ Dir.chdir('..')
 
 brave = project.new_group('brave')
 
+thirdParty = brave.new_group('ThirdParty')
+thirdParty.new_group('Dashlane')
+walk(project, '.', './brave/ThirdParty/Dashlane', 'Client')
+
 if ARGV[0] == 'flex'
-    brave.new_group('ThirdParty')
-    walk(project, '.', './brave/ThirdParty', 'Client')
+  walk(project, '.', './brave/ThirdParty/Flex', 'Client')
 end
 
 entitlements = brave.new_file('brave/Brave.entitlements')
