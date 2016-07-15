@@ -13,6 +13,9 @@
 #import "ThirdParty/RaptureXML/RXMLElement.h"
 
 // BRAVE
+#import "DashlaneExtensionRequestHelper.h"
+#import "DashlaneExtensionConstants.h"
+
 #import "LegacyJSContext.h"
 #import "ABPFilterLibWrapper.h"
 #import "TrackingProtectionCpp.h"

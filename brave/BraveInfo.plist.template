@@ -37,7 +37,8 @@
 	<string>$(MOZ_BUILD_ID)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>itms-books</string>
+    <string>dashlane-ext</string>
+    <string>itms-books</string>
 		<string>org-appextension-feature-password-management</string>
 	</array>
 	<key>Fabric</key>
