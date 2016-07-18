@@ -522,6 +522,20 @@ extension TabsBarViewController {
         modifyWidth(tab, width: 0)
         modifyWidth(hitSpacer, width: tabWidth)
     }
+
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+
+        leftOverflowIndicator.opacity = 0
+        rightOverflowIndicator.opacity = 0
+        delay(0.1) {
+            self.addLeftRightScrollHint(isRightSide: false, maskLayer: self.leftOverflowIndicator)
+            self.addLeftRightScrollHint(isRightSide: true, maskLayer: self.rightOverflowIndicator)
+            self.overflowIndicators()
+        }
+    }
+
+
 }
 
 
