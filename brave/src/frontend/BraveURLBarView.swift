@@ -391,50 +391,75 @@ class BraveURLBarView : URLBarView {
         bringSubviewToFront(stopReloadButton)
     }
 
-    var progressIsCompleting = false
+    private var progressIsCompleting = false
+    private var updateIsScheduled = false
     override func updateProgressBar(progress: Float, dueToTabChange: Bool = false) {
+        struct staticProgress { static var val = Float(0) }
+        let minProgress = locationView.frame.width / 3.0
+
         func setWidth(width: CGFloat) {
             var frame = locationView.braveProgressView.frame
             frame.size.width = width
             locationView.braveProgressView.frame = frame
         }
 
-        if dueToTabChange && (progress == 1.0 || progress == 0.0) {
-            setWidth(0)
+        if dueToTabChange {
+            if (progress == 1.0 || progress == 0.0) {
+                locationView.braveProgressView.alpha = 0
+            }
+            else {
+                locationView.braveProgressView.alpha = 1
+                setWidth(minProgress + CGFloat(progress) * (self.locationView.frame.width - minProgress))
+            }
             return
         }
 
-        let minProgress = locationView.frame.width / 3.0
+        func performUpdate() {
+            let progress = staticProgress.val
 
-        if progress == 1.0 {
-            if progressIsCompleting {
-                return
-            }
-            progressIsCompleting = true
-            
-            UIView.animateWithDuration(0.5, animations: {
-                setWidth(self.locationView.frame.width)
-                }, completion: { _ in
-                    UIView.animateWithDuration(0.5, animations: {
-                        self.locationView.braveProgressView.alpha = 0.0
-                        }, completion: { _ in
-                            self.progressIsCompleting = false
-                            setWidth(0)
-                    })
-            })
-        } else {
-            self.locationView.braveProgressView.alpha = 1.0
-            progressIsCompleting = false
-            let w = minProgress + CGFloat(progress) * (self.locationView.frame.width - minProgress)
-            
-            if w > locationView.braveProgressView.frame.size.width {
+            if progress == 1.0 || !(BraveApp.getCurrentWebView()?.loading ?? false) {
+                if progressIsCompleting {
+                    return
+                }
+                progressIsCompleting = true
+
                 UIView.animateWithDuration(0.5, animations: {
-                    setWidth(w)
+                    setWidth(self.locationView.frame.width)
                     }, completion: { _ in
-                        
+                        UIView.animateWithDuration(0.5, animations: {
+                            self.locationView.braveProgressView.alpha = 0.0
+                            }, completion: { _ in
+                                self.progressIsCompleting = false
+                                setWidth(0)
+                        })
                 })
+            } else {
+                self.locationView.braveProgressView.alpha = 1.0
+                progressIsCompleting = false
+                let w = minProgress + CGFloat(progress) * (self.locationView.frame.width - minProgress)
+
+                if w > locationView.braveProgressView.frame.size.width {
+                    UIView.animateWithDuration(0.5, animations: {
+                        setWidth(w)
+                        }, completion: { _ in
+                            
+                    })
+                }
             }
         }
+
+        staticProgress.val = progress
+
+        if updateIsScheduled {
+            return
+        }
+        updateIsScheduled = true
+
+        delay(0.2) {
+            self.updateIsScheduled = false
+            performUpdate()
+        }
+
     }
 
     override func updateBookmarkStatus(isBookmarked: Bool) {
