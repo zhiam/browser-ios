@@ -24,7 +24,6 @@ struct BrowserViewControllerUX {
 }
 
 class BrowserViewController: UIViewController {
-    var delegates = [WeakBrowserTabStateDelegate]()
     var homePanelController: HomePanelViewController?
     var webViewContainer: UIView!
     var urlBar: URLBarView!
@@ -527,11 +526,6 @@ class BrowserViewController: UIViewController {
         log.debug("BVC intro presented.")
         self.webViewContainerToolbar.hidden = false
 
-        screenshotHelper.viewIsVisible = true
-        log.debug("BVC taking pending screenshots….")
-        screenshotHelper.takePendingScreenshots(tabManager.tabs)
-        log.debug("BVC done taking screenshots.")
-
         log.debug("BVC calling super.viewDidAppear.")
         super.viewDidAppear(animated)
         log.debug("BVC done.")
@@ -560,12 +554,6 @@ class BrowserViewController: UIViewController {
             alertController.delegate = self
             presentViewController(alertController, animated: true, completion: nil)
         }
-    }
-
-    override func viewWillDisappear(animated: Bool) {
-        screenshotHelper.viewIsVisible = false
-
-        super.viewWillDisappear(animated)
     }
 
     func resetBrowserChrome() {
@@ -757,10 +745,6 @@ class BrowserViewController: UIViewController {
 #endif
         if let nav = tab.loadRequest(NSURLRequest(URL: url)) {
             self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
-        }
-
-        delegates.forEach {
-            $0.get()?.browserUrlChanged(tab)
         }
     }
 

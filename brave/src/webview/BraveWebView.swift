@@ -18,16 +18,14 @@ class ContainerWebView : WKWebView {
 var globalContainerWebView = ContainerWebView()
 var nullWKNavigation: WKNavigation = WKNavigation()
 
-enum KVOStrings: String {
-    case kvoCanGoBack = "canGoBack"
-    case kvoCanGoForward = "canGoForward"
-    case kvoLoading = "loading"
-    case kvoURL = "URL"
-    case kvoEstimatedProgress = "estimatedProgress"
-
-    // Going to handle URL separately, see broadcast code
-    static let allValuesExceptURL = [kvoCanGoBack, kvoCanGoForward, kvoLoading, kvoEstimatedProgress]
+protocol WebPageStateDelegate : class {
+    func webView(webView: UIWebView, progressChanged: Float)
+    func webView(webView: UIWebView, isLoading: Bool)
+    func webView(webView: UIWebView, urlChanged: String)
+    func webView(webView: UIWebView, canGoBack: Bool)
+    func webView(webView: UIWebView, canGoForward: Bool)
 }
+
 
 @objc class HandleJsWindowOpen : NSObject {
     static func open(url: String) {
@@ -82,6 +80,12 @@ struct BraveWebViewConstants {
 }
 
 class BraveWebView: UIWebView {
+    class Weak_WebPageStateDelegate {     // We can't use a WeakList here because this is a protocol.
+        weak var value : WebPageStateDelegate?
+        init (value: WebPageStateDelegate) { self.value = value }
+    }
+    var delegatesForPageState = [Weak_WebPageStateDelegate]()
+
     let specialStopLoadUrl = "http://localhost.stop.load"
     weak var navigationDelegate: WKNavigationDelegate?
     weak var UIDelegate: WKUIDelegate?
@@ -135,7 +139,7 @@ class BraveWebView: UIWebView {
         }
 
         if let url = URL?.absoluteString where url != lastBroadcastedKvoUrl {
-            kvoBroadcast([KVOStrings.kvoURL])
+            delegatesForPageState.forEach { $0.value?.webView(self, urlChanged: url) }
             lastBroadcastedKvoUrl = url
         }
     }
@@ -245,9 +249,6 @@ class BraveWebView: UIWebView {
             progress?.reset()
         }
 
-        progress?.setProgress(0.3)
-        kvoBroadcast([KVOStrings.kvoEstimatedProgress])
-
         tryUpdateUrl()
 
         if (!loading ||
@@ -256,7 +257,12 @@ class BraveWebView: UIWebView {
             updateTitleFromHtml()
             internalIsLoadingEndedFlag = false // need to set this to bypass loadingCompleted() precondition
             loadingCompleted()
-            kvoBroadcast()
+
+            broadcastToPageStateDelegates()
+        } else {
+            progress?.setProgress(0.3)
+            delegatesForPageState.forEach { $0.value?.webView(self, progressChanged: 0.3) }
+
         }
     }
 
@@ -414,15 +420,13 @@ class BraveWebView: UIWebView {
         }
     }
 
-    func kvoBroadcast(kvos: [KVOStrings]? = nil) {
-        if let _kvos = kvos {
-            for item in _kvos {
-                willChangeValueForKey(item.rawValue)
-                didChangeValueForKey(item.rawValue)
-            }
-        } else {
-            // URL has its own broadcasting when set
-            kvoBroadcast(KVOStrings.allValuesExceptURL)
+    // URL changes are NOT broadcast here. Have to be selective with those until the receiver code is improved to be more careful about updating
+    func broadcastToPageStateDelegates() {
+        delegatesForPageState.forEach {
+            $0.value?.webView(self, isLoading: loading)
+            $0.value?.webView(self, canGoBack: canGoBack)
+            $0.value?.webView(self, canGoForward: canGoForward)
+            $0.value?.webView(self, progressChanged: loading ? Float(estimatedProgress) : 1.0)
         }
     }
 
@@ -696,7 +700,7 @@ extension BraveWebView: UIWebViewDelegate {
             shieldStatUpdate(.reset)
         }
 
-        kvoBroadcast()
+        broadcastToPageStateDelegates()
 
         return result
     }
@@ -711,7 +715,8 @@ extension BraveWebView: UIWebViewDelegate {
             nd.webView?(globalContainerWebView, didStartProvisionalNavigation: nullWKNavigation)
         }
         progress?.webViewDidStartLoad()
-        kvoBroadcast([KVOStrings.kvoLoading])
+
+        delegatesForPageState.forEach { $0.value?.webView(self, isLoading: true) }
 
         #if !TEST
             HideEmptyImages.runJsInWebView(self)
@@ -738,7 +743,7 @@ extension BraveWebView: UIWebViewDelegate {
         progress?.webViewDidFinishLoad(documentReadyState: readyState)
 
         backForwardList.update()
-        kvoBroadcast()
+        broadcastToPageStateDelegates()
     }
 
     func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
@@ -805,7 +810,7 @@ extension BraveWebView: UIWebViewDelegate {
             }
         }
         progress?.didFailLoadWithError()
-        kvoBroadcast()
+        broadcastToPageStateDelegates()
     }
 }
 

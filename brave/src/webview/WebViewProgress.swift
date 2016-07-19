@@ -73,8 +73,11 @@ public class WebViewProgress
 
     func setProgress(progress: Double) {
         if (progress > webView?.estimatedProgress || progress == 0 || progress > 0.99) {
-            webView?.estimatedProgress = progress;
-            webView?.kvoBroadcast([KVOStrings.kvoEstimatedProgress])
+            webView?.estimatedProgress = progress
+
+            if let wv = webView {
+                wv.delegatesForPageState.forEach { $0.value?.webView(wv, progressChanged: Float(progress)) }
+            }
         }
     }
 

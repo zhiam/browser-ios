@@ -66,7 +66,7 @@ class TabWidget : UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.browser = browser
 
-        getApp().browserViewController.delegates.append(WeakBrowserTabStateDelegate(value: self))
+        browser.webView?.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
 
         let bar = UIView()
 
@@ -126,15 +126,6 @@ class TabWidget : UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        var delegates = getApp().browserViewController.delegates
-        if let item = delegates.find({ $0.get() ===  self }) {
-            if let index = delegates.indexOf({ $0 === item}) {
-                delegates.removeAtIndex(index)
-            }
-        }
-    }
-
     func clicked() {
         delegate?.tabWidgetClose(self)
     }
@@ -181,25 +172,22 @@ class TabWidget : UIView {
     }
 }
 
-extension TabWidget : BrowserTabStateDelegate {
-    func browserUrlChanged(browser: Browser) {
-        if browser !== self.browser {
-            return
-        }
-
-        if let t = browser.url?.baseDomain() where  title.titleLabel?.text?.isEmpty ?? true {
+extension TabWidget : WebPageStateDelegate {
+    func webView(webView: UIWebView, urlChanged: String) {
+        if let t = browser?.url?.baseDomain() where  title.titleLabel?.text?.isEmpty ?? true {
             setTitle(t)
         }
 
         updateTitle_throttled()
     }
 
-    func browserProgressChanged(browser: Browser) {
-        if browser !== self.browser {
-            return
-        }
+    func webView(webView: UIWebView, progressChanged: Float) {
         updateTitle_throttled()
     }
+
+    func webView(webView: UIWebView, isLoading: Bool) {}
+    func webView(webView: UIWebView, canGoBack: Bool) {}
+    func webView(webView: UIWebView, canGoForward: Bool) {}
 }
 
 extension TabWidget : UIGestureRecognizerDelegate {

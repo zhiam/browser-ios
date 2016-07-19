@@ -15,87 +15,61 @@ protocol BrowserTabStateDelegate: class {
     func browserProgressChanged(browser: Browser)
 }
 
-// We can't use a WeakList here because this is a protocol.
-class WeakBrowserTabStateDelegate {
-    weak var value : BrowserTabStateDelegate?
-
-    init (value: BrowserTabStateDelegate) {
-        self.value = value
+extension BrowserViewController: WebPageStateDelegate {
+    func webView(webView: UIWebView, canGoBack: Bool) {
+        guard let tab = tabManager.tabForWebView(webView) else { return }
+        if tab === tabManager.selectedTab {
+            navigationToolbar.updateBackStatus(canGoBack)
+        }
+    }
+    
+    func webView(webView: UIWebView, canGoForward: Bool) {
+        guard let tab = tabManager.tabForWebView(webView) else { return }
+        if tab === tabManager.selectedTab {
+            navigationToolbar.updateForwardStatus(canGoForward)
+        }
     }
 
-    func get() -> BrowserTabStateDelegate? {
-        return value
+    func webView(webView: UIWebView, urlChanged: String) {
+        guard let tab = tabManager.tabForWebView(webView) else { return }
+
+        if let selected = tabManager.selectedTab {
+            if selected.webView?.URL == nil {
+                log.debug("URL is nil!")
+            }
+
+            if selected === tab && !tab.restoring {
+                updateUIForReaderHomeStateForTab(tab)
+            }
+        }
+    }
+
+    func webView(webView: UIWebView, progressChanged: Float) {
+        guard let tab = tabManager.tabForWebView(webView) else { return }
+        if tab === tabManager.selectedTab {
+            urlBar.updateProgressBar(progressChanged)
+        }
+    }
+
+    func webView(webView: UIWebView, isLoading: Bool) {
+        guard let tab = tabManager.tabForWebView(webView) else { return }
+
+        if tab === tabManager.selectedTab {
+            toolbar?.updateReloadStatus(isLoading)
+            urlBar.updateReloadStatus(isLoading)
+        }
+
     }
 }
 
 extension BrowserViewController: BrowserDelegate {
-
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard let path = keyPath else { assertionFailure("Unhandled KVO key: \(keyPath)"); return }
-
-        guard let wv = object as? UIWebView, tab = tabManager.tabForWebView(wv) else { return }
-
-        switch path {
-        case KVOEstimatedProgress:
-            guard let progress = change?[NSKeyValueChangeNewKey] as? Float else { break }
-            if tab === tabManager.selectedTab {
-                urlBar.updateProgressBar(progress)
-            }
-
-            for delegate in delegates {
-                delegate.get()?.browserProgressChanged(tab)
-            }
-        case KVOLoading:
-            guard let loading = change?[NSKeyValueChangeNewKey] as? Bool else { break }
-            if tab === tabManager.selectedTab {
-                toolbar?.updateReloadStatus(loading)
-                urlBar.updateReloadStatus(loading)
-            }
-
-        case KVOURL:
-            if let selected = tabManager.selectedTab {
-                if selected.webView?.URL == nil {
-                    log.debug("URL is nil!")
-                }
-
-                if selected === tab && !tab.restoring {
-                    updateUIForReaderHomeStateForTab(tab)
-                }
-            }
-
-            for delegate in delegates {
-                delegate.get()?.browserUrlChanged(tab)
-            }
-
-        case KVOCanGoBack:
-            guard let canGoBack = change?[NSKeyValueChangeNewKey] as? Bool else { break }
-            if tab === tabManager.selectedTab {
-                navigationToolbar.updateBackStatus(canGoBack)
-            }
-        case KVOCanGoForward:
-            guard let canGoForward = change?[NSKeyValueChangeNewKey] as? Bool else { break }
-            if tab === tabManager.selectedTab {
-                navigationToolbar.updateForwardStatus(canGoForward)
-            }
-        default:
-            assertionFailure("Unhandled KVO key: \(keyPath)")
-        }
-    }
-
     func browser(browser: Browser, didCreateWebView webView: BraveWebView) {
-        // Observers that live as long as the tab.
-        let observed = [KVOEstimatedProgress, KVOLoading, KVOCanGoBack, KVOCanGoForward, KVOURL]
-        for key in observed {
-            webView.addObserver(self, forKeyPath: key, options: .New, context: nil)
-        }
+        webView.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
 
         webView.scrollView.addObserver(self.scrollController, forKeyPath: KVOContentSize, options: .New, context: nil)
 
         webView.removeBvcObserversOnDeinit = {
-            [unowned self, weak sc = self.scrollController] (wv) in
-            for key in observed {
-                wv.removeObserver(self, forKeyPath: key)
-            }
+            [weak sc = self.scrollController] (wv) in
             wv.scrollView.removeObserver(sc!, forKeyPath: KVOContentSize)
         }
 
