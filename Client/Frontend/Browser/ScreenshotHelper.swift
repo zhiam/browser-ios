@@ -9,8 +9,6 @@ import Shared
  * Handles screenshots for a given browser, including pages with non-webview content.
  */
 class ScreenshotHelper {
-    var viewIsVisible = false
-
     private weak var controller: BrowserViewController?
 
     init(controller: BrowserViewController) {
@@ -51,24 +49,15 @@ class ScreenshotHelper {
     /// Trying to take a screenshot immediately after didFinishNavigation results in a screenshot
     /// of the previous page, presumably due to an iOS bug. Adding a brief delay fixes this.
     func takeDelayedScreenshot(tab: Browser) {
+        if tab.pendingScreenshot {
+            return
+        }
+        tab.pendingScreenshot = true
         delay(2) { [weak self, weak tab = tab] in
-            // If the view controller isn't visible, the screenshot will be blank.
-            // Wait until the view controller is visible again to take the screenshot.
-            guard self?.viewIsVisible ?? false else {
-                tab?.pendingScreenshot = true
-                return
-            }
-
             if let tab = tab {
+                tab.pendingScreenshot = false
                 self?.takeScreenshot(tab)
             }
-        }
-    }
-
-    func takePendingScreenshots(tabs: [Browser]) {
-        for tab in tabs where tab.pendingScreenshot {
-            tab.pendingScreenshot = false
-            takeDelayedScreenshot(tab)
         }
     }
 }
