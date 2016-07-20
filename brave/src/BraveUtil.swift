@@ -3,6 +3,17 @@
 import Foundation
 import Storage
 
+class Debug_FuncProfiler {
+    let startTime:CFAbsoluteTime
+    init() {
+        startTime = CFAbsoluteTimeGetCurrent()
+    }
+
+    func stop() -> CFAbsoluteTime {
+        return CFAbsoluteTimeGetCurrent() - startTime
+    }
+}
+
 func delay(delay:Double, closure:()->()) {
     dispatch_after(
         dispatch_time(

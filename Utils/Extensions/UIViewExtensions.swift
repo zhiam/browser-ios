@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import UIKit
+import Shared
 
 extension UIView {
     /**
@@ -37,9 +38,12 @@ extension UIView {
     /**
      * Takes a screenshot of the view with the given aspect ratio.
      * An aspect ratio of 0 means capture the entire view.
+     * Quality of zero means to use built in default, which adjusts based on the device capabilities
      */
-    func screenshot(aspectRatio: CGFloat = 0, offset: CGPoint? = nil, quality: CGFloat = 0.5) -> UIImage? {
+    func screenshot(aspectRatio: CGFloat = 0, offset: CGPoint? = nil, quality _quality: CGFloat = 0) -> UIImage? {
         assert(aspectRatio >= 0)
+
+        let quality = _quality != 0 ? _quality : ( DeviceInfo.isBlurSupported() ? 0.5 : 0.2 )
 
         var size: CGSize
         if aspectRatio > 0 {
@@ -56,7 +60,8 @@ extension UIView {
             size = frame.size
         }
 
-        return screenshot(size, offset: offset, quality: quality)
+        let image = screenshot(size, offset: offset, quality: quality)
+        return image
     }
 
     /* 

@@ -27,15 +27,22 @@ class ScreenshotHelper {
             } else if let wv = tab.webView {
                 let offset = CGPointMake(0, -wv.scrollView.contentInset.top)
                 // If webview is hidden, need to add it for screenshot.
-                let showForScreenshot = wv.superview == nil
+                let showForScreenshot = wv.superview == nil && getApp().tabManager.selectedTab != tab
                 if showForScreenshot {
                     getApp().rootViewController.view.insertSubview(wv, atIndex: 0)
-                    wv.frame = controller?.tabManager.selectedTab?.webView?.frame ?? CGRectZero
-                    wv.frame = wv.convertRect(wv.frame, toView: nil)
+                    wv.frame = wv.convertRect(getApp().tabManager.selectedTab?.webView?.frame ?? CGRectZero, toView: nil)
+                    print(wv.frame)
                     delay(0.1) { [weak tab] in
+                        print(tab?.webView?.frame)
                         screenshot = tab?.webView?.screenshot(offset: offset)
                         tab?.setScreenshot(screenshot)
-                        tab?.webView?.removeFromSuperview()
+
+                        // Due to delay, consider: tab having become selected, and tab is deleted
+                        // A deleted tab will have already called removeFromSuperview (calling 2x is ok)
+                        // Just ensure not to call that if the tab is now selected.
+                        if getApp().tabManager.selectedTab != tab {
+                            tab?.webView?.removeFromSuperview()
+                        }
                     }
                 } else {
                     screenshot = tab.webView?.screenshot(offset: offset)
