@@ -66,7 +66,9 @@ class TabWidget : UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.browser = browser
 
-        browser.webView?.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
+        if let wv = browser.webView {
+            wv.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
+        }
 
         let bar = UIView()
 

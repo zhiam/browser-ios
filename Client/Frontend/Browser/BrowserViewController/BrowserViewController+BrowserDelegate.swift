@@ -64,14 +64,17 @@ extension BrowserViewController: WebPageStateDelegate {
 
 extension BrowserViewController: BrowserDelegate {
     func browser(browser: Browser, didCreateWebView webView: BraveWebView) {
-        webView.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
+        if webView.removeBvcObserversOnDeinit != nil {
+            return
+        }
 
         webView.scrollView.addObserver(self.scrollController, forKeyPath: KVOContentSize, options: .New, context: nil)
-
         webView.removeBvcObserversOnDeinit = {
             [weak sc = self.scrollController] (wv) in
             wv.scrollView.removeObserver(sc!, forKeyPath: KVOContentSize)
         }
+
+        webView.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
 
         #if !BRAVE
             webView.UIDelegate = self /// these are for javascript alert panels

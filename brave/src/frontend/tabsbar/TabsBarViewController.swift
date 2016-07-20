@@ -296,7 +296,10 @@ extension TabsBarViewController: TabManagerDelegate {
     }
 
     func tabManager(tabManager: TabManager, didCreateWebView tab: Browser, url: NSURL?) {
-        if tabs.find({ $0.browser === tab }) != nil {
+        if let t = tabs.find({ $0.browser === tab }) {
+            if let wv = t.browser?.webView {
+                wv.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: t))
+            }
             return
         }
 

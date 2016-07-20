@@ -40,10 +40,6 @@ class WeakTabManagerDelegate {
     init (value: TabManagerDelegate) {
         self.value = value
     }
-
-    func get() -> TabManagerDelegate? {
-        return value
-    }
 }
 
 // TabManager must extend NSObjectProtocol in order to implement WKNavigationDelegate
@@ -60,7 +56,7 @@ class TabManager : NSObject {
         debugNoteIfNotMainThread()
         for i in 0 ..< delegates.count {
             let del = delegates[i]
-            if delegate === del.get() {
+            if delegate === del.value {
                 delegates.removeAtIndex(i)
                 return
             }
@@ -208,10 +204,15 @@ class TabManager : NSObject {
             self.preserveTabs()
 
             assert(tab === self.selectedTab, "Expected tab is selected")
-            self.selectedTab?.createWebview()
+            if self.selectedTab?.webView == nil {
+                self.selectedTab?.createWebview()
+                for delegate in self.delegates where self.selectedTab?.webView != nil {
+                    delegate.value?.tabManager(self, didCreateWebView: self.selectedTab!, url: nil)
+                }
+            }
 
             for delegate in self.delegates {
-                delegate.get()?.tabManager(self, didSelectedTabChange: tab, previous: previous)
+                delegate.value?.tabManager(self, didSelectedTabChange: tab, previous: previous)
             }
 
             self.limitInMemoryTabs()
@@ -270,7 +271,7 @@ class TabManager : NSObject {
 
         // Notify that we bulk-loaded so we can adjust counts.
         for delegate in delegates {
-            delegate.get()?.tabManagerDidAddTabs(self)
+            delegate.value?.tabManagerDidAddTabs(self)
         }
     }
 
@@ -362,13 +363,13 @@ class TabManager : NSObject {
 
 
             for delegate in self.delegates {
-                delegate.get()?.tabManager(self, didAddTab: tab)
+                delegate.value?.tabManager(self, didAddTab: tab)
             }
 
             tab.createWebview()
 
             for delegate in self.delegates {
-                delegate.get()?.tabManager(self, didCreateWebView: tab, url: request?.URL)
+                delegate.value?.tabManager(self, didCreateWebView: tab, url: request?.URL)
             }
 
             tab.navigationDelegate = self.navDelegate
@@ -418,7 +419,7 @@ class TabManager : NSObject {
         tab.webView?.navigationDelegate = nil
         if notify {
             for delegate in delegates {
-                delegate.get()?.tabManager(self, didRemoveTab: tab)
+                delegate.value?.tabManager(self, didRemoveTab: tab)
             }
         }
 
@@ -711,7 +712,7 @@ extension TabManager {
         if savedTabs.count > 0 {
             log.debug("Notifying delegates.")
             for delegate in delegates {
-                delegate.get()?.tabManagerDidRestoreTabs(self)
+                delegate.value?.tabManagerDidRestoreTabs(self)
             }
         }
 
@@ -751,14 +752,14 @@ extension TabManager {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
         tabs.forEach{ $0.deleteWebView(isTabDeleted: false) }
         delegates.forEach {
-            $0.get()?.tabManagerDidEnterPrivateBrowsingMode(self)
+            $0.value?.tabManagerDidEnterPrivateBrowsingMode(self)
         }
     }
 
     func exitPrivateBrowsingMode(_: PrivateBrowsing) {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
         delegates.forEach {
-            $0.get()?.tabManagerDidExitPrivateBrowsingMode(self)
+            $0.value?.tabManagerDidExitPrivateBrowsingMode(self)
         }
 
         if getApp().tabManager.tabs.count < 1 {
