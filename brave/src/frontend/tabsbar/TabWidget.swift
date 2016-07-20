@@ -163,10 +163,7 @@ class TabWidget : UIView {
     }
 
     func setTitle(title: String?) {
-        if browser?.url?.absoluteString.contains(WebServer.sharedInstance.base) ?? false {
-            return
-        }
-        if let title = title {
+        if let title = title where title != "localhost" {
             self.title.setTitle(title, forState: .Normal)
         } else {
             self.title.setTitle("", forState: .Normal)
