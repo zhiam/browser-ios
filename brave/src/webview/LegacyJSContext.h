@@ -21,4 +21,7 @@
 -(NSArray*)findNewFramesForWebView:(UIWebView *)webView withFrameContexts:(NSSet *)contexts;
 
 - (void)windowOpenOverride:(UIWebView *)webView context:(id)context;
+
+- (void)injectUserAgentOverrride:(UIWebView *)webView;
+
 @end

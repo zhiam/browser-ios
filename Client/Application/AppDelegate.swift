@@ -362,8 +362,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Set the UA for WKWebView (via defaults), the favicon fetcher, and the image loader.
         // This only needs to be done once per runtime. Note that we use defaults here that are
         // readable from extensions, so they can just use the cached identifier.
-        let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
-        defaults.registerDefaults(["UserAgent": firefoxUA])
+//        let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
+//        defaults.registerDefaults(["UserAgent": firefoxUA])
 
         SDWebImageDownloader.sharedDownloader().setValue(firefoxUA, forHTTPHeaderField: "User-Agent")
 

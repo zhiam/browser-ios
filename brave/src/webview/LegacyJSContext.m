@@ -161,6 +161,15 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
     };
 }
 
+// Probably not needed, useful for experimenting
+-(void)injectUserAgentOverrride:(UIWebView *)webView
+{
+    JSContext *context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    if (!context)
+        return;
+
+    [context evaluateScript:@"var orig = navigator; navigator = new Object(); navigator.__proto__ = orig;navigator.__defineGetter__('userAgent', function () { return 'Custom'; });"];
+}
 
 - (void)callOnContext:(id)context script:(NSString*)script
 {

@@ -723,10 +723,14 @@ extension BraveWebView: UIWebViewDelegate {
         #endif
 
         configuration.userContentController.injectFingerprintProtection()
+
+        LegacyJSContext().injectUserAgentOverrride(self)
     }
 
     func webViewDidFinishLoad(webView: UIWebView) {
         assert(NSThread.isMainThread())
+
+        LegacyJSContext().injectUserAgentOverrride(self)
 
         // browserleaks canvas requires injection at this point
         configuration.userContentController.injectFingerprintProtection()

@@ -38,6 +38,14 @@ class URLProtocol: NSURLProtocol {
         return useCustomUrlProtocol
     }
 
+    // this results in the user-agent specified here appended to the existing agent, after a comma
+    override init(request: NSURLRequest, cachedResponse: NSCachedURLResponse?, client: NSURLProtocolClient?) {
+        let mutableReq = URLProtocol.cloneRequest(request)
+        mutableReq.setValue(kDesktopUserAgent + " foo", forHTTPHeaderField: "User-Agent")
+        mutableReq.setValue(kDesktopUserAgent + " foo", forHTTPHeaderField: "User_Agent")
+        super.init(request: mutableReq, cachedResponse: cachedResponse, client: client)
+    }
+
     // Tries to use the UA to match to requesting webview.
     // If it fails use current selected webview
     static func getShields(request: NSURLRequest) -> BraveShieldState {
@@ -60,7 +68,22 @@ class URLProtocol: NSURLProtocol {
         return shieldResult
     }
 
+
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
+        let shieldState = getShields(request)
+        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) where shieldState.isOnHTTPSE() ?? false {
+
+            let ua = request.allHTTPHeaderFields?["User-Agent"]
+            delay(0) {
+                WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
+            }
+
+            let req = cloneRequest(request)
+            print(redirectedUrl)
+            req.cachePolicy = .ReturnCacheDataElseLoad
+            req.URL = redirectedUrl
+            return req
+        }
         return request
     }
 
