@@ -132,12 +132,12 @@ class URLProtocol: NSURLProtocol {
 
             if url == request.mainDocumentURL {
                 returnEmptyResponse()
-                ensureMainThread() {
+                delay(0) {
                     WebViewToUAMapper.userAgentToWebview(ua)?.loadRequest(newRequest)
                 }
             } else {
                 connection = NSURLConnection(request: newRequest, delegate: self)
-                ensureMainThread() {
+                delay(0.1) {
                     WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
                 }
             }
@@ -155,7 +155,7 @@ class URLProtocol: NSURLProtocol {
             } else {
                 returnEmptyResponse()
             }
-            ensureMainThread() {
+            delay(0.1) {
                 WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.abAndTpIncrement)
             }
             return
