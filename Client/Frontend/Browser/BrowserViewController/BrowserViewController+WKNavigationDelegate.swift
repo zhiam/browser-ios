@@ -96,9 +96,11 @@ extension BrowserViewController: WKNavigationDelegate {
 
 
         if let tab = tabManager.selectedTab where isStoreURL(url) {
-            let tag = 8675309
-            let hasOneAlready = tab.bars.contains({ $0.tag == tag })
-            if hasOneAlready ?? true {
+            struct StaticTag {
+                static let tag = Int(arc4random())
+            }
+            let hasOneAlready = tab.bars.contains({ $0.tag == StaticTag.tag })
+            if hasOneAlready ?? false {
                 return
             }
 
@@ -114,7 +116,7 @@ extension BrowserViewController: WKNavigationDelegate {
                                                 self.tabManager.selectedTab?.removeSnackbar(bar)
                                             })
                 ])
-            snackBar.tag = tag
+            snackBar.tag = StaticTag.tag
             tabManager.selectedTab?.addSnackbar(snackBar)
             return
         }
