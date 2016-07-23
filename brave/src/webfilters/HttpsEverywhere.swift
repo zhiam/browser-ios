@@ -141,7 +141,7 @@ class HttpsEverywhere {
 
         var result = [Int]()
 
-        for row in db.prepare(query) {
+        if let row = db.prepare(query).generate().next() {
             var data = row.get(ids)
             data = data.substringWithRange(data.startIndex.advancedBy(1)..<data.endIndex.advancedBy(-1))
             if let loc = data.rangeOfString(",")?.startIndex {
