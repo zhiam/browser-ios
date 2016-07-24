@@ -123,7 +123,7 @@ class URLProtocol: NSURLProtocol {
         let ua = request.allHTTPHeaderFields?["User-Agent"]
 
         // HttpsEverywhere re-checking is O(1) due to internal cache,
-        if let url = request.URL, redirectedUrl = HttpsEverywhere.singleton.tryRedirectingUrl(url) where shieldState.isOnHTTPSE() ?? false {
+        if let url = request.URL, redirectedUrl = shieldState.isOnHTTPSE() ?? false ? HttpsEverywhere.singleton.tryRedirectingUrl(url) : nil {
             // TODO handle https redirect loop
             newRequest.URL = redirectedUrl
             #if DEBUG
