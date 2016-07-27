@@ -212,13 +212,16 @@ class ThumbnailCell: UICollectionViewCell {
     lazy var removeButton: UIButton = {
         let removeButton = UIButton()
         removeButton.exclusiveTouch = true
-        removeButton.setImage(UIImage(named: "TileCloseButton"), forState: UIControlState.Normal)
+        let removeButtonImage = UIImage(named: "TileCloseButton")
+        removeButton.setImage(removeButtonImage, forState: UIControlState.Normal)
         removeButton.addTarget(self, action: #selector(ThumbnailCell.SELdidRemove), forControlEvents: UIControlEvents.TouchUpInside)
         removeButton.accessibilityLabel = NSLocalizedString("Remove page", comment: "Button shown in editing mode to remove this site from the top sites panel.")
         removeButton.hidden = true
-        removeButton.imageEdgeInsets = ThumbnailCellUX.RemoveButtonInsets
-        return removeButton
-    }()
+        removeButton.sizeToFit()
+        let buttonCenterX = floor(removeButton.bounds.width/2)
+        let buttonCenterY = floor(removeButton.bounds.height/2)
+        removeButton.center = CGPoint(x: buttonCenterX, y: buttonCenterY)
+        return removeButton    }()
 
     lazy var backgroundImage: UIImageView = {
         let backgroundImage = UIImageView()
@@ -278,22 +281,8 @@ class ThumbnailCell: UICollectionViewCell {
         textLabel.setContentCompressionResistancePriority(1000, forAxis: UILayoutConstraintAxis.Vertical)
     }
 
-
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        // TODO: We can avoid creating this button at all if we're not in editing mode.
-        var frame = removeButton.frame
-        frame.size = CGSize(width: ThumbnailCellUX.RemoveButtonSize, height: ThumbnailCellUX.RemoveButtonSize)
- #if BRAVE
-        frame.center = CGPoint(x: 26, y: 10)
- #endif
-       removeButton.frame = frame
     }
 
     override func prepareForReuse() {
