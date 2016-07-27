@@ -12,6 +12,8 @@
 #import "ThirdParty/SWTableViewCell/PodFiles/SWTableViewCell.h"
 #import "ThirdParty/RaptureXML/RXMLElement.h"
 
+#import "NSStringPunycodeAdditions.h"
+
 // BRAVE
 #import "LegacyJSContext.h"
 #import "ABPFilterLibWrapper.h"

@@ -6,30 +6,36 @@ import Foundation
 
 class URIFixup {
     static func getURL(entry: String) -> NSURL? {
+        
         let trimmed = entry.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        var url = NSURL(string: trimmed)
-
-        // First check if the URL includes a scheme. This will handle
-        // all valid requests starting with "http://", "about:", etc.
-        if !(url?.scheme.isEmpty ?? true) {
-            return url
+        
+        //punycoding -- conversion of possible unicode characters in hostname
+        let encoded = (trimmed as NSString).encodedURLString
+        if let urlString = encoded {
+            var url = NSURL(string: urlString)
+            
+            // First check if the URL includes a scheme. This will handle
+            // all valid requests starting with "http://", "about:", etc.
+            if !(url?.scheme.isEmpty ?? true) {
+                return url
+            }
+            
+            // If there's no scheme, we're going to prepend "http://". First,
+            // make sure there's at least one "." in the host. This means
+            // we'll allow single-word searches (e.g., "foo") at the expense
+            // of breaking single-word hosts without a scheme (e.g., "localhost").
+            if urlString.rangeOfString(".") == nil {
+                return nil
+            }
+            
+            // If there is a ".", prepend "http://" and try again. Since this
+            // is strictly an "http://" URL, we also require a host.
+            url = NSURL(string: "http://\(urlString)")
+            if url?.host != nil {
+                return url
+            }
         }
-
-        // If there's no scheme, we're going to prepend "http://". First,
-        // make sure there's at least one "." in the host. This means
-        // we'll allow single-word searches (e.g., "foo") at the expense
-        // of breaking single-word hosts without a scheme (e.g., "localhost").
-        if trimmed.rangeOfString(".") == nil {
-            return nil
-        }
-
-        // If there is a ".", prepend "http://" and try again. Since this
-        // is strictly an "http://" URL, we also require a host.
-        url = NSURL(string: "http://\(trimmed)")
-        if url?.host != nil {
-            return url
-        }
-
+        
         return nil
     }
 }
