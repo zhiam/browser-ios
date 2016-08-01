@@ -58,6 +58,7 @@ class TabWidget : UIView {
     var dragClone: TabDragClone?
     var spacerRight:UIView = UIView()
     var pan: UIPanGestureRecognizer!
+    let bar = UIView()
 
     init(browser: Browser, parentScrollView: UIScrollView) {
         super.init(frame: CGRectZero)
@@ -70,7 +71,6 @@ class TabWidget : UIView {
             wv.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))
         }
 
-        let bar = UIView()
 
         close.addTarget(self, action: #selector(clicked), forControlEvents: .TouchUpInside)
         title.addTarget(self, action: #selector(selected), forControlEvents: .TouchUpInside)
@@ -89,8 +89,11 @@ class TabWidget : UIView {
 
         bar.backgroundColor = UIColor.blackColor()
         bar.snp_makeConstraints { (make) in
-            make.left.top.bottom.equalTo(self)
+//            make.left.top.bottom.equalTo(self)
+            make.left.equalTo(self)
             make.width.equalTo(1)
+            make.height.equalTo(22)
+            make.centerY.equalTo(self.snp_centerY)
         }
 
         deselect()
@@ -111,7 +114,7 @@ class TabWidget : UIView {
         title.snp_remakeConstraints { (make) in
             make.top.bottom.equalTo(self)
             make.left.equalTo(close.snp_right)
-            make.right.equalTo(self).inset(4)
+            make.right.equalTo(self).inset(24)
         }
     }
 
@@ -136,6 +139,8 @@ class TabWidget : UIView {
         backgroundColor = UIColor.init(white: 90/255, alpha: 1.0)
         title.titleLabel!.font = UIFont.systemFontOfSize(11)
         title.setTitleColor(UIColor.init(white: 230/255, alpha: 1.0), forState: .Normal)
+        bar.hidden = false
+        close.hidden = true
     }
 
     func selected() {
@@ -146,6 +151,9 @@ class TabWidget : UIView {
         title.titleLabel!.font = UIFont.systemFontOfSize(11, weight: UIFontWeightSemibold)
         title.setTitleColor(UIColor.init(white: 255/255, alpha: 1.0), forState: .Normal)
         backgroundColor = UIColor.clearColor()
+        close.hidden = false
+        bar.hidden = true
+
     }
 
     private var titleUpdateScheduled = false
