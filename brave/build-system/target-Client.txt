@@ -122,6 +122,7 @@ ThirdParty/SWTableViewCell/PodFiles/SWTableViewCell.m
 ThirdParty/SWTableViewCell/PodFiles/SWUtilityButtonTapGestureRecognizer.m
 ThirdParty/SWTableViewCell/PodFiles/SWUtilityButtonView.m
 ThirdParty/UIImageViewAligned/UIImageViewAligned/UIImageViewAligned.m
+ThirdParty/NSStringPunycodeAdditions.m
 Utils/AboutUtils.swift
 Utils/DynamicFontHelper.swift
 Utils/Extensions/GeometryExtensions.swift
