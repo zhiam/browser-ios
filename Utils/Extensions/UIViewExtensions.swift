@@ -12,6 +12,10 @@ extension UIView {
     func screenshot(size: CGSize, offset: CGPoint? = nil, quality: CGFloat = 1) -> UIImage? {
         assert(0...1 ~= quality)
 
+        if size.width < 1 || size.height < 1 || superview == nil {
+            return nil
+        }
+
         let offset = offset ?? CGPointMake(0, 0)
         UIGraphicsBeginImageContextWithOptions(size, true, UIScreen.mainScreen().scale * quality)
         drawViewHierarchyInRect(CGRect(origin: offset, size: frame.size), afterScreenUpdates: false)
