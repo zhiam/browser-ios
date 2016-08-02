@@ -9,6 +9,8 @@ protocol TabWidgetDelegate: class {
     func tabWidgetDragStarted(tab: TabWidget)
 }
 
+let labelInsetFromRight = CGFloat(24)
+
 class TabDragClone : UIImageView {
     let parent: TabWidget
     required init(parent: TabWidget, frame: CGRect) {
@@ -56,9 +58,9 @@ class TabWidget : UIView {
 
     // Drag and drop items
     var dragClone: TabDragClone?
-    var spacerRight:UIView = UIView()
+    let spacerRight = UIView()
     var pan: UIPanGestureRecognizer!
-    let bar = UIView()
+    let separatorLine = UIView()
 
     init(browser: Browser, parentScrollView: UIScrollView) {
         super.init(frame: CGRectZero)
@@ -75,7 +77,7 @@ class TabWidget : UIView {
         close.addTarget(self, action: #selector(clicked), forControlEvents: .TouchUpInside)
         title.addTarget(self, action: #selector(selected), forControlEvents: .TouchUpInside)
         title.setTitle("", forState: .Normal)
-        [close, title, bar].forEach { addSubview($0) }
+        [close, title, separatorLine].forEach { addSubview($0) }
 
         close.setImage(UIImage(named: "stop")!, forState: .Normal)
         close.snp_makeConstraints(closure: { (make) in
@@ -87,9 +89,8 @@ class TabWidget : UIView {
 
         reinstallConstraints()
 
-        bar.backgroundColor = UIColor.blackColor()
-        bar.snp_makeConstraints { (make) in
-//            make.left.top.bottom.equalTo(self)
+        separatorLine.backgroundColor = UIColor.blackColor()
+        separatorLine.snp_makeConstraints { (make) in
             make.left.equalTo(self)
             make.width.equalTo(1)
             make.height.equalTo(22)
@@ -114,7 +115,7 @@ class TabWidget : UIView {
         title.snp_remakeConstraints { (make) in
             make.top.bottom.equalTo(self)
             make.left.equalTo(close.snp_right)
-            make.right.equalTo(self).inset(24)
+            make.right.equalTo(self).inset(labelInsetFromRight)
         }
     }
 
@@ -123,7 +124,7 @@ class TabWidget : UIView {
             make.top.bottom.equalTo(self)
             make.left.lessThanOrEqualTo(close.snp_right)
             make.width.lessThanOrEqualTo(title.frame.width)
-            make.right.greaterThanOrEqualTo(self).inset(4)
+            make.right.greaterThanOrEqualTo(self).inset(labelInsetFromRight)
         }
     }
 
@@ -139,7 +140,7 @@ class TabWidget : UIView {
         backgroundColor = UIColor.init(white: 90/255, alpha: 1.0)
         title.titleLabel!.font = UIFont.systemFontOfSize(11)
         title.setTitleColor(UIColor.init(white: 230/255, alpha: 1.0), forState: .Normal)
-        bar.hidden = false
+        separatorLine.hidden = false
         close.hidden = true
     }
 
@@ -152,8 +153,7 @@ class TabWidget : UIView {
         title.setTitleColor(UIColor.init(white: 255/255, alpha: 1.0), forState: .Normal)
         backgroundColor = UIColor.clearColor()
         close.hidden = false
-        bar.hidden = true
-
+        separatorLine.hidden = true
     }
 
     private var titleUpdateScheduled = false
