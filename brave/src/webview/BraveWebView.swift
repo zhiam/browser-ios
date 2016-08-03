@@ -87,7 +87,7 @@ class BraveWebView: UIWebView {
 
     let specialStopLoadUrl = "http://localhost.stop.load"
     weak var navigationDelegate: WKCompatNavigationDelegate?
-    weak var UIDelegate: WKUIDelegate?
+
     lazy var configuration: BraveWebViewConfiguration = { return BraveWebViewConfiguration(webView: self) }()
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
     var progress: WebViewProgress?
