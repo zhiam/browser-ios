@@ -987,6 +987,8 @@ class BrowserViewController: UIViewController {
     }
 #endif
 
+    var helper:ShareExtensionHelper!
+    
     func presentActivityViewController(url: NSURL, tab: Browser? = nil, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
         var activities = [UIActivity]()
 
@@ -1005,44 +1007,49 @@ class BrowserViewController: UIViewController {
                 }
                 activities.append(requestDesktopSiteActivity)
         }
+        
+        helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
+        
+        helper.setupExtensionItem() {
 
+            let controller = self.helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
+                // After dismissing, check to see if there were any prompts we queued up
+                self.showQueuedAlertIfAvailable()
 
-        let helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
+                self.displayedPopoverController = nil
+                self.updateDisplayedPopoverProperties = nil
 
-        let controller = helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
-            // After dismissing, check to see if there were any prompts we queued up
-            self.showQueuedAlertIfAvailable()
-
-            self.displayedPopoverController = nil
-            self.updateDisplayedPopoverProperties = nil
-
-            if completed {
-                // We don't know what share action the user has chosen so we simply always
-                // update the toolbar and reader mode bar to reflect the latest status.
-                if let tab = tab {
-                    self.updateURLBarDisplayURL(tab)
+                if completed {
+                    // We don't know what share action the user has chosen so we simply always
+                    // update the toolbar and reader mode bar to reflect the latest status.
+                    if let tab = tab {
+                        self.updateURLBarDisplayURL(tab)
+                    }
+                    self.updateReaderModeBar()
                 }
-                self.updateReaderModeBar()
-            }
-        })
+            })
+            
+            if controller != nil {
 
-        let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
-            if let popoverPresentationController = controller?.popoverPresentationController {
-                popoverPresentationController.sourceView = sourceView
-                popoverPresentationController.sourceRect = sourceRect
-                popoverPresentationController.permittedArrowDirections = arrowDirection
-                popoverPresentationController.delegate = self
+                let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
+                    if let popoverPresentationController = controller?.popoverPresentationController {
+                        popoverPresentationController.sourceView = sourceView
+                        popoverPresentationController.sourceRect = sourceRect
+                        popoverPresentationController.permittedArrowDirections = arrowDirection
+                        popoverPresentationController.delegate = self
+                    }
+                }
+
+                setupPopover()
+
+                if controller!.popoverPresentationController != nil {
+                    self.displayedPopoverController = controller
+                    self.updateDisplayedPopoverProperties = setupPopover
+                }
+
+                self.presentViewController(controller!, animated: true, completion: nil)
             }
         }
-
-        setupPopover()
-
-        if controller.popoverPresentationController != nil {
-            displayedPopoverController = controller
-            updateDisplayedPopoverProperties = setupPopover
-        }
-
-        self.presentViewController(controller, animated: true, completion: nil)
     }
 
     func updateFindInPageVisibility(visible visible: Bool) {

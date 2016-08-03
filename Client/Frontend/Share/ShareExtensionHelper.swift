@@ -8,20 +8,69 @@ import OnePasswordExtension
 
 private let log = Logger.browserLogger
 
+@objc class URLActivityItemSource : NSObject, UIActivityItemSource {
+    var urlString:String
+    var item:NSExtensionItem
+    init(urlString:String, item:NSExtensionItem) {
+        self.urlString = urlString
+        self.item = item
+
+
+    }
+    
+    func activityViewControllerPlaceholderItem(activityViewController: UIActivityViewController) -> AnyObject {
+        return self.urlString
+    }
+    
+    func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
+        return self.item
+    }
+    
+    func activityViewController(activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: String?) -> String {
+           return "org.appextension.find-login-action"
+    }
+}
+
+
 class ShareExtensionHelper: NSObject {
     private weak var selectedTab: Browser?
 
     private let selectedURL: NSURL
     private var onePasswordExtensionItem: NSExtensionItem!
     private let activities: [UIActivity]
+    var pageDetails:NSDictionary!
 
     init(url: NSURL, tab: Browser?, activities: [UIActivity]) {
         self.selectedURL = url
         self.selectedTab = tab
         self.activities = activities
     }
+    
+    func setupExtensionItem(completionHandler:dispatch_block_t) {
+        
+        let selectedWebView = self.selectedTab?.webView
+        
+        if selectedWebView == nil {
+            NSLog("Nil selected web view, returning nil UIActivityController")
+            return
+        }
 
-    func createActivityViewController(completionHandler: (Bool) -> Void) -> UIActivityViewController {
+        OnePasswordExtension.sharedExtension().createExtensionItemForWebView(selectedWebView!, completion: {
+            [weak self] (extensionItem, error) -> Void in
+            if extensionItem == nil {
+                log.error("Failed to create the password manager extension item: \(error).")
+                return
+            }
+            
+            self?.onePasswordExtensionItem = extensionItem
+            
+            completionHandler()
+            
+        })
+
+    }
+
+    func createActivityViewController(completionHandler: (Bool) -> Void) -> UIActivityViewController? {
         var activityItems = [AnyObject]()
 
         let printInfo = UIPrintInfo(dictionary: nil)
@@ -36,15 +85,22 @@ class ShareExtensionHelper: NSObject {
         if let title = selectedTab?.title {
             activityItems.append(TitleActivityItemProvider(title: title))
         }
-        activityItems.append(self)
-
-        if let url = selectedTab?.webView?.URL where DashlaneExtensionRequestHelper.isDashlaneAppExtensionAvailable() {
-            let extHelper = DashlaneExtensionRequestHelper(appName: DeviceInfo.appName())
-            extHelper.addRequest(DASHLANE_EXTENSION_REQUEST_LOGIN, matchingString: url.absoluteString)
-            let extItem = extHelper.extensionItemForCurrentRequests()
-            activityItems.append(extItem)
+        
+        
+        let selectedWebView = self.selectedTab?.webView
+        
+        if selectedWebView == nil {
+            NSLog("Nil selected web view, returning nil UIActivityController")
+            return nil
         }
 
+        
+        if let url = selectedTab?.webView?.URL {
+            let act:URLActivityItemSource = URLActivityItemSource(urlString: url.absoluteString, item: self.onePasswordExtensionItem)
+            activityItems.append(act)
+        }
+        
+        
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: activities)
 
         // Hide 'Add to Reading List' which currently uses Safari.
@@ -53,110 +109,60 @@ class ShareExtensionHelper: NSObject {
         activityViewController.excludedActivityTypes = [
             UIActivityTypeAddToReadingList,
         ]
-
-
-        // This needs to be ready by the time the share menu has been displayed and
-        // activityViewController(activityViewController:, activityType:) is called,
-        // which is after the user taps the button. So a million cycles away.
-        if (ShareExtensionHelper.isPasswordManagerExtensionAvailable()) {
-            findLoginExtensionItem()
+        
+        if self.onePasswordExtensionItem == nil {
+            NSLog("No 1p extension item!")
+            return nil
         }
 
         activityViewController.completionWithItemsHandler = {
-            [weak self] activityType, completed, returnedItems, activityError in
-            if !completed {
+            activityType, completed, returnedItems, activityError in
+            
+            defer {
                 completionHandler(completed)
+            }
+            
+            if activityType == nil || !completed || returnedItems == nil || returnedItems!.count == 0 {
+
                 return
             }
+            
+            //'password-find-login-action' is for Keeper, matches 'password'
+            if activityType!.contains("com.dashlane")
+                || activityType!.contains("lastpass")
+                || activityType!.contains("password") {
+                
+                let item = returnedItems![0] as? NSExtensionItem
+                
+                if let itemProvider = item!.attachments?.first as? NSItemProvider {
+                    debugPrint(itemProvider.registeredTypeIdentifiers)
+                        let ident = kUTTypePropertyList as String
+                        if itemProvider.hasItemConformingToTypeIdentifier(ident) {
+                            itemProvider.loadItemForTypeIdentifier(ident, options: nil) { (dict, error) in
+                                if error != nil {
+                                    NSLog("Error loading from password extension \(error)")
+                                }
+                                else if dict != nil {
 
-            if self?.isPasswordManagerActivityType(activityType) ?? false {
-                if let logins = returnedItems {
-                    self?.fillPasswords(logins)
+                                    OnePasswordExtension.sharedExtension().fillReturnedItems(returnedItems, intoWebView: selectedWebView!, completion: { (success, returnedItemsError) -> Void in
+                                                        if !success {
+                                                            log.error("Failed to fill item into webview: \(returnedItemsError).")
+                                                        }
+                                                    })
+
+                                }
+                            }
+                            
+                            
+                            
+                        }
+
                 }
-            }
+                
 
-            completionHandler(completed)
+            }
         }
+        
         return activityViewController
     }
-}
-
-extension ShareExtensionHelper: UIActivityItemSource {
-    func activityViewControllerPlaceholderItem(activityViewController: UIActivityViewController) -> AnyObject {
-        if let displayURL = selectedTab?.displayURL {
-            return displayURL
-        }
-        return selectedURL
     }
-
-    func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
-        if isPasswordManagerActivityType(activityType) {
-            return onePasswordExtensionItem
-        } else {
-            // Return the URL for the selected tab. If we are in reader view then decode
-            // it so that we copy the original and not the internal localhost one.
-            if let url = selectedTab?.displayURL where ReaderModeUtils.isReaderModeURL(url) {
-                return ReaderModeUtils.decodeURL(url)
-            }
-            return selectedTab?.displayURL ?? selectedURL
-        }
-    }
-
-    func activityViewController(activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: String?) -> String {
-        // Because of our UTI declaration, this UTI now satisfies both the 1Password Extension and the usual NSURL for Share extensions.
-        return "org.appextension.fill-browser-action"
-    }
-}
-
-private extension ShareExtensionHelper {
-    static func isPasswordManagerExtensionAvailable() -> Bool {
-        return OnePasswordExtension.sharedExtension().isAppExtensionAvailable()
-    }
-
-    func isPasswordManagerActivityType(activityType: String?) -> Bool {
-        if (!ShareExtensionHelper.isPasswordManagerExtensionAvailable()) {
-            return false
-        }
-        // A 'password' substring covers the most cases, such as pwsafe and 1Password.
-        // com.agilebits.onepassword-ios.extension
-        // com.app77.ios.pwsafe2.find-login-action-password-actionExtension
-        // If your extension's bundle identifier does not contain "password", simply submit a pull request by adding your bundle identifier.
-        return (activityType?.rangeOfString("password") != nil)
-            || (activityType == "com.lastpass.ilastpass.LastPassExt")
-
-    }
-
-    func findLoginExtensionItem() {
-        guard let selectedWebView = selectedTab?.webView else {
-            return
-        }
-
-        if selectedWebView.URL?.absoluteString == nil {
-            return
-        }
-
-        // Add 1Password to share sheet
-        OnePasswordExtension.sharedExtension().createExtensionItemForWebView(selectedWebView, completion: {
-            [weak self] (extensionItem, error) -> Void in
-            if extensionItem == nil {
-                log.error("Failed to create the password manager extension item: \(error).")
-                return
-            }
-
-            // Set the 1Password extension item property
-            self?.onePasswordExtensionItem = extensionItem
-        })
-    }
-
-    func fillPasswords(returnedItems: [AnyObject]) {
-        guard let selectedWebView = selectedTab?.webView else {
-            return
-        }
-
-        OnePasswordExtension.sharedExtension().fillReturnedItems(returnedItems, intoWebView: selectedWebView, completion: { (success, returnedItemsError) -> Void in
-            if !success {
-                log.error("Failed to fill item into webview: \(returnedItemsError).")
-            }
-        })
-    }
-}
