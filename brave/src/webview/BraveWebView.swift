@@ -16,7 +16,6 @@ class ContainerWebView : WKWebView {
 }
 
 var globalContainerWebView = ContainerWebView()
-var nullWKNavigation: WKNavigation = WKNavigation()
 
 protocol WebPageStateDelegate : class {
     func webView(webView: UIWebView, progressChanged: Float)
