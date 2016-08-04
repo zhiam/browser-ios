@@ -21,6 +21,7 @@
 
 #import "DashlaneExtensionRequestHelper.h"
 #import "DashlaneExtensionConstants.h"
+#import "OnePasswordExtension.h"
 
 #import "LegacyJSContext.h"
 #import "ABPFilterLibWrapper.h"
