@@ -1,6 +1,5 @@
 import Foundation
 
-import OnePasswordExtension
 import Shared
 import Storage
 import Deferred

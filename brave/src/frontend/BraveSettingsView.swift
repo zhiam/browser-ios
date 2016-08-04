@@ -4,7 +4,6 @@
     import Crashlytics
 #endif
 import Shared
-import OnePasswordExtension
 
 let kPrefKeyNoScriptOn = "noscript_on"
 let kPrefKeyFingerprintProtection = "fingerprintprotection_on"

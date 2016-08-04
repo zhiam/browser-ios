@@ -4,7 +4,6 @@
 
 import Foundation
 import Shared
-import OnePasswordExtension
 
 private let log = Logger.browserLogger
 
@@ -27,7 +26,8 @@ private let log = Logger.browserLogger
     }
     
     func activityViewController(activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: String?) -> String {
-           return "org.appextension.find-login-action"
+
+        return "org.appextension.find-login-action"
     }
 }
 
@@ -47,7 +47,7 @@ class ShareExtensionHelper: NSObject {
     }
     
     func setupExtensionItem(completionHandler:dispatch_block_t) {
-        
+
         let selectedWebView = self.selectedTab?.webView
         
         if selectedWebView == nil {
@@ -63,6 +63,7 @@ class ShareExtensionHelper: NSObject {
             }
             
             self?.onePasswordExtensionItem = extensionItem
+            
             
             completionHandler()
             
@@ -86,7 +87,6 @@ class ShareExtensionHelper: NSObject {
             activityItems.append(TitleActivityItemProvider(title: title))
         }
         
-        
         let selectedWebView = self.selectedTab?.webView
         
         if selectedWebView == nil {
@@ -98,7 +98,19 @@ class ShareExtensionHelper: NSObject {
         if let url = selectedTab?.webView?.URL {
             let act:URLActivityItemSource = URLActivityItemSource(urlString: url.absoluteString, item: self.onePasswordExtensionItem)
             activityItems.append(act)
+//            
+//            if DashlaneExtensionRequestHelper.isDashlaneAppExtensionAvailable() {
+//                
+//                let extHelper = DashlaneExtensionRequestHelper(appName: DeviceInfo.appName())
+//                extHelper.addRequest(DASHLANE_EXTENSION_REQUEST_LOGIN, matchingString: url.absoluteString)
+//                extHelper.addRequest(act.item.attachments![0] as! NSItemProvider)
+//                let extItem = extHelper.extensionItemForCurrentRequests()
+//                activityItems.append(extItem)
+//            }
+
         }
+        
+        
         
         
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: activities)
@@ -111,7 +123,7 @@ class ShareExtensionHelper: NSObject {
         ]
         
         if self.onePasswordExtensionItem == nil {
-            NSLog("No 1p extension item!")
+//            NSLog("No 1p extension item!")
             return nil
         }
 
@@ -135,7 +147,7 @@ class ShareExtensionHelper: NSObject {
                 let item = returnedItems![0] as? NSExtensionItem
                 
                 if let itemProvider = item!.attachments?.first as? NSItemProvider {
-                    debugPrint(itemProvider.registeredTypeIdentifiers)
+//                    debugPrint(itemProvider.registeredTypeIdentifiers)
                         let ident = kUTTypePropertyList as String
                         if itemProvider.hasItemConformingToTypeIdentifier(ident) {
                             itemProvider.loadItemForTypeIdentifier(ident, options: nil) { (dict, error) in
