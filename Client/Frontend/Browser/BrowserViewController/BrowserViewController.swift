@@ -1019,6 +1019,7 @@ class BrowserViewController: UIViewController {
 
                 self.displayedPopoverController = nil
                 self.updateDisplayedPopoverProperties = nil
+                self.helper = nil
 
                 if completed {
                     // We don't know what share action the user has chosen so we simply always
