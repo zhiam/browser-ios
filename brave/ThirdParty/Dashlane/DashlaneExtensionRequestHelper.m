@@ -81,6 +81,10 @@
     
     [self.currentRequestItems addObject:requestItemProvider];
 }
+- (void)addRequest:(NSItemProvider *)itemProvider
+{
+    [self.currentRequestItems addObject:itemProvider];
+}
 
 - (void)addStoreDataRequest:(NSString *)storeDataRequestIdentifier withDataDetails:(NSDictionary *)dataDetails
 {
