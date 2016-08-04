@@ -13,8 +13,8 @@ private let log = Logger.browserLogger
     init(urlString:String, item:NSExtensionItem) {
         self.urlString = urlString
         self.item = item
-
-
+        
+        
     }
     
     func activityViewControllerPlaceholderItem(activityViewController: UIActivityViewController) -> AnyObject {
@@ -26,8 +26,8 @@ private let log = Logger.browserLogger
     }
     
     func activityViewController(activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: String?) -> String {
-
-        return "org.appextension.find-login-action"
+        
+        return "org.appextension.fill-browser-action"
     }
 }
 
@@ -37,6 +37,7 @@ class ShareExtensionHelper: NSObject {
 
     private let selectedURL: NSURL
     private var onePasswordExtensionItem: NSExtensionItem!
+    var extItem2:NSExtensionItem!
     private let activities: [UIActivity]
     var pageDetails:NSDictionary!
 
@@ -63,9 +64,9 @@ class ShareExtensionHelper: NSObject {
             }
             
             self?.onePasswordExtensionItem = extensionItem
-            
-            
+
             completionHandler()
+
             
         })
 
@@ -96,21 +97,11 @@ class ShareExtensionHelper: NSObject {
 
         
         if let url = selectedTab?.webView?.URL {
-            let act:URLActivityItemSource = URLActivityItemSource(urlString: url.absoluteString, item: self.onePasswordExtensionItem)
-            activityItems.append(act)
-//            
-//            if DashlaneExtensionRequestHelper.isDashlaneAppExtensionAvailable() {
-//                
-//                let extHelper = DashlaneExtensionRequestHelper(appName: DeviceInfo.appName())
-//                extHelper.addRequest(DASHLANE_EXTENSION_REQUEST_LOGIN, matchingString: url.absoluteString)
-//                extHelper.addRequest(act.item.attachments![0] as! NSItemProvider)
-//                let extItem = extHelper.extensionItemForCurrentRequests()
-//                activityItems.append(extItem)
-//            }
-
+            if self.onePasswordExtensionItem != nil {
+                let act:URLActivityItemSource = URLActivityItemSource(urlString: url.absoluteString, item: self.onePasswordExtensionItem)
+                activityItems.append(act)
+            }
         }
-        
-        
         
         
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: activities)
@@ -122,10 +113,6 @@ class ShareExtensionHelper: NSObject {
             UIActivityTypeAddToReadingList,
         ]
         
-        if self.onePasswordExtensionItem == nil {
-//            NSLog("No 1p extension item!")
-            return nil
-        }
 
         activityViewController.completionWithItemsHandler = {
             activityType, completed, returnedItems, activityError in
@@ -143,7 +130,7 @@ class ShareExtensionHelper: NSObject {
             if activityType!.contains("com.dashlane")
                 || activityType!.contains("lastpass")
                 || activityType!.contains("password") {
-                
+//                NSLog("obtained \(returnedItems!.count) items")
                 let item = returnedItems![0] as? NSExtensionItem
                 
                 if let itemProvider = item!.attachments?.first as? NSItemProvider {
@@ -155,7 +142,7 @@ class ShareExtensionHelper: NSObject {
                                     NSLog("Error loading from password extension \(error)")
                                 }
                                 else if dict != nil {
-
+                                    
                                     OnePasswordExtension.sharedExtension().fillReturnedItems(returnedItems, intoWebView: selectedWebView!, completion: { (success, returnedItemsError) -> Void in
                                                         if !success {
                                                             log.error("Failed to fill item into webview: \(returnedItemsError).")

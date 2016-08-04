@@ -1011,6 +1011,7 @@ class BrowserViewController: UIViewController {
         helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
         
         helper.setupExtensionItem() {
+            dispatch_async(dispatch_get_main_queue()) {
 
             let controller = self.helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
                 // After dismissing, check to see if there were any prompts we queued up
@@ -1030,24 +1031,27 @@ class BrowserViewController: UIViewController {
             })
             
             if controller != nil {
+                dispatch_async(dispatch_get_main_queue()) {
 
-                let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
-                    if let popoverPresentationController = controller?.popoverPresentationController {
-                        popoverPresentationController.sourceView = sourceView
-                        popoverPresentationController.sourceRect = sourceRect
-                        popoverPresentationController.permittedArrowDirections = arrowDirection
-                        popoverPresentationController.delegate = self
+                    let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
+                        if let popoverPresentationController = controller?.popoverPresentationController {
+                            popoverPresentationController.sourceView = sourceView
+                            popoverPresentationController.sourceRect = sourceRect
+                            popoverPresentationController.permittedArrowDirections = arrowDirection
+                            popoverPresentationController.delegate = self
+                        }
                     }
+
+                    setupPopover()
+
+                    if controller!.popoverPresentationController != nil {
+                        self.displayedPopoverController = controller
+                        self.updateDisplayedPopoverProperties = setupPopover
+                    }
+
+                    self.presentViewController(controller!, animated: true, completion: nil)
+            }
                 }
-
-                setupPopover()
-
-                if controller!.popoverPresentationController != nil {
-                    self.displayedPopoverController = controller
-                    self.updateDisplayedPopoverProperties = setupPopover
-                }
-
-                self.presentViewController(controller!, animated: true, completion: nil)
             }
         }
     }

@@ -548,19 +548,21 @@ static NSString *const AppExtensionWebViewPageDetails = @"pageDetails";
 	}
     
     
-    //    NSString *altType = @"com.dashlane.extension.request-login";
-	NSDictionary *item = @{ @"dashlaneExtensionRequestStringToMatch" : URLString, AppExtensionVersionNumberKey : VERSION_NUMBER, AppExtensionURLStringKey : URLString, AppExtensionWebViewPageDetails : webPageDetailsDictionary};
+//   dashlane keys: typeIdentifier: @"com.dashlane.extension.request-login";
+//   dashlane keys match string: @"dashlaneExtensionRequestStringToMatch":URLString
+    NSDictionary *item = @{ AppExtensionVersionNumberKey : VERSION_NUMBER, AppExtensionURLStringKey : URLString,  AppExtensionWebViewPageDetails : webPageDetailsDictionary};
 
-    
-	NSItemProvider *itemProvider = [[NSItemProvider alloc] initWithItem:item typeIdentifier:kUTTypeAppExtensionFillBrowserAction];
 
+    NSItemProvider *itemProvider = [[NSItemProvider alloc] initWithItem:item typeIdentifier:kUTTypeAppExtensionFillBrowserAction];
 	NSExtensionItem *extensionItem = [[NSExtensionItem alloc] init];
-    NSDictionary *ui = extensionItem.userInfo;
-    
-    extensionItem.userInfo = @{ @"dashlaneExtensionRequestAppName" : @"Brave" };//, , @"dashlaneExtensionRequestStringToMatch": @""};
+
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:extensionItem.userInfo];
+    //this modification to the userInfo dict is needed by dashlane
+//    [dict addEntriesFromDictionary:@{ @"dashlaneExtensionRequestAppName" : @"Brave"}];
+//    extensionItem.userInfo = dict;
 	extensionItem.attachments = @[ itemProvider ];
 
-	if (completion) {
+    if (completion) {
 		if ([NSThread isMainThread]) {
 			completion(extensionItem, nil);
 		}

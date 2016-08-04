@@ -74,7 +74,7 @@ typedef void (^RequestCompletionBlock)(NSDictionary *response, NSError *error);
  @param An string that is used to filter the requested data. You can pass nil if you don't need it.
  */
 - (void)addRequest:(NSString *)requestIdentifier matchingString:(NSString *)stringToMatch;
-
+- (void)addRequest:(NSItemProvider *)itemProvider;
 /**
  @brief Adding a store request to the current batch of requests
  
