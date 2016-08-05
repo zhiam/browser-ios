@@ -510,7 +510,8 @@ class BraveWebView: UIWebView {
     }
 
     class func isTopFrameRequest(request:NSURLRequest) -> Bool {
-        return request.URL == request.mainDocumentURL
+        guard let url = request.URL, mainDoc = request.mainDocumentURL else { return false }
+        return url.host == mainDoc.host && url.path == mainDoc.path
     }
 
     // Long press context menu text selection overriding
