@@ -797,7 +797,8 @@ extension BraveWebView: UIWebViewDelegate {
                 }
             }
 
-            if !handled && URL?.absoluteString == errorUrl.absoluteString {
+            let kPluginIsHandlingLoad = 204 // mp3 for instance, returns an error to webview that a plugin is taking over, which is correct
+            if !handled && URL?.absoluteString == errorUrl.absoluteString && error.code != kPluginIsHandlingLoad {
                 if let nd = navigationDelegate {
                     globalContainerWebView.legacyWebView = self
                     nd.webViewDidFailNavigation(self, withError: error ?? NSError.init(domain: "", code: 0, userInfo: nil))
