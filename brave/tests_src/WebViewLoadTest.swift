@@ -1,5 +1,4 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-#if TEST
 import Foundation
 import XCTest
 @testable import Client
@@ -24,7 +23,7 @@ class WebViewLoadTest: XCTestCase {
 
   func loadSite(site:String, webview:BraveWebView) ->Bool {
     let url = NSURL(string: "http://" + site)
-    expectationForNotification(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
+    expectationForNotification(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
     webview.loadRequest(NSURLRequest(URL: url!))
     var isOk = true
     waitForExpectationsWithTimeout(15) { (error:NSError?) -> Void in
@@ -34,7 +33,7 @@ class WebViewLoadTest: XCTestCase {
     }
 
     webview.stopLoading()
-    expectationForNotification(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
+    expectationForNotification(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
     webview.loadHTMLString("<html><head></head><body></body></html>", baseURL: nil)
     waitForExpectationsWithTimeout(2, handler: nil)
 
@@ -169,7 +168,7 @@ class WebViewLoadTest: XCTestCase {
 #endif
 
   func testOpenUrlUsingBraveSchema() {
-    expectationForNotification(BraveWebView.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
+    expectationForNotification(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
     let site = "google.ca"
     let ok = UIApplication.sharedApplication().openURL(
       NSURL(string: "brave://open-url?url=https%253A%252F%252F" + site)!)
@@ -177,4 +176,3 @@ class WebViewLoadTest: XCTestCase {
     XCTAssert(ok, "open url failed for site: \(site)")
   }
 }
-#endif

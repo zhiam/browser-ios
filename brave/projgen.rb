@@ -93,21 +93,24 @@ Dir.chdir('..')
 
 ###################################
 
-brave = project.new_group('brave')
+braveTop = project.new_group('brave')
 
 if ARGV[0] == 'flex'
-    brave.new_group('ThirdParty')
+  braveTop.new_group('ThirdParty')
     walk(project, '.', './brave/ThirdParty', 'Client')
 end
 
-entitlements = brave.new_file('brave/Brave.entitlements')
-brave.new_file('brave/BraveInfo.plist')
+entitlements = braveTop.new_file('brave/Brave.entitlements')
+braveTop.new_file('brave/BraveInfo.plist')
 $client_resources.push(entitlements)
 
 $target_hash['BraveShareTo']['target'].add_resources([entitlements])
 
-brave = brave.new_group('src')
+brave = braveTop.new_group('src')
 walk(project, '.', './brave/src', 'Client')
+
+braveTop.new_group('tests_src')
+walk(project, '.', './brave/tests_src', 'UITests_brave')
 
 abp_group = brave.new_group('abp-filter-parser-cpp', 'brave/node_modules/abp-filter-parser-cpp')
 for f in ['ABPFilterParser.h', 'ABPFilterParser.cpp', 'filter.cpp',
