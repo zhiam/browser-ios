@@ -4,11 +4,11 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.brave.ios.browser</string>
+		<string>group.BUNDLE_ID_PLACEHOLDER</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>KL8N8XSYF4.com.brave.ios.browser</string>
+		<string>KL8N8XSYF4.BUNDLE_ID_PLACEHOLDER</string>
 	</array>
 </dict>
 </plist>
