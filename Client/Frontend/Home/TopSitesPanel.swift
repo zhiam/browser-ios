@@ -101,10 +101,13 @@ class TopSitesPanel: UIViewController {
         self.collection = collection
 
         self.dataSource.collectionView = self.collection
-        self.profile.history.setTopSitesCacheSize(Int32(maxFrecencyLimit))
-        self.refreshTopSites(maxFrecencyLimit)
-
-        self.updateEmptyPanelState()
+        succeed().upon { _ in // move sync call off-main
+            self.profile.history.setTopSitesCacheSize(Int32(self.maxFrecencyLimit))
+            delay(0) { // back to main
+                self.refreshTopSites(self.maxFrecencyLimit)
+                self.updateEmptyPanelState()
+            }
+        }
     }
 
     deinit {
