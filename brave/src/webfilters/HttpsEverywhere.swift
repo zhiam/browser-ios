@@ -140,10 +140,13 @@ class HttpsEverywhere {
 
         let query = table.select(ids).filter(hostCol.like(domain))
 
-        var result = [Int]()
-
         if let cached = fifoCacheOfDomainToIds.getItem(domain) as? [Int] {
             return cached
+        }
+
+        var result = [Int]()
+        defer {
+            fifoCacheOfDomainToIds.addItem(domain, value: result)
         }
 
         if let row = db.prepare(query).generate().next() {
@@ -159,10 +162,7 @@ class HttpsEverywhere {
                 }
             }
 
-            fifoCacheOfDomainToIds.addItem(domain, value: result)
             return result
-        } else {
-            fifoCacheOfDomainToIds.addItem(domain, value: [])
         }
         return nil
     }

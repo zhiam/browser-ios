@@ -10,6 +10,7 @@ class URLProtocol: NSURLProtocol {
 
     var connection: NSURLConnection?
     var disableJavascript = false
+    static var testShieldState: BraveShieldState?
 
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         //print("Request #\(requestCount++): URL = \(request.mainDocumentURL?.absoluteString)")
@@ -23,7 +24,7 @@ class URLProtocol: NSURLProtocol {
 
         guard let url = request.URL else { return false }
 
-        let shieldState = getShields(request)
+        let shieldState = testShieldState != nil ? testShieldState! : getShields(request)
         if shieldState.isAllOff() {
             return false
         }
