@@ -215,11 +215,11 @@ class TabsBarViewController: UIViewController {
         assert(index < self.tabs.count)
         
         if !self.isVisible {
-            self._removeTab(tab, atIndex: index)
+            _removeTab(tab, atIndex: index)
         }
         else {
             UIView.animateWithDuration(0.2, animations: {
-                self._removeTab(tab, atIndex: index)
+                _removeTab(tab, atIndex: index)
             })
         }
     }
