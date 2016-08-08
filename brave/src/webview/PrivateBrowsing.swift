@@ -114,7 +114,9 @@ class PrivateBrowsing {
 
         getApp().tabManager.removeAllPrivateTabsAndNotify(false)
         delay(2) {
+#if !NO_FABRIC
             Answers.logCustomEventWithName("PrivateBrowsing exit failed", customAttributes: nil)
+#endif
             self.allWebViewsKilled()
         }
 
