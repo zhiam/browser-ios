@@ -156,7 +156,10 @@ class TabsBarViewController: UIViewController {
         let t = TabWidget(browser: browser, parentScrollView: scrollView)
         t.delegate = self
         
-        t.widthConstraint?.updateOffset(0)
+        if self.isVisible {
+            t.alpha = 0
+            t.widthConstraint?.updateOffset(0)
+        }
         
         self.scrollView.addSubview(t)
         
@@ -166,13 +169,18 @@ class TabsBarViewController: UIViewController {
         
         tabs.append(t)
         
-        if !self.isVisible {
-            recalculateTabView()
+        if self.isVisible {
+            UIView.animateWithDuration(0.2, animations: {
+                    self.recalculateTabView()
+                }) { _ in
+                    UIView.animateWithDuration(0.2) {
+                        t.alpha = 1
+                    }
+                }
+            
         }
         else {
-            UIView.animateWithDuration(0.2, animations: {
-                self.recalculateTabView()
-            })
+            recalculateTabView()
         }
         
         return t
