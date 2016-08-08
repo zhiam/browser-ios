@@ -11,6 +11,7 @@ class HttpsEverywhere {
     var isNSPrefEnabled = true
     var db: Connection?
     let fifoCacheOfRedirects = FifoDict()
+    let fifoCacheOfDomainToIds = FifoDict()
 
     lazy var networkFileLoader: NetworkDataFileLoader = {
         let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.sqlite")!
@@ -79,7 +80,7 @@ class HttpsEverywhere {
         // Using latter method as matter of preference
         let urlWithSlash = urlWithTrailingSlash(url)
         let urlCandidates = urlWithSlash != url.absoluteString ?
-        [url.absoluteString, urlWithSlash] : [url.absoluteString]
+            [url.absoluteString, urlWithSlash] : [url.absoluteString]
 
         for row in db.prepare(query) {
             guard let data = row.get(contents).utf8EncodedData else { continue }
@@ -139,7 +140,14 @@ class HttpsEverywhere {
 
         let query = table.select(ids).filter(hostCol.like(domain))
 
+        if let cached = fifoCacheOfDomainToIds.getItem(domain) as? [Int] {
+            return cached
+        }
+
         var result = [Int]()
+        defer {
+            fifoCacheOfDomainToIds.addItem(domain, value: result)
+        }
 
         if let row = db.prepare(query).generate().next() {
             var data = row.get(ids)
@@ -176,13 +184,14 @@ class HttpsEverywhere {
     }
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
+        if url.scheme.startsWith("https") {
+            return nil
+        }
+
         // synchronize code from this point on.
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        if url.scheme.startsWith("https") {
-            return nil
-        }
 
         if let redirect = fifoCacheOfRedirects.getItem(url.absoluteString) {
             if redirect === NSNull() {
@@ -213,7 +222,7 @@ class HttpsEverywhere {
                     return nil
                 }
             }
-            
+
             return newUrl
         }
 

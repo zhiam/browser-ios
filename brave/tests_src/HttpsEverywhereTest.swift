@@ -28,4 +28,29 @@ class HttpsEverywhereTest: XCTestCase {
             XCTAssert(redirected != nil && redirected!.scheme.startsWith("https"), "failed:" + url)
         }
     }
+
+    private func doTest(httpseOn on: Bool, group: [String]) {
+        WebViewLoadTestUtils.httpseEnabled(on)
+        measureBlock({
+            WebViewLoadTestUtils.loadSites(self, sites: group)
+        })
+    }
+
+    func testTimeHttpseOn_A() {
+        doTest(httpseOn: true, group: groupA)
+    }
+
+    func testTimeHttpseOff_A() {
+        doTest(httpseOn: false, group: groupA)
+    }
+
+    func testTimeHttpseOn_B() {
+        doTest(httpseOn: true, group: groupB)
+    }
+
+    func testTimeHttpseOff_B() {
+        doTest(httpseOn: false, group: groupB)
+    }
+    
+
 }
