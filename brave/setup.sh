@@ -14,7 +14,7 @@ npm update
 echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"`  > xcconfig/build-id.xcconfig
 
 #create the xcode project
-[[ `gem list -i xcodeproj` == 'true' ]] || gem install xcodeproj --verbose
+[[ `gem list -i xcodeproj` == 'true' ]] || gem install xcodeproj --verbose || { echo 'Error: try doing |sudo gem install xcodeproj|'; exit 1; }
 ./projgen.rb
 
 echo ""
