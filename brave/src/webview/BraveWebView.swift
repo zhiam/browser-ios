@@ -99,8 +99,11 @@ class BraveWebView: UIWebView {
                     let fp = FingerprintingProtection(browser: browser)
                     browser.addHelper(fp)
                 }
-            } else if !(BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? true) {
-                getApp().tabManager.tabForWebView(self)?.removeHelper(FingerprintingProtection.self)
+            } else {
+                let fpOn = BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection)
+                if fpOn == nil || !fpOn! {
+                    getApp().tabManager.tabForWebView(self)?.removeHelper(FingerprintingProtection.self)
+                }
             }
 
             delay(0.2) { // update the UI, wait a bit for loading to have started
