@@ -23,6 +23,10 @@ class TabsBarViewController: UIViewController {
     var leftOverflowIndicator : CAGradientLayer = CAGradientLayer()
     var rightOverflowIndicator : CAGradientLayer = CAGradientLayer()
 
+    var isVisible:Bool {
+        return self.view.alpha > 0
+    }
+    
     init() {
         super.init(nibName: nil, bundle: nil)
 
@@ -67,11 +71,9 @@ class TabsBarViewController: UIViewController {
             $0.widthConstraint?.updateOffset(width)
         }
 
-        delay(0) {
-            self.tabs.forEach {
-                if width > 0 {
-                    $0.reinstallConstraints()
-                }
+        self.tabs.forEach {
+            if width > 0 {
+                $0.reinstallConstraints()
             }
         }
     }
@@ -120,40 +122,9 @@ class TabsBarViewController: UIViewController {
             return
         }
 
-        let w = calcTabWidth(tabs.count)
-        updateTabWidthConstraint(width: w)
-        updateContentSize(tabs.count)
-        overflowIndicators()
+        recalculateTabView()
     }
-
-    func addTab(browser browser: Browser) -> TabWidget {
-        let t = TabWidget(browser: browser, parentScrollView: scrollView)
-        t.delegate = self
-
-        scrollView.addSubview(t)
-        t.alpha = 0
-
-        let w = calcTabWidth(tabs.count + 1)
-
-        UIView.animateWithDuration(0.2, animations: {
-            self.updateTabWidthConstraint(width: w)
-            self.scrollView.layoutIfNeeded()
-            }, completion: { _ in
-                UIView.animateWithDuration(0.2) {
-                    t.alpha = 1
-                }
-            }
-        )
-
-        t.remakeLayout(prev: tabs.last?.spacerRight != nil ? tabs.last!.spacerRight : spacerLeftmost, width: w, scrollView: scrollView)
-
-        tabs.append(t)
-        updateContentSize(tabs.count)
-        overflowIndicators()
-
-        return t
-    }
-
+    
     func calcTabWidth(tabCount: Int) -> CGFloat {
         func calc() -> CGFloat {
             if tabCount < 2 {
@@ -168,6 +139,52 @@ class TabsBarViewController: UIViewController {
         let c = calc()
         return c > 0 ? c : UIScreen.mainScreen().bounds.width
     }
+    
+    func recalculateTabView() {
+        let w = calcTabWidth(tabs.count)
+        self.updateTabWidthConstraint(width: w)
+        
+        updateContentSize(tabs.count)
+        overflowIndicators()
+        
+        self.scrollView.layoutIfNeeded()
+    }
+
+
+    func addTab(browser browser: Browser) -> TabWidget {
+        
+        let t = TabWidget(browser: browser, parentScrollView: scrollView)
+        t.delegate = self
+        
+        if self.isVisible {
+            t.alpha = 0
+            t.widthConstraint?.updateOffset(0)
+        }
+        
+        self.scrollView.addSubview(t)
+        
+        let w = calcTabWidth(tabs.count)
+        
+        t.remakeLayout(prev: tabs.last?.spacerRight != nil ? tabs.last!.spacerRight : self.spacerLeftmost, width: w, scrollView: self.scrollView)
+        
+        tabs.append(t)
+        
+        if self.isVisible {
+            UIView.animateWithDuration(0.2, animations: {
+                    self.recalculateTabView()
+                }) { _ in
+                    UIView.animateWithDuration(0.2) {
+                        t.alpha = 1
+                    }
+                }
+            
+        }
+        else {
+            recalculateTabView()
+        }
+        
+        return t
+    }
 
     func neighborSpacer(i: Int) -> UIView? {
         if i < 0 {
@@ -181,40 +198,38 @@ class TabsBarViewController: UIViewController {
     }
 
     func removeTab(tab: TabWidget) {
-        let w = calcTabWidth(tabs.count - 1)
-        var index = 0
-
-        tab.title.snp_removeConstraints()
-        tab.title.hidden = true
         
-        UIView.animateWithDuration(0.2, animations: {
-            tab.alpha = 0
-            for (i, item) in self.tabs.enumerate() {
-                if item === tab {
-                    index = i
-                    item.widthConstraint?.updateOffset(0)
-                } else {
-                    item.widthConstraint?.updateOffset(w)
-                }
-            }
+        guard let index = tabs.indexOf(tab) else {
+            print("ERROR tab \(tab) not matched in tab list \(self.tabs)")
+            return
+        }
+        
+        func _removeTab(tab: TabWidget, atIndex index: Int) {
 
-            self.scrollView.setNeedsLayout()
-            self.updateContentSize(self.tabs.count - 1)
-        }) { _ in
             let prev = self.neighborSpacer(index - 1)
             let next = self.neighborTab(index + 1)
+            
+            tab.spacerRight.removeFromSuperview()
+            tab.removeFromSuperview()
             next?.snp_makeConstraints(closure: { (make) in
                 if let prev = prev {
                     make.left.equalTo(prev.snp_right)
                 }
             })
-
-            tab.spacerRight.removeFromSuperview()
-            tab.removeFromSuperview()
             self.tabs.removeAtIndex(index)
-            self.overflowIndicators()
+            self.recalculateTabView()
         }
-
+        
+        assert(index < self.tabs.count)
+        
+        if !self.isVisible {
+            _removeTab(tab, atIndex: index)
+        }
+        else {
+            UIView.animateWithDuration(0.2, animations: {
+                _removeTab(tab, atIndex: index)
+            })
+        }
     }
 
     func addLeftRightScrollHint(isRightSide isRightSide: Bool, maskLayer: CAGradientLayer) {
