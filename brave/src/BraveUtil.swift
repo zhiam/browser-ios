@@ -14,7 +14,7 @@ class Debug_FuncProfiler {
     }
 }
 
-func delay(delay:Double, closure:()->()) {
+func postAsyncToMain(delay:Double, closure:()->()) {
     dispatch_after(
         dispatch_time(
             DISPATCH_TIME_NOW,

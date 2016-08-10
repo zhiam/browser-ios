@@ -32,7 +32,7 @@ class ScreenshotHelper {
                     getApp().rootViewController.view.insertSubview(wv, atIndex: 0)
                     wv.frame = wv.convertRect(getApp().tabManager.selectedTab?.webView?.frame ?? CGRectZero, toView: nil)
                     print(wv.frame)
-                    delay(0.1) { [weak tab] in
+                    postAsyncToMain(0.1) { [weak tab] in
                         print(tab?.webView?.frame)
                         screenshot = tab?.webView?.screenshot(offset: offset)
                         tab?.setScreenshot(screenshot)
@@ -60,7 +60,7 @@ class ScreenshotHelper {
             return
         }
         tab.pendingScreenshot = true
-        delay(2) { [weak self, weak tab = tab] in
+        postAsyncToMain(2) { [weak self, weak tab = tab] in
             if let tab = tab {
                 tab.pendingScreenshot = false
                 self?.takeScreenshot(tab)

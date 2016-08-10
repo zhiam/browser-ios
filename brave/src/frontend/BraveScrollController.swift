@@ -108,7 +108,7 @@ class BraveScrollController: NSObject {
     func pageUnload() {
         lockedContentInsets = false
 
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             self.showToolbars(animated: true)
         }
     }
@@ -124,7 +124,7 @@ class BraveScrollController: NSObject {
                 return
             }
             StaticVar.isRunningCheck = true
-            delay(0.2) {
+            postAsyncToMain(0.2) {
                 StaticVar.isRunningCheck = false
                 self.checkHeightOfPageAndAdjustWebViewInsets()
             }

@@ -113,7 +113,7 @@ class PrivateBrowsing {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
 
         getApp().tabManager.removeAllPrivateTabsAndNotify(false)
-        delay(2) {
+        postAsyncToMain(2) {
 #if !NO_FABRIC
             Answers.logCustomEventWithName("PrivateBrowsing exit failed", customAttributes: nil)
 #endif
@@ -134,7 +134,7 @@ class PrivateBrowsing {
         ReentrantGuard.inFunc = true
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        delay(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
+        postAsyncToMain(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
 
             self.webkitDirLocker(lock: false)
             BraveApp.setupCacheDefaults()

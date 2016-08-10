@@ -113,7 +113,7 @@ class HistorySwiper : NSObject {
                         self.webViewContainer.transform = CGAffineTransformMakeTranslation(0, self.webViewContainer.transform.ty)
 
                         // when content size is updated
-                        delay(3.0) {
+                        postAsyncToMain(3.0) {
                             self.restoreWebview()
                         }
                         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -151,7 +151,7 @@ class HistorySwiper : NSObject {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         if webViewContainer.alpha < 1 && getApp().browserViewController.scrollController.edgeSwipingActive {
             getApp().browserViewController.scrollController.edgeSwipingActive = false
-            delay(0.4) { // after a render detected, allow ample time for drawing to complete
+            postAsyncToMain(0.4) { // after a render detected, allow ample time for drawing to complete
                 UIView.animateWithDuration(0.2) {
                     self.webViewContainer.alpha = 1.0
                 }

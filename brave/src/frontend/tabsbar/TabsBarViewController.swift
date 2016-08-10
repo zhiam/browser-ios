@@ -58,7 +58,7 @@ class TabsBarViewController: UIViewController {
     }
 
     override func viewDidLayoutSubviews() {
-        delay(0.1) { // to ensure view.bounds is updated
+        postAsyncToMain(0.1) { // to ensure view.bounds is updated
             self.updateContentSize(self.tabs.count)
         }
     }
@@ -278,7 +278,7 @@ extension TabsBarViewController: TabWidgetDelegate {
         }
 
         if !isAddTabAnimationRunning {
-            delay(0.1) { // allow time for any layout code to complete
+            postAsyncToMain(0.1) { // allow time for any layout code to complete
                 let left = CGRectMake(tab.frame.minX, 1, 1, 1)
                 let right = CGRectMake(tab.frame.maxX - 1, 1, 1, 1)
                 self.scrollView.scrollRectToVisible(left, animated: true)
@@ -349,7 +349,7 @@ extension TabsBarViewController: TabManagerDelegate {
     }
 
     func tabManagerDidRestoreTabs(tabManager: TabManager) {
-        delay(0.5) { [weak self] in
+        postAsyncToMain(0.5) { [weak self] in
             self?.tabs.forEach {
                 $0.updateTitle_throttled()
             }
@@ -457,7 +457,7 @@ extension TabsBarViewController {
                         self.moveTab(tab, index: newIndex)
                     }
                     tab.alpha = 1.0
-                    delay(0.5) {
+                    postAsyncToMain(0.5) {
                         tab.dragClone?.removeFromSuperview()
                         tab.dragClone = nil
                     }
@@ -477,11 +477,11 @@ extension TabsBarViewController {
             }
         }
 
-        delay(0.3) {
+        postAsyncToMain(0.3) {
            tab.reinstallConstraints()
         }
         // Ensure tab is re-shown
-        delay(0.5) {
+        postAsyncToMain(0.5) {
             tab.alpha = 1
             tab.superview!.bringSubviewToFront(tab)
         }
@@ -554,7 +554,7 @@ extension TabsBarViewController {
 
         leftOverflowIndicator.opacity = 0
         rightOverflowIndicator.opacity = 0
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             self.addLeftRightScrollHint(isRightSide: false, maskLayer: self.leftOverflowIndicator)
             self.addLeftRightScrollHint(isRightSide: true, maskLayer: self.rightOverflowIndicator)
             self.overflowIndicators()

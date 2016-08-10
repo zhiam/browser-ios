@@ -76,7 +76,7 @@ class CacheClearable: Clearable {
     func clear() -> Success {
         let result = Deferred<Maybe<()>>()
         // need event loop to run to autorelease UIWebViews fully
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             NSURLCache.sharedURLCache().memoryCapacity = 0;
             NSURLCache.sharedURLCache().diskCapacity = 0;
             // Remove the basic cache.
@@ -177,7 +177,7 @@ class CookiesClearable: Clearable {
 
         let result = Deferred<Maybe<()>>()
         // need event loop to run to autorelease UIWebViews fully
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             // Now we wipe the system cookie store (for our app).
             let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
             if let cookies = storage.cookies {

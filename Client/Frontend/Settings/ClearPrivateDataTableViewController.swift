@@ -122,7 +122,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
             .upon { result in
                 if !result.isSuccess && !secondAttempt {
                     print("Private data NOT cleared successfully")
-                    delay(0.5) {
+                    postAsyncToMain(0.5) {
                         // For some reason, a second attempt seems to always succeed
                         clearPrivateData(clearables, secondAttempt: true).upon() { _ in
                             deferred.fill(())
@@ -140,7 +140,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
     }
 
     @objc private func allWebViewsKilled() {
-        delay(0.5) { // for some reason, even after all webviews killed, an big delay is needed before the filehandles are unlocked
+        postAsyncToMain(0.5) { // for some reason, even after all webviews killed, an big delay is needed before the filehandles are unlocked
             var clear = [Clearable]()
             for i in 0..<self.clearables.count {
                 if self.toggles[i] {
@@ -151,7 +151,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
             if PrivateBrowsing.singleton.isOn {
                 PrivateBrowsing.singleton.exit().upon {
                     ClearPrivateDataTableViewController.clearPrivateData(clear).upon {
-                        delay(0.1) {
+                        postAsyncToMain(0.1) {
                             PrivateBrowsing.singleton.enter()
                             if #available(iOS 9, *) {
                                 getApp().tabManager.addTab(isPrivate: false)

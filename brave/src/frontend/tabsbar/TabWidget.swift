@@ -162,7 +162,7 @@ class TabWidget : UIView {
             return
         }
         titleUpdateScheduled = true
-        delay(0.2) { [weak self] in
+        postAsyncToMain(0.2) { [weak self] in
             self?.titleUpdateScheduled = false
             if let t = self?.browser?.webView?.title where !t.isEmpty {
                 self?.setTitle(t)
@@ -225,7 +225,7 @@ extension TabWidget {
 
     func longPress(g: UILongPressGestureRecognizer) {
         if g.state == .Ended {
-            delay(0.1) {
+            postAsyncToMain(0.1) {
                 if let dragClone = self.dragClone where dragClone.lastLocation == nil {
                     dragClone.removeFromSuperview()
                     self.dragClone = nil

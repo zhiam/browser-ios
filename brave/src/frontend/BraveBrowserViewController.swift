@@ -77,7 +77,7 @@ class BraveBrowserViewController : BrowserViewController {
                 bravePanel.updateSitenameAndTogglesState()
             }
         }
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             self.becomeFirstResponder()
         }
     }
@@ -127,14 +127,14 @@ class BraveBrowserViewController : BrowserViewController {
 
         heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
 
-        delay(0) {
+        postAsyncToMain(0) {
             self.urlBar.updateTabsBarShowing()
         }
     }
 
     override func showHomePanelController(inline inline:Bool) {
         super.showHomePanelController(inline: inline)
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             if UIResponder.currentFirstResponder() == nil {
                 self.becomeFirstResponder()
             }
@@ -153,13 +153,13 @@ class BraveBrowserViewController : BrowserViewController {
                 print("Failed to set BVC as first responder ;(")
                 return
             }
-            delay(0.1) {
+            postAsyncToMain(0.1) {
                 self.becomeFirstResponder()
                 setSelfAsFirstResponder(attempt + 1)
             }
         }
 
-        delay(0.1) {
+        postAsyncToMain(0.1) {
            setSelfAsFirstResponder(0)
         }
     }

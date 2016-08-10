@@ -96,7 +96,7 @@ extension LoginsHelper {
         if notification.object !== browser?.webView {
             return
         }
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             [weak self] in
             let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
             if let ok = result where ok == "true" {
@@ -177,7 +177,7 @@ extension LoginsHelper {
         }
 
         // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
-        delay(0.2) {
+        postAsyncToMain(0.2) {
             guard let itemToLookFor = ThirdPartyPasswordManagerSetting.currentSetting?.cellLabel else { return }
             selectShareItem(getApp().window!, shareItemName: itemToLookFor)
 

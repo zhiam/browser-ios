@@ -276,7 +276,7 @@ class BrowserLocationView: UIView {
             // If we're unable to highlight the domain, just use the URL as is.
             urlTextField.text = url?.absoluteString
         }
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             self.urlTextField.textColor = UIColor.whiteColor()
         }
     }

@@ -100,7 +100,7 @@ class NetworkDataFileLoader {
             (data, response, error) -> Void in
             if let err = error {
                 print(err.localizedDescription)
-                delay(60) {
+                postAsyncToMain(60) {
                     // keep trying every minute until successful
                     self.networkRequest(forceDownload: force)
                 }
@@ -122,7 +122,7 @@ class NetworkDataFileLoader {
     }
 
     private func checkForUpdatedFileAfterDelay() {
-        delay(5.0) { // a few seconds after startup, check to see if a new file is available
+        postAsyncToMain(5.0) { // a few seconds after startup, check to see if a new file is available
             Alamofire.request(.HEAD, self.dataUrl).response {
                 request, response, data, error in
                 if let err = error {

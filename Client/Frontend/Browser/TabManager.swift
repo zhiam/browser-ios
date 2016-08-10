@@ -779,7 +779,7 @@ extension TabManager : WKCompatNavigationDelegate {
 #if BRAVE
         var hider: (Void -> Void)!
         hider = {
-            delay(1) {
+            postAsyncToMain(1) {
                 self.hideNetworkActivitySpinner()
                 if UIApplication.sharedApplication().networkActivityIndicatorVisible {
                     hider()

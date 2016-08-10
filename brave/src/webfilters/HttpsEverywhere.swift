@@ -266,7 +266,7 @@ extension HttpsEverywhere {
 
     private func runtimeDebugOnlyTestVerifyResourcesLoaded() {
         #if DEBUG
-            delay(10) {
+            postAsyncToMain(10) {
                 if self.db == nil {
                     BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
                 } else {

@@ -455,7 +455,7 @@ class BraveURLBarView : URLBarView {
         }
         updateIsScheduled = true
 
-        delay(0.2) {
+        postAsyncToMain(0.2) {
             self.updateIsScheduled = false
             performUpdate()
         }

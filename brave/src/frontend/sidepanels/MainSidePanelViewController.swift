@@ -84,7 +84,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
 
     @objc func historyItemAdded() {
-        delay(0.5) {
+        postAsyncToMain(0.5) {
             if self.view.hidden {
                 return
             }
@@ -120,7 +120,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         showBookmarks()
 
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             self.bookmarks.reloadData()
         }
     }

@@ -63,7 +63,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
 
     @objc func pageChanged() {
-        delay(0.4) {
+        postAsyncToMain(0.4) {
             if !self.view.hidden {
                 self.updateSitenameAndTogglesState()
             }

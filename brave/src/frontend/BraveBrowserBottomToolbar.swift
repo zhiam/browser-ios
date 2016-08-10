@@ -205,7 +205,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         
         let isPrivate = getApp().browserViewController.tabManager.selectedTab?.isPrivate ?? false
         if isPrivate {
-            delay(0) {
+            postAsyncToMain(0) {
                 // ensure theme is applied after inital styling
                 self.applyTheme(Theme.PrivateMode)
             }
