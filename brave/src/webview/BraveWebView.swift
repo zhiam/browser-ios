@@ -714,9 +714,9 @@ extension BraveWebView: UIWebViewDelegate {
         }
         
         if let isSafeBrowsingBlock = stringByEvaluatingJavaScriptFromString("document['BraveSafeBrowsingPageResult']") {
-
             safeBrowsingBlockTriggered = (isSafeBrowsingBlock as NSString).boolValue
         }
+
         let pageInfoArray = pageInfo.componentsSeparatedByString("|")
 
         let readyState = pageInfoArray.first // ;print("readyState:\(readyState)")

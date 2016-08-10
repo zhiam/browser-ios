@@ -110,11 +110,9 @@ class URLProtocol: NSURLProtocol {
         guard let url = request.URL else { return }
         
         let blockedResponse = NSHTTPURLResponse(URL: url, statusCode: 200, HTTPVersion: "1.1", headerFields: nil)
-        self.client?.URLProtocol(self, didReceiveResponse: blockedResponse!, cacheStoragePolicy: .NotAllowed)
-        
-            client?.URLProtocol(self, didLoadData: src.dataUsingEncoding(NSUTF8StringEncoding)!)
-        
-        self.client?.URLProtocolDidFinishLoading(self)
+        client?.URLProtocol(self, didReceiveResponse: blockedResponse!, cacheStoragePolicy: .NotAllowed)
+        client?.URLProtocol(self, didLoadData: src.dataUsingEncoding(NSUTF8StringEncoding)!)
+        client?.URLProtocolDidFinishLoading(self)
     }
     
 

@@ -358,13 +358,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                     state = sender.on
                 }
             }
-            
-            //push these other updates asynchronously rather than within the loop of the UI event
-            dispatch_async(dispatch_get_main_queue()) {
-                getApp().profile?.setBraveShieldForNormalizedDomain(site, state: (siteShieldKey, state))
-                (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: true)
-                BraveApp.getCurrentWebView()?.reload()
-            }
+
+            getApp().profile?.setBraveShieldForNormalizedDomain(site, state: (siteShieldKey, state))
+            (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: true)
+            BraveApp.getCurrentWebView()?.reload()
         }
 
         switch (sender) {
