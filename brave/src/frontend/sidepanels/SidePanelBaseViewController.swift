@@ -143,7 +143,7 @@ class SidePanelBaseViewController : UIViewController {
         let duration = 0.2 * percentComplete
         UIView.animateWithDuration(duration, animations: animation)
         if (!showing) { // for reasons unknown, wheh put in a animation completion block, this is called immediately
-            delay(duration) { self.view.hidden = true }
+            postAsyncToMain(duration) { self.view.hidden = true }
         }
     }
 

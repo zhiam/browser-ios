@@ -28,7 +28,7 @@ protocol WebPageStateDelegate : class {
 
 @objc class HandleJsWindowOpen : NSObject {
     static func open(url: String) {
-        ensureMainThread {
+        postAsyncToMain(0) { // we now know JS callbacks can be off main
             guard let wv = BraveApp.getCurrentWebView() else { return }
             let current = wv.URL
             print("window.open")
@@ -106,7 +106,7 @@ class BraveWebView: UIWebView {
                 }
             }
 
-            delay(0.2) { // update the UI, wait a bit for loading to have started
+            postAsyncToMain(0.2) { // update the UI, wait a bit for loading to have started
                 (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
             }
         }
@@ -395,7 +395,7 @@ class BraveWebView: UIWebView {
         }
 
         // Wait a tiny bit in hopes the page contents are updated. Load completed doesn't mean the UIWebView has done any rendering (or even has the JS engine for the page ready, see the delay() below)
-        delay(0.1) {
+        postAsyncToMain(0.1) {
             [weak self] in
             guard let me = self else { return }
             guard let docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href") else { return }
@@ -484,7 +484,7 @@ class BraveWebView: UIWebView {
     }
 
     func evaluateJavaScript(javaScriptString: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
-        ensureMainThread() {
+        postAsyncToMain(0) { // evaluateJavaScript is for compat with WKWebView/Firefox, I didn't vet all the uses, guard by posting to main
             let wrapped = "var result = \(javaScriptString); JSON.stringify(result)"
             let string = self.stringByEvaluatingJavaScriptFromString(wrapped)
             let dict = self.convertStringToDictionary(string)
@@ -564,7 +564,7 @@ class BraveWebView: UIWebView {
             shieldStats.fp += value
         }
 
-        delay(0.2) { [weak self] in
+        postAsyncToMain(0.2) { [weak self] in
             if let me = self where BraveApp.getCurrentWebView() === me {
                 (getApp().rootViewController.visibleViewController as? BraveTopViewController)?.rightSidePanel.setShieldBlockedStats(me.shieldStats)
             }

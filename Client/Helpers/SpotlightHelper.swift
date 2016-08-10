@@ -111,7 +111,7 @@ class SpotlightHelper: NSObject {
 
 extension SpotlightHelper: NSUserActivityDelegate {
     @objc func userActivityWasContinued(userActivity: NSUserActivity) {
-        ensureMainThread() {
+        postAsyncToMain(0) { // IIRC the docs for this make no assurances callback is on main thread, so add guard
             if let url = userActivity.webpageURL {
                 self.createNewTab?(url: url)
             }

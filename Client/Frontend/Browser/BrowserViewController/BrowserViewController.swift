@@ -883,7 +883,7 @@ class BrowserViewController: UIViewController {
                         log.error("Error getting bookmark status: \(result.failureValue).")
                         return
                     }
-                    ensureMainThread {
+                    postAsyncToMain(0) {
                         self.urlBar.updateBookmarkStatus(bookmarked)
                     }
                 }

@@ -47,7 +47,7 @@ extension LoginsHelper {
                     return
                 }
 
-                ensureMainThread {
+                postAsyncToMain(0) {
                     [weak self] in
                     guard let safeSelf = self else { return }
                     if let snackBar = safeSelf.snackBar {

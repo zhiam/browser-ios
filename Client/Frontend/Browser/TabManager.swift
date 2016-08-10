@@ -186,37 +186,38 @@ class TabManager : NSObject {
 
     func selectTab(tab: Browser?) {
         debugNoteIfNotMainThread()
-        ensureMainThread() {
-            objc_sync_enter(self); defer { objc_sync_exit(self) }
-
-            if let tab = tab where self.selectedTab === tab && tab.webView != nil {
-                return
-            }
-
-            let previous = self.selectedTab
-
-            if let tab = tab {
-                self._selectedIndex = self.tabs.indexOf(tab) ?? -1
-            } else {
-                self._selectedIndex = -1
-            }
-
-            self.preserveTabs()
-
-            assert(tab === self.selectedTab, "Expected tab is selected")
-            if self.selectedTab?.webView == nil {
-                self.selectedTab?.createWebview()
-                for delegate in self.delegates where self.selectedTab?.webView != nil {
-                    delegate.value?.tabManager(self, didCreateWebView: self.selectedTab!, url: nil)
-                }
-            }
-
-            for delegate in self.delegates {
-                delegate.value?.tabManager(self, didSelectedTabChange: tab, previous: previous)
-            }
-
-            self.limitInMemoryTabs()
+        if (!NSThread.isMainThread()) { // No logical reason this should be off-main, don't select.
+            return
         }
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+
+        if let tab = tab where selectedTab === tab && tab.webView != nil {
+            return
+        }
+
+        let previous = selectedTab
+
+        if let tab = tab {
+            _selectedIndex = tabs.indexOf(tab) ?? -1
+        } else {
+            _selectedIndex = -1
+        }
+
+        preserveTabs()
+
+        assert(tab === self.selectedTab, "Expected tab is selected")
+        if selectedTab?.webView == nil {
+            selectedTab?.createWebview()
+            for delegate in delegates where selectedTab?.webView != nil {
+                delegate.value?.tabManager(self, didCreateWebView: selectedTab!, url: nil)
+            }
+        }
+
+        for delegate in delegates {
+            delegate.value?.tabManager(self, didSelectedTabChange: tab, previous: previous)
+        }
+
+        limitInMemoryTabs()
     }
 
     func expireSnackbars() {
@@ -276,16 +277,19 @@ class TabManager : NSObject {
     }
 
     func memoryWarning() {
-        ensureMainThread() {
-            objc_sync_enter(self); defer { objc_sync_exit(self) }
-            for browser in self.tabs {
-                if browser.webView == nil {
-                    continue
-                }
+        debugNoteIfNotMainThread()
+        if (!NSThread.isMainThread()) { // system memory warnings are main-thread, guard against misuse in the code
+            return
+        }
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
 
-                if self.selectedTab != browser {
-                    browser.deleteWebView(isTabDeleted: false)
-                }
+        for browser in self.tabs {
+            if browser.webView == nil {
+                continue
+            }
+
+            if self.selectedTab != browser {
+                browser.deleteWebView(isTabDeleted: false)
             }
         }
     }
@@ -329,55 +333,56 @@ class TabManager : NSObject {
     }
 
     @available(iOS 9, *)
-    private func addTab(request: NSURLRequest? = nil, configuration: WKWebViewConfiguration? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool) -> Browser {
-        objc_sync_enter(self); defer { objc_sync_exit(self) }
+    private func addTab(request: NSURLRequest? = nil, configuration: WKWebViewConfiguration? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool) -> Browser? {
         debugNoteIfNotMainThread()
+        if (!NSThread.isMainThread()) { // No logical reason this should be off-main, don't add a tab.
+            return nil
+        }
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
 
         let tab = Browser(configuration: isPrivate ? privateConfiguration : self.configuration, isPrivate: isPrivate)
-        ensureMainThread() {
-            self.configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
-        }
+        configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
         return tab
     }
 
-    private func addTab(request: NSURLRequest? = nil, configuration: WKWebViewConfiguration? = nil, flushToDisk: Bool, zombie: Bool) -> Browser {
-        objc_sync_enter(self); defer { objc_sync_exit(self) }
+    private func addTab(request: NSURLRequest? = nil, configuration: WKWebViewConfiguration? = nil, flushToDisk: Bool, zombie: Bool) -> Browser? {
         debugNoteIfNotMainThread()
+        if (!NSThread.isMainThread()) { // No logical reason this should be off-main, don't add a tab.
+            return nil
+        }
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
 
         let tab = Browser(configuration: configuration ?? self.configuration)
-        ensureMainThread() {
-            self.configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
-        }
+        configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
         return tab
     }
 
     func configureTab(tab: Browser, request: NSURLRequest?, flushToDisk: Bool, zombie: Bool) {
-
         debugNoteIfNotMainThread()
-        ensureMainThread() {
-             objc_sync_enter(self); defer { objc_sync_exit(self) }
+        if (!NSThread.isMainThread()) { // No logical reason this should be off-main, don't add a tab.
+            return
+        }
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
         
-            self.limitInMemoryTabs()
+        limitInMemoryTabs()
 
-            self.tabs.append(tab)
+        tabs.append(tab)
 
+        for delegate in delegates {
+            delegate.value?.tabManager(self, didAddTab: tab)
+        }
 
-            for delegate in self.delegates {
-                delegate.value?.tabManager(self, didAddTab: tab)
-            }
+        tab.createWebview()
 
-            tab.createWebview()
+        for delegate in delegates {
+            delegate.value?.tabManager(self, didCreateWebView: tab, url: request?.URL)
+        }
 
-            for delegate in self.delegates {
-                delegate.value?.tabManager(self, didCreateWebView: tab, url: request?.URL)
-            }
+        tab.navigationDelegate = navDelegate
+        tab.loadRequest(request ?? defaultNewTabRequest)
 
-            tab.navigationDelegate = self.navDelegate
-            tab.loadRequest(request ?? self.defaultNewTabRequest)
-
-            if flushToDisk {
-                self.storeChanges()
-            }
+        if flushToDisk {
+            storeChanges()
         }
     }
 
@@ -675,7 +680,7 @@ extension TabManager {
                 continue
             }
 
-            let tab = self.addTab(flushToDisk: false, zombie: true)
+            guard let tab = self.addTab(flushToDisk: false, zombie: true) else { return }
             tab.lastExecutedTime = savedTab.sessionData?.lastUsedTime
 
             // Set the UUID for the tab, asynchronously fetch the UIImage, then store

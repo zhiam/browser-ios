@@ -121,7 +121,7 @@ class BraveApp {
         #endif
 
         getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
-            ensureMainThread {
+            postAsyncToMain(0) { // back to main thread
                 if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = BraveShieldState.perNormalizedDomain[base] where wv.braveShieldState.isNotSet() {
                     // on init, the webview's shield state doesn't match the db
                     wv.braveShieldState = dbState
@@ -163,7 +163,7 @@ class BraveApp {
     }
 
     static func showErrorAlert(title title: String,  error: String) {
-        ensureMainThread() {
+        postAsyncToMain(0) { // this utility function can be called from anywhere
             UIAlertView(title: title, message: error, delegate: nil, cancelButtonTitle: "Close").show()
         }
     }

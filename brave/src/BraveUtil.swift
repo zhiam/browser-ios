@@ -23,14 +23,6 @@ func postAsyncToMain(delay:Double, closure:()->()) {
         dispatch_get_main_queue(), closure)
 }
 
-func ensureMainThread(closure:()->()) {
-    if NSThread.isMainThread() {
-        closure()
-    } else {
-        dispatch_async(dispatch_get_main_queue(), closure)
-    }
-}
-
 
 // Lookup time is O(maxDicts)
 // Very basic implementation of a recent item collection class, stored as groups of items in dictionaries, oldest items are deleted as blocks of items since their entire containing dictionary is deleted.

@@ -91,7 +91,7 @@ class BraveSettingsView : AppSettingsTableViewController {
 
                 // TODO: if PW manager is removed, settings must be opening a 2nd time for setting to disappear.
                 if result {
-                    ensureMainThread {
+                    postAsyncToMain(0) { // move from db thread back to main
                         generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
                         self.settings[0] = SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings)
                         let range = NSMakeRange(0, 1)
