@@ -155,7 +155,7 @@ class BraveTopViewController : UIViewController {
         if panel === mainSidePanel {
             leftSidePanelButtonAndUnderlay?.selected = willShow
             leftSidePanelButtonAndUnderlay?.hideUnderlay(!willShow)
-        } else if !willShow && !panel.canShow {
+        } else if panel.view.hidden && !panel.canShow {
             return
         }
 
