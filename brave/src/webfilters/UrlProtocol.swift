@@ -41,6 +41,11 @@ class URLProtocol: NSURLProtocol {
 
     // Tries to use the UA to match to requesting webview.
     // If it fails use current selected webview
+    /*
+     - request arrives in protocol
+     - protocol maps request to brave web view
+     - brave web view has shield state, grab that state, apply it to request
+     */
     static func getShields(request: NSURLRequest) -> BraveShieldState {
         let ua = request.allHTTPHeaderFields?["User-Agent"]
         var webViewShield:BraveShieldState? = nil
@@ -97,6 +102,22 @@ class URLProtocol: NSURLProtocol {
         client?.URLProtocolDidFinishLoading(self)
     }
 
+    //a special artificial response that includes content that explains why the page was
+    //blocked by phishing detection
+    func returnBlockedPageResponse() {
+        let path = NSBundle.mainBundle().pathForResource("SafeBrowsingError", ofType: "html")!
+        let src = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
+        guard let url = request.URL else { return }
+        
+        let blockedResponse = NSHTTPURLResponse(URL: url, statusCode: 200, HTTPVersion: "1.1", headerFields: nil)
+        self.client?.URLProtocol(self, didReceiveResponse: blockedResponse!, cacheStoragePolicy: .NotAllowed)
+        
+            client?.URLProtocol(self, didLoadData: src.dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        self.client?.URLProtocolDidFinishLoading(self)
+    }
+    
+
     static var blankPixel: NSData? = {
         let rect = CGRectMake(0, 0, 1, 1)
         UIGraphicsBeginImageContext(rect.size)
@@ -144,10 +165,9 @@ class URLProtocol: NSURLProtocol {
             }
             return
         } else if shieldState.isOnSafeBrowsing() ?? false && SafeBrowsing.singleton.shouldBlock(request) {
-            returnEmptyResponse()
-            ensureMainThread {
-                BraveApp.getCurrentWebView()?.safeBrowsingCheckIsEmptyPage(self.request.URL)
-            }
+            
+            returnBlockedPageResponse()
+
             return
         } else if shieldState.isOnAdBlockAndTp() ?? false && (TrackingProtection.singleton.shouldBlock(request) || AdBlocker.singleton.shouldBlock(request)) {
             if request.URL?.host?.contains("pcworldcommunication.d2.sc.omtrdc.net") ?? false || request.URL?.host?.contains("b.scorecardresearch.com") ?? false {

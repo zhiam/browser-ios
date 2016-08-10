@@ -116,6 +116,8 @@ class BraveWebView: UIWebView {
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
     var removeProgressObserversOnDeinit: ((UIWebView) -> Void)?
 
+    var safeBrowsingBlockTriggered:Bool = false
+    
     var prevDocumentLocation = ""
     var estimatedProgress: Double = 0
     var title: String = "" {
@@ -387,6 +389,10 @@ class BraveWebView: UIWebView {
             return
         }
         internalIsLoadingEndedFlag = true
+        
+        if safeBrowsingBlockTriggered {
+            return
+        }
 
         // Wait a tiny bit in hopes the page contents are updated. Load completed doesn't mean the UIWebView has done any rendering (or even has the JS engine for the page ready, see the delay() below)
         delay(0.1) {
@@ -528,33 +534,6 @@ class BraveWebView: UIWebView {
         js += "script.innerHTML = '\(css)';"
         js += "document.head.appendChild(script);"
         LegacyUserContentController.injectJsIntoAllFrames(self, script: js)
-    }
-
-    var safeBrowsingCheckIsEmptyPageTimer = NSTimer()
-
-    func safeBrowsingCheckIsEmptyPageTimeout(timer: NSTimer) {
-        let urlInfo = timer.userInfo as? NSURL
-        safeBrowsingCheckIsEmptyPageTimer.invalidate()
-
-        ensureMainThread {
-            let contents = self.stringByEvaluatingJavaScriptFromString("document.body")
-            if contents?.isEmpty ?? true {
-                let path = NSBundle.mainBundle().pathForResource("SafeBrowsingError", ofType: "html")!
-                let src = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
-                self.loadHTMLString(src, baseURL: nil)
-            }
-            delay(0.2) {
-                [weak self] in
-                self?.setUrl(urlInfo, reliableSource: true)
-            }
-        }
-    }
-
-    func safeBrowsingCheckIsEmptyPage(url: NSURL?) {
-        if safeBrowsingCheckIsEmptyPageTimer.valid {
-            return
-        }
-        safeBrowsingCheckIsEmptyPageTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(safeBrowsingCheckIsEmptyPageTimeout), userInfo: url, repeats: false)
     }
 
     enum ShieldStatUpdate {
@@ -707,7 +686,7 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webViewDidStartLoad(webView: UIWebView) {
         backForwardList.update()
-
+        
         if let nd = navigationDelegate {
             // this triggers the network activity spinner
             globalContainerWebView.legacyWebView = self
@@ -733,6 +712,11 @@ extension BraveWebView: UIWebViewDelegate {
         guard let pageInfo = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase() + '|' + document.title") else {
             return
         }
+        
+        if let isSafeBrowsingBlock = stringByEvaluatingJavaScriptFromString("document['BraveSafeBrowsingPageResult']") {
+
+            safeBrowsingBlockTriggered = (isSafeBrowsingBlock as NSString).boolValue
+        }
         let pageInfoArray = pageInfo.componentsSeparatedByString("|")
 
         let readyState = pageInfoArray.first // ;print("readyState:\(readyState)")
@@ -749,7 +733,6 @@ extension BraveWebView: UIWebViewDelegate {
         if (error?.code == NSURLErrorCancelled) {
             return
         }
-
         print("didFailLoadWithError: \(error)")
 
         if (error?.domain == NSURLErrorDomain) {
@@ -821,7 +804,7 @@ extension BraveWebView : NSURLConnectionDelegate, NSURLConnectionDataDelegate {
         challenge.sender?.continueWithoutCredentialForAuthenticationChallenge(challenge)
         loadingUnvalidatedHTTPSPage = false
     }
-    
+
     func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
         guard let url = URL else { return }
         loadingUnvalidatedHTTPSPage = false
