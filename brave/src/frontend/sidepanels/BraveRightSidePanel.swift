@@ -175,6 +175,8 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
         func setupSiteNameSection() {
             siteName.font = UIFont.boldSystemFontOfSize(22)
+            siteName.lineBreakMode = NSLineBreakMode.ByTruncatingMiddle
+            siteName.minimumScaleFactor = 0.75
 
             let down = UILabel()
             down.text = NSLocalizedString("Down", comment: "brave shield on/off toggle off state")
