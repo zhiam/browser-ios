@@ -26,6 +26,8 @@ class TabsBarViewController: UIViewController {
     var isVisible:Bool {
         return self.view.alpha > 0
     }
+
+    private var isAddTabAnimationRunning = false
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -142,21 +144,22 @@ class TabsBarViewController: UIViewController {
     
     func recalculateTabView() {
         let w = calcTabWidth(tabs.count)
-        self.updateTabWidthConstraint(width: w)
-        
+        updateTabWidthConstraint(width: w)
+
         updateContentSize(tabs.count)
         overflowIndicators()
         
-        self.scrollView.layoutIfNeeded()
+        scrollView.layoutIfNeeded()
     }
 
 
     func addTab(browser browser: Browser) -> TabWidget {
-        
+    
         let t = TabWidget(browser: browser, parentScrollView: scrollView)
         t.delegate = self
         
         if self.isVisible {
+            isAddTabAnimationRunning = true
             t.alpha = 0
             t.widthConstraint?.updateOffset(0)
         }
@@ -168,21 +171,24 @@ class TabsBarViewController: UIViewController {
         t.remakeLayout(prev: tabs.last?.spacerRight != nil ? tabs.last!.spacerRight : self.spacerLeftmost, width: w, scrollView: self.scrollView)
         
         tabs.append(t)
-        
+
         if self.isVisible {
             UIView.animateWithDuration(0.2, animations: {
-                    self.recalculateTabView()
-                }) { _ in
-                    UIView.animateWithDuration(0.2) {
-                        t.alpha = 1
-                    }
+                self.recalculateTabView()
+                let w = self.calcTabWidth(self.tabs.count)
+                if self.tabs.count > 2 {
+                    self.scrollView.contentOffset = CGPoint(x: w * CGFloat(self.tabs.count - 2), y: 0)
                 }
-            
-        }
-        else {
+            }) { _ in
+                UIView.animateWithDuration(0.1) {
+                    t.alpha = 1
+                    self.isAddTabAnimationRunning = false
+                }
+            }
+        } else {
             recalculateTabView()
         }
-        
+
         return t
     }
 
@@ -271,11 +277,13 @@ extension TabsBarViewController: TabWidgetDelegate {
             getApp().tabManager.selectTab(tab.browser)
         }
 
-        delay(0.1) { // allow time for any layout code to complete
-            let left = CGRectMake(tab.frame.minX, 1, 1, 1)
-            let right = CGRectMake(tab.frame.maxX - 1, 1, 1, 1)
-            self.scrollView.scrollRectToVisible(left, animated: true)
-            self.scrollView.scrollRectToVisible(right, animated: true)
+        if !isAddTabAnimationRunning {
+            delay(0.1) { // allow time for any layout code to complete
+                let left = CGRectMake(tab.frame.minX, 1, 1, 1)
+                let right = CGRectMake(tab.frame.maxX - 1, 1, 1, 1)
+                self.scrollView.scrollRectToVisible(left, animated: true)
+                self.scrollView.scrollRectToVisible(right, animated: true)
+            }
         }
     }
 }
