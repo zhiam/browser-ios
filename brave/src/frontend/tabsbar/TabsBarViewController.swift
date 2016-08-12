@@ -252,6 +252,18 @@ class TabsBarViewController: UIViewController {
         // you must add the mask to the root view, not the scrollView, otherwise the masks will move as the user scrolls!
         view.layer.addSublayer(maskLayer)
     }
+
+    func updateSeparatorLineBetweenTabs() {
+        for (index, tab) in tabs.enumerate() {
+            if index == 0 || tab.isSelectedStyle() {
+                tab.separatorLine.hidden = true
+            } else if index - 1 > -1 && tabs[index - 1].isSelectedStyle() {
+                tab.separatorLine.hidden = true
+            } else {
+                tab.separatorLine.hidden = false
+            }
+        }
+    }
 }
 
 extension TabsBarViewController: UIScrollViewDelegate {
@@ -316,6 +328,8 @@ extension TabsBarViewController: TabManagerDelegate {
                 tabWidgetSelected(tabWidget)
             }
         }
+
+        updateSeparatorLineBetweenTabs()
     }
 
     func tabManager(tabManager: TabManager, didCreateWebView tab: Browser, url: NSURL?) {
@@ -344,6 +358,8 @@ extension TabsBarViewController: TabManagerDelegate {
                 removeTab(tabWidget)
             }
         }
+
+        updateSeparatorLineBetweenTabs()
 
         getApp().browserViewController.urlBar.updateTabsBarShowing()
     }
@@ -478,7 +494,8 @@ extension TabsBarViewController {
         }
 
         postAsyncToMain(0.3) {
-           tab.reinstallConstraints()
+            tab.reinstallConstraints()
+            self.updateSeparatorLineBetweenTabs()
         }
         // Ensure tab is re-shown
         postAsyncToMain(0.5) {

@@ -60,7 +60,7 @@ class TabWidget : UIView {
     var dragClone: TabDragClone?
     let spacerRight = UIView()
     var pan: UIPanGestureRecognizer!
-    let separatorLine = UIView()
+    let separatorLine = UIView() // visibility is controlled by TabsBarViewController
 
     init(browser: Browser, parentScrollView: UIScrollView) {
         super.init(frame: CGRectZero)
@@ -140,7 +140,6 @@ class TabWidget : UIView {
         backgroundColor = UIColor.init(white: 90/255, alpha: 1.0)
         title.titleLabel!.font = UIFont.systemFontOfSize(11)
         title.setTitleColor(UIColor.init(white: 230/255, alpha: 1.0), forState: .Normal)
-        separatorLine.hidden = false
         close.hidden = true
     }
 
@@ -153,7 +152,10 @@ class TabWidget : UIView {
         title.setTitleColor(UIColor.init(white: 255/255, alpha: 1.0), forState: .Normal)
         backgroundColor = UIColor.clearColor()
         close.hidden = false
-        separatorLine.hidden = true
+    }
+
+    func isSelectedStyle() -> Bool {
+        return !close.hidden
     }
 
     private var titleUpdateScheduled = false
