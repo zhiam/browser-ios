@@ -251,7 +251,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
             var rows = [UIView]()
             for (i, item) in views_toggles.enumerate() {
-                item.onTintColor = UIColor(white: 137/255, alpha: 1.0)
+                item.onTintColor = BraveUX.BraveOrange
                 item.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
                 views_labels[i].text = labelTitles[i]
                 if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
