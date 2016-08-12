@@ -164,11 +164,11 @@ class TabsBarViewController: UIViewController {
             t.widthConstraint?.updateOffset(0)
         }
         
-        self.scrollView.addSubview(t)
+        scrollView.addSubview(t)
         
         let w = calcTabWidth(tabs.count)
         
-        t.remakeLayout(prev: tabs.last?.spacerRight != nil ? tabs.last!.spacerRight : self.spacerLeftmost, width: w, scrollView: self.scrollView)
+        t.remakeLayout(prev: tabs.last?.spacerRight != nil ? tabs.last!.spacerRight : self.spacerLeftmost, width: w, scrollView: scrollView)
         
         tabs.append(t)
 
@@ -176,8 +176,9 @@ class TabsBarViewController: UIViewController {
             UIView.animateWithDuration(0.2, animations: {
                 self.recalculateTabView()
                 let w = self.calcTabWidth(self.tabs.count)
-                if self.tabs.count > 2 {
-                    self.scrollView.contentOffset = CGPoint(x: w * CGFloat(self.tabs.count - 2), y: 0)
+                let overflow =  w * CGFloat(self.tabs.count) - self.scrollView.frame.size.width
+                if overflow > 0 {
+                    self.scrollView.contentOffset = CGPoint(x: overflow, y: 0)
                 }
             }) { _ in
                 UIView.animateWithDuration(0.1) {
