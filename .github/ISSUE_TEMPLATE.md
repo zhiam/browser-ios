@@ -1,6 +1,6 @@
-**Did you search for similar issues before submitting this one?**
+Description:
 
-**Describe the issue you encountered:**
+**Did you search for similar issues before submitting this one?**
 
 **Expected behavior:**
 
@@ -12,6 +12,10 @@
     1.
     2.
     3.
+
+** Website problems only:
+- did you check with Brave Shields down?
+- did you check in Puffin/Dolphin/iCab/Maxthon (UIWebView-based browsers)?
 
 - Screenshot if needed:
 
