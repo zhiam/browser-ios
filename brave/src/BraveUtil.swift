@@ -160,3 +160,21 @@ func getBestFavicon(favicons: [Favicon]) -> Favicon? {
     return best
 }
 
+#if DEBUG
+func report_memory() {
+    let MACH_TASK_BASIC_INFO_COUNT = (sizeof(mach_task_basic_info_data_t) / sizeof(natural_t))
+    let name   = mach_task_self_
+    let flavor = task_flavor_t(MACH_TASK_BASIC_INFO)
+    var size   = mach_msg_type_number_t(MACH_TASK_BASIC_INFO_COUNT)
+    let infoPointer = UnsafeMutablePointer<mach_task_basic_info>.alloc(1)
+    let kerr = task_info(name, flavor, UnsafeMutablePointer(infoPointer), &size)
+    let info = infoPointer.move()
+    infoPointer.dealloc(1)
+    if kerr == KERN_SUCCESS {
+        print("Memory in use (in MB): \(info.resident_size/1000000)")
+    } else {
+        let errorString = String(CString: mach_error_string(kerr), encoding: NSASCIIStringEncoding)
+        print(errorString ?? "Error: couldn't parse error string")
+    }
+}
+#endif
