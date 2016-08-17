@@ -892,7 +892,6 @@ class BrowserViewController: UIViewController {
     }
     // Mark: Opening New Tabs
 
-    @available(iOS 9, *)
     func switchToPrivacyMode(){
         let isPrivate = true // this func should be expaneded to handle exiting, which requires a deferred return val
         if isPrivate {
@@ -904,7 +903,9 @@ class BrowserViewController: UIViewController {
 
         let tabTrayController = self.tabTrayController ?? TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
         if tabTrayController.privateMode != isPrivate {
-            tabTrayController.changePrivacyMode(isPrivate)
+            if #available(iOS 9, *) {
+                tabTrayController.changePrivacyMode(isPrivate)
+            }
         }
         self.tabTrayController = tabTrayController
     }
@@ -915,11 +916,11 @@ class BrowserViewController: UIViewController {
         if let tab = tab {
             tabManager.selectTab(tab)
         } else {
-            openURLInNewTab(url, isPrivate: isPrivate)
+            openURLInNewTab(url)
         }
     }
 
-    func openURLInNewTab(url: NSURL?, isPrivate ignored:Bool = false) {
+    func openURLInNewTab(url: NSURL?) {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
         }
@@ -946,7 +947,7 @@ class BrowserViewController: UIViewController {
     func openBlankNewTabAndFocus(isPrivate isPrivate: Bool = false) {
         popToBrowser()
         tabManager.selectTab(nil)
-        openURLInNewTab(nil, isPrivate: isPrivate)
+        openURLInNewTab(nil)
     }
 
     private func popToBrowser(forTab: Browser? = nil) {
@@ -994,16 +995,17 @@ class BrowserViewController: UIViewController {
         }
         activities.append(findInPageActivity)
 
-        #if !BRAVE
-        if #available(iOS 9.0, *) {
-            if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active {
-                let requestDesktopSiteActivity = RequestDesktopSiteActivity(requestMobileSite: tab.desktopSite) { [unowned tab] in
-                    tab.toggleDesktopSite()
+        //if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active { // needed for reader mode?
+        if let tab = tab {
+                let requestDesktopSiteActivity = RequestDesktopSiteActivity() { [weak tab] in
+                    if let url = tab?.url {
+                        (getApp().browserViewController as! BraveBrowserViewController).newTabForDesktopSite(url: url)
+                    }
+                    //tab?.toggleDesktopSite()
                 }
                 activities.append(requestDesktopSiteActivity)
-            }
         }
-        #endif
+
 
         let helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
 

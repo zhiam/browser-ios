@@ -156,7 +156,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
     }
 
-    func createWebview() {
+    func createWebview(useDesktopUserAgent useDesktopUserAgent:Bool = false) {
         assert(NSThread.isMainThread())
         if !NSThread.isMainThread() {
             return
@@ -169,7 +169,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
             configuration!.preferences = WKPreferences()
             configuration!.preferences.javaScriptCanOpenWindowsAutomatically = false
 #endif
-            let webView = BraveWebView(frame: CGRectZero)
+            let webView = BraveWebView(frame: CGRectZero, useDesktopUserAgent: useDesktopUserAgent)
             configuration = nil
 
             webView.accessibilityLabel = NSLocalizedString("Web content", comment: "Accessibility label for the main web content view")
@@ -476,11 +476,10 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
     }
 
-    @available(iOS 9, *)
-    func toggleDesktopSite() {
-        desktopSite = !desktopSite
-        reload()
-    }
+//    func toggleDesktopSite() {
+//        desktopSite = !desktopSite
+//        reload()
+//    }
 
     func queueJavascriptAlertPrompt(alert: JSAlertInfo) {
         alertQueue.append(alert)

@@ -33,7 +33,6 @@ protocol BrowserToolbarDelegate: class {
     func browserToolbarDidLongPressBack(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidLongPressForward(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidPressReload(browserToolbar: BrowserToolbarProtocol, button: UIButton)
-    func browserToolbarDidLongPressReload(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidPressStop(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidLongPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton)

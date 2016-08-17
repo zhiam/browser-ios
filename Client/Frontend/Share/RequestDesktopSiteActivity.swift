@@ -4,26 +4,19 @@
 
 import Foundation
 
-@available(iOS 9, *)
 class RequestDesktopSiteActivity: UIActivity {
-    private let requestMobileSite: Bool
     private let callback: () -> ()
 
-    init(requestMobileSite: Bool, callback: () -> ()) {
-        self.requestMobileSite = requestMobileSite
+    init(callback: () -> ()) {
         self.callback = callback
     }
 
     override func activityTitle() -> String? {
-        return requestMobileSite ?
-            NSLocalizedString("Request Mobile Site", comment: "Share action title") :
-            NSLocalizedString("Request Desktop Site", comment: "Share action title")
+        return NSLocalizedString("Open Desktop Site tab", comment: "Share action title")
     }
 
     override func activityImage() -> UIImage? {
-        return requestMobileSite ?
-            UIImage(named: "shareRequestMobileSite") :
-            UIImage(named: "shareRequestDesktopSite")
+        return UIImage(named: "shareRequestDesktopSite")
     }
 
     override func performActivity() {

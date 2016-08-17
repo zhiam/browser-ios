@@ -85,6 +85,7 @@ class BraveWebView: UIWebView {
     }
     var delegatesForPageState = [Weak_WebPageStateDelegate]()
 
+    let usingDesktopUserAgent: Bool
     let specialStopLoadUrl = "http://localhost.stop.load"
     weak var navigationDelegate: WKCompatNavigationDelegate?
 
@@ -171,23 +172,6 @@ class BraveWebView: UIWebView {
     // This gets set as soon as it is available from the first UIWebVew created
     private static var webviewBuiltinUserAgent: String?
 
-    // To mimic WKWebView we need this property. And, to easily overrride where Firefox code is setting it, we hack the setter,
-    // so that a custom agent is set always to our kDesktopUserAgent.
-    // A nil customUserAgent means to use the default which is correct.
-    //TODO setting the desktop agent doesn't currently work, see note below)
-    var customUserAgent:String? {
-        willSet {
-            if self.customUserAgent == newValue || newValue == nil {
-                return
-            }
-            self.customUserAgent = newValue == nil ? nil : kDesktopUserAgent
-            // The following doesn't work, we need to kill and restart the webview, and restore its history state
-            // for this setting to take effect
-            //      let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
-            //      defaults.registerDefaults(["UserAgent": (self.customUserAgent ?? "")])
-        }
-    }
-
     // Needed to identify webview in url protocol
     func generateUniqueUserAgent() {
         // synchronize code from this point on.
@@ -199,8 +183,8 @@ class BraveWebView: UIWebView {
         }
 
         StaticCounter.counter += 1
-        if let webviewBuiltinUserAgent = BraveWebView.webviewBuiltinUserAgent {
-            let userAgent = webviewBuiltinUserAgent + String(format:" _id/%06d", StaticCounter.counter)
+        if let userAgentBase = usingDesktopUserAgent ? kDesktopUserAgent : BraveWebView.webviewBuiltinUserAgent {
+            let userAgent = userAgentBase + String(format:" _id/%06d", StaticCounter.counter)
             let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
             defaults.registerDefaults(["UserAgent": userAgent ])
             self.uniqueId = StaticCounter.counter
@@ -276,7 +260,8 @@ class BraveWebView: UIWebView {
         }
     }
 
-    override init(frame: CGRect) {
+    required init(frame: CGRect, useDesktopUserAgent: Bool) {
+        self.usingDesktopUserAgent = useDesktopUserAgent
         super.init(frame: frame)
         commonInit()
     }
@@ -335,6 +320,7 @@ class BraveWebView: UIWebView {
     }
 
     required init?(coder aDecoder: NSCoder) {
+        self.usingDesktopUserAgent = false
         super.init(coder: aDecoder)
         commonInit()
     }
@@ -608,7 +594,7 @@ extension BraveWebView: UIWebViewDelegate {
             return false
         }
 
-        if BraveWebView.webviewBuiltinUserAgent == nil {
+        if BraveWebView.webviewBuiltinUserAgent == nil { // this should only have to run once at startup
             BraveWebView.webviewBuiltinUserAgent = request.valueForHTTPHeaderField("User-Agent")
             assert(BraveWebView.webviewBuiltinUserAgent != nil)
         }

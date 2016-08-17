@@ -176,6 +176,11 @@ class BraveBrowserViewController : BrowserViewController {
            setSelfAsFirstResponder(0)
         }
     }
+
+    func newTabForDesktopSite(url url: NSURL) {
+        let tab = tabManager.addTabForDesktopSite()
+        tab.loadRequest(NSURLRequest(URL: url))
+    }
 }
 
 weak var _firstResponder:UIResponder?

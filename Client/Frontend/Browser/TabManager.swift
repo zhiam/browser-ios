@@ -228,6 +228,13 @@ class TabManager : NSObject {
         }
     }
 
+    func addTabForDesktopSite() -> Browser {
+        let tab = Browser(configuration: self.configuration)
+        configureTab(tab, request: nil, flushToDisk: false, zombie: false, useDesktopUserAgent: true)
+        selectTab(tab)
+        return tab
+    }
+
     @available(iOS 9, *)
     func addTab(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser? {
         return self.addTab(request, configuration: configuration, flushToDisk: true, zombie: false, isPrivate: isPrivate)
@@ -357,7 +364,7 @@ class TabManager : NSObject {
         return tab
     }
 
-    func configureTab(tab: Browser, request: NSURLRequest?, flushToDisk: Bool, zombie: Bool) {
+    func configureTab(tab: Browser, request: NSURLRequest?, flushToDisk: Bool, zombie: Bool, useDesktopUserAgent: Bool = false) {
         debugNoteIfNotMainThread()
         if (!NSThread.isMainThread()) { // No logical reason this should be off-main, don't add a tab.
             return
@@ -372,7 +379,7 @@ class TabManager : NSObject {
             delegate.value?.tabManager(self, didAddTab: tab)
         }
 
-        tab.createWebview()
+        tab.createWebview(useDesktopUserAgent: useDesktopUserAgent)
 
         for delegate in delegates {
             delegate.value?.tabManager(self, didCreateWebView: tab, url: request?.URL)
