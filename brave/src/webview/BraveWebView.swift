@@ -406,10 +406,6 @@ class BraveWebView: UIWebView {
 
             me.stringByEvaluatingJavaScriptFromString("console.log('get favicons'); __firefox__.favicons.getFavicons()")
 
-            #if !TEST
-                me.replaceAdImages(me)
-            #endif
-
             me.checkScriptBlockedAndBroadcastStats()
         }
     }
