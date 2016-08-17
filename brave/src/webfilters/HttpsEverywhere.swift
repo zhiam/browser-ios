@@ -7,7 +7,7 @@ class HttpsEverywhere {
     static let kNotificationDataLoaded = "kNotificationDataLoaded"
     static let prefKey = "braveHttpsEverywhere"
     static let prefKeyDefaultValue = true
-    static let dataVersion = "5.1.9"
+    static let dataVersion = "5.2"
     var isNSPrefEnabled = true
     var db: Connection?
     let fifoCacheOfRedirects = FifoDict()
@@ -41,6 +41,8 @@ class HttpsEverywhere {
         guard let path = networkFileLoader.pathToExistingDataOnDisk() else { return }
         do {
             db = try Connection(path)
+            // try db!.execute("CREATE INDEX IF NOT EXISTS hostidx ON targets(host)") -> useful for testing, db will have this already
+            try db!.execute("PRAGMA synchronous=OFF")
             NSLog("»»»»»» https-e db loaded")
             NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
         }  catch {
@@ -62,11 +64,9 @@ class HttpsEverywhere {
 
     private func applyRedirectRuleForIds(ids: [Int], url: NSURL) -> NSURL? {
         guard let db = db else { return nil }
-        let table = Table("rulesets")
+
         let contents = Expression<String>("contents")
         let id = Expression<Int>("id")
-
-        let query = table.select(contents).filter(ids.contains(id))
 
         func urlWithTrailingSlash(url: NSURL) -> String {
             let s = url.absoluteString
@@ -82,8 +82,9 @@ class HttpsEverywhere {
         let urlCandidates = urlWithSlash != url.absoluteString ?
             [url.absoluteString, urlWithSlash] : [url.absoluteString]
 
-        for row in db.prepare(query) {
-            guard let data = row.get(contents).utf8EncodedData else { continue }
+        let whereClause = "id = '" + ids.map({ "\($0)" }).joinWithSeparator("' OR id = '") + "'"
+        for row in db.prepare("SELECT contents FROM rulesets WHERE \(whereClause)") {
+            guard let r = row[0] as? String, data = r.utf8EncodedData else { continue }
             do {
                 guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary,
                     ruleset = json["ruleset"] as? NSDictionary,
@@ -132,66 +133,61 @@ class HttpsEverywhere {
         return nil
     }
 
-    private func mapExactDomainToIdForLookup(domain: String) -> [Int]? {
+    private func mapExactDomainToIdForLookup(domains: [String]) -> [Int]? {
         guard let db = db else { return nil }
-        let table = Table("targets")
-        let hostCol = Expression<String>("host")
-        let ids = Expression<String>("ids")
-
-        let query = table.select(ids).filter(hostCol.like(domain))
-
-        if let cached = fifoCacheOfDomainToIds.getItem(domain) as? [Int] {
-            return cached
-        }
-
         var result = [Int]()
-        defer {
-            fifoCacheOfDomainToIds.addItem(domain, value: result)
+
+        var remaining = [String]()
+        for domain in domains {
+            if let cached = fifoCacheOfDomainToIds.getItem(domain) as? [Int] {
+                result += cached
+            } else {
+                remaining.append(domain)
+            }
         }
 
-        if let row = db.prepare(query).generate().next() {
-            var data = row.get(ids)
-            data = data.substringWithRange(data.startIndex.advancedBy(1)..<data.endIndex.advancedBy(-1))
-            if let loc = data.rangeOfString(",")?.startIndex {
-                data = data.substringToIndex(loc)
-            }
+        let whereClause = "host = '" + remaining.joinWithSeparator("' OR host = '") + "'"
+        let r = db.prepare("select ids, host from targets where \(whereClause)").generate()
+        while let row = r.next() {
+            guard let d = row[0] as? String else { continue }
+            let data = d.substringWithRange(d.startIndex.advancedBy(1)..<d.endIndex.advancedBy(-1))
             let parts = data.characters.split(",")
-            for i in 0..<parts.count {
-                if let j = Int(String(parts[i])) {
+            var cache = [Int]()
+            for part in parts {
+                if let j = Int(String(part)) {
+                    cache.append(j)
                     result.append(j)
                 }
             }
-
-            return result
+            fifoCacheOfDomainToIds.addItem(row[1] as? String ?? "", value: cache)
         }
-        return nil
+        return result
     }
 
     private func mapDomainToIdForLookup(domain: String) -> [Int] {
-        var resultIds = [Int]()
-        let parts = domain.characters.split(".")
+        let parts = (domain as NSString).componentsSeparatedByString(".")
         if parts.count < 1 {
-            return resultIds
+            return [Int]()
         }
+        var s = [String]()
         for i in 0..<(parts.count - 1) {
-            let slice = Array(parts[i..<parts.count]).joinWithSeparator(".".characters)
-            let prefix = (i > 0) ? "*" : ""
-            if let ids = mapExactDomainToIdForLookup(prefix + String(slice)) {
-                resultIds.appendContentsOf(ids)
-            }
+            let slice = parts[i..<parts.count].joinWithSeparator(".")
+            let prefix = (i > 0) ? "*." : ""
+            s.append(prefix + slice)
         }
-        return resultIds
+        if s.count == 0 {
+            return [Int]()
+        }
+        if s.count == 1 {
+            s.append("*." + s[0])
+        }
+        return mapExactDomainToIdForLookup(s) ?? [Int]()
     }
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
         if url.scheme.startsWith("https") {
             return nil
         }
-
-        // synchronize code from this point on.
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-
 
         if let redirect = fifoCacheOfRedirects.getItem(url.absoluteString) {
             if redirect === NSNull() {
