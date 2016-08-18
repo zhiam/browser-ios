@@ -40,7 +40,7 @@ class HttpsEverywhere {
 
         guard let path = networkFileLoader.pathToExistingDataOnDisk() else { return }
         do {
-            db = try Connection(path)
+            db = try Connection(path, readonly: true)
             // try db!.execute("CREATE INDEX IF NOT EXISTS hostidx ON targets(host)") -> useful for testing, db will have this already
             try db!.execute("PRAGMA synchronous=OFF")
             NSLog("»»»»»» https-e db loaded")
@@ -137,19 +137,16 @@ class HttpsEverywhere {
         guard let db = db else { return nil }
         var result = [Int]()
 
-        var remaining = [String]()
         for domain in domains {
             if let cached = fifoCacheOfDomainToIds.getItem(domain) as? [Int] {
-                result += cached
-            } else {
-                remaining.append(domain)
+                return cached // any one of the domains matches, we are good to go
             }
         }
 
-        let whereClause = "host = '" + remaining.joinWithSeparator("' OR host = '") + "'"
-        let r = db.prepare("select ids, host from targets where \(whereClause)").generate()
-        while let row = r.next() {
-            guard let d = row[0] as? String else { continue }
+        let whereClause = "host = '" + domains.joinWithSeparator("' OR host = '") + "'"
+        let r = db.prepare("select ids, host from targets where \(whereClause) limit 1").generate()
+        if let row = r.next() { // only use one result, doesn't matter which one
+            guard let d = row[0] as? String else { return result }
             let data = d.substringWithRange(d.startIndex.advancedBy(1)..<d.endIndex.advancedBy(-1))
             let parts = data.characters.split(",")
             var cache = [Int]()
