@@ -92,7 +92,7 @@ extension BrowserViewController: WKCompatNavigationDelegate {
 
         if let tab = tabManager.selectedTab where isStoreURL(url) {
             struct StaticTag {
-                static let tag = Int(arc4random())
+                static let tag = NSUUID().hash
             }
             let hasOneAlready = tab.bars.contains({ $0.tag == StaticTag.tag })
             if hasOneAlready ?? false {
