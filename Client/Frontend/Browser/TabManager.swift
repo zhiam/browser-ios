@@ -77,16 +77,6 @@ class TabManager : NSObject {
         return configuration
     }()
 
-    // A WKWebViewConfiguration used for private mode tabs
-    @available(iOS 9, *)
-    lazy private var privateConfiguration: WKWebViewConfiguration = {
-        let configuration = WKWebViewConfiguration()
-        configuration.processPool = WKProcessPool()
-        configuration.preferences.javaScriptCanOpenWindowsAutomatically = !(self.prefs.boolForKey("blockPopups") ?? true)
-        configuration.websiteDataStore = WKWebsiteDataStore.nonPersistentDataStore()
-        return configuration
-    }()
-
     private let imageStore: DiskImageStore?
 
     private let prefs: Prefs
@@ -235,12 +225,10 @@ class TabManager : NSObject {
         return tab
     }
 
-    @available(iOS 9, *)
     func addTab(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser? {
         return self.addTab(request, configuration: configuration, flushToDisk: true, zombie: false, isPrivate: isPrivate)
     }
 
-    @available(iOS 9, *)
     func addTabAndSelect(request: NSURLRequest! = nil, configuration: WKWebViewConfiguration! = nil, isPrivate: Bool) -> Browser? {
         guard let tab = addTab(request, configuration: configuration, isPrivate: isPrivate) else { return nil }
         selectTab(tab)
@@ -339,7 +327,6 @@ class TabManager : NSObject {
         }
     }
 
-    @available(iOS 9, *)
     private func addTab(request: NSURLRequest? = nil, configuration: WKWebViewConfiguration? = nil, flushToDisk: Bool, zombie: Bool, isPrivate: Bool) -> Browser? {
         debugNoteIfNotMainThread()
         if (!NSThread.isMainThread()) { // No logical reason this should be off-main, don't add a tab.
@@ -347,7 +334,7 @@ class TabManager : NSObject {
         }
         objc_sync_enter(self); defer { objc_sync_exit(self) }
 
-        let tab = Browser(configuration: isPrivate ? privateConfiguration : self.configuration, isPrivate: isPrivate)
+        let tab = Browser(configuration: self.configuration, isPrivate: isPrivate)
         configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
         return tab
     }
@@ -436,12 +423,12 @@ class TabManager : NSObject {
         }
 
         // Make sure we never reach 0 normal tabs
-        if !tab.isPrivate && normalTabs.count == 0 && createTabIfNoneLeft {
-            let tab = addTab()
+        if self.normalOrPrivateTabList.count == 0 && createTabIfNoneLeft {
+            let tab = addTab(isPrivate: PrivateBrowsing.singleton.isOn)
             selectTab(tab)
         }
         
-        if !tab.isPrivate && !(0..<tabs.count ~= _selectedIndex) {
+        if !(0..<tabs.count ~= _selectedIndex) {
             selectTab(tabs.first)
         }
 

@@ -100,7 +100,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
         self.configuration = configuration
     }
 
-    @available(iOS 9, *)
     init(configuration: WKWebViewConfiguration, isPrivate: Bool) {
         self.configuration = configuration
         super.init()

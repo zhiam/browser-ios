@@ -749,18 +749,19 @@ extension TabTrayController: UIScrollViewAccessibilityDelegate {
     }
 }
 
+private func removeTabUtil(tabManager: TabManager, tab: Browser) {
+    let isAlwaysPrivate = getApp().profile?.prefs.boolForKey(kPrefKeyPrivateBrowsingAlwaysOn) ?? false
+    let createIfNone =  isAlwaysPrivate ? true : !PrivateBrowsing.singleton.isOn
+    tabManager.removeTab(tab, createTabIfNoneLeft: createIfNone)
+}
+
 extension TabTrayController: SwipeAnimatorDelegate {
     func swipeAnimator(animator: SwipeAnimator, viewWillExitContainerBounds: UIView) {
         let tabCell = animator.container as! TabCell
         if let indexPath = collectionView.indexPathForCell(tabCell) {
             let tab = tabsToDisplay[indexPath.item]
-            tabManager.removeTab(tab, createTabIfNoneLeft: true)
+            removeTabUtil(tabManager, tab: tab)
             UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Closing tab", comment: ""))
-
-            if privateMode && tabsToDisplay.count == 0 {
-                // tabManager.removeTab will have selected a tab, which created a non-private webview, so delete it
-                getApp().tabManager.tabs.forEach{ $0.deleteWebView(isTabDeleted: false) }
-            }
         }
     }
 }
@@ -769,7 +770,7 @@ extension TabTrayController: TabCellDelegate {
     func tabCellDidClose(cell: TabCell) {
         let indexPath = collectionView.indexPathForCell(cell)!
         let tab = tabsToDisplay[indexPath.item]
-        tabManager.removeTab(tab, createTabIfNoneLeft: true)
+        removeTabUtil(tabManager, tab: tab)
     }
 }
 
