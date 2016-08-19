@@ -381,8 +381,18 @@ class TabManager : NSObject {
             return
         }
 
+        if let selected = selectedTab where selectedTab === tab {
+            if let idx = tabs.displayedTabsForCurrentPrivateMode.indexOf(selected) {
+                if idx - 1 >= 0 {
+                    selectTab(tabs.displayedTabsForCurrentPrivateMode[idx - 1])
+                } else {
+                    selectTab(tabs.displayedTabsForCurrentPrivateMode.last)
+                }
+            }
+        }
         tabs.removeTab(tab)
-        
+
+
         // There's still some time between this and the webView being destroyed.
         // We don't want to pick up any stray events.
         tab.webView?.navigationDelegate = nil
