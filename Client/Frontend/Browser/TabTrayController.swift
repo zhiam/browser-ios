@@ -7,6 +7,7 @@ import UIKit
 import SnapKit
 import Storage
 import ReadingList
+import Shared
 
 struct TabTrayControllerUX {
     static let CornerRadius = CGFloat(BraveUX.TabTrayCellCornerRadius)
@@ -258,7 +259,7 @@ class TabTrayController: UIViewController {
             if #available(iOS 9, *) {
                 togglePrivateMode.selected = privateMode
                 togglePrivateMode.accessibilityValue = privateMode ? PrivateModeStrings.toggleAccessibilityValueOn : PrivateModeStrings.toggleAccessibilityValueOff
-                tabDataSource.tabs = tabsToDisplay
+                tabDataSource.updateData()
                 collectionView?.reloadData()
             }
 #endif
@@ -300,7 +301,7 @@ class TabTrayController: UIViewController {
     }()
 #endif
     private lazy var tabDataSource: TabManagerDataSource = {
-        return TabManagerDataSource(tabs: self.tabsToDisplay, cellDelegate: self)
+        return TabManagerDataSource(cellDelegate: self)
     }()
 
     private lazy var tabLayoutDelegate: TabLayoutDelegate = {
@@ -525,6 +526,7 @@ class TabTrayController: UIViewController {
                 activityView.stopAnimating()
             }
         }
+        tabDataSource.updateData()
 #else
         // If we are exiting private mode and we have the close private tabs option selected, make sure
         // we clear out all of the private tabs
@@ -668,7 +670,8 @@ extension TabTrayController: TabManagerDelegate {
         // Get the index of the added tab from it's set (private or normal)
         guard let index = tabsToDisplay.indexOf(tab) else { return }
 
-        tabDataSource.addTab(tab)
+        tabDataSource.updateData()
+
         self.collectionView?.performBatchUpdates({ _ in
             self.collectionView.insertItemsAtIndexPaths([NSIndexPath(forItem: index, inSection: 0)])
         }, completion: { finished in
@@ -687,7 +690,20 @@ extension TabTrayController: TabManagerDelegate {
     }
 
     func tabManager(tabManager: TabManager, didRemoveTab tab: Browser) {
-        let removedIndex = tabDataSource.removeTab(tab)
+        var removedIndex = -1
+        for i in 0..<tabDataSource.tabList.count() {
+            let tabRef = tabDataSource.tabList.at(i)
+            if tabRef == nil || getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.indexOf(tabRef!) == nil {
+                removedIndex = i
+                break
+            }
+        }
+
+        tabDataSource.updateData()
+        if (removedIndex < 0) {
+            return
+        }
+
         self.collectionView.deleteItemsAtIndexPaths([NSIndexPath(forItem: removedIndex, inSection: 0)])
 
         // Workaround: On iOS 8.* devices, cells don't get reloaded during the deletion but after the
@@ -784,41 +800,23 @@ extension TabTrayController: SettingsDelegate {
 
 private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
     unowned var cellDelegate: protocol<TabCellDelegate, SwipeAnimatorDelegate>
-    private var tabs: [Browser]
 
-    init(tabs: [Browser], cellDelegate: protocol<TabCellDelegate, SwipeAnimatorDelegate>) {
+    private var tabList = WeakList<Browser>()
+
+    init(cellDelegate: protocol<TabCellDelegate, SwipeAnimatorDelegate>) {
         self.cellDelegate = cellDelegate
-        self.tabs = tabs
         super.init()
-    }
 
-    /**
-     Removes the given tab from the data source
-
-     - parameter tab: Tab to remove
-
-     - returns: The index of the removed tab, -1 if tab did not exist
-     */
-    func removeTab(tabToRemove: Browser) -> Int {
-        var index: Int = -1
-        for (i, tab) in tabs.enumerate() {
-            if tabToRemove === tab {
-                index = i
-                tab.deleteWebView(isTabDeleted: true)
-                break
-            }
+        getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.forEach {
+            tabList.insert($0)
         }
-        tabs.removeAtIndex(index)
-        return index
     }
 
-    /**
-     Adds the given tab to the data source
-
-     - parameter tab: Tab to add
-     */
-    func addTab(tab: Browser) {
-        tabs.append(tab)
+    func updateData() {
+        tabList = WeakList<Browser>()
+        getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.forEach {
+            tabList.insert($0)
+        }
     }
 
     @objc func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -826,7 +824,10 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         tabCell.animator.delegate = cellDelegate
         tabCell.delegate = cellDelegate
 
-        let tab = tabs[indexPath.item]
+        guard let tab = tabList.at(indexPath.item) else {
+            assert(false)
+            return tabCell
+        }
         tabCell.style = tab.isPrivate ? .Dark : .Light
         tabCell.titleText.text = tab.displayTitle
 
@@ -853,7 +854,7 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
     }
 
     @objc func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tabs.count
+        return tabList.count()
     }
 }
 
