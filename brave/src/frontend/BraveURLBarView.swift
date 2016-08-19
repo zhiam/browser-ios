@@ -144,10 +144,7 @@ class BraveURLBarView : URLBarView {
     }
 
     override func updateTabsBarShowing() {
-        var tabCount = getApp().tabManager.privateTabs.count
-        if (tabCount < 1) {
-            tabCount = getApp().tabManager.tabCount
-        }
+        var tabCount = getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.count
 
         let showingPolicy = TabsBarShowPolicy(rawValue: Int(BraveApp.getPrefs()?.intForKey(kPrefKeyTabsBarShowPolicy) ?? Int32(kPrefKeyTabsBarOnDefaultValue.rawValue))) ?? kPrefKeyTabsBarOnDefaultValue
 

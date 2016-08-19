@@ -34,7 +34,7 @@ private extension TrayToBrowserAnimator {
         }
 
         let tabManager = bvc.tabManager
-        let displayedTabs = selectedTab.isPrivate ? tabManager.privateTabs : tabManager.normalTabs
+        let displayedTabs = tabManager.tabs.displayedTabsForCurrentPrivateMode
         guard let expandFromIndex = displayedTabs.indexOf(selectedTab) else { return }
 
         // Hide browser components
@@ -129,7 +129,7 @@ private extension BrowserToTrayAnimator {
         guard let selectedTab = bvc.tabManager.selectedTab else { return }
 
         let tabManager = bvc.tabManager
-        let displayedTabs = selectedTab.isPrivate ? tabManager.privateTabs : tabManager.normalTabs
+        let displayedTabs = tabManager.tabs.displayedTabsForCurrentPrivateMode
         guard let scrollToIndex = displayedTabs.indexOf(selectedTab) else { return }
 
         // Insert tab tray below the browser and force a layout so the collection view can get it's frame right
@@ -280,9 +280,8 @@ private func shouldDisplayFooterForBVC(bvc: BrowserViewController) -> Bool {
 
 private func toggleWebViewVisibility(show show: Bool, usingTabManager tabManager: TabManager) {
     for i in 0..<tabManager.tabCount {
-        if let tab = tabManager[i] {
-            tab.webView?.hidden = !show
-        }
+        let tab = tabManager.tabs.internalTabList[i]
+        tab.webView?.hidden = !show
     }
 }
 

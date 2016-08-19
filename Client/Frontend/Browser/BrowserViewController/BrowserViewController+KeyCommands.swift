@@ -49,7 +49,7 @@ extension BrowserViewController {
         let priv = tab.isPrivate
         nextOrPrevTabShortcut(isNext: false)
         tabManager.removeTab(tab, createTabIfNoneLeft: !priv)
-        if priv && tabManager.privateTabs.count == 0 {
+        if priv && tabManager.tabs.privateTabs.count == 0 {
             urlBarDidPressTabs(urlBar)
         }
     }
@@ -57,7 +57,7 @@ extension BrowserViewController {
     private func nextOrPrevTabShortcut(isNext isNext: Bool) {
         guard let tab = tabManager.selectedTab else { return }
         let step = isNext ? 1 : -1
-        let tabList: [Browser] = tab.isPrivate ? tabManager.privateTabs : tabManager.tabs
+        let tabList: [Browser] = tabManager.tabs.displayedTabsForCurrentPrivateMode
         func wrappingMod(val:Int, mod:Int) -> Int {
             return ((val % mod) + mod) % mod
         }

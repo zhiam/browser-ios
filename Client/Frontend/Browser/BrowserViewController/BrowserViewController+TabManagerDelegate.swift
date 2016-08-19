@@ -4,25 +4,32 @@ import Shared
 private let log = Logger.browserLogger
 
 extension BrowserViewController: TabManagerDelegate {
-    func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?, previous: Browser?) {
+    func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?) {
         if (urlBar.inOverlayMode) {
             urlBar.leaveOverlayMode()
         }
 
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
         // and having multiple views with the same label confuses tests.
-        if let wv = previous?.webView {
+
+        if let prevWebView = webViewContainer.subviews.filter({ $0 as? UIWebView != nil }).first {
+            if prevWebView == selected?.webView {
+                assert(false)
+                NSLog("Error: Selected webview should not be in view heirarchy already")
+                return
+            }
+
             removeOpenInView()
-            wv.endEditing(true)
-            wv.accessibilityLabel = nil
-            wv.accessibilityElementsHidden = true
-            wv.accessibilityIdentifier = nil
+            prevWebView.endEditing(true)
+            prevWebView.accessibilityLabel = nil
+            prevWebView.accessibilityElementsHidden = true
+            prevWebView.accessibilityIdentifier = nil
             // due to screwy handling within iOS, the scrollToTop handling does not work if there are
             // more than one scroll view in the view hierarchy
             // we therefore have to hide all the scrollViews that we are no actually interesting in interacting with
             // to ensure that scrollsToTop actually works
             ///wv.scrollView.hidden = true
-            wv.removeFromSuperview()
+            prevWebView.removeFromSuperview()
         }
 
         if let tab = selected, webView = tab.webView {
@@ -79,9 +86,7 @@ extension BrowserViewController: TabManagerDelegate {
             }
         }
 
-        if let selected = selected, previous = previous where selected.isPrivate != previous.isPrivate {
-            updateTabCountUsingTabManager(tabManager)
-        }
+        updateTabCountUsingTabManager(tabManager)
 
         removeAllBars()
         if let bars = selected?.bars {
@@ -135,7 +140,7 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func updateTabCountUsingTabManager(tabManager: TabManager, animated: Bool = true) {
-        let count = tabManager.normalOrPrivateTabList.count
+        let count = tabManager.tabs.displayedTabsForCurrentPrivateMode.count
         urlBar.updateTabCount(max(count, 1), animated: animated)
     }
 }

@@ -10,16 +10,16 @@ extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
         profile.prefs.setObject(encodedStyle, forKey: ReaderModeProfileKeyStyle)
         // Change the reader mode style on all tabs that have reader mode active
         for tabIndex in 0..<tabManager.tabCount {
-            if let tab = tabManager[tabIndex] {
-                if let readerMode = tab.getHelper(ReaderMode.self) {
-                    if readerMode.state == ReaderModeState.Active {
-                        readerMode.style = style
-                    }
+            let tab = tabManager.tabs.internalTabList[tabIndex]
+            if let readerMode = tab.getHelper(ReaderMode.self) {
+                if readerMode.state == ReaderModeState.Active {
+                    readerMode.style = style
                 }
             }
         }
     }
 }
+
 
 extension BrowserViewController {
     func updateReaderModeBar() {

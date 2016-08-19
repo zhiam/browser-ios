@@ -266,8 +266,9 @@ class TabTrayController: UIViewController {
     }
 
     private var tabsToDisplay: [Browser] {
-        return self.privateMode ? tabManager.privateTabs : tabManager.normalTabs
+        return tabManager.tabs.displayedTabsForCurrentPrivateMode
     }
+
 #if !BRAVE_NO_PRIVATE_MODE
     @available(iOS 9, *)
     lazy var togglePrivateMode: UIButton = {
@@ -413,7 +414,7 @@ class TabTrayController: UIViewController {
             }
 
             view.insertSubview(emptyPrivateTabsView, aboveSubview: collectionView)
-            emptyPrivateTabsView.alpha = privateMode && tabManager.privateTabs.count == 0 ? 1 : 0
+            emptyPrivateTabsView.alpha = privateTabsAreEmpty() ? 1 : 0
             emptyPrivateTabsView.snp_makeConstraints { make in
                 make.edges.equalTo(self.view)
             }
@@ -567,7 +568,7 @@ class TabTrayController: UIViewController {
 
     @available(iOS 9, *)
     private func privateTabsAreEmpty() -> Bool {
-        return privateMode && tabManager.privateTabs.count == 0
+        return privateMode && tabManager.tabs.privateTabs.count == 0
     }
 #endif
 
@@ -657,7 +658,7 @@ extension TabTrayController: PresentingModalViewControllerDelegate {
 }
 
 extension TabTrayController: TabManagerDelegate {
-    func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?, previous: Browser?) {
+    func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?) {
     }
 
     func tabManager(tabManager: TabManager, didCreateWebView tab: Browser, url: NSURL?) {

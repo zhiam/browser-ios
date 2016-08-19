@@ -313,7 +313,7 @@ extension TabsBarViewController: TabManagerDelegate {
         tabs.forEach{ $0.removeFromSuperview() }
         tabs.removeAll()
 
-        tabManager.tabs.forEach {
+        tabManager.tabs.internalTabList.forEach {
             let t = addTab(browser: $0)
             t.setTitle($0.lastTitle)
             if tabManager.selectedTab === $0 {
@@ -322,7 +322,7 @@ extension TabsBarViewController: TabManagerDelegate {
         }
     }
 
-    func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?, previous: Browser?) {
+    func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?) {
         assert(NSThread.currentThread().isMainThread)
         tabs.forEach { tabWidget in
             if tabWidget.browser === selected {

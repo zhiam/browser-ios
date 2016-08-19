@@ -56,7 +56,7 @@ extension BrowserViewController: URLBarDelegate {
 
         let tabTrayController = TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
         
-        for t in tabManager.tabs {
+        for t in tabManager.tabs.internalTabList {
             screenshotHelper.takeScreenshot(t)
         }
 

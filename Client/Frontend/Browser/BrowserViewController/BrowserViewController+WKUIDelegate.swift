@@ -111,7 +111,7 @@ extension BrowserViewController: WKUIDelegate {
             // We rely on loading that page to get the restore callback to reset the restoring
             // flag, so if we fail to load that page, reset it here.
             if AboutUtils.getAboutComponent(url) == "sessionrestore" {
-                tabManager.tabs.filter { $0.webView == webView }.first?.restoring = false
+                tabManager.tabs.internalTabList.filter { $0.webView == webView }.first?.restoring = false
             }
         }
     }
