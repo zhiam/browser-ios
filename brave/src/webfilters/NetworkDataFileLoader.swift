@@ -7,6 +7,7 @@ import Alamofire
 protocol NetworkDataFileLoaderDelegate: class {
     func fileLoader(_: NetworkDataFileLoader, setDataFile data: NSData?)
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool
+    func fileLoaderDelegateWillHandleInitialRead(_: NetworkDataFileLoader) -> Bool
 }
 
 class NetworkDataFileLoader {
@@ -31,13 +32,13 @@ class NetworkDataFileLoader {
                 do {
                     try NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: false, attributes: nil)
                 } catch {
-                    BraveApp.showErrorAlert(title: "Adblock error", error: "dataDir(): \(error)")
+                    BraveApp.showErrorAlert(title: "NetworkDataFileLoader error", error: "dataDir(): \(error)")
                 }
                 wasCreated = true
             }
             return (path, wasCreated)
         } else {
-            BraveApp.showErrorAlert(title: "Adblock error", error: "Can't get documents dir.")
+            BraveApp.showErrorAlert(title: "NetworkDataFileLoader error", error: "Can't get documents dir.")
             return ("", false)
         }
     }
@@ -57,20 +58,10 @@ class NetworkDataFileLoader {
     }
 
     private func finishWritingToDisk(data: NSData, etag: String?) {
-        let (dir, wasCreated) = createAndGetDataDirPath()
-        // If dir existed already, clear out the old one
-        if !wasCreated {
-            do {
-                try NSFileManager.defaultManager().removeItemAtPath(dir)
-            } catch {
-                print("writeData: \(error)")
-            }
-            createAndGetDataDirPath() // to re-create the directory
-        }
-
+        let (dir, _) = createAndGetDataDirPath()
         let path = dir + "/" + dataFile
-        if !data.writeToFile(path, atomically: true) {
-            BraveApp.showErrorAlert(title: "Adblock error", error: "Failed to write data to \(path)")
+        if !data.writeToFile(path, atomically: true) { // will overwrite
+            BraveApp.showErrorAlert(title: "NetworkDataFileLoader error", error: "Failed to write data to \(path)")
         }
 
         addSkipBackupAttributeToItemAtURL(NSURL(fileURLWithPath: dir, isDirectory: true))
@@ -78,23 +69,14 @@ class NetworkDataFileLoader {
         if let etagData = etag?.dataUsingEncoding(NSUTF8StringEncoding) {
             let etagPath = etagFileNameFromDataFile(path)
             if !etagData.writeToFile(etagPath, atomically: true) {
-                BraveApp.showErrorAlert(title: "Adblock error", error: "Failed to write data to \(etagPath)")
+                BraveApp.showErrorAlert(title: "NetworkDataFileLoader error", error: "Failed to write data to \(etagPath)")
             }
         }
 
         delegate?.fileLoader(self, setDataFile: data)
     }
 
-    func readData() -> NSData? {
-        guard let path = pathToExistingDataOnDisk() else { return nil }
-        return NSFileManager.defaultManager().contentsAtPath(path)
-    }
-
-    private func networkRequest(forceDownload force: Bool) {
-        guard let delegate = delegate else { return }
-        if !force && delegate.fileLoaderHasDataFile(self) {
-            return
-        }
+    private func networkRequest() {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithURL(dataUrl) {
             (data, response, error) -> Void in
@@ -102,7 +84,7 @@ class NetworkDataFileLoader {
                 print(err.localizedDescription)
                 postAsyncToMain(60) {
                     // keep trying every minute until successful
-                    self.networkRequest(forceDownload: force)
+                    self.networkRequest()
                 }
             }
             else {
@@ -122,7 +104,7 @@ class NetworkDataFileLoader {
     }
 
     private func checkForUpdatedFileAfterDelay() {
-        postAsyncToMain(5.0) { // a few seconds after startup, check to see if a new file is available
+        postAsyncToMain(10.0) { // a few seconds after startup, check to see if a new file is available
             Alamofire.request(.HEAD, self.dataUrl).response {
                 request, response, data, error in
                 if let err = error {
@@ -131,7 +113,7 @@ class NetworkDataFileLoader {
                     guard let etag = response?.allHeaderFields["Etag"] as? String else { return }
                     let etagOnDisk = self.readDataEtag()
                     if etagOnDisk != etag {
-                        self.networkRequest(forceDownload: true)
+                        self.networkRequest()
                     }
                 }
             }
@@ -139,13 +121,23 @@ class NetworkDataFileLoader {
     }
 
     func loadData() {
-        let data = readData()
-        if data == nil {
-            networkRequest(forceDownload: false)
-            return
-        }
-
-        delegate?.fileLoader(self, setDataFile: data)
+        guard let delegate = delegate else { return }
         checkForUpdatedFileAfterDelay()
+
+        if !delegate.fileLoaderHasDataFile(self) {
+            networkRequest()
+        } else if !delegate.fileLoaderDelegateWillHandleInitialRead(self) {
+            func readData() -> NSData? {
+                guard let path = pathToExistingDataOnDisk() else { return nil }
+                return NSFileManager.defaultManager().contentsAtPath(path)
+            }
+
+            let data = readData()
+            if data == nil {
+                networkRequest()
+            } else {
+                delegate.fileLoader(self, setDataFile: data)
+            }
+        }
     }
 }

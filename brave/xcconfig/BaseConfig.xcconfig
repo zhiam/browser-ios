@@ -6,6 +6,8 @@
 #include "./.bundle-id.xcconfig"
 #include "./.local-def.xcconfig"
 
+HEADER_SEARCH_PATHS = ./brave/ThirdParty/leveldb/include ./brave/ThirdParty/leveldb
+
 MOZ_BUNDLE_DISPLAY_NAME = Brave$(BETA)
 MOZ_PRODUCT_NAME = Brave$(BETA)
 

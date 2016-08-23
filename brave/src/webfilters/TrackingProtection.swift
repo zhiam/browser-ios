@@ -81,5 +81,9 @@ extension TrackingProtection: NetworkDataFileLoaderDelegate {
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
         return parser.hasDataFile()
     }
+
+    func fileLoaderDelegateWillHandleInitialRead(_: NetworkDataFileLoader) -> Bool {
+        return false
+    }
 }
 

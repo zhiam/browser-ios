@@ -1,7 +1,9 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 import SQLite
+import Shared
 
 private let _singleton = HttpsEverywhere()
+private let levelDbFileName = "httpse.leveldb"
 
 class HttpsEverywhere {
     static let kNotificationDataLoaded = "kNotificationDataLoaded"
@@ -9,18 +11,15 @@ class HttpsEverywhere {
     static let prefKeyDefaultValue = true
     static let dataVersion = "5.2"
     var isNSPrefEnabled = true
-    var db: Connection?
-    let fifoCacheOfRedirects = FifoDict()
-    let fifoCacheOfDomainToIds = FifoDict()
+
+    var httpseDb = HttpsEverywhereObjC()
 
     lazy var networkFileLoader: NetworkDataFileLoader = {
-        let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.sqlite")!
-        let dataFile = "httpse-\(dataVersion).sqlite"
+        let targetsDataUrl = NSURL(string: "https://s3.amazonaws.com/https-everywhere-data/\(dataVersion)/httpse.leveldb.tgz")!
+        let dataFile = "httpse-\(dataVersion).leveldb.tgz"
         let loader = NetworkDataFileLoader(url: targetsDataUrl, file: dataFile, localDirName: "https-everywhere-data")
         loader.delegate = self
-
         self.runtimeDebugOnlyTestVerifyResourcesLoaded()
-
         return loader
     }()
 
@@ -33,21 +32,22 @@ class HttpsEverywhere {
         updateEnabledState()
     }
 
-    func loadSqlDb() {
-        // synchronize code from this point on.
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
 
-        guard let path = networkFileLoader.pathToExistingDataOnDisk() else { return }
-        do {
-            db = try Connection(path, readonly: true)
-            // try db!.execute("CREATE INDEX IF NOT EXISTS hostidx ON targets(host)") -> useful for testing, db will have this already
-            try db!.execute("PRAGMA synchronous=OFF")
-            NSLog("»»»»»» https-e db loaded")
-            NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
-        }  catch {
-            print("\(error)")
+    func loadDb(dir dir:String, name:String) {
+        let path = dir + "/" + name
+        if !NSFileManager.defaultManager().fileExistsAtPath(path) {
+            return
         }
+
+        httpseDb.load(path)
+        if !httpseDb.isLoaded() {
+            do { try NSFileManager.defaultManager().removeItemAtPath(path) }
+            catch {}
+        } else {
+            NSNotificationCenter.defaultCenter().postNotificationName(HttpsEverywhere.kNotificationDataLoaded, object: self)
+            print("httpse loaded")
+        }
+        assert(httpseDb.isLoaded())
     }
 
     func updateEnabledState() {
@@ -62,178 +62,73 @@ class HttpsEverywhere {
         updateEnabledState()
     }
 
-    private func applyRedirectRuleForIds(ids: [Int], url: NSURL) -> NSURL? {
-        guard let db = db else { return nil }
-
-        let contents = Expression<String>("contents")
-        let id = Expression<Int>("id")
-
-        func urlWithTrailingSlash(url: NSURL) -> String {
-            let s = url.absoluteString
-            if !s.endsWith("/") && !String(url.path).isEmpty {
-                return s + "/"
-            }
-            return s
-        }
-
-        // HTTPSE ruleset expects trailing slash in certain cases, however NSURL makes no guarantee about 'canonicalizing' URLs to a particular form. We could either modify the regex slightly or just check against an input URL with a trailing slash
-        // Using latter method as matter of preference
-        let urlWithSlash = urlWithTrailingSlash(url)
-        let urlCandidates = urlWithSlash != url.absoluteString ?
-            [url.absoluteString, urlWithSlash] : [url.absoluteString]
-
-        let whereClause = "id = '" + ids.map({ "\($0)" }).joinWithSeparator("' OR id = '") + "'"
-        for row in db.prepare("SELECT contents FROM rulesets WHERE \(whereClause)") {
-            guard let r = row[0] as? String, data = r.utf8EncodedData else { continue }
-            do {
-                guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary,
-                    ruleset = json["ruleset"] as? NSDictionary,
-                    rules = ruleset["rule"] as? NSArray else {
-                        return nil
-                }
-
-                if let props = ruleset["$"] as? [String:AnyObject] {
-                    if props.indexForKey("default_off") != nil {
-                        return nil
-                    }
-                    if props.indexForKey("platform") != nil {
-                        return nil
-                    }
-                }
-
-                if let exclusion = ruleset["exclusion"] as? [NSDictionary] {
-                    for rule in exclusion {
-                        guard let props = rule["$"] as? NSDictionary, pattern = props["pattern"] as? String else { return nil }
-                        let regex = try NSRegularExpression(pattern: pattern, options: [])
-                        for item in urlCandidates {
-                            let result = regex.firstMatchInString(item, options: [], range: NSMakeRange(0, item.characters.count))
-                            if let result = result where result.range.location != NSNotFound {
-                                return nil
-                            }
-                        }
-                    }
-                }
-
-                for rule in rules {
-                    guard let props = rule["$"] as? NSDictionary, from = props["from"] as? String, to = props["to"] as? String else { return nil }
-                    let regex = try NSRegularExpression(pattern: from, options: [])
-
-                    for item in urlCandidates {
-                        let newUrl = regex.stringByReplacingMatchesInString(item, options: [], range: NSMakeRange(0, item.characters.count), withTemplate: to)
-
-                        if !newUrl.startsWith(url.absoluteString) {
-                            return NSURL(string: newUrl)
-                        }
-                    }
-                }
-            } catch {
-                print("Failed to load targetsLoader: \(error)")
-            }
-        }
-        return nil
-    }
-
-    private func mapExactDomainToIdForLookup(domains: [String]) -> [Int]? {
-        guard let db = db else { return nil }
-        var result = [Int]()
-
-        for domain in domains {
-            if let cached = fifoCacheOfDomainToIds.getItem(domain) as? [Int] {
-                return cached // any one of the domains matches, we are good to go
-            }
-        }
-
-        let whereClause = "host = '" + domains.joinWithSeparator("' OR host = '") + "'"
-        let r = db.prepare("select ids, host from targets where \(whereClause) limit 1").generate()
-        if let row = r.next() { // only use one result, doesn't matter which one
-            guard let d = row[0] as? String else { return result }
-            let data = d.substringWithRange(d.startIndex.advancedBy(1)..<d.endIndex.advancedBy(-1))
-            let parts = data.characters.split(",")
-            var cache = [Int]()
-            for part in parts {
-                if let j = Int(String(part)) {
-                    cache.append(j)
-                    result.append(j)
-                }
-            }
-            fifoCacheOfDomainToIds.addItem(row[1] as? String ?? "", value: cache)
-        }
-        return result
-    }
-
-    private func mapDomainToIdForLookup(domain: String) -> [Int] {
-        let parts = (domain as NSString).componentsSeparatedByString(".")
-        if parts.count < 1 {
-            return [Int]()
-        }
-        var s = [String]()
-        for i in 0..<(parts.count - 1) {
-            let slice = parts[i..<parts.count].joinWithSeparator(".")
-            let prefix = (i > 0) ? "*." : ""
-            s.append(prefix + slice)
-        }
-        if s.count == 0 {
-            return [Int]()
-        }
-        if s.count == 1 {
-            s.append("*." + s[0])
-        }
-        return mapExactDomainToIdForLookup(s) ?? [Int]()
-    }
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
         if url.scheme.startsWith("https") {
             return nil
         }
 
-        if let redirect = fifoCacheOfRedirects.getItem(url.absoluteString) {
-            if redirect === NSNull() {
-                return nil
-            } else {
-                return redirect as? NSURL
-            }
+        let result = httpseDb.tryRedirectingUrl(url)
+        if result.isEmpty {
+            return nil
+        } else {
+            return NSURL(string: result)
         }
-
-        // This internal function is so we can store the result in the fifoCacheOfRedirects
-        func redirect(url: NSURL) -> NSURL? {
-            guard let url = NSURL(string: stripLocalhostWebServer(url.absoluteString)), host = url.host else {
-                return nil
-            }
-
-            let ids = mapDomainToIdForLookup(host)
-            if ids.count < 1 {
-                return nil
-            }
-
-            guard let newUrl = applyRedirectRuleForIds(ids, url: url) else { return nil }
-
-            let ignoredlist = [
-                "m.slashdot.org" // see https://github.com/brave/browser-ios/issues/104
-            ]
-            for item in ignoredlist {
-                if url.absoluteString.contains(item) || (newUrl.host?.contains(item) ?? false) {
-                    return nil
-                }
-            }
-
-            return newUrl
-        }
-
-        let redirected = redirect(url)
-        fifoCacheOfRedirects.addItem(url.absoluteString, value: redirected)
-        return redirected
     }
 }
 
+private func unzipFile(dir dir: String, data: NSData) {
+    let unzip = data.gunzippedData()
+    let fm = NSFileManager.defaultManager()
+
+    do {
+        try fm.createFilesAndDirectoriesAtPath(dir,
+                                               withTarData: unzip,
+                                               progress:  { _ in
+        })
+    }
+    catch {
+        #if DEBUG
+            BraveApp.showErrorAlert(title: " error", error: "\(error)")
+        #endif
+    }
+}
+
+
 extension HttpsEverywhere: NetworkDataFileLoaderDelegate {
-    func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
-        if data != nil {
-            loadSqlDb()
+    func unzipAndLoad(dir dir: String, data: NSData) {
+        httpseDb.close()
+        succeed().upon() { _ in
+
+            let fm = NSFileManager.defaultManager()
+            if fm.fileExistsAtPath(dir + "/" + levelDbFileName) {
+                do { try NSFileManager.defaultManager().removeItemAtPath(dir + "/" + levelDbFileName) }
+                catch { NSLog("failed to remove leveldb file before unzip \(error)") }
+            }
+
+            unzipFile(dir: dir, data: data)
+            postAsyncToMain(0) {
+                self.loadDb(dir: dir, name: levelDbFileName)
+            }
         }
     }
+    func fileLoader(loader: NetworkDataFileLoader, setDataFile data: NSData?) {
+        guard let data = data else { return }
+        let (dir, _) = loader.createAndGetDataDirPath()
+        unzipAndLoad(dir: dir, data: data)
+    }
 
-    func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
-        return db != nil
+    func fileLoaderHasDataFile(loader: NetworkDataFileLoader) -> Bool {
+        if !httpseDb.isLoaded() {
+            let (dir, _) = loader.createAndGetDataDirPath()
+            self.loadDb(dir: dir, name: levelDbFileName)
+        }
+        print("httpse doesn't need to d/l: \(httpseDb.isLoaded())")
+        return httpseDb.isLoaded()
+    }
+
+    func fileLoaderDelegateWillHandleInitialRead(loader: NetworkDataFileLoader) -> Bool {
+        return true
     }
 }
 
@@ -260,7 +155,7 @@ extension HttpsEverywhere {
     private func runtimeDebugOnlyTestVerifyResourcesLoaded() {
         #if DEBUG
             postAsyncToMain(10) {
-                if self.db == nil {
+                if !self.httpseDb.isLoaded() {
                     BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E didn't load")
                 } else {
                     self.runtimeDebugOnlyTestDomainsRedirected()

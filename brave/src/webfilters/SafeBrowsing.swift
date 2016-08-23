@@ -88,4 +88,8 @@ extension SafeBrowsing: NetworkDataFileLoaderDelegate {
     func fileLoaderHasDataFile(_: NetworkDataFileLoader) -> Bool {
         return abpFilterLibWrapper.hasDataFile()
     }
+
+    func fileLoaderDelegateWillHandleInitialRead(_: NetworkDataFileLoader) -> Bool {
+        return false
+    }
 }
