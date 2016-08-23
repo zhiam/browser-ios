@@ -95,10 +95,15 @@ Dir.chdir('..')
 
 braveTop = project.new_group('brave')
 
-if ARGV[0] == 'flex'
-  braveTop.new_group('ThirdParty')
-    walk(project, '.', './brave/ThirdParty', 'Client')
-end
+braveTop.new_group('ThirdParty')
+walk(project, '.', './brave/ThirdParty', 'Client')
+
+#if ARGV[0] == 'flex'
+#  braveTop.new_group('ThirdParty')
+#  walk(project, '.', './brave/ThirdParty', 'Client')
+#end
+
+
 
 entitlements = braveTop.new_file('brave/Brave.entitlements')
 braveTop.new_file('brave/BraveInfo.plist')
