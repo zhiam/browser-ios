@@ -15,12 +15,16 @@
 #import "NSStringPunycodeAdditions.h"
 
 // BRAVE
+#import "HttpsEverywhereObjC.h"
+#import "NSFileManager+Tar.h"
+#import "NSData+GZIP.h"
 #import "LegacyJSContext.h"
 #import "ABPFilterLibWrapper.h"
 #import "TrackingProtectionCpp.h"
 #import "SwizzlingToHideSharePicker.h"
 #import "ODRefreshControl.h"
 #import "WebViewDocScale.h"
+
 #if FLEX_ON
 #import "FLEXManager.h"
 #endif
