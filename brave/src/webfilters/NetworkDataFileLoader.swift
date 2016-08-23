@@ -58,19 +58,9 @@ class NetworkDataFileLoader {
     }
 
     private func finishWritingToDisk(data: NSData, etag: String?) {
-        let (dir, wasCreated) = createAndGetDataDirPath()
-        // If dir existed already, clear out the old one
-        if !wasCreated {
-            do {
-                try NSFileManager.defaultManager().removeItemAtPath(dir)
-            } catch {
-                print("writeData: \(error)")
-            }
-            createAndGetDataDirPath() // to re-create the directory
-        }
-
+        let (dir, _) = createAndGetDataDirPath()
         let path = dir + "/" + dataFile
-        if !data.writeToFile(path, atomically: true) {
+        if !data.writeToFile(path, atomically: true) { // will overwrite
             BraveApp.showErrorAlert(title: "NetworkDataFileLoader error", error: "Failed to write data to \(path)")
         }
 
