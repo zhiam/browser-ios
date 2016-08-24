@@ -14,13 +14,30 @@ class Debug_FuncProfiler {
     }
 }
 
-func postAsyncToMain(delay:Double, closure:()->()) {
-    dispatch_after(
-        dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(delay * Double(NSEC_PER_SEC))
-        ),
-        dispatch_get_main_queue(), closure)
+func postAsyncToBackground(delay:Double = 0, closure:()->()) {
+    postAsyncToQueue(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), delay: delay, closure: closure)
+}
+
+func postAsyncToMain(delay:Double = 0, closure:()->()) {
+    postAsyncToQueue(dispatch_get_main_queue(), delay: delay, closure: closure)
+}
+
+func postAsyncToQueue(queue: dispatch_queue_t, delay:Double = 0, closure:()->()) {
+    if delay == 0 {
+        /*
+         * per docs: passing DISPATCH_TIME_NOW as the "when" parameter is supported, but not as
+         * optimal as calling dispatch_async() instead.
+         */
+        dispatch_async(queue, closure)
+    }
+    else {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            queue, closure)
+    }
 }
 
 
