@@ -12,11 +12,17 @@ public struct ShareItem {
     public let url: String
     public let title: String?
     public let favicon: Favicon?
+    public let folderId: String?
+    public let folderTitle: String?
+    public let completion: dispatch_block_t?
 
-    public init(url: String, title: String?, favicon: Favicon?) {
+    public init(url: String, title: String?, favicon: Favicon?, folderId:String? = nil, folderTitle:String? = nil, completion: dispatch_block_t? = nil) {
         self.url = url
         self.title = title
         self.favicon = favicon
+        self.folderId = folderId
+        self.folderTitle = folderTitle
+        self.completion = completion
     }
 }
 
