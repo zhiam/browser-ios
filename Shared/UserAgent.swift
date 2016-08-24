@@ -51,9 +51,16 @@ public class UserAgent {
     public static func defaultUserAgent() -> String {
         assert(NSThread.currentThread().isMainThread, "This method must be called on the main thread.")
 
-        if let firefoxUA = UserAgent.cachedUserAgent(checkiOSVersion: true) {
-            return firefoxUA
+        struct staticUA {
+            static var value = ""
         }
+
+        if !staticUA.value.isEmpty {
+            return staticUA.value
+        }
+//        if let firefoxUA = UserAgent.cachedUserAgent(checkiOSVersion: true) {
+//            return firefoxUA
+//        }
 
         let webView = UIWebView()
 
@@ -67,7 +74,7 @@ public class UserAgent {
         let webKitVersionRegex = try! NSRegularExpression(pattern: "AppleWebKit/([^ ]+) ", options: [])
 
         let match = webKitVersionRegex.firstMatchInString(userAgent, options:[],
-            range: NSMakeRange(0, userAgent.characters.count))
+                                                          range: NSMakeRange(0, userAgent.characters.count))
 
         if match == nil {
             print("Error: Unable to determine WebKit version in UA.")
@@ -84,15 +91,14 @@ public class UserAgent {
         }
 
         let mutableUA = NSMutableString(string: userAgent)
-        mutableUA.insertString("Brave/\(appVersion) ", atIndex: mobileRange.location)
+        //mutableUA.insertString(" Brave/\(appVersion) ", atIndex: mobileRange.location)
+        mutableUA.insertString("CriOS/52.0.2743.84 ", atIndex: mobileRange.location)
 
-        let firefoxUA = "\(mutableUA) Safari/\(webKitVersion)"
-
-        defaults.setObject(firefoxUA, forKey: "UserAgent")
-
-        return firefoxUA
+        staticUA.value = "\(mutableUA) Safari/\(webKitVersion)"
+        defaults.setObject(staticUA.value, forKey: "UserAgent")
+        return staticUA.value
     }
-
+    
     public static func desktopUserAgent() -> String {
         let userAgent = NSMutableString(string: defaultUserAgent())
 

@@ -169,8 +169,7 @@ class BraveWebView: UIWebView {
     // From http://stackoverflow.com/questions/14268230/has-anybody-found-a-way-to-load-https-pages-with-an-invalid-server-certificate-u
     var loadingUnvalidatedHTTPSPage: Bool = false
 
-    // This gets set as soon as it is available from the first UIWebVew created
-    private static var webviewBuiltinUserAgent: String?
+    private static var webviewBuiltinUserAgent = UserAgent.defaultUserAgent()
 
     // Needed to identify webview in url protocol
     func generateUniqueUserAgent() {
@@ -183,21 +182,12 @@ class BraveWebView: UIWebView {
         }
 
         StaticCounter.counter += 1
-        if let userAgentBase = usingDesktopUserAgent ? kDesktopUserAgent : BraveWebView.webviewBuiltinUserAgent {
-            let userAgent = userAgentBase + String(format:" _id/%06d", StaticCounter.counter)
-            let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
-            defaults.registerDefaults(["UserAgent": userAgent ])
-            self.uniqueId = StaticCounter.counter
-            WebViewToUAMapper.setId(uniqueId, webView:self)
-        } else {
-            if StaticCounter.counter > 1 {
-                // We shouldn't get here, we allow the first webview to have no user agent, and we special-case the look up. The first webview inits the UA from its built in defaults
-                // If we get to more than one, just use a hard coded user agent, to avoid major bugs
-                let device = UIDevice.currentDevice().userInterfaceIdiom == .Phone ? "iPhone" : "iPad"
-                BraveWebView.webviewBuiltinUserAgent = "Mozilla/5.0 (\(device)) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75"
-            }
-            WebViewToUAMapper.idToWebview.setObject(self, forKey: 1) // the first webview, we don't have the user agent just yet
-        }
+        let userAgentBase = usingDesktopUserAgent ? kDesktopUserAgent : BraveWebView.webviewBuiltinUserAgent
+        let userAgent = userAgentBase + String(format:" _id/%06d", StaticCounter.counter)
+        let defaults = NSUserDefaults(suiteName: AppInfo.sharedContainerIdentifier())!
+        defaults.registerDefaults(["UserAgent": userAgent ])
+        self.uniqueId = StaticCounter.counter
+        WebViewToUAMapper.setId(uniqueId, webView:self)
     }
 
     var triggeredLocationCheckTimer = NSTimer()
@@ -588,11 +578,6 @@ extension BraveWebView: UIWebViewDelegate {
             // When showing a context menu, the webview will often still navigate (ex. news.google.com)
             // We need to block navigation using this tag.
             return false
-        }
-
-        if BraveWebView.webviewBuiltinUserAgent == nil { // this should only have to run once at startup
-            BraveWebView.webviewBuiltinUserAgent = request.valueForHTTPHeaderField("User-Agent")
-            assert(BraveWebView.webviewBuiltinUserAgent != nil)
         }
 
         if url.scheme == "mailto" {
