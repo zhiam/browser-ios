@@ -417,6 +417,78 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
     public func applyRecords(records: [BookmarkMirrorItem]) -> Success {
         return self.applyRecords(records, withMaxVars: BrowserDB.MaxVariableNumber)
     }
+    
+    func change(conn: SQLiteDBConnection, sql: String, args: Args?, desc: String) -> Bool {
+        let err = conn.executeChange(sql, withArgs: args)
+        if let err = err {
+            log.error(desc)
+            NSLog("err = \(err)")
+            return false
+        }
+        return true
+    }
+    public func createFolder(folderName:String, completion:dispatch_block_t) {
+        let type = BookmarkNodeType.Folder.rawValue
+        let now = NSDate.nowNumber()
+        let status = SyncStatus.New.rawValue
+        let guid = Bytes.generateGUID()
+        
+        let parentGUID = BookmarkRoots.MobileFolderGUID
+        let localArgs: Args = [guid, type, parentGUID, folderName, status, now]
+        
+        
+        var structureArgs = Args()
+        structureArgs.append(parentGUID)
+        structureArgs.append(guid)
+    
+        let local =
+            "INSERT INTO \(TableBookmarksLocal) " +
+                "(guid, type, parentid, title, parentName, sync_status, local_modified) VALUES " +
+                Array(count: 1, repeatedValue: "(?, ?, ?, ?, '', ?, ?)").joinWithSeparator(", ")
+        
+        let structure =
+            "INSERT INTO \(TableBookmarksLocalStructure) (parent, child) VALUES " +
+                Array(count: 1, repeatedValue: "(?, ?)").joinWithSeparator(", ")
+        var err: NSError?
+
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            let result = self.run(conn, queries: [(local, localArgs)])
+
+            let newIndex = "(SELECT (COALESCE(MAX(idx), -1) + 1) AS newIndex FROM \(TableBookmarksLocalStructure) WHERE parent = ?)"
+            let structureSQL = "INSERT INTO \(TableBookmarksLocalStructure) (parent, child, idx) " +
+                "VALUES (?, ?, \(newIndex))"
+            let structureArgs: Args = [parentGUID, guid, parentGUID]
+            
+            if !self.change(conn, sql: structureSQL, args: structureArgs, desc: "Error adding new item \(guid) to local structure.") {
+                return false
+            }
+
+            completion()
+            
+            return result
+        }
+
+    }
+    
+    func run(db: SQLiteDBConnection, sql: String, args: Args? = nil) -> Bool {
+        let err = db.executeChange(sql, withArgs: args)
+        if err != nil {
+            log.error("Error running SQL in BrowserTable. \(err?.localizedDescription)")
+            log.error("SQL was \(sql)")
+        }
+        return err == nil
+    }
+    
+    // TODO: transaction.
+    func run(db: SQLiteDBConnection, queries: [(String, Args?)]) -> Bool {
+        for (sql, args) in queries {
+            if !run(db, sql: sql, args: args) {
+                return false
+            }
+        }
+        return true
+    }
+
 
     public func applyRecords(records: [BookmarkMirrorItem], withMaxVars maxVars: Int) -> Success {
         let deferred = Deferred<Maybe<()>>(defaultQueue: dispatch_get_main_queue())
@@ -570,6 +642,10 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
 
     public func applyRecords(records: [BookmarkMirrorItem]) -> Success {
         return self.buffer.applyRecords(records)
+    }
+
+    public func createFolder(folderName:String, completion:dispatch_block_t)  {
+        self.buffer.createFolder(folderName, completion:completion)
     }
 
     public func doneApplyingRecordsAfterDownload() -> Success {
