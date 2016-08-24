@@ -119,8 +119,13 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func reloadData() {
         if data.status != .Success {
             print("Err: \(data.statusMessage)", terminator: "\n")
-        } else {
-            self.tableView.reloadData()
+        }
+        else {
+            //reloadData is being called from multiple locations
+            //need to verify they are all on main queue
+            dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                self?.tableView.reloadData()
+            }
         }
     }
 
