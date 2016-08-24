@@ -748,8 +748,14 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func addBookmark(url: String, title: String?) {
-        let shareItem = ShareItem(url: url, title: title, favicon: nil)
+    func addBookmark(url: String, title: String?, folderId:String? = nil, folderTitle:String? = nil, completion: dispatch_block_t? = nil) {
+
+        let shareItem = ShareItem(url: url, title: title, favicon: nil, folderId: folderId, folderTitle: folderTitle) {
+            self.urlBar.updateBookmarkStatus(true)
+            if let completionBlock = completion {
+                completionBlock()
+            }
+        }
         profile.bookmarks.shareItem(shareItem)
         if #available(iOS 9, *) {
             var userData = [QuickActions.TabURLKey: shareItem.url]
@@ -760,49 +766,17 @@ class BrowserViewController: UIViewController {
 //                withUserData: userData,
 //                toApplication: UIApplication.sharedApplication())
         }
-
-        // Dispatch to the main thread to update the UI
-        dispatch_async(dispatch_get_main_queue()) { _ in
-            self.animateBookmarkStar()
-            self.urlBar.updateBookmarkStatus(true)
-        }
     }
 
-    private func animateBookmarkStar() {
-        let offset: CGFloat
-        let button: UIButton!
-
-        if let toolbar: BrowserToolbar = self.toolbar {
-            offset = BrowserViewControllerUX.BookmarkStarAnimationOffset * -1
-            button = toolbar.bookmarkButton
-        } else {
-            offset = BrowserViewControllerUX.BookmarkStarAnimationOffset
-            button = self.urlBar.bookmarkButton
-        }
-
-        let offToolbar = CGAffineTransformMakeTranslation(0, offset)
-
-        UIView.animateWithDuration(BrowserViewControllerUX.BookmarkStarAnimationDuration, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 2.0, options: [], animations: { () -> Void in
-            button.transform = offToolbar
-            let rotation = CABasicAnimation(keyPath: "transform.rotation")
-            rotation.toValue = CGFloat(M_PI * 2.0)
-            rotation.cumulative = true
-            rotation.duration = BrowserViewControllerUX.BookmarkStarAnimationDuration + 0.075
-            rotation.repeatCount = 1.0
-            rotation.timingFunction = CAMediaTimingFunction(controlPoints: 0.32, 0.70 ,0.18 ,1.00)
-            button.imageView?.layer.addAnimation(rotation, forKey: "rotateStar")
-        }, completion: { finished in
-            UIView.animateWithDuration(BrowserViewControllerUX.BookmarkStarAnimationDuration, delay: 0.15, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [], animations: { () -> Void in
-                button.transform = CGAffineTransformIdentity
-            }, completion: nil)
-        })
-    }
-
-    func removeBookmark(url: String) {
+    func removeBookmark(url: String, completion: dispatch_block_t? = nil) {
         profile.bookmarks.modelFactory >>== {
             $0.removeByURL(url).uponQueue(dispatch_get_main_queue()) { res in
                 if res.isSuccess {
                     self.urlBar.updateBookmarkStatus(false)
+                    if let completionBlock = completion {
+                        completionBlock()
+                    }
+
                 }
             }
         }
@@ -883,7 +857,7 @@ class BrowserViewController: UIViewController {
                         log.error("Error getting bookmark status: \(result.failureValue).")
                         return
                     }
-                    postAsyncToMain(0) {
+                    postAsyncToMain {
                         self.urlBar.updateBookmarkStatus(bookmarked)
                     }
                 }

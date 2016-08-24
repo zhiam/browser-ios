@@ -5,7 +5,9 @@ import SnapKit
 
 class MainSidePanelViewController : SidePanelBaseViewController {
 
-    let bookmarks = BookmarksPanel()
+    let bookmarksPanel = BookmarksPanel()
+    private var bookmarksNavController:UINavigationController!
+    
     let history = HistoryPanel()
 
     var bookmarksButton = UIButton()
@@ -18,8 +20,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
     let triangleView = UIImageView()
 
-    let tabTitleViewContainer = UIView()
-    let tabTitleView = UILabel()
+//    let tabTitleViewContainer = UIView()
+//    let tabTitleView = UILabel()
 
     let divider = UIView()
 
@@ -30,12 +32,17 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     override func setupUIElements() {
         super.setupUIElements()
         
-        tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
+        //change the font used in the navigation controller header
+        let font = UIFont.boldSystemFontOfSize(14)
+        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.blackColor()];
+        bookmarksNavController = UINavigationController(rootViewController: bookmarksPanel)
+        
+//        tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
 
         containerView.addSubview(topButtonsView)
-        containerView.addSubview(tabTitleViewContainer)
+//        containerView.addSubview(tabTitleViewContainer)
 
-        tabTitleViewContainer.addSubview(tabTitleView)
+//        tabTitleViewContainer.addSubview(tabTitleView)
         topButtonsView.addSubview(triangleView)
         topButtonsView.addSubview(bookmarksButton)
         topButtonsView.addSubview(historyButton)
@@ -72,11 +79,11 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         addBookmarkButton.tintColor = BraveUX.ActionButtonTintColor
 
         containerView.addSubview(history.view)
-        containerView.addSubview(bookmarks.view)
-
+        containerView.addSubview(bookmarksNavController.view)
+        
         showBookmarks()
 
-        bookmarks.view.hidden = false
+        bookmarksNavController.view.hidden = false
 
         containerView.bringSubviewToFront(topButtonsView)
 
@@ -84,14 +91,18 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
 
     @objc func historyItemAdded() {
-        postAsyncToMain(0.5) {
-            if self.view.hidden {
-                return
-            }
+        if self.view.hidden {
+            return
+        }
+        postAsyncToMain {
             self.history.refresh()
         }
     }
-
+    
+    func willHide() {
+        self.bookmarksPanel.currentBookmarksPanel().disableTableEditingMode()
+    }
+    
     func onClickSettingsButton() {
         if getApp().profile == nil {
             return
@@ -107,22 +118,41 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
 
     func onClickBookmarksButton() {
+        //this can no longer happen since we disable the button when there's no URL
+        //see MainSidePanelViewController#updateBookmarkStatus(isBookmarked,url)
+        //TODO remove this during code cleanup pre-release.
         guard let tab = browserViewController?.tabManager.selectedTab,
             let url = tab.displayURL?.absoluteString else {
                 return
         }
+        
+        
+        //switch to bookmarks 'tab' in case we're looking at history and tapped the add/remove bookmark button
+        postAsyncToMain {
+            self.showBookmarks()
+        }
 
+        //TODO -- need to separate the knowledge of whether current site is bookmarked or not from this UI button
+        //tracked in https://github.com/brave/browser-ios/issues/375
         if addBookmarkButton.selected {
-            browserViewController?.removeBookmark(url)
-        } else {
-            browserViewController?.addBookmark(url, title: tab.title)
+            browserViewController?.removeBookmark(url) {
+                self.bookmarksPanel.currentBookmarksPanel().reloadData()
+            }
+        }
+        else {
+            var folderId:String? = nil
+            var folderTitle:String? = nil
+            if let currentFolder = self.bookmarksPanel.currentBookmarksPanel().bookmarkFolder {
+                folderId = currentFolder.guid
+                folderTitle = currentFolder.title
+            }
+            
+            browserViewController?.addBookmark(url, title: tab.title, folderId: folderId, folderTitle: folderTitle){
+                self.bookmarksPanel.currentBookmarksPanel().reloadData()
+                
+            }
         }
 
-        showBookmarks()
-
-        postAsyncToMain(0.1) {
-            self.bookmarks.reloadData()
-        }
     }
 
     override func setupConstraints() {
@@ -176,40 +206,42 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             make.centerX.equalTo(self.topButtonsView).multipliedBy(1.75)
         }
 
-        tabTitleViewContainer.snp_remakeConstraints {
-            make in
-            make.right.left.equalTo(containerView)
-            make.top.equalTo(topButtonsView.snp_bottom)
-            make.height.equalTo(44.0)
-        }
+//        tabTitleViewContainer.snp_remakeConstraints {
+//            make in
+//            make.right.left.equalTo(containerView)
+//            make.top.equalTo(topButtonsView.snp_bottom)
+//            make.height.equalTo(44.0)
+//        }
+//
+//        tabTitleView.snp_remakeConstraints {
+//            make in
+//            make.right.top.bottom.equalTo(tabTitleViewContainer)
+//            make.left.lessThanOrEqualTo(containerView).inset(24)
+//        }
 
-        tabTitleView.snp_remakeConstraints {
-            make in
-            make.right.top.bottom.equalTo(tabTitleViewContainer)
-            make.left.lessThanOrEqualTo(containerView).inset(24)
-        }
-
-        bookmarks.view.snp_remakeConstraints { make in
+        bookmarksNavController.view.snp_remakeConstraints { make in
             make.left.right.bottom.equalTo(containerView)
-            make.top.equalTo(tabTitleView.snp_bottom)
+            make.top.equalTo(topButtonsView.snp_bottom)
+//            make.top.equalTo(tabTitleView.snp_bottom)
         }
 
         history.view.snp_remakeConstraints { make in
             make.left.right.bottom.equalTo(containerView)
-            make.top.equalTo(tabTitleView.snp_bottom)
+            make.top.equalTo(topButtonsView.snp_bottom)
+//            make.top.equalTo(tabTitleView.snp_bottom)
         }
     }
 
     func showBookmarks() {
-        tabTitleView.text = "Bookmarks"
+//        tabTitleView.text = "Bookmarks"
         history.view.hidden = true
-        bookmarks.view.hidden = false
+        bookmarksNavController.view.hidden = false
         moveTabIndicator(bookmarksButton)
     }
 
     func showHistory() {
-        tabTitleView.text = "History"
-        bookmarks.view.hidden = true
+//        tabTitleView.text = "History"
+        bookmarksNavController.view.hidden = true
         history.view.hidden = false
         moveTabIndicator(historyButton)
     }
@@ -225,70 +257,29 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
 
     override func setHomePanelDelegate(delegate: HomePanelDelegate?) {
-        bookmarks.profile = getApp().profile
+        bookmarksPanel.profile = getApp().profile
         history.profile = getApp().profile
-
-        bookmarks.homePanelDelegate = delegate
+        bookmarksPanel.homePanelDelegate = delegate
         history.homePanelDelegate = delegate
+        
         if (delegate != nil) {
-            bookmarks.reloadData()
+            bookmarksPanel.reloadData()
             history.reloadData()
         }
     }
 
-    var loc = CGFloat(-1)
-    func onTouchToHide(touchPoint: CGPoint, phase: UITouchPhase) {
-        if view.hidden {
-            return
-        }
-
-        let isFullWidth = fabs(view.frame.width - CGFloat(BraveUX.WidthOfSlideOut)) < 0.5
-
-        func complete() {
-            if isFullWidth {
-                loc = CGFloat(-1)
-                return
-            }
-
-            let shouldShow = view.frame.width / CGFloat(BraveUX.WidthOfSlideOut) > CGFloat(BraveUX.PanelClosingThresholdWhenDragging)
-            if shouldShow {
-                showPanel(true)
-            } else {
-                setHomePanelDelegate(nil)
-                showPanel(false)
-            }
-        }
-
-        let isOnEdge = fabs(touchPoint.x - view.frame.width) < 10
-        if !isOnEdge && loc < 0 && phase != .Began {
-            return
-        }
-
-        switch phase {
-        case .Began:  // A finger touched the screen
-            loc = isOnEdge ? touchPoint.x : CGFloat(-1)
-            break
-        case .Moved, .Stationary:
-            if loc < 0 || touchPoint.x > loc {
-                complete()
-                return
-            }
-
-            view.snp_remakeConstraints {
-                make in
-                make.bottom.left.top.equalTo(self.view.superview!)
-                make.width.equalTo(CGFloat(BraveUX.WidthOfSlideOut) - (loc - touchPoint.x))
-            }
-            self.view.layoutIfNeeded()
-            break
-        case .Ended, .Cancelled:
-            complete()
-            break
-        }
-    }
     
-    func updateBookmarkStatus(isBookmarked: Bool) {
-        addBookmarkButton.selected = isBookmarked
+    func updateBookmarkStatus(isBookmarked: Bool, url: NSURL?) {
+        //URL will be passed as nil by updateBookmarkStatus from BraveTopViewController
+        if url == nil {
+            //disable button for homescreen/empty url
+            addBookmarkButton.selected = false
+            addBookmarkButton.enabled = false
+        }
+        else {
+            addBookmarkButton.enabled = true
+            addBookmarkButton.selected = isBookmarked
+        }
     }
 }
 
