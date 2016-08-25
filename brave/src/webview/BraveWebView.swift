@@ -710,6 +710,11 @@ extension BraveWebView: UIWebViewDelegate {
             {
                 guard let errorUrl = error?.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
 
+                if errorUrl.absoluteString.regexReplacePattern("^.+://", with: "") != URL?.absoluteString.regexReplacePattern("^.+://", with: "") {
+                    print("only show cert error for top-level page")
+                    return
+                }
+
                 let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(errorUrl.absoluteString) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
                     handler in
