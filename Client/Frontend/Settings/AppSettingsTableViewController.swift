@@ -5,7 +5,7 @@
 import Foundation
 import UIKit
 import Shared
-import Account
+
 
 /// App Settings Screen (triggered by tapping the 'Gear' in the Tab Tray Controller)
 class AppSettingsTableViewController: SettingsTableViewController {
@@ -80,10 +80,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
 //                SyncNowSetting(settings: self)
             ] + accountChinaSyncSetting + accountDebugSettings)]
 
-        if !profile.hasAccount() {
-            settings += [SettingSection(title: NSAttributedString(string: NSLocalizedString("Sign in to get your tabs, bookmarks, and passwords from your other devices.", comment: "Clarify value prop under Sign In to Firefox in Settings.")), children: [])]
-        }
-
         settings += [ SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings)]
 
         var privacySettings = [Setting]()
@@ -130,14 +126,6 @@ class AppSettingsTableViewController: SettingsTableViewController {
                 DeleteExportedDataSetting(settings: self),
             ])]
             
-            if (profile.hasAccount()) {
-                settings += [
-                    SettingSection(title: nil, children: [
-//                        DisconnectSetting(settings: self),
-                        ])
-                ]
-            }
-
         return settings
     }
 

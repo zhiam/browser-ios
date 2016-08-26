@@ -58,19 +58,6 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         self.tableView.accessibilityIdentifier = "History List"
     }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // Add a refresh control if the user is logged in and the control was not added before. If the user is not
-        // logged in, remove any existing control but only when it is not currently refreshing. Otherwise, wait for
-        // the refresh to finish before removing the control.
-        if profile.hasSyncableAccount() && self.refreshControl == nil {
-            addRefreshControl()
-        } else if self.refreshControl?.refreshing == false {
-            removeRefreshControl()
-        }
-    }
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -83,15 +70,11 @@ class HistoryPanel: SiteTableViewController, HomePanel {
 
     func notificationReceived(notification: NSNotification) {
         switch notification.name {
-        case NotificationFirefoxAccountChanged, NotificationPrivateDataClearedHistory:
-            resyncHistory()
-            break
         case NotificationDynamicFontChanged:
             if emptyStateOverlayView.superview != nil {
                 emptyStateOverlayView.removeFromSuperview()
             }
             emptyStateOverlayView = createEmptyStateOverview()
-            resyncHistory()
             break
         default:
             // no need to do anything at all
@@ -116,31 +99,14 @@ class HistoryPanel: SiteTableViewController, HomePanel {
         // Always end refreshing, even if we failed!
         self.refreshControl?.endRefreshing()
 
-        // Remove the refresh control if the user has logged out in the meantime
-        if !self.profile.hasSyncableAccount() {
-            self.removeRefreshControl()
-        }
     }
 
-    /**
-    * sync history with the server and ensure that we update our view afterwards
-    **/
-    func resyncHistory() {
-        profile.syncManager.syncHistory().uponQueue(dispatch_get_main_queue()) { result in
-            if result.isSuccess {
-                self.reloadData()
-            } else {
-                self.endRefreshing()
-            }
-        }
-    }
 
     /**
     * called by the table view pull to refresh
     **/
     @objc func refresh() {
         self.refreshControl?.beginRefreshing()
-        resyncHistory()
     }
 
     /**

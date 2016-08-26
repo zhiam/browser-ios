@@ -9,7 +9,7 @@ import Shared
 import Storage
 import SnapKit
 import XCGLogger
-import Account
+
 import ReadingList
 import MobileCoreServices
 

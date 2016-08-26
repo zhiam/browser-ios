@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Account
+
 import Shared
 import UIKit
 import XCGLogger
@@ -272,16 +272,7 @@ class SettingsTableViewController: UITableViewController {
     }
 
     @objc private func SELrefresh() {
-        // Through-out, be aware that modifying the control while a refresh is in progress is /not/ supported and will likely crash the app.
-        if let account = self.profile.getAccount() {
-            account.advance().upon { _ in
-                dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                    self.tableView.reloadData()
-                }
-            }
-        } else {
-            self.tableView.reloadData()
-        }
+        self.tableView.reloadData()
     }
 
     @objc func SELfirefoxAccountDidChange() {

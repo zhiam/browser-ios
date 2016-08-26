@@ -3,11 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import UIKit
-import Account
+
 import Shared
 import SnapKit
 import Storage
-import Sync
+
 import XCGLogger
 
 private let log = Logger.browserLogger
@@ -107,39 +107,6 @@ class RemoteTabsPanel: UITableViewController, HomePanel {
         tableView.scrollEnabled = false
         tableView.allowsSelection = false
         tableView.tableFooterView = UIView(frame: CGRectZero)
-
-        // Short circuit if the user is not logged in
-        if !profile.hasAccount() {
-            self.tableViewDelegate = RemoteTabsPanelErrorDataSource(homePanel: self, error: .NotLoggedIn)
-            self.endRefreshing()
-            return
-        }
-
-        self.profile.getCachedClientsAndTabs().uponQueue(dispatch_get_main_queue()) { result in
-            if let clientAndTabs = result.successValue {
-                self.updateDelegateClientAndTabData(clientAndTabs)
-            }
-
-            // Otherwise, fetch the tabs cloud if its been more than 1 minute since last sync
-            let lastSyncTime = self.profile.prefs.timestampForKey(PrefsKeys.KeyLastRemoteTabSyncTime)
-            if NSDate.now() - (lastSyncTime ?? 0) > OneMinuteInMilliseconds && !(self.refreshControl?.refreshing ?? false) {
-                self.startRefreshing()
-                self.profile.getClientsAndTabs().uponQueue(dispatch_get_main_queue()) { result in
-                    if let clientAndTabs = result.successValue {
-                        self.profile.prefs.setTimestamp(NSDate.now(), forKey: PrefsKeys.KeyLastRemoteTabSyncTime)
-                        self.updateDelegateClientAndTabData(clientAndTabs)
-                    }
-                    self.endRefreshing()
-                }
-            } else {
-                // If we failed before and didn't sync, show the failure delegate
-                if let _ = result.failureValue {
-                    self.tableViewDelegate = RemoteTabsPanelErrorDataSource(homePanel: self, error: .FailedToSync)
-                }
-
-                self.endRefreshing()
-            }
-        }
     }
 
     private func startRefreshing() {
