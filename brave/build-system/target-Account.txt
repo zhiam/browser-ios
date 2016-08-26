@@ -1,8 +1,0 @@
-Account/FirefoxAccountConfiguration.swift
-Account/FxALoginStateMachine.swift
-Account/FirefoxAccount.swift
-Account/FxAState.swift
-Account/SyncAuthState.swift
-Account/TokenServerClient.swift
-Account/HawkHelper.swift
-Account/FxAClient10.swift

@@ -9,7 +9,7 @@ import Shared
 import Storage
 import SnapKit
 import XCGLogger
-import Account
+
 import ReadingList
 import MobileCoreServices
 
@@ -1256,30 +1256,6 @@ extension BrowserViewController: IntroViewControllerDelegate {
     }
     #endif
 }
-
-extension BrowserViewController: FxAContentViewControllerDelegate {
-    func contentViewControllerDidSignIn(viewController: FxAContentViewController, data: JSON) -> Void {
-        if data["keyFetchToken"].asString == nil || data["unwrapBKey"].asString == nil {
-            // The /settings endpoint sends a partial "login"; ignore it entirely.
-            log.debug("Ignoring didSignIn with keyFetchToken or unwrapBKey missing.")
-            return
-        }
-
-        // TODO: Error handling.
-        let account = FirefoxAccount.fromConfigurationAndJSON(profile.accountConfiguration, data: data)!
-        profile.setAccount(account)
-        if let account = self.profile.getAccount() {
-            account.advance()
-        }
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-
-    func contentViewControllerDidCancel(viewController: FxAContentViewController) {
-        log.info("Did cancel out of FxA signin")
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-}
-
 
 extension BrowserViewController: KeyboardHelperDelegate {
     func keyboardHelper(keyboardHelper: KeyboardHelper, keyboardWillShowWithState state: KeyboardState) {
