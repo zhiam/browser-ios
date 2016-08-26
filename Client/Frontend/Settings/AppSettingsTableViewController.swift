@@ -32,9 +32,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
         if AppConstants.BuildChannel != .Aurora {
             accountDebugSettings = [
                 // Debug settings:
-                RequirePasswordDebugSetting(settings: self),
-                RequireUpgradeDebugSetting(settings: self),
-                ForgetSyncAuthStateDebugSetting(settings: self),
+//                RequirePasswordDebugSetting(settings: self),
+//                RequireUpgradeDebugSetting(settings: self),
+//                ForgetSyncAuthStateDebugSetting(settings: self),
             ]
         } else {
             accountDebugSettings = []
@@ -58,7 +58,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
         } else {
             accountChinaSyncSetting = [
                 // Show China sync service setting:
-                ChinaSyncServiceSetting(settings: self)
+//                ChinaSyncServiceSetting(settings: self)
             ]
         }
         // There is nothing to show in the Customize section if we don't include the compact tab layout
@@ -73,11 +73,11 @@ class AppSettingsTableViewController: SettingsTableViewController {
 
         settings += [
             SettingSection(title: nil, children: [
-                // Without a Firefox Account:
-                ConnectSetting(settings: self),
-                // With a Firefox Account:
-                AccountStatusSetting(settings: self),
-                SyncNowSetting(settings: self)
+//                // Without a Firefox Account:
+//                ConnectSetting(settings: self),
+//                // With a Firefox Account:
+//                AccountStatusSetting(settings: self),
+//                SyncNowSetting(settings: self)
             ] + accountChinaSyncSetting + accountDebugSettings)]
 
         if !profile.hasAccount() {
@@ -133,7 +133,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
             if (profile.hasAccount()) {
                 settings += [
                     SettingSection(title: nil, children: [
-                        DisconnectSetting(settings: self),
+//                        DisconnectSetting(settings: self),
                         ])
                 ]
             }

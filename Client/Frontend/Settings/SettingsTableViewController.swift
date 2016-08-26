@@ -193,64 +193,6 @@ class BoolSetting: Setting {
     }
 }
 
-// A helper class for prefs that deal with sync. Handles reloading the tableView data if changes to
-// the fxAccount happen.
-class AccountSetting: Setting, FxAContentViewControllerDelegate {
-    unowned var settings: SettingsTableViewController
-
-    var profile: Profile {
-        return settings.profile
-    }
-
-    override var title: NSAttributedString? { return nil }
-
-    init(settings: SettingsTableViewController) {
-        self.settings = settings
-        super.init(title: nil)
-    }
-
-    override func onConfigureCell(cell: UITableViewCell) {
-        super.onConfigureCell(cell)
-        if settings.profile.getAccount() != nil {
-            cell.selectionStyle = .None
-        }
-    }
-
-    override var accessoryType: UITableViewCellAccessoryType { return .None }
-
-    func contentViewControllerDidSignIn(viewController: FxAContentViewController, data: JSON) -> Void {
-        if data["keyFetchToken"].asString == nil || data["unwrapBKey"].asString == nil {
-            // The /settings endpoint sends a partial "login"; ignore it entirely.
-            NSLog("Ignoring didSignIn with keyFetchToken or unwrapBKey missing.")
-            return
-        }
-
-        // TODO: Error handling.
-        let account = FirefoxAccount.fromConfigurationAndJSON(profile.accountConfiguration, data: data)!
-        settings.profile.setAccount(account)
-
-        // Reload the data to reflect the new Account immediately.
-        settings.tableView.reloadData()
-        // And start advancing the Account state in the background as well.
-        settings.SELrefresh()
-
-        settings.navigationController?.popToRootViewControllerAnimated(true)
-    }
-
-    func contentViewControllerDidCancel(viewController: FxAContentViewController) {
-        NSLog("didCancel")
-        settings.navigationController?.popToRootViewControllerAnimated(true)
-    }
-}
-
-class WithAccountSetting: AccountSetting {
-    override var hidden: Bool { return !profile.hasAccount() }
-}
-
-class WithoutAccountSetting: AccountSetting {
-    override var hidden: Bool { return profile.hasAccount() }
-}
-
 @objc
 protocol SettingsDelegate: class {
     func settingsOpenURLInNewTab(url: NSURL)
