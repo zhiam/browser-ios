@@ -22,8 +22,8 @@ brew install https://raw.githubusercontent.com/Homebrew/homebrew/09c09d73779d385
 
 Do the following commands:
 ```
-./checkout.sh
-(cd brave && ./setup.sh)
+./checkout.sh # builds carthage dependencies
+(cd brave && ./setup.sh your.fake.appid) # put in a fake unique app id if you want to build to device
 open Client.xcodeproj
 ```
 
