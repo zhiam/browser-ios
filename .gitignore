@@ -76,10 +76,14 @@ Carthage/Build
 node_modules/
 build-id.xcconfig
 ABPFilterParserData.dat
-Client.xcodeproj
 Client/Configuration
 Client/Info.plist
 /brave/xcconfig/.local-def.xcconfig
 /brave/xcconfig/.bundle-id.xcconfig
 /brave/Brave.entitlements
 /brave/BraveInfo.plist
+
+# Xcode
+project.xcworkspace/
+*xcuserdata
+*xcshareddata
