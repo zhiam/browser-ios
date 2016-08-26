@@ -14,11 +14,7 @@ Either ensure your app supports [opening urls in a share menu](https://github.co
 
 Install [Node.js](https://nodejs.org/en/download/stable/) v5.0.0
 
-Install Carthage 0.11 (not newer, due to https://github.com/Carthage/Carthage/issues/1124)
-```
-brew uninstall carthage # if you have it installed, removes so you can use an older version
-brew install https://raw.githubusercontent.com/Homebrew/homebrew/09c09d73779d3854cd54206c41e38668cd4d2d0c/Library/Formula/carthage.rb
-```
+Install Carthage: `brew install carthage`
 
 Do the following commands:
 ```
@@ -30,14 +26,6 @@ open Client.xcodeproj
 build Brave scheme
 
 #### Note: building your own ad-hoc builds is supported [see user device build](brave/docs/USER-DEPLOYING.md)
-
-## Updating Code 
-
-After a git pull (i.e. updating from the remote) run
-
-``` ./projgen.rb ```
-
-The Xcode project is generated, so local changes won't persist. And if files are added/removed after updating, your project won't be in sync unless the above command is run. 
 
 ## Crash reporting using Fabric
 
