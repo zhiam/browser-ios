@@ -25,14 +25,20 @@ public:
     T oldest() {
         return data[(currentIdx + 1) % count];
     }
+
+    void clear() {
+        data = std::vector<T>(count);
+    }
 };
 
 template <class T> class RecentlyUsedCache
 {
 private:
-    RingBuffer<T> keysByAge = RingBuffer<T>(1000);
+    RingBuffer<T> keysByAge;
 public:
     std::unordered_map<std::string, T> data;
+
+    RecentlyUsedCache(unsigned int size = 1000) : keysByAge(size) {}
 
     void add(const std::string& key, const T& value) {
         std::string old = keysByAge.oldest();
@@ -40,5 +46,10 @@ public:
             keysByAge.data.erase(old);
         }
         keysByAge[key] = value;
+    }
+
+    void clear() {
+        data.clear();
+        keysByAge.clear();
     }
 };
