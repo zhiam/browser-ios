@@ -20,9 +20,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
     let triangleView = UIImageView()
 
-//    let tabTitleViewContainer = UIView()
-//    let tabTitleView = UILabel()
-
     let divider = UIView()
 
     override func viewDidLoad() {
@@ -117,20 +114,17 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         presentViewController(controller, animated: true, completion: nil)
     }
 
+    //For this function to be called there *must* be a selected tab and URL
+    //since we disable the button when there's no URL
+    //see MainSidePanelViewController#updateBookmarkStatus(isBookmarked,url)
     func onClickBookmarksButton() {
-        //this can no longer happen since we disable the button when there's no URL
-        //see MainSidePanelViewController#updateBookmarkStatus(isBookmarked,url)
-        //TODO remove this during code cleanup pre-release.
-        guard let tab = browserViewController?.tabManager.selectedTab,
-            let url = tab.displayURL?.absoluteString else {
-                return
-        }
+
+        let tab = browserViewController!.tabManager.selectedTab!
+        let url = tab.displayURL!.absoluteString
         
         
         //switch to bookmarks 'tab' in case we're looking at history and tapped the add/remove bookmark button
-        postAsyncToMain {
-            self.showBookmarks()
-        }
+        self.showBookmarks()
 
         //TODO -- need to separate the knowledge of whether current site is bookmarked or not from this UI button
         //tracked in https://github.com/brave/browser-ios/issues/375
@@ -138,8 +132,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             browserViewController?.removeBookmark(url) {
                 self.bookmarksPanel.currentBookmarksPanel().reloadData()
             }
-        }
-        else {
+        } else {
             var folderId:String? = nil
             var folderTitle:String? = nil
             if let currentFolder = self.bookmarksPanel.currentBookmarksPanel().bookmarkFolder {
@@ -152,7 +145,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 
             }
         }
-
     }
 
     override func setupConstraints() {
@@ -206,41 +198,24 @@ class MainSidePanelViewController : SidePanelBaseViewController {
             make.centerX.equalTo(self.topButtonsView).multipliedBy(1.75)
         }
 
-//        tabTitleViewContainer.snp_remakeConstraints {
-//            make in
-//            make.right.left.equalTo(containerView)
-//            make.top.equalTo(topButtonsView.snp_bottom)
-//            make.height.equalTo(44.0)
-//        }
-//
-//        tabTitleView.snp_remakeConstraints {
-//            make in
-//            make.right.top.bottom.equalTo(tabTitleViewContainer)
-//            make.left.lessThanOrEqualTo(containerView).inset(24)
-//        }
-
         bookmarksNavController.view.snp_remakeConstraints { make in
             make.left.right.bottom.equalTo(containerView)
             make.top.equalTo(topButtonsView.snp_bottom)
-//            make.top.equalTo(tabTitleView.snp_bottom)
         }
 
         history.view.snp_remakeConstraints { make in
             make.left.right.bottom.equalTo(containerView)
             make.top.equalTo(topButtonsView.snp_bottom)
-//            make.top.equalTo(tabTitleView.snp_bottom)
         }
     }
 
     func showBookmarks() {
-//        tabTitleView.text = "Bookmarks"
         history.view.hidden = true
         bookmarksNavController.view.hidden = false
         moveTabIndicator(bookmarksButton)
     }
 
     func showHistory() {
-//        tabTitleView.text = "History"
         bookmarksNavController.view.hidden = true
         history.view.hidden = false
         moveTabIndicator(historyButton)

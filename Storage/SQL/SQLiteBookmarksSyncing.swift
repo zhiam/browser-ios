@@ -436,7 +436,6 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
         let parentGUID = BookmarkRoots.MobileFolderGUID
         let localArgs: Args = [guid, type, parentGUID, folderName, status, now]
         
-        
         var structureArgs = Args()
         structureArgs.append(parentGUID)
         structureArgs.append(guid)

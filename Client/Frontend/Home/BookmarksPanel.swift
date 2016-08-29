@@ -53,6 +53,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     private let BookmarkSeparatorCellIdentifier = "BookmarkSeparatorIdentifier"
     private let BookmarkFolderHeaderViewIdentifier = "BookmarkFolderHeaderIdentifier"
 
+    var editBookmarksToolbar:UIToolbar!
+    var trashFolderButton:UIBarButtonItem!
+    var addFolderButton:UIBarButtonItem!
+
     init() {
         super.init(nibName: nil, bundle: nil)
         self.title = "Bookmarks"
@@ -113,15 +117,8 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         } else {
             source.selectFolder(BookmarkRoots.MobileFolderGUID).upon(onModelFetched)
         }
-        
-        
-
     }
-
     
-    var editBookmarksToolbar:UIToolbar!
-    var trashFolderButton:UIBarButtonItem!
-    var addFolderButton:UIBarButtonItem!
     func createImageButtonItem(image:UIImage, action:Selector) -> UIBarButtonItem {
         let button = UIButton(type: .Custom)
         button.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
@@ -150,17 +147,12 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         trashFolderButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(onTrashFolderButton))
         items.append(trashFolderButton)
         items.append(createFixedSpaceItem(10))
-        
         trashFolderButton.enabled = false
-
-
         editBookmarksToolbar.items = items
-        
     }
     
-    //    //when being added to the navcontroller, if the folder is not nil we're inside a folder
-    //    //and therefore must show the 'trash' folder icon
-
+    //when being added to the navcontroller, if the folder is not nil we're inside a folder
+    //and therefore must show the 'trash' folder icon
     override func viewWillAppear(animated: Bool) {
         if isMovingToParentViewController() {
             if let _ = self.bookmarkFolder {
@@ -213,11 +205,11 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                                                 
                                             }
                                         }))
-            if canDeleteFolder {
+        if canDeleteFolder {
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel,
                 handler: nil))
             }
-        self.presentViewController(alert, animated: true) {
+            self.presentViewController(alert, animated: true) {
         }
     }
     
@@ -237,7 +229,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                     textField.placeholder = "<folder name>"
                     textField.secureTextEntry = false
                 })
-
         
         self.presentViewController(alert, animated: true) {}
     }
@@ -276,7 +267,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         dispatch_async(dispatch_get_main_queue()) { [unowned self] in
             self.tableView.editing = !self.tableView.editing
         }
-        
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
@@ -288,7 +278,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        
         return true
     }
     
@@ -578,16 +567,6 @@ class BookmarkFolderTableViewCell: TwoLineTableViewCell {
 
         separatorInset = UIEdgeInsetsZero
     }
-
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//
-//        // Do this here as TwoLineTableViewCell changes the imageView frame
-//        // in its own layoutSubviews, and we have to make sure it is right.
-//        if let imageSize = imageView?.image?.size {
-//            imageView?.frame = CGRectMake(ImageMargin, (frame.height - imageSize.width) / 2, imageSize.width, imageSize.height)
-//        }
-//    }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
