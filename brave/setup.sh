@@ -20,3 +20,4 @@ npm update
 
 echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"`  > xcconfig/build-id.xcconfig
 
+printf 'Please use our commit template, run this to install it\n\n git config commit.template brave/COMMIT_TEMPLATE\n\n'
