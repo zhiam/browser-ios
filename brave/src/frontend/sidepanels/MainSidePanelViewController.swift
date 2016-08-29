@@ -97,7 +97,9 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
     
     func willHide() {
-        self.bookmarksPanel.currentBookmarksPanel().disableTableEditingMode()
+        if self.bookmarksPanel.currentBookmarksPanel().tableView.editing {
+            self.bookmarksPanel.currentBookmarksPanel().disableTableEditingMode()
+        }
     }
     
     func onClickSettingsButton() {
@@ -140,6 +142,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 folderTitle = currentFolder.title
             }
             
+            let count = self.bookmarksPanel.currentBookmarksPanel().currentItemCount
             browserViewController?.addBookmark(url, title: tab.title, folderId: folderId, folderTitle: folderTitle){
                 self.bookmarksPanel.currentBookmarksPanel().reloadData()
                 

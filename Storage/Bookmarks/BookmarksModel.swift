@@ -12,7 +12,7 @@ import Shared
 public class BookmarkNode {
     public var id: Int? = nil
     public let guid: GUID
-    public let title: String
+    public var title: String
     public let isEditable: Bool
     public var favicon: Favicon? = nil
 

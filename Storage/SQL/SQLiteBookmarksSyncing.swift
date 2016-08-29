@@ -427,6 +427,25 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
         }
         return true
     }
+    
+    public func renameBookmark(bookmark:BookmarkNode, newTitle:String, completion:dispatch_block_t)  {
+        let updateQuery =
+            "UPDATE \(TableBookmarksLocal) " +
+                "set title='\(newTitle)'" +
+                "where guid='\(bookmark.guid)'"
+        let structureArgs = Args()
+        var err: NSError?
+
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to new title \(newTitle).") {
+                return false
+            }
+            
+            completion()
+            return true
+        }
+    }
+    
     public func createFolder(folderName:String, completion:dispatch_block_t) {
         let type = BookmarkNodeType.Folder.rawValue
         let now = NSDate.nowNumber()
@@ -445,9 +464,6 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
                 "(guid, type, parentid, title, parentName, sync_status, local_modified) VALUES " +
                 Array(count: 1, repeatedValue: "(?, ?, ?, ?, '', ?, ?)").joinWithSeparator(", ")
         
-        let structure =
-            "INSERT INTO \(TableBookmarksLocalStructure) (parent, child) VALUES " +
-                Array(count: 1, repeatedValue: "(?, ?)").joinWithSeparator(", ")
         var err: NSError?
 
         self.db.transaction(&err) { (conn, err) -> Bool in
@@ -641,6 +657,10 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
 
     public func applyRecords(records: [BookmarkMirrorItem]) -> Success {
         return self.buffer.applyRecords(records)
+    }
+
+    public func renameBookmark(bookmark:BookmarkNode, newTitle:String, completion:dispatch_block_t)  {
+        self.buffer.renameBookmark(bookmark, newTitle:newTitle, completion:completion)
     }
 
     public func createFolder(folderName:String, completion:dispatch_block_t)  {

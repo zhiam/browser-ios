@@ -47,7 +47,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
 
         }
     }
-    private lazy var emptyStateOverlayView: UIView = self.createEmptyStateOverlayView()
+    var currentItemCount:Int {
+        return source?.current.count ?? 0
+    }
+//    private lazy var emptyStateOverlayView: UIView = self.createEmptyStateOverlayView()
 
     private let BookmarkFolderCellIdentifier = "BookmarkFolderIdentifier"
     private let BookmarkSeparatorCellIdentifier = "BookmarkSeparatorIdentifier"
@@ -56,6 +59,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     var editBookmarksToolbar:UIToolbar!
     var trashFolderButton:UIBarButtonItem!
     var addFolderButton:UIBarButtonItem!
+    var editBookmarksButton:UIBarButtonItem!
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -138,7 +142,8 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         var items = [UIBarButtonItem]()
         items.append(createFixedSpaceItem(10))
         let editImage = UIImage(named: "bookmarks_edit_icon")!
-        items.append(createImageButtonItem(editImage, action: #selector(onEditBookmarksButton)))
+        editBookmarksButton = createImageButtonItem(editImage, action: #selector(onEditBookmarksButton))
+        items.append(editBookmarksButton)
         items.append(createFixedSpaceItem(5))
         let addFolderImage = UIImage(named: "bookmarks_newfolder_icon")!
         addFolderButton = createImageButtonItem(addFolderImage, action: #selector(onAddBookmarksFolderButton))
@@ -159,6 +164,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 trashFolderButton.enabled = true
                 addFolderButton.enabled = false
                 addFolderButton.customView?.hidden = true
+                editBookmarksButton.enabled = false
             }
         }
     }
@@ -233,7 +239,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         self.presentViewController(alert, animated: true) {}
     }
 
-
     func addFolder(alert: UIAlertAction!, alertController: UIAlertController) {
         postAsyncToBackground {
             if let folderName = alertController.textFields![0].text  {
@@ -254,6 +259,9 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
 
     func disableTableEditingMode() {
+        if self.currentItemCount == 0 {
+            return
+        }
         //this function is called to turned off editing mode before the view is hidden, so we reference self as weak
         //and if the view is destroyed (not to be reused) there will be no problem with the editing mode being on
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
@@ -262,6 +270,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func switchTableEditingMode() {
+        if self.currentItemCount == 0 {
+            return
+        }
+
         //unwoned self is generally unnecessary here since the block is not going to create retention loops,
         //but useful to include considering UIViews may get deallocated unexpectedly
         dispatch_async(dispatch_get_main_queue()) { [unowned self] in
@@ -293,26 +305,26 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         }
     }
 
-    private func createEmptyStateOverlayView() -> UIView {
-        let overlayView = UIView()
-        overlayView.backgroundColor = UIColor.whiteColor()
-
-        return overlayView
-    }
-
-    private func updateEmptyPanelState() {
-        if source?.current.count == 0 && source?.current.guid == BookmarkRoots.MobileFolderGUID {
-            if self.emptyStateOverlayView.superview == nil {
-                self.view.addSubview(self.emptyStateOverlayView)
-                self.view.bringSubviewToFront(self.emptyStateOverlayView)
-                self.emptyStateOverlayView.snp_makeConstraints { make -> Void in
-                    make.edges.equalTo(self.tableView)
-                }
-            }
-        } else {
-            self.emptyStateOverlayView.removeFromSuperview()
-        }
-    }
+//    private func createEmptyStateOverlayView() -> UIView {
+//        let overlayView = UIView()
+//        overlayView.backgroundColor = UIColor.whiteColor()
+//
+//        return overlayView
+//    }
+//
+//    private func updateEmptyPanelState() {
+//        if source?.current.count == 0 && source?.current.guid == BookmarkRoots.MobileFolderGUID {
+//            if self.emptyStateOverlayView.superview == nil {
+//                self.view.addSubview(self.emptyStateOverlayView)
+//                self.view.bringSubviewToFront(self.emptyStateOverlayView)
+//                self.emptyStateOverlayView.snp_makeConstraints { make -> Void in
+//                    make.edges.equalTo(self.tableView)
+//                }
+//            }
+//        } else {
+//            self.emptyStateOverlayView.removeFromSuperview()
+//        }
+//    }
 
     private func onModelFetched(result: Maybe<BookmarksModel>) {
         guard let model = result.successValue else {
@@ -323,20 +335,40 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
 
     private func onNewModel(model: BookmarksModel) {
-        if NSThread.currentThread().isMainThread {
+        postAsyncToMain {
+            let count = self.currentItemCount
             self.source = model
+            let newCount = self.currentItemCount
             self.currentBookmarksPanel().tableView.reloadData()
-            return
-        }
+            if count != newCount && newCount > 0 {
+                let newIndexPath = NSIndexPath(forRow: newCount-1, inSection: 0)
+                self.currentBookmarksPanel().tableView.scrollToRowAtIndexPath(newIndexPath, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
+            }
+            self.editBookmarksButton.enabled = newCount > 0
+            
 
-        dispatch_async(dispatch_get_main_queue()) {
-            self.source = model
-            self.currentBookmarksPanel().tableView.reloadData()
-            self.updateEmptyPanelState()
         }
+//        if NSThread.currentThread().isMainThread {
+//            let count = self.currentItemCount
+//            self.source = model
+//            let newCount = self.currentItemCount
+//            self.currentBookmarksPanel().tableView.reloadData()
+//            if count != newCount {
+//                let newIndexPath = NSIndexPath(forRow: newCount-1, inSection: 0)
+//                self.currentBookmarksPanel().tableView.scrollToRowAtIndexPath(newIndexPath, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
+//            }
+//            return
+//        }
+//
+//        dispatch_async(dispatch_get_main_queue()) {
+//            self.source = model
+//            self.currentBookmarksPanel().tableView.reloadData()
+//            self.updateEmptyPanelState()
+//        }
     }
 
     private func onModelFailure(e: Any) {
+        editBookmarksButton.enabled = false
         log.error("Error: failed to get data: \(e)")
     }
     
@@ -380,11 +412,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             cell.textLabel?.text = bookmark.title
             cell.imageView?.image = UIImage(named: "bookmarks_folder_hollow")
             cell.accessoryView = UIImageView(image: UIImage(named: "bookmarks_folder_arrow"))
-//
-//            let cell = tableView.dequeueReusableCellWithIdentifier(BookmarkFolderCellIdentifier, forIndexPath: indexPath)
-//            cell.textLabel?.text = bookmark.title
-//            let folderImage = UIImage(named: "bookmarks_folder_hollow")
-//            cell.imageView?.image = folderImage
 
             return cell
         default:
@@ -494,9 +521,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             return [AnyObject]()
         }
 
-        let title = NSLocalizedString("Delete", tableName: "BookmarkPanel", comment: "Action button for deleting bookmarks in the bookmarks panel.")
+        let deleteTitle = NSLocalizedString("Delete", tableName: "BookmarksPanel", comment: "Action button for deleting bookmarks in the bookmarks panel.")
+        let renameTitle = NSLocalizedString("Rename", tableName: "BookmarksPanel", comment: "Action button for renaming bookmarks in the bookmarks panel.")
 
-        let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: title, handler: { (action, indexPath) in
+        let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: deleteTitle, handler: { (action, indexPath) in
             guard let bookmark = source.current[indexPath.row] else {
                 return
             }
@@ -534,12 +562,93 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             self.source = reloaded
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
             self.tableView.endUpdates()
-            self.updateEmptyPanelState()
+//            self.updateEmptyPanelState()
 
             NSNotificationCenter.defaultCenter().postNotificationName(BookmarkStatusChangedNotification, object: bookmark, userInfo:["added": false])
         })
+        
+        
+        let rename = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: renameTitle, handler: { (action, indexPath) in
+            guard let bookmark = source.current[indexPath.row] else {
+                return
+            }
+            
+            if bookmark is BookmarkFolder {
+                return
+            }
+            
+            let alert = UIAlertController(title: "Rename Bookmark", message: "New name", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (alertA: UIAlertAction!) in
+                if let possibleNewTitle = alert.textFields![0].text  {
+                    let newTitle = possibleNewTitle.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                    if newTitle.characters.count == 0 || newTitle == bookmark.title {
+                        //nothing to change in this case
+                        return
+                    }
+                    self.renameBookmark(bookmark, newTitle: newTitle, atIndexPath: indexPath)
+                }
+                NSNotificationCenter.defaultCenter().postNotificationName(BookmarkStatusChangedNotification, object: bookmark, userInfo:["added": false])
 
-        return [delete]
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+            
+            alert.addAction(okAction)
+            alert.addAction(cancelAction)
+            
+            alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+                textField.placeholder = bookmark.title
+                textField.secureTextEntry = false
+            })
+            
+            self.presentViewController(alert, animated: true) {}
+
+            
+            
+        })
+
+
+        return [delete, rename]
+    }
+    
+    func renameBookmark(bookmark:BookmarkNode, newTitle:String, atIndexPath indexPath: NSIndexPath) {
+        postAsyncToBackground {
+            if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
+                
+//                if let err = factory.removeByGUID(bookmark.guid).value.failureValue {
+//                    log.debug("Failed to remove \(bookmark.guid).")
+//                    self.onModelFailure(err)
+//                    return
+//                }
+//                
+//                guard let reloaded = source.reloadData().value.successValue else {
+//                    log.debug("Failed to reload model.")
+//                    return
+//                }
+//                
+//                self.tableView.beginUpdates()
+//                self.source = reloaded
+//                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+//                self.tableView.endUpdates()
+//                self.updateEmptyPanelState()
+//                
+//                NSNotificationCenter.defaultCenter().postNotificationName(BookmarkStatusChangedNotification, object: bookmark, userInfo:["added": false])
+                
+                
+                sqllitbk.renameBookmark(bookmark, newTitle:newTitle) {
+                    postAsyncToMain {
+                        //no need to reload everything, just change the title on the object and
+                        self.tableView.beginUpdates()
+                        bookmark.title = newTitle
+                        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+                        self.tableView.endUpdates()
+
+                        self.reloadData()
+                    }
+                }
+            }
+        }
+        
     }
 }
 
