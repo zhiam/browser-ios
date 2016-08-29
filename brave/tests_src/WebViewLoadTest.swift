@@ -54,7 +54,7 @@ class WebViewLoadTest: XCTestCase {
             //WebViewLoadTestUtils.httpseEnabled(shieldsOn)
 
             for site in sites {
-                let webview = BraveWebView(frame: CGRectMake(0,0,200,200))
+                let webview = BraveWebView(frame: CGRectMake(0,0,200,200), useDesktopUserAgent: false)
 
                 print("\(site)")
 

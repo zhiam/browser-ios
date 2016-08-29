@@ -39,7 +39,7 @@ class WebViewLoadTestUtils {
 
 
     static func loadSites(testCase: XCTestCase, sites:[String]) {
-        let w = BraveWebView(frame: CGRectMake(0,0,200,200))
+        let w = BraveWebView(frame: CGRectMake(0,0,200,200), useDesktopUserAgent: false)
         for site in sites {
             print("\(site)")
             self.loadSite(testCase, site: site, webview: w)
