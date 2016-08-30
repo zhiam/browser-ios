@@ -17,7 +17,7 @@ import Deferred
 private let _singleton = BraveApp()
 
 let kAppBootingIncompleteFlag = "kAppBootingIncompleteFlag"
-let kDesktopUserAgent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; it-it) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16"
+let kDesktopUserAgent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Version/5.0 Safari/537.36"
 
 #if !TEST
     func getApp() -> AppDelegate {
