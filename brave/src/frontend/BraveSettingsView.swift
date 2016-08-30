@@ -48,20 +48,15 @@ class BraveSettingsView : AppSettingsTableViewController {
         let prefs = profile.prefs
         var generalSettings = [
             SearchSetting(settings: self),
-            BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyIsToolbarHidingEnabled , defaultValue: true, titleText: NSLocalizedString("Hide toolbar when scrolling", comment: ""), statusText: nil, settingDidChange:  { value in
-                BraveScrollController.hideShowToolbarEnabled = value
-
-                // Hidden way to trigger a crash for testing
+            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true, titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager"), statusText: nil, settingDidChange:  { value in
+                                // Hidden way to trigger a crash for testing
                 if (self.debugToggleItemToTriggerCrashCount > 4) {
                     UIAlertView(title: "Trigger a crash for testing", message: "Force a crash?", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK").show()
                     self.debugToggleItemToTriggerCrashCount = 0
                 } else {
                     self.debugToggleItemToTriggerCrashCount += 1
                 }
-            }),
-            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
-                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager"))
-
+            })
             ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
                 titleText: NSLocalizedString("Block Popups", comment: "Setting to enable popup blocking"))
         ]

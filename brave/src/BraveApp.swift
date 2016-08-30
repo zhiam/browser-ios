@@ -113,7 +113,6 @@ class BraveApp {
         HttpsEverywhere.singleton.networkFileLoader.loadData()
 
         #if !TEST
-            BraveScrollController.hideShowToolbarEnabled = BraveApp.getPrefs()?.boolForKey(BraveUX.PrefKeyIsToolbarHidingEnabled) ?? true
             PrivateBrowsing.singleton.startupCheckIfKilledWhileInPBMode()
             CookieSetting.setupOnAppStart()
             ThirdPartyPasswordManagerSetting.setupOnAppStart()

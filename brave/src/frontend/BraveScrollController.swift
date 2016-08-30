@@ -24,8 +24,6 @@ class BraveScrollController: NSObject {
         }
     }
 
-    static var hideShowToolbarEnabled = true
-
     weak var header: UIView?
     weak var footer: UIView?
     weak var urlBar: URLBarView?
@@ -202,10 +200,6 @@ private extension BraveScrollController {
 
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         if browserIsLoading() || edgeSwipingActive {
-            return
-        }
-
-        if !BraveScrollController.hideShowToolbarEnabled {
             return
         }
 
