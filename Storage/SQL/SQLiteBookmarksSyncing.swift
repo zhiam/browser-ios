@@ -428,18 +428,61 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
         return true
     }
     
-    public func renameBookmark(bookmark:BookmarkNode, newTitle:String, completion:dispatch_block_t)  {
-        let updateQuery =
-            "UPDATE \(TableBookmarksLocal) " +
-                "set title='\(newTitle)'" +
-                "where guid='\(bookmark.guid)'"
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
+        var err: NSError?
+        
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            var success:Bool = true
+            var position:Int = 0
+            let structureArgs = Args()
+            for bookmarkGUID in bookmarksOrder {
+                let updateQuery = "UPDATE \(TableBookmarksLocalStructure) set idx='\(position)' where parent='\(folderGUID)' and child='\(bookmarkGUID)'"
+                let errorDesc = "Error updating item \(bookmarkGUID) in \(folderGUID) to new index \(position)."
+                
+                if !self.change(conn, sql: updateQuery, args: structureArgs, desc: errorDesc) {
+                    success = false
+                    break
+                }
+                
+                position += 1
+            }
+            
+            if success {
+                completion()
+            }
+            return success
+        }
+    }
+    
+    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID:String?, completion:dispatch_block_t)  {
+        if newTitle == nil && newParentID == nil {
+            //just return
+            completion()
+            return
+        }
+        
+        var updateQuery = "UPDATE \(TableBookmarksLocal) "
+        if newTitle != nil && newParentID != nil {
+            updateQuery += " set title='\(newTitle)', parentid='\(newParentID)' "
+        }
+        else if newTitle != nil {
+            updateQuery += " set title='\(newTitle)' "
+        }
+        else {
+            updateQuery += " set parentid='\(newParentID)' "
+        }
+        
+        updateQuery +=  " where guid='\(bookmark.guid)'"
+        
         let structureArgs = Args()
         var err: NSError?
 
         self.db.transaction(&err) { (conn, err) -> Bool in
+            //TODO moving a bookmark to another folder seems to be failing
             if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to new title \(newTitle).") {
                 return false
             }
+            
             
             completion()
             return true
@@ -659,8 +702,12 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
         return self.buffer.applyRecords(records)
     }
 
-    public func renameBookmark(bookmark:BookmarkNode, newTitle:String, completion:dispatch_block_t)  {
-        self.buffer.renameBookmark(bookmark, newTitle:newTitle, completion:completion)
+    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID: String? = nil, completion:dispatch_block_t)  {
+        self.buffer.editBookmark(bookmark, newTitle:newTitle, newParentID:newParentID, completion:completion)
+    }
+    
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
+        self.buffer.reorderBookmarks(folderGUID, bookmarksOrder:bookmarksOrder, completion:completion)
     }
 
     public func createFolder(folderName:String, completion:dispatch_block_t)  {

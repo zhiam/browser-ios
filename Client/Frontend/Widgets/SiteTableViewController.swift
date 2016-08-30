@@ -162,10 +162,14 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
 
     @objc func longPressOnCell(gesture: UILongPressGestureRecognizer) {
+        if tableView.editing { //disable context menu on editing mode
+            return
+        }
+        
         if gesture.state != .Began {
             return
         }
-
+        
         guard let cell = gesture.view as? UITableViewCell else { return }
         var url:NSURL? = nil
 
