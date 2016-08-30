@@ -4,7 +4,9 @@ class HamburgerMenu : UIViewController {
     let width = CGFloat(320)
     let parent: UIView
     let parentButton: UIView
+    let parentButtonTint: UIColor
 
+    let blueColor = UIColor(colorLiteralRed: 0/255.0, green: 118/255.0, blue: 255/255.0, alpha: 1.0)
     var isWebPage = false
     let itemsPerRow = 4
 
@@ -28,11 +30,14 @@ class HamburgerMenu : UIViewController {
         self.atBottom = atBottom
         self.parent = parent
         self.parentButton = parentButton
+        self.parentButtonTint = parentButton.tintColor
         super.init(nibName: nil, bundle: nil)
 
         if let tab = getApp().tabManager.selectedTab, _ = tab.displayURL {
             isWebPage = true
         }
+
+        parentButton.tintColor = blueColor
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -46,6 +51,7 @@ class HamburgerMenu : UIViewController {
     func close() {
         view.removeFromSuperview()
         removeFromParentViewController()
+        parentButton.tintColor = parentButtonTint
     }
 
     override func viewDidLoad() {
@@ -129,7 +135,7 @@ class HamburgerMenu : UIViewController {
     }
 
     func buttonDown(sender: UIButton) {
-        sender.tintColor = UIColor(colorLiteralRed: 0/255.0, green: 118/255.0, blue: 255/255.0, alpha: 1.0)
+        sender.tintColor = blueColor
     }
 }
 
