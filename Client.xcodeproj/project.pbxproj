@@ -474,6 +474,7 @@
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
+		EB99333B1D74E6C5001D100D /* HamburgerMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB99333A1D74E6C5001D100D /* HamburgerMenu.swift */; };
 		ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */ = {isa = PBXBuildFile; fileRef = C33D93B9B0CD0D4AD9E461AE /* ODRefreshControl.h */; };
 		ED86C167052A9F70FAF747C4 /* log_reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FEEC5779DCE986A2ADCC758 /* log_reader.h */; };
 		EE1BFCBBE63887C050C3658B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F3EC59F5985F716F89D46B /* ArrayExtensions.swift */; };
@@ -1292,6 +1293,7 @@
 		EB4A77361CC97AC50088E774 /* BaseConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = BaseConfig.xcconfig; sourceTree = "<group>"; };
 		EB4EC7836B7D80B31285DCC6 /* SiteTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiteTableViewController.swift; path = ./Client/Frontend/Widgets/SiteTableViewController.swift; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* UITests_brave.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests_brave.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB99333A1D74E6C5001D100D /* HamburgerMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HamburgerMenu.swift; path = brave/src/frontend/HamburgerMenu.swift; sourceTree = "<group>"; };
 		ECDCB9A9BE94C1AA75F29565 /* ReadingListServerMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListServerMetadata.swift; path = ./ReadingList/ReadingListServerMetadata.swift; sourceTree = "<group>"; };
 		ED441214938259EBE2ACD8DF /* BraveRightSidePanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveRightSidePanel.swift; path = ./brave/src/frontend/sidepanels/BraveRightSidePanel.swift; sourceTree = "<group>"; };
 		EE6184965624CC221A1AEEDE /* FindInPageHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FindInPageHelper.swift; path = ./Client/Frontend/Browser/FindInPageHelper.swift; sourceTree = "<group>"; };
@@ -1472,6 +1474,7 @@
 			isa = PBXGroup;
 			children = (
 				3DEE61BC5B8E404D11F5547F /* BraveBrowserBottomToolbar.swift */,
+				EB99333A1D74E6C5001D100D /* HamburgerMenu.swift */,
 				5C39A9721F0FECF98A48015E /* BraveBrowserViewController.swift */,
 				105A3ED2E6BEFE42CDC7E572 /* BraveMainWindow.swift */,
 				43D1777F9AA8762221511A28 /* BraveScrollController.swift */,
@@ -3685,6 +3688,7 @@
 				BDED82C210B0F2D66C8BB338 /* crc32c.cc in Sources */,
 				95E4FF6371AD1D0BB1605B9D /* env.cc in Sources */,
 				7EBF009B7F4749FDD8D775B4 /* env_posix.cc in Sources */,
+				EB99333B1D74E6C5001D100D /* HamburgerMenu.swift in Sources */,
 				CC1E2496D2BBE436131C1F81 /* filter_policy.cc in Sources */,
 				9EAB0C6103188CF38E86ED36 /* hash.cc in Sources */,
 				E4CB04CE57189DE29391DA11 /* histogram.cc in Sources */,

@@ -165,7 +165,7 @@ class URLBarView: UIView {
         return button
     }()
 
-    lazy var shareButton: UIButton = { return UIButton() }()
+    lazy var hamburgerButton: UIButton = { return UIButton() }()
 
     lazy var bookmarkButton: UIButton = { return UIButton() }()
 
@@ -176,7 +176,7 @@ class URLBarView: UIView {
     lazy var stopReloadButton: UIButton = { return UIButton() }()
 
     lazy var actionButtons: [UIButton] = {
-        return [self.shareButton, self.bookmarkButton, self.forwardButton, self.backButton, self.stopReloadButton]
+        return [self.hamburgerButton, self.bookmarkButton, self.forwardButton, self.backButton, self.stopReloadButton]
     }()
 
     // Used to temporarily store the cloned button so we can respond to layout changes during animation
@@ -216,7 +216,7 @@ class URLBarView: UIView {
         addSubview(tabsButton)
         addSubview(cancelButton)
 
-        addSubview(shareButton)
+        addSubview(hamburgerButton)
         addSubview(bookmarkButton)
         addSubview(forwardButton)
         addSubview(backButton)
@@ -432,7 +432,7 @@ class URLBarView: UIView {
         // Make sure everything is showing during the transition (we'll hide it afterwards).
         self.bringSubviewToFront(self.locationContainer)
         self.cancelButton.hidden = false
-        self.shareButton.hidden = !self.toolbarIsShowing
+        self.hamburgerButton.hidden = !self.toolbarIsShowing
         self.bookmarkButton.hidden = !self.toolbarIsShowing
         self.forwardButton.hidden = !self.toolbarIsShowing
         self.backButton.hidden = !self.toolbarIsShowing
@@ -441,7 +441,7 @@ class URLBarView: UIView {
 
     func transitionToOverlay(didCancel: Bool = false) {
         self.cancelButton.alpha = inOverlayMode ? 1 : 0
-        self.shareButton.alpha = inOverlayMode ? 0 : 1
+        self.hamburgerButton.alpha = inOverlayMode ? 0 : 1
         self.bookmarkButton.alpha = inOverlayMode ? 0 : 1
         self.forwardButton.alpha = inOverlayMode ? 0 : 1
         self.backButton.alpha = inOverlayMode ? 0 : 1
@@ -477,7 +477,7 @@ class URLBarView: UIView {
 
     func updateViewsForOverlayModeAndToolbarChanges() {
         self.cancelButton.hidden = !inOverlayMode
-        self.shareButton.hidden = !self.toolbarIsShowing || inOverlayMode
+        self.hamburgerButton.hidden = !self.toolbarIsShowing || inOverlayMode
         self.bookmarkButton.hidden = !self.toolbarIsShowing || inOverlayMode
         self.forwardButton.hidden = !self.toolbarIsShowing || inOverlayMode
         self.backButton.hidden = !self.toolbarIsShowing || inOverlayMode
@@ -547,7 +547,7 @@ extension URLBarView: BrowserToolbarProtocol {
     func updatePageStatus(isWebPage isWebPage: Bool) {
         bookmarkButton.enabled = isWebPage
         stopReloadButton.enabled = isWebPage
-        shareButton.enabled = isWebPage
+        hamburgerButton.enabled = isWebPage
     }
 
     override var accessibilityElements: [AnyObject]? {
@@ -557,7 +557,7 @@ extension URLBarView: BrowserToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, stopReloadButton, locationView, shareButton, bookmarkButton, tabsButton]
+                    return [backButton, forwardButton, stopReloadButton, locationView, hamburgerButton, bookmarkButton, tabsButton]
                 } else {
                     return [locationView, tabsButton, stopReloadButton]
                 }

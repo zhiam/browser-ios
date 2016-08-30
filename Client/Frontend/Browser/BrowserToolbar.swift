@@ -13,7 +13,7 @@ private let log = Logger.browserLogger
 @objc
 protocol BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate? { get set }
-    var shareButton: UIButton { get }
+    var hamburgerButton: UIButton { get }
     var bookmarkButton: UIButton { get }
     var forwardButton: UIButton { get }
     var backButton: UIButton { get }
@@ -100,12 +100,10 @@ public class BrowserToolbarHelper: NSObject {
         toolbar.stopReloadButton.addGestureRecognizer(longPressGestureStopReloadButton)
         toolbar.stopReloadButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickStopReload), forControlEvents: UIControlEvents.TouchUpInside)
 
-        toolbar.shareButton.setImage(UIImage(named: "send"), forState: .Normal)
-#if !BRAVE // we use the default press state for now. 
-        toolbar.shareButton.setImage(UIImage(named: "sendPressed"), forState: .Highlighted)
-#endif
-        toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the browser toolbar Share button")
-        toolbar.shareButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickShare), forControlEvents: UIControlEvents.TouchUpInside)
+        toolbar.hamburgerButton.setImage(UIImage(named: "hamburgerMenu")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+
+        toolbar.hamburgerButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the browser toolbar Share button")
+        toolbar.hamburgerButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickShare), forControlEvents: UIControlEvents.TouchUpInside)
         toolbar.bookmarkButton.contentMode = UIViewContentMode.Center
 
         toolbar.bookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
@@ -130,7 +128,7 @@ public class BrowserToolbarHelper: NSObject {
     }
 
     func SELdidClickShare() {
-        toolbar.browserToolbarDelegate?.browserToolbarDidPressShare(toolbar, button: toolbar.shareButton)
+        toolbar.browserToolbarDelegate?.browserToolbarDidPressShare(toolbar, button: toolbar.hamburgerButton)
     }
 
     func SELdidClickForward() {
@@ -177,7 +175,7 @@ public class BrowserToolbarHelper: NSObject {
 class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate?
 
-    let shareButton: UIButton
+    let hamburgerButton: UIButton
     let bookmarkButton: UIButton
     let forwardButton: UIButton
     let backButton: UIButton
@@ -208,17 +206,17 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
         forwardButton.accessibilityIdentifier = "BrowserToolbar.forwardButton"
         stopReloadButton = UIButton()
         stopReloadButton.accessibilityIdentifier = "BrowserToolbar.stopReloadButton"
-        shareButton = UIButton()
-        shareButton.accessibilityIdentifier = "BrowserToolbar.shareButton"
+        hamburgerButton = UIButton()
+        hamburgerButton.accessibilityIdentifier = "BrowserToolbar.hamburgerButton"
         bookmarkButton = UIButton()
         bookmarkButton.accessibilityIdentifier = "BrowserToolbar.bookmarkButton"
-        actionButtons = [backButton, forwardButton, stopReloadButton, shareButton, bookmarkButton]
+        actionButtons = [backButton, forwardButton, stopReloadButton, hamburgerButton, bookmarkButton]
 
         super.init(frame: frame)
 
         self.helper = BrowserToolbarHelper(toolbar: self)
 
-        addButtons(backButton, forwardButton, stopReloadButton, shareButton, bookmarkButton)
+        addButtons(backButton, forwardButton, stopReloadButton, hamburgerButton, bookmarkButton)
 
         accessibilityNavigationStyle = .Combined
         accessibilityLabel = NSLocalizedString("Navigation Toolbar", comment: "Accessibility label for the navigation toolbar displayed at the bottom of the screen.")
@@ -243,7 +241,7 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
     func updatePageStatus(isWebPage isWebPage: Bool) {
         bookmarkButton.enabled = isWebPage
         stopReloadButton.enabled = isWebPage
-        shareButton.enabled = isWebPage
+        hamburgerButton.enabled = isWebPage
     }
 
     override func drawRect(rect: CGRect) {

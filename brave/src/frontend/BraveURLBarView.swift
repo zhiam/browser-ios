@@ -214,7 +214,7 @@ class BraveURLBarView : URLBarView {
                 return [leftSidePanelButton, locationTextField, cancelButton]
             } else {
                 if toolbarIsShowing {
-                    return [backButton, forwardButton, leftSidePanelButton, locationView, braveButton, shareButton, tabsButton]
+                    return [backButton, forwardButton, leftSidePanelButton, locationView, braveButton, hamburgerButton, tabsButton]
                 } else {
                     return [leftSidePanelButton, locationView, braveButton]
                 }
@@ -366,7 +366,7 @@ class BraveURLBarView : URLBarView {
             make.trailing.equalTo(self)
         }
 
-        shareButton.snp_remakeConstraints { make in
+        hamburgerButton.snp_remakeConstraints { make in
             make.right.equalTo(self.tabsButton.snp_left).offset(0)
             make.centerY.equalTo(self.locationContainer)
             make.width.equalTo(UIConstants.ToolbarHeight)

@@ -135,7 +135,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
     }
 
     func setAlphaOnAllExceptTabButton(alpha: CGFloat) {
-        for item in [addTabButton, backButton, forwardButton, shareButton] {
+        for item in [addTabButton, backButton, forwardButton, hamburgerButton] {
             item.alpha = alpha
         }
     }
@@ -177,14 +177,14 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
             make.left.equalTo(backButton.snp_right)
         }
 
-        shareButton.snp_remakeConstraints { make in
+        hamburgerButton.snp_remakeConstraints { make in
             common(make)
             make.centerX.equalTo(self)
         }
 
         addTabButton.snp_remakeConstraints { make in
             common(make)
-            make.left.equalTo(shareButton.snp_right)
+            make.left.equalTo(hamburgerButton.snp_right)
         }
 
         tabsContainer.snp_remakeConstraints { make in

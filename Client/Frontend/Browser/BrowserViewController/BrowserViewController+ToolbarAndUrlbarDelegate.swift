@@ -4,6 +4,7 @@ import Shared
 import Storage
 
 private let log = Logger.browserLogger
+var hamburgerMenu:HamburgerMenu?
 
 extension BrowserViewController: URLBarDelegate {
     private func showSearchController() {
@@ -256,10 +257,16 @@ extension BrowserViewController: BrowserToolbarDelegate {
     func browserToolbarDidLongPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
     }
 
+
     func browserToolbarDidPressShare(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
-        if let tab = tabManager.selectedTab, url = tab.displayURL {
-            let sourceView = self.navigationToolbar.shareButton
-            presentActivityViewController(url, tab: tab, sourceView: sourceView.superview, sourceRect: sourceView.frame, arrowDirection: .Up)
+        if let hamburgerMenu = hamburgerMenu where hamburgerMenu.view.superview != nil {
+            hamburgerMenu.close()
+            return
         }
+        let bottom = (browserToolbar as? URLBarView)?.frame.origin.y ?? 11 > 10
+        hamburgerMenu = HamburgerMenu(atBottom: bottom, parent: view, parentButton: button)
+        addChildViewController(hamburgerMenu!)
+        hamburgerMenu!.didMoveToParentViewController(self)
+        view.addSubview(hamburgerMenu!.view)
     }
 }
