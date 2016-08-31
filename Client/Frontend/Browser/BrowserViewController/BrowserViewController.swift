@@ -991,67 +991,69 @@ class BrowserViewController: UIViewController {
     
     func presentActivityViewController(url: NSURL, tab: Browser? = nil, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
         var activities = [UIActivity]()
-
+        
         let findInPageActivity = FindInPageActivity() { [unowned self] in
             self.updateFindInPageVisibility(visible: true)
         }
         activities.append(findInPageActivity)
-
-        //if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active { // needed for reader mode?
-        if let tab = tab {
-                let requestDesktopSiteActivity = RequestDesktopSiteActivity() { [weak tab] in
-                    if let url = tab?.url {
-                        (getApp().browserViewController as! BraveBrowserViewController).newTabForDesktopSite(url: url)
+        
+        #if !BRAVE
+            if #available(iOS 9.0, *) {
+                if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active {
+                    let requestDesktopSiteActivity = RequestDesktopSiteActivity(requestMobileSite: tab.desktopSite) { [unowned tab] in
+                        tab.toggleDesktopSite()
                     }
-                    //tab?.toggleDesktopSite()
+                    activities.append(requestDesktopSiteActivity)
                 }
-                activities.append(requestDesktopSiteActivity)
-        }
+            }
+        #endif
+        
+        
         
         helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
         
         helper.setupExtensionItem() {
             dispatch_async(dispatch_get_main_queue()) {
-
-            let controller = self.helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
-                // After dismissing, check to see if there were any prompts we queued up
-                self.showQueuedAlertIfAvailable()
-
-                self.displayedPopoverController = nil
-                self.updateDisplayedPopoverProperties = nil
-                self.helper = nil
-
-                if completed {
-                    // We don't know what share action the user has chosen so we simply always
-                    // update the toolbar and reader mode bar to reflect the latest status.
-                    if let tab = tab {
-                        self.updateURLBarDisplayURL(tab)
-                    }
-                    self.updateReaderModeBar()
-                }
-            })
-            
-            if controller != nil {
-                dispatch_async(dispatch_get_main_queue()) {
-
-                    let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
-                        if let popoverPresentationController = controller?.popoverPresentationController {
-                            popoverPresentationController.sourceView = sourceView
-                            popoverPresentationController.sourceRect = sourceRect
-                            popoverPresentationController.permittedArrowDirections = arrowDirection
-                            popoverPresentationController.delegate = self
+                
+                let controller = self.helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
+                    // After dismissing, check to see if there were any prompts we queued up
+                    self.showQueuedAlertIfAvailable()
+                    
+                    self.displayedPopoverController = nil
+                    self.updateDisplayedPopoverProperties = nil
+                    self.helper = nil
+                    
+                    if completed {
+                        // We don't know what share action the user has chosen so we simply always
+                        // update the toolbar and reader mode bar to reflect the latest status.
+                        if let tab = tab {
+                            self.updateURLBarDisplayURL(tab)
                         }
+                        self.updateReaderModeBar()
                     }
-
-                    setupPopover()
-
-                    if controller!.popoverPresentationController != nil {
-                        self.displayedPopoverController = controller
-                        self.updateDisplayedPopoverProperties = setupPopover
+                    })
+                
+                if controller != nil {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        
+                        let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
+                            if let popoverPresentationController = controller?.popoverPresentationController {
+                                popoverPresentationController.sourceView = sourceView
+                                popoverPresentationController.sourceRect = sourceRect
+                                popoverPresentationController.permittedArrowDirections = arrowDirection
+                                popoverPresentationController.delegate = self
+                            }
+                        }
+                        
+                        setupPopover()
+                        
+                        if controller!.popoverPresentationController != nil {
+                            self.displayedPopoverController = controller
+                            self.updateDisplayedPopoverProperties = setupPopover
+                        }
+                        
+                        self.presentViewController(controller!, animated: true, completion: nil)
                     }
-
-                    self.presentViewController(controller!, animated: true, completion: nil)
-            }
                 }
             }
         }
