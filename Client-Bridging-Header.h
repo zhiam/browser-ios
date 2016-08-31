@@ -19,8 +19,6 @@
 #import "NSFileManager+Tar.h"
 #import "NSData+GZIP.h"
 
-#import "DashlaneExtensionRequestHelper.h"
-#import "DashlaneExtensionConstants.h"
 #import "OnePasswordExtension.h"
 
 #import "LegacyJSContext.h"
