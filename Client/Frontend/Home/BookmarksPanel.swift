@@ -375,7 +375,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             if let folder = bookmarkFolder {
                 self.title = folder.title
             }
-
         }
     }
     var folderPicker:BookmarkFoldersPickerDataSource!
@@ -422,7 +421,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         let toolbarHeight = CGFloat(44)
         editBookmarksToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: width, height: toolbarHeight))
         createEditBookmarksToolbar()
-//        editBookmarksToolbar.backgroundColor = UIColor(white: 77/255.0, alpha: 1.0)
         editBookmarksToolbar.barTintColor = UIColor(white: 225/255.0, alpha: 1.0)
         
         self.view.addSubview(editBookmarksToolbar)
@@ -629,7 +627,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 }
             }
         }
-    
     }
     
     func onEditBookmarksButton() {
@@ -838,7 +835,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             return .None
         }
 
-        
         if source.current[indexPath.row] is BookmarkSeparator {
             // Because the deletion block is too big.
             return .None
@@ -897,7 +893,6 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             self.source = reloaded
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
             self.tableView.endUpdates()
-//            self.updateEmptyPanelState()
 
             NSNotificationCenter.defaultCenter().postNotificationName(BookmarkStatusChangedNotification, object: bookmark, userInfo:["added": false])
         })
@@ -913,20 +908,16 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             }
             let currentFolderGUID = self.bookmarkFolder?.guid ?? BookmarkRoots.MobileFolderGUID
             let cell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
-//            let targetWidth = self.tableView.bounds.width * 0.8
             let vc: BookmarkEditViewController = BookmarkEditViewController(sourceTable:self.tableView, sourceCell: cell, indexPath: indexPath, currentFolderGUID:currentFolderGUID, bookmarksPanel: self, bookmark: bookmark as! BookmarkItem, folderPickerDataSource: self.folderPicker)
             self.modalPresentationStyle = .CurrentContext
            
-            dispatch_async(dispatch_get_main_queue()) {
+            postAsyncToMain {
                 self.presentViewController(vc, animated: true) {}
             }
-            
         })
-
 
         return [delete, rename]
     }
-    
 
     
     func editBookmark(bookmark:BookmarkNode, newTitle:String?, newFolderGUID: String?, atIndexPath indexPath: NSIndexPath) {
@@ -980,7 +971,6 @@ class BookmarkFolderTableViewCell: TwoLineTableViewCell {
         imageView?.image = UIImage(named: "bookmarkFolder")
 
         self.editingAccessoryType = .DisclosureIndicator
-//        accessoryView = UIImageView(image: UIImage(named: "bookmarks_folder_arrow"))
 
         separatorInset = UIEdgeInsetsZero
     }

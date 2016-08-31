@@ -525,7 +525,6 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
             
             return result
         }
-
     }
     
     func run(db: SQLiteDBConnection, sql: String, args: Args? = nil) -> Bool {

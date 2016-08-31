@@ -120,11 +120,8 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if data.status != .Success {
             print("Err: \(data.statusMessage)", terminator: "\n")
         } else {
-            //reloadData is being called from multiple locations
-            //need to verify they are all on main queue
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                self?.tableView.reloadData()
-            }
+            debugNoteIfNotMainThread() // Guard against misuse
+            tableView.reloadData()
         }
     }
 

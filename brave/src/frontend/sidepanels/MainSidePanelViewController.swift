@@ -33,13 +33,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         let font = UIFont.boldSystemFontOfSize(14)
         UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.blackColor()];
         bookmarksNavController = UINavigationController(rootViewController: bookmarksPanel)
-        
-//        tabTitleViewContainer.backgroundColor = UIColor.whiteColor()
-
         containerView.addSubview(topButtonsView)
-//        containerView.addSubview(tabTitleViewContainer)
 
-//        tabTitleViewContainer.addSubview(tabTitleView)
         topButtonsView.addSubview(triangleView)
         topButtonsView.addSubview(bookmarksButton)
         topButtonsView.addSubview(historyButton)
@@ -111,7 +106,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         settingsTableViewController.profile = getApp().profile
 
         let controller = SettingsNavigationController(rootViewController: settingsTableViewController)
-        ///controller.popoverDelegate = self
         controller.modalPresentationStyle = UIModalPresentationStyle.FormSheet
         presentViewController(controller, animated: true, completion: nil)
     }
@@ -123,7 +117,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         let tab = browserViewController!.tabManager.selectedTab!
         let url = tab.displayURL!.absoluteString
-        
         
         //switch to bookmarks 'tab' in case we're looking at history and tapped the add/remove bookmark button
         self.showBookmarks()
