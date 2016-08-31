@@ -309,8 +309,6 @@ extension TopSitesPanel: HomePanel {
     func endEditing() {
         editingThumbnails = false
         collection?.reloadData()
-
-        (view.window as! BraveMainWindow).windowTouchFilter = nil
     }
 }
 
@@ -348,7 +346,7 @@ extension TopSitesPanel: ThumbnailCellDelegate {
 
     func didLongPressThumbnail(thumbnailCell: ThumbnailCell) {
         editingThumbnails = true
-        (view.window as! BraveMainWindow).windowTouchFilter = self
+        (view.window as! BraveMainWindow).addTouchFilter(self)
     }
 }
 
