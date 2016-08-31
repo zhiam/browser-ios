@@ -18,6 +18,9 @@
 #import "HttpsEverywhereObjC.h"
 #import "NSFileManager+Tar.h"
 #import "NSData+GZIP.h"
+
+#import "OnePasswordExtension.h"
+
 #import "LegacyJSContext.h"
 #import "ABPFilterLibWrapper.h"
 #import "TrackingProtectionCpp.h"

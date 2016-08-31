@@ -3,6 +3,10 @@
 import Foundation
 import Storage
 
+func debugNoteIfNotMainThread() {
+    assert(NSThread.isMainThread(), "Func not for off-main use. This crashes in debug.")
+}
+
 class Debug_FuncProfiler {
     let startTime:CFAbsoluteTime
     init() {

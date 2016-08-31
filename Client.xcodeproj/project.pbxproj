@@ -483,6 +483,8 @@
 		EFF86895BB43202E2D446C94 /* NSURLProtectionSpaceExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */; };
 		F0EA069256DABEECB329C591 /* binding.gyp in Sources */ = {isa = PBXBuildFile; fileRef = 0DD893DB0B65361DBB959310 /* binding.gyp */; };
 		F19BA07B8D5A71CF10AB4851 /* WeakList.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D48C1BAE5AB7BF2B500584 /* WeakList.swift */; };
+		F1D4718E1D777C7C007B443D /* OnePasswordExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = F1D471881D777C7C007B443D /* OnePasswordExtension.h */; };
+		F1D4718F1D777C7C007B443D /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = F1D471891D777C7C007B443D /* OnePasswordExtension.m */; };
 		F237A2C22591D2085E22F775 /* RecentlyUsedCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C587E6A28C775E781C04E29 /* RecentlyUsedCache.h */; };
 		F3DF5AD139E1BA9D27631B8C /* TitleActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6889A46373F182DFFDB59180 /* TitleActivityItemProvider.swift */; };
 		F41C0EA95776F22917E445B9 /* AssertionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC268B1050A30333A489D967 /* AssertionUtils.swift */; };
@@ -1311,6 +1313,8 @@
 		F15FC0AD573F67B846672F1E /* SWLongPressGestureRecognizer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SWLongPressGestureRecognizer.m; path = ./ThirdParty/SWTableViewCell/PodFiles/SWLongPressGestureRecognizer.m; sourceTree = "<group>"; };
 		F187557596215A3C41963EF0 /* BrowserDB.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserDB.swift; path = ./Storage/SQL/BrowserDB.swift; sourceTree = "<group>"; };
 		F1D3A5A73426CF7D28DAB96E /* status.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = status.h; path = ./brave/ThirdParty/leveldb/include/leveldb/status.h; sourceTree = "<group>"; };
+		F1D471881D777C7C007B443D /* OnePasswordExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
+		F1D471891D777C7C007B443D /* OnePasswordExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
 		F2024CD4F94FB00B6E677E44 /* random.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = random.h; path = ./brave/ThirdParty/leveldb/util/random.h; sourceTree = "<group>"; };
 		F253CE3A0634F87F172EE715 /* yahoo.xml */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = yahoo.xml; path = ./Client/Assets/Search/SearchOverlays/yahoo.xml; sourceTree = "<group>"; };
 		F2C6EEFFEC93440CA70F7A67 /* ElementAtPoint.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ElementAtPoint.swift; path = "./brave/src/page-hooks/ElementAtPoint.swift"; sourceTree = "<group>"; };
@@ -2295,6 +2299,7 @@
 		AEC7CC1649CB3DF5D490AFD2 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				F1D471871D777C7C007B443D /* OnePassword */,
 				BB67FBA7FC78E3187AF22B8B /* leveldb */,
 				8FD32DFF23D2E6882260066D /* NSData+GZIP.h */,
 				33FB8F3ADE3F46C30830F3C8 /* NSData+GZIP.m */,
@@ -2699,6 +2704,16 @@
 			path = brave/xcconfig;
 			sourceTree = "<group>";
 		};
+		F1D471871D777C7C007B443D /* OnePassword */ = {
+			isa = PBXGroup;
+			children = (
+				F1D471881D777C7C007B443D /* OnePasswordExtension.h */,
+				F1D471891D777C7C007B443D /* OnePasswordExtension.m */,
+			);
+			name = OnePassword;
+			path = brave/ThirdParty/OnePassword;
+			sourceTree = "<group>";
+		};
 		F206877D2439C0DE543791D2 /* SQL */ = {
 			isa = PBXGroup;
 			children = (
@@ -2920,6 +2935,7 @@
 				BF983D0715644F1AB0F23E68 /* NSData+GZIP.h in Headers */,
 				C6FF450832F5A645F9E9ECF9 /* NSFileManager+Tar.h in Headers */,
 				ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */,
+				F1D4718E1D777C7C007B443D /* OnePasswordExtension.h in Headers */,
 				E8A10AA61C5538355063C087 /* SwizzlingToHideSharePicker.h in Headers */,
 				61464FBEE20CE5E041C799A2 /* ABPFilterLibWrapper.h in Headers */,
 				B18C45C6E899AE3490F9B440 /* HttpsEverywhere.h in Headers */,
@@ -3704,6 +3720,7 @@
 				8999244A8E5D55AF862B8167 /* BraveSettingsView.swift in Sources */,
 				42BB62D8A935B31499CE77E3 /* BraveTopViewController.swift in Sources */,
 				6287F57212354177AA5D5F28 /* BraveURLBarView.swift in Sources */,
+				F1D4718F1D777C7C007B443D /* OnePasswordExtension.m in Sources */,
 				D36C19A448AA81DB6DFD701D /* BraveUX.swift in Sources */,
 				3EB8444F3C93E29BB8817AF7 /* HistorySwiper.swift in Sources */,
 				86D123F20829658238ECF3A8 /* ODRefreshControl.m in Sources */,

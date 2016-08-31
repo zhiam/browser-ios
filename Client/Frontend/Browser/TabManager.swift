@@ -7,10 +7,6 @@ import WebKit
 import Storage
 import Shared
 
-private func debugNoteIfNotMainThread() {
-    assertIsMainThread("This class should be thread-safe, but rarely is it called off-main, lets find out where")
-}
-
 private let log = Logger.browserLogger
 
 protocol TabManagerDelegate: class {

@@ -2,7 +2,6 @@
 
 import Foundation
 import Shared
-import OnePasswordExtension
 import Deferred
 
 #if !NO_FABRIC
