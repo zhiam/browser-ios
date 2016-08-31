@@ -71,6 +71,7 @@ class BraveTopViewController : UIViewController {
 
     @objc func dismissAllSidePanels() {
         if leftPanelShowing() {
+            mainSidePanel.willHide()
             togglePanel(mainSidePanel)
             leftSidePanelButtonAndUnderlay?.selected = false
             leftSidePanelButtonAndUnderlay?.underlay.hidden = true
@@ -190,7 +191,10 @@ class BraveTopViewController : UIViewController {
     }
 
     func updateBookmarkStatus(isBookmarked: Bool) {
-        mainSidePanel.updateBookmarkStatus(isBookmarked)
+//        let currentURL = browserViewController.urlBar.currentURL
+        let currentTab = browserViewController.tabManager.selectedTab
+        let currentURL = currentTab?.displayURL
+        mainSidePanel.updateBookmarkStatus(isBookmarked, url: currentURL)
     }
 }
 

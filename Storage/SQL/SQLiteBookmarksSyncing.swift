@@ -417,6 +417,135 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
     public func applyRecords(records: [BookmarkMirrorItem]) -> Success {
         return self.applyRecords(records, withMaxVars: BrowserDB.MaxVariableNumber)
     }
+    
+    func change(conn: SQLiteDBConnection, sql: String, args: Args?, desc: String) -> Bool {
+        let err = conn.executeChange(sql, withArgs: args)
+        if let err = err {
+            log.error(desc)
+            NSLog("err = \(err)")
+            return false
+        }
+        return true
+    }
+    
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
+        var err: NSError?
+        
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            var success:Bool = true
+            var position:Int = 0
+            let structureArgs = Args()
+            for bookmarkGUID in bookmarksOrder {
+                let updateQuery = "UPDATE \(TableBookmarksLocalStructure) set idx='\(position)' where parent='\(folderGUID)' and child='\(bookmarkGUID)'"
+                let errorDesc = "Error updating item \(bookmarkGUID) in \(folderGUID) to new index \(position)."
+                
+                if !self.change(conn, sql: updateQuery, args: structureArgs, desc: errorDesc) {
+                    success = false
+                    break
+                }
+                
+                position += 1
+            }
+            
+            if success {
+                completion()
+            }
+            return success
+        }
+    }
+    
+    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID:String?, completion:dispatch_block_t)  {
+        if newTitle == nil && newParentID == nil {
+            //just return
+            completion()
+            return
+        }
+        
+        var updateQuery = "UPDATE \(TableBookmarksLocal) "
+        if newTitle != nil && newParentID != nil {
+            updateQuery += " set title='\(newTitle)', parentid='\(newParentID)' "
+        }
+        else if newTitle != nil {
+            updateQuery += " set title='\(newTitle)' "
+        }
+        else {
+            updateQuery += " set parentid='\(newParentID)' "
+        }
+        
+        updateQuery +=  " where guid='\(bookmark.guid)'"
+        
+        let structureArgs = Args()
+        var err: NSError?
+
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            //TODO moving a bookmark to another folder seems to be failing
+            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to new title \(newTitle).") {
+                return false
+            }
+            
+            
+            completion()
+            return true
+        }
+    }
+    
+    public func createFolder(folderName:String, completion:dispatch_block_t) {
+        let type = BookmarkNodeType.Folder.rawValue
+        let now = NSDate.nowNumber()
+        let status = SyncStatus.New.rawValue
+        let guid = Bytes.generateGUID()
+        
+        let parentGUID = BookmarkRoots.MobileFolderGUID
+        let localArgs: Args = [guid, type, parentGUID, folderName, status, now]
+        
+        var structureArgs = Args()
+        structureArgs.append(parentGUID)
+        structureArgs.append(guid)
+    
+        let local =
+            "INSERT INTO \(TableBookmarksLocal) " +
+                "(guid, type, parentid, title, parentName, sync_status, local_modified) VALUES " +
+                Array(count: 1, repeatedValue: "(?, ?, ?, ?, '', ?, ?)").joinWithSeparator(", ")
+        
+        var err: NSError?
+
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            let result = self.run(conn, queries: [(local, localArgs)])
+
+            let newIndex = "(SELECT (COALESCE(MAX(idx), -1) + 1) AS newIndex FROM \(TableBookmarksLocalStructure) WHERE parent = ?)"
+            let structureSQL = "INSERT INTO \(TableBookmarksLocalStructure) (parent, child, idx) " +
+                "VALUES (?, ?, \(newIndex))"
+            let structureArgs: Args = [parentGUID, guid, parentGUID]
+            
+            if !self.change(conn, sql: structureSQL, args: structureArgs, desc: "Error adding new item \(guid) to local structure.") {
+                return false
+            }
+
+            completion()
+            
+            return result
+        }
+    }
+    
+    func run(db: SQLiteDBConnection, sql: String, args: Args? = nil) -> Bool {
+        let err = db.executeChange(sql, withArgs: args)
+        if err != nil {
+            log.error("Error running SQL in BrowserTable. \(err?.localizedDescription)")
+            log.error("SQL was \(sql)")
+        }
+        return err == nil
+    }
+    
+    // TODO: transaction.
+    func run(db: SQLiteDBConnection, queries: [(String, Args?)]) -> Bool {
+        for (sql, args) in queries {
+            if !run(db, sql: sql, args: args) {
+                return false
+            }
+        }
+        return true
+    }
+
 
     public func applyRecords(records: [BookmarkMirrorItem], withMaxVars maxVars: Int) -> Success {
         let deferred = Deferred<Maybe<()>>(defaultQueue: dispatch_get_main_queue())
@@ -570,6 +699,18 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
 
     public func applyRecords(records: [BookmarkMirrorItem]) -> Success {
         return self.buffer.applyRecords(records)
+    }
+
+    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID: String? = nil, completion:dispatch_block_t)  {
+        self.buffer.editBookmark(bookmark, newTitle:newTitle, newParentID:newParentID, completion:completion)
+    }
+    
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
+        self.buffer.reorderBookmarks(folderGUID, bookmarksOrder:bookmarksOrder, completion:completion)
+    }
+
+    public func createFolder(folderName:String, completion:dispatch_block_t)  {
+        self.buffer.createFolder(folderName, completion:completion)
     }
 
     public func doneApplyingRecordsAfterDownload() -> Success {
