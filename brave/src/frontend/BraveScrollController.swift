@@ -88,6 +88,8 @@ class BraveScrollController: NSObject {
     override init() {
         super.init()
 
+        (getApp().window as! BraveMainWindow).addTouchFilter(self)
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveScrollController.pageUnload), name: kNotificationPageUnload, object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillAppear(_:)), name: UIKeyboardWillShowNotification, object: nil)
@@ -432,5 +434,20 @@ extension BraveScrollController: UIScrollViewDelegate {
     func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
         showToolbars(animated: true)
         return true
+    }
+}
+
+extension BraveScrollController : WindowTouchFilter {
+    func filterTouch(touch: UITouch) -> Bool {
+        // UIWebBrowserView is the internal of the touch target when tapping on UIWebView
+        guard let window = getApp().window, touchView = touch.view where "\(touchView.dynamicType)" == "UIWebBrowserView" else {
+            return false
+        }
+        let loc = touch.locationInView(window)
+        if !toolbarsShowing && BraveApp.isIPhonePortrait() && loc.y > window.frame.height - UIConstants.ToolbarHeight {
+            showToolbars(animated: true)
+            return true // eat the event
+        }
+        return false
     }
 }
