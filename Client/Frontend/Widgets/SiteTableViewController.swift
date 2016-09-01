@@ -121,7 +121,10 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
             print("Err: \(data.statusMessage)", terminator: "\n")
         } else {
             debugNoteIfNotMainThread() // Guard against misuse
-            tableView.reloadData()
+            postAsyncToMain { // TODO remove this, see comment below
+                // By bad design, when self.profile is set, this func is called, profile usage (possibly assignment) is not restricted to main thread.
+                self.tableView.reloadData()
+            }
         }
     }
 
