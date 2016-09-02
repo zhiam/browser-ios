@@ -42,6 +42,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let ui_sectionTitleFontSize = CGFloat(15)
     let ui_siteNameSectionHeight = CGFloat(84)
 
+    lazy var views_toggles: [UISwitch] = {
+        return [self.toggleBlockAds, self.toggleHttpse, self.toggleBlockMalware, self.toggleBlockScripts, self.toggleBlockFingerprinting]
+    }()
+
     let screenHeightRequiredForSectionHeader = CGFloat(600)
 
     override var canShow: Bool {
@@ -222,7 +226,6 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         setupSiteNameSection()
 
         func setupSwitchesSection() {
-            let views_toggles = [toggleBlockAds, toggleHttpse, toggleBlockMalware, toggleBlockScripts, toggleBlockFingerprinting]
             let views_labels = [toggleBlockAdsTitle, toggleHttpseTitle, toggleBlockMalwareTitle, toggleBlockScriptsTitle, toggleBlockFingerprintingTitle]
             let labelTitles = [NSLocalizedString("Block Ads & Tracking", comment: "Brave panel individual toggle title"),
                                NSLocalizedString("HTTPS Everywhere", comment: "Brave panel individual toggle title"),
@@ -375,24 +378,39 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             setKeys(HttpsEverywhere.prefKey, HttpsEverywhere.prefKeyDefaultValue, BraveShieldState.kHTTPSE)
         case shieldToggle:
             setKeys("", false, BraveShieldState.kAllOff)
+            updateSitenameAndTogglesState()
         case toggleBlockFingerprinting:
             setKeys(kPrefKeyFingerprintProtection, false, BraveShieldState.kFPProtection)
         default:
             break
         }
-
+    }
+    
+    func toggleInteractionEnabled(enabled: Bool) {
+        for toggle: UISwitch in views_toggles {
+            toggle.enabled = enabled
+        }
     }
 
     func updateSitenameAndTogglesState() {
         siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
-
-        let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
-        shieldToggle.on = !(state?.isAllOff() ?? false)
-        toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
-        toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
-        toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
-        toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
-        toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+        
+        let masterOn = shieldToggle.on
+        toggleInteractionEnabled(masterOn)
+        
+        if masterOn {
+            let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
+            shieldToggle.on = !(state?.isAllOff() ?? false)
+            toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
+            toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
+            toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
+            toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
+            toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+        } else {
+            for toggle: UISwitch in views_toggles {
+                toggle.on = false
+            }
+        }
     }
 
     override func showPanel(showing: Bool, parentSideConstraints: [Constraint?]?) {
