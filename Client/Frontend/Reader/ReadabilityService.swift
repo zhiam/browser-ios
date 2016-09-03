@@ -39,7 +39,7 @@ class ReadabilityOperation: NSOperation, WKNavigationDelegate, ReadabilityBrowse
 
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             let configuration = WKWebViewConfiguration()
-            self.browser = Browser(configuration: configuration)
+            self.browser = Browser(configuration: configuration, isPrivate: PrivateBrowsing.singleton.isOn)
             self.browser.createWebview()
            /// self.browser.navigationDelegate = self
 
