@@ -96,10 +96,6 @@ class Browser: NSObject, BrowserWebViewDelegate {
     /// browser instance, queue it for later until we become foregrounded.
     private var alertQueue = [JSAlertInfo]()
 
-    init(configuration: WKWebViewConfiguration) {
-        self.configuration = configuration
-    }
-
     init(configuration: WKWebViewConfiguration, isPrivate: Bool) {
         self.configuration = configuration
         super.init()

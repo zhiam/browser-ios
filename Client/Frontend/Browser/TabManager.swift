@@ -205,7 +205,7 @@ class TabManager : NSObject {
     }
 
     func addTabForDesktopSite() -> Browser {
-        let tab = Browser(configuration: self.configuration)
+        let tab = Browser(configuration: self.configuration, isPrivate: PrivateBrowsing.singleton.isOn)
         configureTab(tab, request: nil, flushToDisk: false, zombie: false, useDesktopUserAgent: true)
         selectTab(tab)
         return tab
@@ -332,7 +332,7 @@ class TabManager : NSObject {
         }
         objc_sync_enter(self); defer { objc_sync_exit(self) }
 
-        let tab = Browser(configuration: configuration ?? self.configuration)
+        let tab = Browser(configuration: configuration ?? self.configuration, isPrivate: PrivateBrowsing.singleton.isOn)
         configureTab(tab, request: request, flushToDisk: flushToDisk, zombie: zombie)
         return tab
     }
