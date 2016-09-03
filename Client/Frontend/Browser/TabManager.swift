@@ -135,7 +135,7 @@ class TabManager : NSObject {
         return tabs.internalTabList.count
     }
 
-    var selectedTab: Browser?
+    weak var selectedTab: Browser?
 
     func tabForWebView(webView: UIWebView) -> Browser? {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
@@ -381,7 +381,7 @@ class TabManager : NSObject {
             if let idx = tabs.displayedTabsForCurrentPrivateMode.indexOf(selected) {
                 if idx - 1 >= 0 {
                     selectTab(tabs.displayedTabsForCurrentPrivateMode[idx - 1])
-                } else {
+                } else if tabs.displayedTabsForCurrentPrivateMode.last !== tab {
                     selectTab(tabs.displayedTabsForCurrentPrivateMode.last)
                 }
             }
