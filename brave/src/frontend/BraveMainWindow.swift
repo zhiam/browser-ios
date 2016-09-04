@@ -24,11 +24,8 @@ class BraveMainWindow : UIWindow {
     }
 
     override func sendEvent(event: UIEvent) {
-        if let touchView = event.allTouches()?.first?.view where "\(touchView.dynamicType)" == "UIWebBrowserView" {
-            contextMenuHandler.sendEvent(event, window: self)
-            blankTargetLinkHandler.sendEvent(event, window: self)
-
-        }
+        contextMenuHandler.sendEvent(event, window: self)
+        blankTargetLinkHandler.sendEvent(event, window: self)
 
         let braveTopVC = getApp().rootViewController.visibleViewController as? BraveTopViewController
         if let _ = braveTopVC, touches = event.touchesForWindow(self), let touch = touches.first where touches.count == 1 {

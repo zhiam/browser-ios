@@ -23,6 +23,11 @@ class BraveContextMenu {
     }
 
     func sendEvent(event: UIEvent, window: UIWindow) {
+        if let touchView = event.allTouches()?.first?.view where "\(touchView.dynamicType)" != "UIWebBrowserView" {
+            resetTimer()
+            return
+        }
+
         if !isBrowserTopmostAndNoPanelsOpen() {
             resetTimer()
             return
