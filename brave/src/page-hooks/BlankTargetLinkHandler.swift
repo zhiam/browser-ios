@@ -18,10 +18,10 @@ class BlankTargetLinkHandler {
     }
 
     func sendEvent(event: UIEvent, window: UIWindow) {
-//        if !LinkTargetBlankHandler.enabled {
-//            return
-//        }
-
+        if let touchView = event.allTouches()?.first?.view where "\(touchView.dynamicType)" != "UIWebBrowserView" {
+            return
+        }
+        
         if !isBrowserTopmost() {
             return
         }
