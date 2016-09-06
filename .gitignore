@@ -81,6 +81,7 @@ Client/Info.plist
 /brave/xcconfig/.local-def.xcconfig
 /brave/xcconfig/.bundle-id.xcconfig
 /brave/Brave.entitlements
+/brave/BraveInfo.plist
 .fabric-key-setup.sh
 
 # Xcode
