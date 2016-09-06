@@ -439,8 +439,7 @@ extension BraveScrollController: UIScrollViewDelegate {
 
 extension BraveScrollController : WindowTouchFilter {
     func filterTouch(touch: UITouch) -> Bool {
-        // UIWebBrowserView is the internal of the touch target when tapping on UIWebView
-        guard let window = getApp().window, touchView = touch.view where "\(touchView.dynamicType)" == "UIWebBrowserView" else {
+        guard let window = getApp().window, braveWebView = BraveApp.getCurrentWebView(), touchView = touch.view where touchView.isDescendantOfView(braveWebView) else {
             return false
         }
         let loc = touch.locationInView(window)

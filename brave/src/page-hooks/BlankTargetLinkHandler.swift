@@ -18,7 +18,7 @@ class BlankTargetLinkHandler {
     }
 
     func sendEvent(event: UIEvent, window: UIWindow) {
-        if let touchView = event.allTouches()?.first?.view where "\(touchView.dynamicType)" != "UIWebBrowserView" {
+        guard let touchView = event.allTouches()?.first?.view, braveWebView = BraveApp.getCurrentWebView() where touchView.isDescendantOfView(braveWebView) else {
             return
         }
         

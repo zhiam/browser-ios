@@ -6,11 +6,21 @@ let kNotificationMainWindowTapAndHold = "kNotificationMainWindowTapAndHold"
 
 class BraveContextMenu {
     var tapLocation: CGPoint = CGPointZero
-    var contextualMenuTimer: NSTimer = NSTimer()
     var tappedElement: ContextMenuHelper.Elements?
 
+    var timer1_cancelDefaultMenu: NSTimer = NSTimer()
+    var timer2_showMenuIfStillPressed: NSTimer = NSTimer()
+
     private func resetTimer() {
-        contextualMenuTimer.invalidate()
+        if (!timer1_cancelDefaultMenu.valid && !timer2_showMenuIfStillPressed.valid) {
+            return
+        }
+
+        if let url = tappedElement?.link {
+            BraveApp.getCurrentWebView()?.loadRequest(NSURLRequest(URL: url))
+        }
+
+        [timer1_cancelDefaultMenu, timer2_showMenuIfStillPressed].forEach { $0.invalidate() }
         tappedElement = nil
     }
 
@@ -23,30 +33,25 @@ class BraveContextMenu {
     }
 
     func sendEvent(event: UIEvent, window: UIWindow) {
-        if let touchView = event.allTouches()?.first?.view where "\(touchView.dynamicType)" != "UIWebBrowserView" {
-            resetTimer()
-            return
-        }
-
         if !isBrowserTopmostAndNoPanelsOpen() {
             resetTimer()
             return
         }
 
+        guard let braveWebView = BraveApp.getCurrentWebView() else { return }
+
         if let touches = event.touchesForWindow(window), let touch = touches.first where touches.count == 1 {
-            guard let webView = BraveApp.getCurrentWebView(), webViewSuperview = webView.superview  else { return }
-            let globalRect = webViewSuperview.convertRect(webView.frame, toView: nil)
-            if !globalRect.contains(touch.locationInView(window)) {
-                resetTimer()
-                return
-            }
-            webView.lastTappedTime = NSDate()
+            braveWebView.lastTappedTime = NSDate()
             switch touch.phase {
             case .Began:  // A finger touched the screen
+                guard let touchView = event.allTouches()?.first?.view where touchView.isDescendantOfView(braveWebView) else {
+                    resetTimer()
+                    return
+                }
+
                 tapLocation = touch.locationInView(window)
                 resetTimer()
-                // This timer repeats in order to run twice. See tapAndHoldAction() for comments.
-                contextualMenuTimer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: #selector(BraveContextMenu.tapAndHoldAction), userInfo: nil, repeats: true)
+                timer1_cancelDefaultMenu = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: #selector(BraveContextMenu.cancelDefaultMenuAndFindTappedItem), userInfo: nil, repeats: false)
                 break
             case .Moved, .Stationary:
                 let p1 = touch.locationInView(window)
@@ -65,14 +70,7 @@ class BraveContextMenu {
         }
     }
 
-    // This is called 2x, once at .25 seconds to ensure the native context menu is cancelled,
-    // then again at .5 seconds to show our context menu. (This code was borne of frustration, not ideal flow)
-    @objc func tapAndHoldAction() {
-        if !isBrowserTopmostAndNoPanelsOpen() {
-            resetTimer()
-            return
-        }
-
+    @objc func showContextMenu() {
         func showContextMenuForElement(tappedElement:  ContextMenuHelper.Elements) {
             let info = ["point": NSValue(CGPoint: tapLocation)]
             NSNotificationCenter.defaultCenter().postNotificationName(kNotificationMainWindowTapAndHold, object: self, userInfo: info)
@@ -85,36 +83,45 @@ class BraveContextMenu {
             return
         }
 
-        func extractElementAndBlockNativeMenu() {
-            guard let hit = ElementAtPoint().getHit(tapLocation) else {
-                resetTimer()
-                return
-            }
 
-            tappedElement = ContextMenuHelper.Elements(link: hit.url != nil ? NSURL(string: hit.url!) : nil, image: hit.image != nil ? NSURL(string: hit.image!) : nil)
+        if let tappedElement = tappedElement {
+            showContextMenuForElement(tappedElement)
+        }
+    }
 
-            func blockOtherGestures(views: [UIView]?) {
-                guard let views = views else { return }
-                for view in views {
-                    if let gestures = view.gestureRecognizers as [UIGestureRecognizer]! {
-                        for gesture in gestures {
-                            if gesture is UILongPressGestureRecognizer {
-                                // toggling gets the gesture to ignore this long press
-                                gesture.enabled = false
-                                gesture.enabled = true
-                            }
+    // This is called 2x, once at .25 seconds to ensure the native context menu is cancelled,
+    // then again at .5 seconds to show our context menu. (This code was borne of frustration, not ideal flow)
+    @objc func cancelDefaultMenuAndFindTappedItem() {
+        if !isBrowserTopmostAndNoPanelsOpen() {
+            resetTimer()
+            return
+        }
+
+        guard let hit = ElementAtPoint().getHit(tapLocation) else {
+            // No link or image found, not for this class to handle
+            resetTimer()
+            return
+        }
+
+        tappedElement = ContextMenuHelper.Elements(link: hit.url != nil ? NSURL(string: hit.url!) : nil, image: hit.image != nil ? NSURL(string: hit.image!) : nil)
+
+        func blockOtherGestures(views: [UIView]?) {
+            guard let views = views else { return }
+            for view in views {
+                if let gestures = view.gestureRecognizers as [UIGestureRecognizer]! {
+                    for gesture in gestures {
+                        if gesture is UILongPressGestureRecognizer {
+                            // toggling gets the gesture to ignore this long press
+                            gesture.enabled = false
+                            gesture.enabled = true
                         }
                     }
                 }
             }
-
-            blockOtherGestures(BraveApp.getCurrentWebView()?.scrollView.subviews)
         }
+        
+        blockOtherGestures(BraveApp.getCurrentWebView()?.scrollView.subviews)
 
-        if let tappedElement = tappedElement {
-            showContextMenuForElement(tappedElement)
-        } else {
-            extractElementAndBlockNativeMenu()
-        }
+        timer2_showMenuIfStillPressed = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: #selector(BraveContextMenu.showContextMenu), userInfo: nil, repeats: false)
     }
 }

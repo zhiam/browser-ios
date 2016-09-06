@@ -566,19 +566,20 @@ extension BraveWebView: UIWebViewDelegate {
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
         guard let url = request.URL else { return false }
 
-        if url.absoluteString == blankTargetUrl {
-            blankTargetUrl = nil
-            getApp().browserViewController.openURLInNewTab(url)
-            return false
-        }
-        blankTargetUrl = nil
-
         if let contextMenu = window?.rootViewController?.presentedViewController
             where contextMenu.view.tag == BraveWebViewConstants.kContextMenuBlockNavigation {
             // When showing a context menu, the webview will often still navigate (ex. news.google.com)
             // We need to block navigation using this tag.
             return false
         }
+        
+        if url.absoluteString == blankTargetUrl {
+            blankTargetUrl = nil
+            print(url)
+            getApp().browserViewController.openURLInNewTab(url)
+            return false
+        }
+        blankTargetUrl = nil
 
         if url.scheme == "mailto" {
             UIApplication.sharedApplication().openURL(url)
