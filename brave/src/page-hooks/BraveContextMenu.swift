@@ -57,7 +57,7 @@ class BraveContextMenu {
                 let p1 = touch.locationInView(window)
                 let p2 = touch.previousLocationInView(window)
                 let distance =  hypotf(Float(p1.x) - Float(p2.x), Float(p1.y) - Float(p2.y))
-                if distance > 1.0 {
+                if distance > 10.0 { // my test for this: tap with edge of finger, then roll to opposite edge while holding finger down, is 5-10 px of movement; don't want this to be a move
                     resetTimer()
                 }
                 break
