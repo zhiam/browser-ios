@@ -457,11 +457,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         }
     }
     
+   
     func disableTableEditingMode() {
         dispatch_async(dispatch_get_main_queue()) {
-            if self.tableView.editing {
-                self.switchTableEditingMode()
-            }
+            self.switchTableEditingMode(true)
         }
     }
     
@@ -469,7 +468,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         return orderedBookmarkGUIDs != orderUpdatedBookmarkGUIDs
     }
     
-    func switchTableEditingMode() {
+    func switchTableEditingMode(forceOff:Bool = false) {
         //check if the table has been reordered, if so make the changes persistent
         if self.tableView.editing && bookmarksOrderChanged {
             orderedBookmarkGUIDs = orderUpdatedBookmarkGUIDs
@@ -489,11 +488,19 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         }
         
         dispatch_async(dispatch_get_main_queue()) {
-            self.tableView.setEditing(!self.tableView.editing, animated: true)
-            self.updateAddRemoveFolderButton()
-            self.editBookmarksButton.title = self.tableView.editing ? NSLocalizedString("Done", comment: "Done") : NSLocalizedString("Edit", comment: "Edit")
-            self.editBookmarksButton.style = self.tableView.editing ? .Done : .Plain
+
+            let editMode:Bool = forceOff ? false : !self.tableView.editing
+            self.tableView.setEditing(editMode, animated: forceOff ? false : true)
+            //only when the 'edit' button has been pressed
+            self.updateAddRemoveFolderButton(editMode)
+            self.updateEditBookmarksButton(editMode)
         }
+    }
+    
+    func updateEditBookmarksButton(tableIsEditing:Bool) {
+        self.editBookmarksButton.title = tableIsEditing ? NSLocalizedString("Done", comment: "Done") : NSLocalizedString("Edit", comment: "Edit")
+        self.editBookmarksButton.style = tableIsEditing ? .Done : .Plain
+
     }
     
     /*
@@ -503,9 +510,9 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
      * the button disappears when not in edit mode in both cases. When a subfolder is not empty,
      * pressing the remove folder button will show an error message explaining why (suboptimal, but allows to expose this functionality)
      */
-    func updateAddRemoveFolderButton() {
+    func updateAddRemoveFolderButton(tableIsEditing:Bool) {
         
-        if !tableView.editing {
+        if !tableIsEditing {
             addRemoveFolderButton.enabled = false
             addRemoveFolderButton.title = nil
             return
@@ -543,7 +550,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         addRemoveFolderButton = UIBarButtonItem()
         items.append(addRemoveFolderButton)
 
-        updateAddRemoveFolderButton()
+        updateAddRemoveFolderButton(false)
         
         items.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil))
 
