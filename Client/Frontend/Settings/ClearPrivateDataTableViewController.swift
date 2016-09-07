@@ -21,6 +21,8 @@ class ClearPrivateDataTableViewController: UITableViewController {
 
     var profile: Profile!
 
+    private var gotNotificationDeathOfAllWebViews = false
+
     private typealias DefaultCheckedState = Bool
 
     private lazy var clearables: [(clearable: Clearable, checked: DefaultCheckedState)] = {
@@ -140,6 +142,8 @@ class ClearPrivateDataTableViewController: UITableViewController {
     }
 
     @objc private func allWebViewsKilled() {
+        gotNotificationDeathOfAllWebViews = true
+
         postAsyncToMain(0.5) { // for some reason, even after all webviews killed, an big delay is needed before the filehandles are unlocked
             var clear = [Clearable]()
             for i in 0..<self.clearables.count {
@@ -183,6 +187,11 @@ class ClearPrivateDataTableViewController: UITableViewController {
             allWebViewsKilled()
         } else {
             getApp().tabManager.removeAll()
+            postAsyncToMain(0.5, closure: {
+                if !self.gotNotificationDeathOfAllWebViews {
+                    self.allWebViewsKilled()
+                }
+            })
         }
     }
 

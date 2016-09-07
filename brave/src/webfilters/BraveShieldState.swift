@@ -137,9 +137,8 @@ extension BrowserProfile {
     public func loadBraveShieldsPerBaseDomain() -> Deferred<()> {
         let deferred = Deferred<()>()
         succeed().upon() { _ in // move off main thread
-            if braveShieldForDomainTable == nil {
-                braveShieldForDomainTable = BraveShieldTable.initialize(self.db)
-            }
+            BraveShieldState.perNormalizedDomain.removeAll()
+            braveShieldForDomainTable = BraveShieldTable.initialize(self.db)
 
             braveShieldForDomainTable?.getRows().upon {
                 result in
@@ -162,6 +161,11 @@ extension BrowserProfile {
 
     public func setBraveShieldForNormalizedDomain(domain: String, state: (String, Bool?)) {
         BraveShieldState.forDomain(domain, setState: state)
+
+        if PrivateBrowsing.singleton.isOn {
+            return
+        }
+
         let persistentState = BraveShieldState.getStateForDomain(domain)
 
         succeed().upon() { _ in

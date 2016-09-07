@@ -141,19 +141,21 @@ class PrivateBrowsing {
             self.webkitDirLocker(lock: false)
             BraveApp.setupCacheDefaults()
 
-            let clear: [Clearable] = [CacheClearable(), CookiesClearable()]
-            ClearPrivateDataTableViewController.clearPrivateData(clear).uponQueue(dispatch_get_main_queue()) { _ in
-                self.cookiesFileDiskOperation(.DeletePublicBackup)
-                let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-                for cookie in self.nonprivateCookies {
-                    storage.setCookie(cookie.0)
+            getApp().profile?.loadBraveShieldsPerBaseDomain().upon() { _ in // clears PB in-memory-only shield data, loads from disk
+                let clear: [Clearable] = [CacheClearable(), CookiesClearable()]
+                ClearPrivateDataTableViewController.clearPrivateData(clear).uponQueue(dispatch_get_main_queue()) { _ in
+                    self.cookiesFileDiskOperation(.DeletePublicBackup)
+                    let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+                    for cookie in self.nonprivateCookies {
+                        storage.setCookie(cookie.0)
+                    }
+                    self.nonprivateCookies = [NSHTTPCookie: Bool]()
+
+                    getApp().tabManager.exitPrivateBrowsingMode(self)
+
+                    self.exitDeferred.fillIfUnfilled(())
+                    ReentrantGuard.inFunc = false
                 }
-                self.nonprivateCookies = [NSHTTPCookie: Bool]()
-
-                getApp().tabManager.exitPrivateBrowsingMode(self)
-
-                self.exitDeferred.fillIfUnfilled(())
-                ReentrantGuard.inFunc = false
             }
         }
     }
