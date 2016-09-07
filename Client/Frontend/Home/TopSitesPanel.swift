@@ -321,7 +321,7 @@ extension TopSitesPanel: UICollectionViewDelegate {
         if let site = dataSource[indexPath.item] {
             // We're gonna call Top Sites bookmarks for now.
             let visitType = VisitType.Bookmark
-            let urlString = "\(NSURL(string: site.url)?.scheme ?? ""):\(NSURL(string: site.url)?.host ?? "")"
+            let urlString = "\(NSURL(string: site.url)?.scheme ?? "")://\(NSURL(string: site.url)?.host ?? "")"
             homePanelDelegate?.homePanel(self, didSelectURL: NSURL(string: urlString) ?? site.tileURL, visitType: visitType)
         }
     }
