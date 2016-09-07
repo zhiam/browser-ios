@@ -9,14 +9,6 @@ copy_framework ()
     
 }
 
-copy_framework ../../Carthage/Build/iOS/AdjustSdk.framework		
-copy_framework ../../Carthage/Build/iOS/OnePasswordExtension.framework
-copy_framework ../../Carthage/Build/iOS/Alamofire.framework		
-copy_framework ../../Carthage/Build/iOS/SWXMLHash.framework
-copy_framework ../../Carthage/Build/iOS/SnapKit.framework
-copy_framework ../../Carthage/Build/iOS/SwiftKeychainWrapper.framework
-copy_framework ../../Carthage/Build/iOS/Deferred.framework		
-copy_framework ../../Carthage/Build/iOS/WebImage.framework
-copy_framework ../../Carthage/Build/iOS/GCDWebServers.framework		
-copy_framework ../../Carthage/Build/iOS/XCGLogger.framework
-
+for f in ../../Carthage/Build/iOS/*.framework; do
+  copy_framework $f 
+done
