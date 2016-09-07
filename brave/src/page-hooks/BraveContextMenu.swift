@@ -11,6 +11,9 @@ class BraveContextMenu {
     var timer1_cancelDefaultMenu: NSTimer = NSTimer()
     var timer2_showMenuIfStillPressed: NSTimer = NSTimer()
 
+    static let initialDelayToCancelBuiltinMenu = 0.25 // seconds, must be <0.3 or built-in menu can't be cancelled
+    static let totalDelayToShowContextMenu = 0.85 - initialDelayToCancelBuiltinMenu // 850 is copied from Safari
+
     private func resetTimer() {
         if (!timer1_cancelDefaultMenu.valid && !timer2_showMenuIfStillPressed.valid) {
             return
@@ -51,7 +54,7 @@ class BraveContextMenu {
 
                 tapLocation = touch.locationInView(window)
                 resetTimer()
-                timer1_cancelDefaultMenu = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: #selector(BraveContextMenu.cancelDefaultMenuAndFindTappedItem), userInfo: nil, repeats: false)
+                timer1_cancelDefaultMenu = NSTimer.scheduledTimerWithTimeInterval(BraveContextMenu.initialDelayToCancelBuiltinMenu, target: self, selector: #selector(BraveContextMenu.cancelDefaultMenuAndFindTappedItem), userInfo: nil, repeats: false)
                 break
             case .Moved, .Stationary:
                 let p1 = touch.locationInView(window)
@@ -122,6 +125,6 @@ class BraveContextMenu {
         
         blockOtherGestures(BraveApp.getCurrentWebView()?.scrollView.subviews)
 
-        timer2_showMenuIfStillPressed = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: #selector(BraveContextMenu.showContextMenu), userInfo: nil, repeats: false)
+        timer2_showMenuIfStillPressed = NSTimer.scheduledTimerWithTimeInterval(BraveContextMenu.totalDelayToShowContextMenu, target: self, selector: #selector(BraveContextMenu.showContextMenu), userInfo: nil, repeats: false)
     }
 }
