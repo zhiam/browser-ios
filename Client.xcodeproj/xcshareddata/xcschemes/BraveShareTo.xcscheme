@@ -43,13 +43,33 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2FCAE2231ABB51F800877008"
+               BuildableName = "StorageTests.xctest"
+               BlueprintName = "StorageTests"
+               ReferencedContainer = "container:Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E4D567211ADECE2700F1EFE7"
+               BuildableName = "ReadingListTests.xctest"
+               BlueprintName = "ReadingListTests"
+               ReferencedContainer = "container:Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EB0F42501C9A46D800676650"
-            BuildableName = "BraveShareTo.appex"
-            BlueprintName = "BraveShareTo"
+            BlueprintIdentifier = "F84B21BD1A090F8100AAB793"
+            BuildableName = "Client.app"
+            BlueprintName = "Client"
             ReferencedContainer = "container:Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
