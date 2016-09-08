@@ -908,7 +908,9 @@ extension SQLiteBookmarkBufferStorage {
         }.allSucceed()
 
         deferred.upon { success in
-            notificationCenter.postNotificationName(NotificationBookmarkBufferValidated, object: Box(validations))
+            dispatch_async(dispatch_get_main_queue()) {
+                notificationCenter.postNotificationName(NotificationBookmarkBufferValidated, object: Box(validations))
+            }
         }
 
         return deferred
