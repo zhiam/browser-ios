@@ -99,7 +99,6 @@ class HistoryTableViewCell: TwoLineTableViewCell {
 
         twoLineHelper.setUpViews(self, textLabel: textLabel!, detailTextLabel: detailTextLabel!, imageView: imageView!)
         self.labelCellWidthDefault = textLabel!.frame.width
-
     }
 
     override func layoutSubviews() {
@@ -111,35 +110,43 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         if let frame:CGRect = self.textLabel?.frame {
             self.labelCellWidthDefault = frame.width
         }
+
+        updateTextLabelWidthForEditing(editingState)
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
+        editingState = false
         separatorInset = UIEdgeInsetsMake(0, TwoLineCellUX.BorderFrameSize + 2 * TwoLineCellUX.BorderViewMargin, 0, 0)
         if let frame:CGRect = self.textLabel?.frame {
             labelCellWidthDefault = frame.width
         }
+        
     }
     
-    override func didTransitionToState(state: UITableViewCellStateMask) {
-        super.didTransitionToState(state)
+    func updateTextLabelWidthForEditing(editingMode:Bool) {
         if let frame:CGRect = self.textLabel?.frame {
-            if state.contains(.ShowingEditControlMask) && self.editing {
-                UIView.animateWithDuration(0.1) {
-                    self.textLabel?.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: self.labelCellWidthEditMode, height: frame.size.height)
-                }
-
-            }
-            else if state == .DefaultMask {
-                UIView.animateWithDuration(0.1) {
-                    self.textLabel?.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: self.labelCellWidthDefault, height: frame.size.height)
-                }
-                
-            }
-            else if state == .ShowingDeleteConfirmationMask {
-                
+            let newWidth:CGFloat = editingMode ? labelCellWidthEditMode : labelCellWidthDefault
+            UIView.animateWithDuration(0.1) {
+                self.textLabel?.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: newWidth, height: frame.size.height)
             }
         }
+    }
+    var editingState:Bool = false
+
+    override func didTransitionToState(state: UITableViewCellStateMask) {
+        super.didTransitionToState(state)
+        if state.contains(.ShowingEditControlMask) && self.editing {
+            editingState = true
+        }
+        else if state == .DefaultMask {
+            editingState = false
+        }
+        else if state == .ShowingDeleteConfirmationMask {
+            editingState = false
+        }
+        updateTextLabelWidthForEditing(editingState)
+
     }
 
     required init?(coder aDecoder: NSCoder) {
