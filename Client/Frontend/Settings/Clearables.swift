@@ -43,9 +43,11 @@ class HistoryClearable: Clearable {
         return profile.history.clearHistory().bind { success in
             (self.profile as! BrowserProfile).clearBraveShieldHistory().bind {
                 _ in
-                SDImageCache.sharedImageCache().clearDisk()
-                SDImageCache.sharedImageCache().clearMemory()
-                NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivateDataClearedHistory, object: nil)
+                dispatch_sync(dispatch_get_main_queue()) {
+                    SDImageCache.sharedImageCache().clearDisk()
+                    SDImageCache.sharedImageCache().clearMemory()
+                    NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivateDataClearedHistory, object: nil)
+                }
                 log.debug("HistoryClearable succeeded: \(success).")
                 return Deferred(value: success)
             }
