@@ -143,35 +143,31 @@ class BookmarkEditingViewController: FormViewController {
         }
     }
 
+    //may be the same as the original
     var newFolderGUID:String! {
-        let selectedGUID = folderSelectionRow.value?.guid
-        
-        if selectedGUID == originalFolderGUID {
-            return nil
-        }
-        
-        return selectedGUID
+        return folderSelectionRow.value?.guid
     }
-
+    
+    //may be the same as the original
     var newTitle:String! {
         guard let possibleNewTitle = titleRow.value else {
-            return nil
+            return originalTitle
         }
         
         let newTitle:String! = possibleNewTitle.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
-        if newTitle.characters.count == 0 || newTitle == originalTitle {
-            return nil
+        if newTitle.characters.count == 0 {
+            return originalTitle
         }
         return newTitle
     }
 
     var bookmarkTitleChanged:Bool {
-        return self.newTitle != nil
+        return self.newTitle != self.originalTitle
     }
 
     var bookmarkFolderChanged:Bool {
-        return self.newFolderGUID != nil
+        return self.newFolderGUID != self.originalFolderGUID
     }
 
     var bookmarkDataChanged:Bool {
@@ -271,7 +267,9 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        tableView.allowsSelectionDuringEditing = true
+        
         let width = self.view.bounds.size.width
         let toolbarHeight = CGFloat(44)
         editBookmarksToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: width, height: toolbarHeight))
@@ -808,28 +806,13 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         }
     }
 
-    func updateBookmarkData(bookmark:BookmarkNode, newTitle:String?, newFolderGUID: String?, atIndexPath indexPath: NSIndexPath) {
+    func updateBookmarkData(bookmark:BookmarkNode, newTitle:String, newFolderGUID: String, atIndexPath indexPath: NSIndexPath) {
         postAsyncToBackground {
             if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
-                if newFolderGUID == nil { //rename only
-                    sqllitbk.editBookmark(bookmark, newTitle:newTitle) {
-                        postAsyncToMain {
-                            //no need to reload everything, just change the title on the object and
-                            self.tableView.beginUpdates()
-                            bookmark.title = newTitle!
-                            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
-                            self.tableView.endUpdates()
-
-                            self.reloadData()
-                        }
-                    }
-                }
-                else {
-                    //move and reload
-                    sqllitbk.editBookmark(bookmark, newTitle:newTitle, newParentID: newFolderGUID) {
-                        postAsyncToMain {
-                            self.reloadData()
-                        }
+                //move and reload
+                sqllitbk.editBookmark(bookmark, title:newTitle, parentGUID: newFolderGUID) {
+                    postAsyncToMain {
+                        self.reloadData()
                     }
                 }
             }

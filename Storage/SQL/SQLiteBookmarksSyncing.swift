@@ -454,32 +454,18 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
         }
     }
     
-    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID:String?, completion:dispatch_block_t)  {
-        if newTitle == nil && newParentID == nil {
-            //just return
-            completion()
-            return
-        }
+    public func editBookmark(bookmark:BookmarkNode, title:String, parentGUID:String, completion:dispatch_block_t)  {
         
-        var updateQuery = "UPDATE \(TableBookmarksLocal) "
-        if newTitle != nil && newParentID != nil {
-            updateQuery += " set title='\(newTitle!)', parentid='\(newParentID!)' "
-        }
-        else if newTitle != nil {
-            updateQuery += " set title='\(newTitle!)' "
-        }
-        else {
-            updateQuery += " set parentid='\(newParentID!)' "
-        }
-        
-        updateQuery +=  " where guid='\(bookmark.guid)"
+        let updateQuery = "UPDATE \(TableBookmarksLocal) "
+                                + "set title='\(title)', parentid='\(parentGUID)' "
+                                +  "where guid='\(bookmark.guid)'"
         
         let structureArgs = Args()
         var err: NSError?
 
         self.db.transaction(&err) { (conn, err) -> Bool in
             //TODO moving a bookmark to another folder seems to be failing
-            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to new title \(newTitle).") {
+            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
                 return false
             }
             
@@ -701,8 +687,8 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
         return self.buffer.applyRecords(records)
     }
 
-    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID: String? = nil, completion:dispatch_block_t)  {
-        self.buffer.editBookmark(bookmark, newTitle:newTitle, newParentID:newParentID, completion:completion)
+    public func editBookmark(bookmark:BookmarkNode, title:String, parentGUID: String, completion:dispatch_block_t)  {
+        self.buffer.editBookmark(bookmark, title:title, parentGUID:parentGUID, completion:completion)
     }
     
     public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
