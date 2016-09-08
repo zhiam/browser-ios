@@ -78,6 +78,13 @@ class TwoLineTableViewCell: UITableViewCell {
 
 class HistoryTableViewCell: TwoLineTableViewCell {
     let borderView = UIView()
+    //TODO improve this fix for label width when in editing mode (visible in bookmarks panel)
+    var labelCellWidthDefault:CGFloat = 0 {
+        didSet {
+            labelCellWidthEditMode = labelCellWidthDefault - 80
+        }
+    }
+    var labelCellWidthEditMode:CGFloat = 0
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
@@ -91,6 +98,8 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         twoLineHelper.hasBorderView = true
 
         twoLineHelper.setUpViews(self, textLabel: textLabel!, detailTextLabel: detailTextLabel!, imageView: imageView!)
+        self.labelCellWidthDefault = textLabel!.frame.width
+
     }
 
     override func layoutSubviews() {
@@ -98,11 +107,39 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         twoLineHelper.layoutSubviews()
 
         imageView!.center = borderView.center
+
+        if let frame:CGRect = self.textLabel?.frame {
+            self.labelCellWidthDefault = frame.width
+        }
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         separatorInset = UIEdgeInsetsMake(0, TwoLineCellUX.BorderFrameSize + 2 * TwoLineCellUX.BorderViewMargin, 0, 0)
+        if let frame:CGRect = self.textLabel?.frame {
+            labelCellWidthDefault = frame.width
+        }
+    }
+    
+    override func didTransitionToState(state: UITableViewCellStateMask) {
+        super.didTransitionToState(state)
+        if let frame:CGRect = self.textLabel?.frame {
+            if state.contains(.ShowingEditControlMask) && self.editing {
+                UIView.animateWithDuration(0.1) {
+                    self.textLabel?.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: self.labelCellWidthEditMode, height: frame.size.height)
+                }
+
+            }
+            else if state == .DefaultMask {
+                UIView.animateWithDuration(0.1) {
+                    self.textLabel?.frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: self.labelCellWidthDefault, height: frame.size.height)
+                }
+                
+            }
+            else if state == .ShowingDeleteConfirmationMask {
+                
+            }
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
