@@ -287,7 +287,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         }
         
         tableView.snp_makeConstraints { make in
-            make.bottom.equalTo(view).inset(UIEdgeInsetsMake(0, 0, toolbarHeight, 0))
+            make.bottom.equalTo(self.view).inset(UIEdgeInsetsMake(0, 0, toolbarHeight, 0))
             return
         }
         

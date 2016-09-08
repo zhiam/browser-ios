@@ -456,16 +456,26 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
     
     public func editBookmark(bookmark:BookmarkNode, title:String, parentGUID:String, completion:dispatch_block_t)  {
         
-        let updateQuery = "UPDATE \(TableBookmarksLocal) "
+        let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
                                 + "set title='\(title)', parentid='\(parentGUID)' "
                                 +  "where guid='\(bookmark.guid)'"
+
+        let newIndex = "(SELECT (COALESCE(MAX(idx), -1) + 1) AS newIndex FROM \(TableBookmarksLocalStructure) WHERE parent = ?)"
+        let structSQL = "UPDATE \(TableBookmarksLocalStructure) set parent=?, idx=" +
+            "\(newIndex) where child='\(bookmark.guid)'"
+        let structArgs: Args = [parentGUID, parentGUID]
+        
         
         let structureArgs = Args()
         var err: NSError?
 
         self.db.transaction(&err) { (conn, err) -> Bool in
-            //TODO moving a bookmark to another folder seems to be failing
+
             if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
+                return false
+            }
+            
+            if !self.change(conn, sql: structSQL, args: structArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
                 return false
             }
             
