@@ -27,6 +27,7 @@ build Brave scheme
 
 #### Note: building your own ad-hoc builds is supported [see user device build](brave/docs/USER-DEPLOYING.md)
 
+
 ## Crash reporting using Fabric
 
 To enable, add ~/.brave-fabric-keys with 2 lines, the API key and build secret. Re-run setup.sh and the project will be generated to use Fabric and Crashlytics frameworks.
@@ -40,6 +41,17 @@ Run Product>Test in Xcode to do so. Not all Firefox tests are passing yet.
 Most of the code is in the brave/ directory. The primary design goal has been to preserve easy merging from Firefox iOS upstream, so hopefully code changes outside of that dir are minimal.
 
 To find changes outside of brave/, look for #if BRAVE / #if !BRAVE (#if/#else/#endif is supported by Swift).
+
+## Adding Carthage modules
+
+1. Add line into Cartfile
+2. Run `carthage update` (there may be errors on first run, ignore)
+3. Verify that your new module has been added to Cartfile.resolved
+4. Run `checkout.sh`
+5. In the Xcode Project, go to Client target settings, open the `Build Phases` tab and add a line such as
+```
+$(SRCROOT)/Carthage/Build/iOS/FRAMEWORKNAME.framework
+```
 
 ## Provisioning Profiles using a Team account
 
