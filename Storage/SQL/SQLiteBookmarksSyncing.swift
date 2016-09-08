@@ -463,16 +463,16 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
         
         var updateQuery = "UPDATE \(TableBookmarksLocal) "
         if newTitle != nil && newParentID != nil {
-            updateQuery += " set title='\(newTitle)', parentid='\(newParentID)' "
+            updateQuery += " set title='\(newTitle!)', parentid='\(newParentID!)' "
         }
         else if newTitle != nil {
-            updateQuery += " set title='\(newTitle)' "
+            updateQuery += " set title='\(newTitle!)' "
         }
         else {
-            updateQuery += " set parentid='\(newParentID)' "
+            updateQuery += " set parentid='\(newParentID!)' "
         }
         
-        updateQuery +=  " where guid='\(bookmark.guid)'"
+        updateQuery +=  " where guid='\(bookmark.guid)"
         
         let structureArgs = Args()
         var err: NSError?
