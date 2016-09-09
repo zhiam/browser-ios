@@ -66,8 +66,7 @@ extension BrowserViewController: URLBarDelegate {
             tabTrayController.modalTransitionStyle = .CrossDissolve
             self.navigationController?.presentViewController(tabTrayController, animated: true, completion: nil)
             UIView.animateWithDuration(0.2, animations: {
-                let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController
-                braveTopVC?.view.backgroundColor = UIColor.blackColor()
+                getApp().braveTopViewController.view.backgroundColor = UIColor.blackColor()
                 self.view.alpha = CGFloat(BraveUX.BrowserViewAlphaWhenShowingTabTray)
             })
         #endif

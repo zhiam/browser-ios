@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var rootViewController: UINavigationController!
     weak var profile: BrowserProfile?
     var tabManager: TabManager!
+    var braveTopViewController: BraveTopViewController!
 
     weak var application: UIApplication?
     var launchOptions: [NSObject: AnyObject]?
@@ -111,9 +112,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         browserViewController.restorationClass = AppDelegate.self
         browserViewController.automaticallyAdjustsScrollViewInsets = false
 
-        let topmost = BraveTopViewController(browserViewController: browserViewController as! BraveBrowserViewController)
+        braveTopViewController = BraveTopViewController(browserViewController: browserViewController as! BraveBrowserViewController)
 
-        rootViewController = UINavigationController(rootViewController: topmost)
+        rootViewController = UINavigationController(rootViewController: braveTopViewController)
         rootViewController.automaticallyAdjustsScrollViewInsets = false
         rootViewController.delegate = self
         rootViewController.navigationBarHidden = true

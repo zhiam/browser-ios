@@ -460,10 +460,7 @@ class BraveURLBarView : URLBarView {
     }
 
     override func updateBookmarkStatus(isBookmarked: Bool) {
-        if let braveTopVC = getApp().rootViewController.topViewController as? BraveTopViewController {
-            braveTopVC.updateBookmarkStatus(isBookmarked)
-        }
-
+        getApp().braveTopViewController.updateBookmarkStatus(isBookmarked)
         leftSidePanelButton.setStarImageBookmarked(isBookmarked)
     }
 

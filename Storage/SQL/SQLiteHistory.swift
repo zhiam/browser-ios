@@ -313,12 +313,17 @@ extension SQLiteHistory: BrowserHistory {
             "FROM (", query, ")"
         ].joinWithSeparator(" ")
 
-        return self.clearTopSitesCache() >>> {
-            return self.db.run(insertQuery, withArgs: args)
-        } >>> {
-            self.prefs.setBool(true, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
-            return succeed()
+
+        let result = Success()
+        succeed().upon { _ in // move off-main
+            self.clearTopSitesCache() >>> {
+                return self.db.run(insertQuery, withArgs: args)
+            } >>> {
+                self.prefs.setBool(true, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
+                result.fill(Maybe(success: ()))
+            }
         }
+        return result
     }
 
     public func clearTopSitesCache() -> Success {

@@ -538,7 +538,7 @@ class BraveWebView: UIWebView {
 
         postAsyncToMain(0.2) { [weak self] in
             if let me = self where BraveApp.getCurrentWebView() === me {
-                (getApp().rootViewController.visibleViewController as? BraveTopViewController)?.rightSidePanel.setShieldBlockedStats(me.shieldStats)
+                getApp().braveTopViewController.rightSidePanel.setShieldBlockedStats(me.shieldStats)
             }
         }
     }

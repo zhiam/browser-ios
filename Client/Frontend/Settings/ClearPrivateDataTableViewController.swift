@@ -170,6 +170,8 @@ class ClearPrivateDataTableViewController: UITableViewController {
                     getApp().tabManager.removeTab(getApp().tabManager.addTab()!, createTabIfNoneLeft: true)
                 }
             }
+
+            getApp().braveTopViewController.dismissAllSidePanels()
         }
     }
 
@@ -189,6 +191,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
             getApp().tabManager.removeAll()
             postAsyncToMain(0.5, closure: {
                 if !self.gotNotificationDeathOfAllWebViews {
+                    getApp().tabManager.tabs.internalTabList.forEach { $0.deleteWebView(isTabDeleted: true) }
                     self.allWebViewsKilled()
                 }
             })

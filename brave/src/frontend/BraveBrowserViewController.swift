@@ -85,10 +85,9 @@ class BraveBrowserViewController : BrowserViewController {
             urlBar.updateReloadStatus(webView.loading)
             updateBraveShieldButtonState(animated: false)
 
-            if let bravePanel = (getApp().rootViewController.visibleViewController as? BraveTopViewController)?.rightSidePanel {
-                bravePanel.setShieldBlockedStats(webView.shieldStats)
-                bravePanel.updateSitenameAndTogglesState()
-            }
+            let bravePanel = getApp().braveTopViewController.rightSidePanel
+            bravePanel.setShieldBlockedStats(webView.shieldStats)
+            bravePanel.updateSitenameAndTogglesState()
         }
         postAsyncToMain(0.1) {
             self.becomeFirstResponder()
