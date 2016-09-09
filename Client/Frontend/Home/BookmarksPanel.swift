@@ -102,7 +102,7 @@ class BookmarkEditingViewController: FormViewController {
     var folders:[BookmarkFolder]!
     
     var bookmarksPanel:BookmarksPanel!
-    var bookmark:BookmarkItem!
+    var bookmark:BookmarkNode!
     var currentFolderGUID:String!
     var bookmarkIndexPath:NSIndexPath!
     
@@ -117,7 +117,7 @@ class BookmarkEditingViewController: FormViewController {
     var urlRow:LabelRow!
     var folderSelectionRow:PickerInlineRow<BookmarkFolder>!
     
-    init(sourceTable table:UITableView!, indexPath:NSIndexPath, currentFolderGUID:String, bookmarksPanel:BookmarksPanel, bookmark:BookmarkItem!, folders:[BookmarkFolder]) {
+    init(sourceTable table:UITableView!, indexPath:NSIndexPath, currentFolderGUID:String, bookmarksPanel:BookmarksPanel, bookmark:BookmarkNode!, folders:[BookmarkFolder]) {
         super.init(nibName: nil, bundle: nil)
         sourceTable = table
         
@@ -142,10 +142,18 @@ class BookmarkEditingViewController: FormViewController {
             block(controller: self)
         }
     }
+    
+    var isEditingFolder:Bool {
+        return bookmark is BookmarkFolder
+    }
+    
+    var isEditingBookmarkItem:Bool {
+        return !isEditingFolder
+    }
 
     //may be the same as the original
     var newFolderGUID:String! {
-        return folderSelectionRow.value?.guid
+        return folderSelectionRow?.value?.guid
     }
     
     //may be the same as the original
@@ -171,26 +179,40 @@ class BookmarkEditingViewController: FormViewController {
     }
 
     var bookmarkDataChanged:Bool {
+        if isEditingFolder {
+            return bookmarkTitleChanged
+        }
+        
         return bookmarkTitleChanged || bookmarkFolderChanged
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        form +++ Section(NSLocalizedString("Bookmark Info", comment: "Bookmark Info Section Title"))
-            <<< TextRow() { row in
+        let firstSectionName = isEditingBookmarkItem ?  NSLocalizedString("Bookmark Info", comment: "Bookmark Info Section Title") : NSLocalizedString("Bookmark Folder", comment: "Bookmark Folder Section Title")
+        
+        let nameSection = Section(firstSectionName)
+            
+        nameSection <<< TextRow() { row in
                 row.tag = BOOKMARK_TITLE_ROW_TAG
                 row.title = NSLocalizedString("Name", comment: "Bookmark name/title")
                 row.value = bookmark.title
                 self.titleRow = row
             }
-            <<< LabelRow() { row in
+        
+        form +++ nameSection
+        
+        if isEditingBookmarkItem {
+
+            nameSection <<< LabelRow() { row in
                 row.tag = BOOKMARK_URL_ROW_TAG
                 row.title = NSLocalizedString("URL", comment: "Bookmark URL")
-                row.value = bookmark.url
+                row.value = (bookmark as! BookmarkItem).url
                 self.urlRow = row
             }
-            +++ Section(NSLocalizedString("Location", comment: "Bookmark folder location"))
+            
+        
+            form +++ Section(NSLocalizedString("Location", comment: "Bookmark folder location"))
             <<< PickerInlineRow<BookmarkFolder>() { (row : PickerInlineRow<BookmarkFolder>) -> Void in
                 row.tag = BOOKMARK_FOLDER_ROW_TAG
                 row.title = NSLocalizedString("Folder", comment: "Folder")
@@ -210,6 +232,7 @@ class BookmarkEditingViewController: FormViewController {
                 }
                 row.value = currentFolder
                 self.folderSelectionRow = row
+            }
         }
         
     }
@@ -666,21 +689,27 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             break
 
         case let folder as BookmarkFolder:
-            log.debug("Selected \(folder.guid)")
-            let nextController = BookmarksPanel()
-            nextController.parentFolders = parentFolders + [source.current]
-            nextController.bookmarkFolder = folder
-            nextController.folderList = self.folderList
-            nextController.homePanelDelegate = self.homePanelDelegate
-            nextController.profile = self.profile
-            source.modelFactory.uponQueue(dispatch_get_main_queue()) { maybe in
-                guard let factory = maybe.successValue else {
-                    // Nothing we can do.
-                    return
+            if tableView.editing {
+                //show editing view for bookmark item
+                self.showEditBookmarkController(tableView, indexPath: indexPath)
+            }
+            else {
+                log.debug("Selected \(folder.guid)")
+                let nextController = BookmarksPanel()
+                nextController.parentFolders = parentFolders + [source.current]
+                nextController.bookmarkFolder = folder
+                nextController.folderList = self.folderList
+                nextController.homePanelDelegate = self.homePanelDelegate
+                nextController.profile = self.profile
+                source.modelFactory.uponQueue(dispatch_get_main_queue()) { maybe in
+                    guard let factory = maybe.successValue else {
+                        // Nothing we can do.
+                        return
+                    }
+                    nextController.source = BookmarksModel(modelFactory: factory, root: folder)
+                    //on subfolders, the folderpicker is the same as the root
+                    self.navigationController?.pushViewController(nextController, animated: true)
                 }
-                nextController.source = BookmarksModel(modelFactory: factory, root: folder)
-                //on subfolders, the folderpicker is the same as the root
-                self.navigationController?.pushViewController(nextController, animated: true)
             }
             break
 
@@ -788,7 +817,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
 
         let currentFolderGUID = self.bookmarkFolder?.guid ?? BookmarkRoots.MobileFolderGUID
 
-        let nextController = BookmarkEditingViewController(sourceTable:self.tableView,indexPath: indexPath, currentFolderGUID:currentFolderGUID, bookmarksPanel: self, bookmark: bookmark as! BookmarkItem, folders: self.folderList)
+        let nextController = BookmarkEditingViewController(sourceTable:self.tableView,indexPath: indexPath, currentFolderGUID:currentFolderGUID, bookmarksPanel: self, bookmark: bookmark, folders: self.folderList)
 
         nextController.completionBlock = {(controller: BookmarkEditingViewController) -> Void in
             self.isEditingInvidivualBookmark = false
@@ -806,14 +835,24 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         }
     }
 
-    func updateBookmarkData(bookmark:BookmarkNode, newTitle:String, newFolderGUID: String, atIndexPath indexPath: NSIndexPath) {
+    func updateBookmarkData(bookmark:BookmarkNode, newTitle:String, newFolderGUID: String?, atIndexPath indexPath: NSIndexPath) {
         postAsyncToBackground {
+            
+            let refreshBlock:dispatch_block_t = {
+                                                    postAsyncToMain {
+                                                        self.reloadData()
+                                                    }
+                                                }
+            
             if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
-                //move and reload
-                sqllitbk.editBookmark(bookmark, title:newTitle, parentGUID: newFolderGUID) {
-                    postAsyncToMain {
-                        self.reloadData()
-                    }
+                //we split up the update into class-specific functions so we get more compile time & runtime checks before writing into the DB
+                if let bookmarkItem = bookmark as? BookmarkItem {
+                    //bookmark items ALWAYS pass along the folderGUID even if not changed hence we can force newFolderGUID!
+                    sqllitbk.editBookmarkItem(bookmarkItem, title:newTitle, parentGUID: newFolderGUID!, completion: refreshBlock)
+                    
+                }
+                else if let bookmarkFolder = bookmark as? BookmarkFolder {
+                    sqllitbk.editBookmarkFolder(bookmarkFolder, title:newTitle, completion: refreshBlock)
                 }
             }
         }

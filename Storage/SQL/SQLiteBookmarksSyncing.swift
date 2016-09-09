@@ -453,8 +453,29 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
             return success
         }
     }
+
+    public func editBookmarkFolder(folder:BookmarkFolder, title:String, completion:dispatch_block_t)  {
+        
+        let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
+            + "set title='\(title)' "
+            +  "where guid='\(folder.guid)'"
+        
+        let structureArgs = Args()
+        var err: NSError?
+        
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            
+            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(folder.guid) to title=[\(title)].") {
+                return false
+            }
+            
+            completion()
+            return true
+        }
+    }
+
     
-    public func editBookmark(bookmark:BookmarkNode, title:String, parentGUID:String, completion:dispatch_block_t)  {
+    public func editBookmarkItem(bookmark:BookmarkNode, title:String, parentGUID:String, completion:dispatch_block_t)  {
         
         let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
                                 + "set title='\(title)', parentid='\(parentGUID)' "
@@ -697,8 +718,12 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
         return self.buffer.applyRecords(records)
     }
 
-    public func editBookmark(bookmark:BookmarkNode, title:String, parentGUID: String, completion:dispatch_block_t)  {
-        self.buffer.editBookmark(bookmark, title:title, parentGUID:parentGUID, completion:completion)
+    public func editBookmarkFolder(bookmark:BookmarkFolder, title:String, completion:dispatch_block_t)  {
+        self.buffer.editBookmarkFolder(bookmark, title:title, completion:completion)
+    }
+
+    public func editBookmarkItem(bookmark:BookmarkItem, title:String, parentGUID: String, completion:dispatch_block_t)  {
+        self.buffer.editBookmarkItem(bookmark, title:title, parentGUID:parentGUID, completion:completion)
     }
     
     public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
