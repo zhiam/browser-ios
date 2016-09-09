@@ -111,7 +111,7 @@ class HistoryTableViewCell: TwoLineTableViewCell {
             self.labelCellWidthDefault = frame.width
         }
 
-        updateTextLabelWidthForEditing(editingState)
+//        updateTextLabelWidthForEditing(editingState)
     }
 
     override func prepareForReuse() {
@@ -134,9 +134,9 @@ class HistoryTableViewCell: TwoLineTableViewCell {
     }
     var editingState:Bool = false
 
-    override func didTransitionToState(state: UITableViewCellStateMask) {
-        super.didTransitionToState(state)
-        if state.contains(.ShowingEditControlMask) && self.editing {
+    override func willTransitionToState(state: UITableViewCellStateMask) {
+        super.willTransitionToState(state)
+        if state.contains(.ShowingEditControlMask) {
             editingState = true
         }
         else if state == .DefaultMask {
@@ -145,8 +145,8 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         else if state == .ShowingDeleteConfirmationMask {
             editingState = false
         }
+        self.twoLineHelper.blockLabelLayout = editingState
         updateTextLabelWidthForEditing(editingState)
-
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -255,6 +255,9 @@ private class TwoLineCellHelper {
     var imageView: UIImageView!
     var hasBorderView: Bool = false
     var hasRightBadge: Bool = false
+    
+    //flag used when the table goes temporarily into edit mode and we need to handle label sizes independently
+    var blockLabelLayout:Bool = false
 
     // TODO: Not ideal. We should figure out a better way to get this initialized.
     func setUpViews(container: UIView, textLabel: UILabel, detailTextLabel: UILabel, imageView: UIImageView) {
@@ -286,16 +289,19 @@ private class TwoLineCellHelper {
         let textLeft = hasBorderView ? TwoLineCellUX.BorderFrameSize + 2 * TwoLineCellUX.BorderViewMargin : TwoLineCellUX.ImageSize + 2 * TwoLineCellUX.BorderViewMargin
         let textLabelHeight = textLabel.intrinsicContentSize().height
         let detailTextLabelHeight = detailTextLabel.intrinsicContentSize().height
-        var contentHeight = textLabelHeight
-        if detailTextLabelHeight > 0 {
-            contentHeight += detailTextLabelHeight + TwoLineCellUX.DetailTextTopMargin
-        }
-
         let textRightInset: CGFloat = hasRightBadge ? (TwoLineCellUX.BadgeSize + TwoLineCellUX.BadgeMargin) : 0
+        
+        if !blockLabelLayout {
+            var contentHeight = textLabelHeight
+            if detailTextLabelHeight > 0 {
+                contentHeight += detailTextLabelHeight + TwoLineCellUX.DetailTextTopMargin
+            }
 
+            textLabel.frame = CGRectMake(textLeft, (height - contentHeight) / 2,
+                                         container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin - textRightInset, textLabelHeight)
+        }
+        
         imageView.frame = CGRectMake(TwoLineCellUX.BorderViewMargin, (height - TwoLineCellUX.ImageSize) / 2, TwoLineCellUX.ImageSize, TwoLineCellUX.ImageSize)
-        textLabel.frame = CGRectMake(textLeft, (height - contentHeight) / 2,
-            container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin - textRightInset, textLabelHeight)
         detailTextLabel.frame = CGRectMake(textLeft, textLabel.frame.maxY + TwoLineCellUX.DetailTextTopMargin,
             container.frame.width - textLeft - TwoLineCellUX.BorderViewMargin - textRightInset, detailTextLabelHeight)
     }
