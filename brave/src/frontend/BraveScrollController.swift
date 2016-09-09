@@ -155,7 +155,7 @@ class BraveScrollController: NSObject {
 
     }
 
-    func showToolbars(animated animated: Bool, completion: ((finished: Bool) -> Void)? = nil) {
+    func showToolbars(animated animated: Bool, isShowingDueToBottomTap: Bool = false, completion: ((finished: Bool) -> Void)? = nil) {
         checkHeightOfPageAndAdjustWebViewInsets()
 
         if verticalTranslation == 0 && headerTopOffset == 0 {
@@ -173,6 +173,7 @@ class BraveScrollController: NSObject {
             headerOffset: 0,
             footerOffset: 0,
             alpha: 1,
+            isShowingDueToBottomTap: isShowingDueToBottomTap,
             completion: completion)
     }
 
@@ -276,7 +277,7 @@ private extension BraveScrollController {
 
     // Currently only has handling for the show toolbars case.
     private func animateToolbarsWithOffsets(animated animated: Bool, duration: NSTimeInterval, headerOffset: CGFloat,
-                                                     footerOffset: CGFloat, alpha: CGFloat, completion: ((finished: Bool) -> Void)?) {
+                                                     footerOffset: CGFloat, alpha: CGFloat, isShowingDueToBottomTap: Bool, completion: ((finished: Bool) -> Void)?) {
 
         let animation: () -> Void = {
             self.headerTopOffset = headerOffset
@@ -288,8 +289,9 @@ private extension BraveScrollController {
             // TODO this code is only being used to show toolbars, so right now hard-code for that case, obviously if/when hide is added, update the code to support that
             let webView = getApp().browserViewController.webViewContainer
             webView.layer.transform = CATransform3DIdentity
-            if self.contentOffset.y > BraveURLBarView.CurrentHeight {
-                self.scrollView?.contentOffset.y += BraveURLBarView.CurrentHeight
+
+            if isShowingDueToBottomTap {
+                self.scrollView?.contentOffset.y += 2 * BraveURLBarView.CurrentHeight
             }
         }
 
@@ -444,7 +446,7 @@ extension BraveScrollController : WindowTouchFilter {
         }
         let loc = touch.locationInView(window)
         if !toolbarsShowing && BraveApp.isIPhonePortrait() && loc.y > window.frame.height - UIConstants.ToolbarHeight {
-            showToolbars(animated: true)
+            showToolbars(animated: true, isShowingDueToBottomTap: true)
             return true // eat the event
         }
         return false
