@@ -144,7 +144,7 @@ class BraveScrollController: NSObject {
 
             // https://github.com/brave/browser-ios/issues/125 workaround
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                if self.browser?.webView?.URL?.absoluteString.contains("facebook.com/messages") ?? false {
+                if let url = self.browser?.webView?.URL?.absoluteString where url.contains("facebook.com") && url.contains("messages") {
                     setContentInset(top: 0, bottom: 100)
                     lockedContentInsets = true
                 } else {
@@ -290,8 +290,11 @@ private extension BraveScrollController {
             let webView = getApp().browserViewController.webViewContainer
             webView.layer.transform = CATransform3DIdentity
 
-            if isShowingDueToBottomTap {
+            if isShowingDueToBottomTap { // scroll up to show page under the bottom toolbar
                 self.scrollView?.contentOffset.y += 2 * BraveURLBarView.CurrentHeight
+            } else if self.contentOffset.y > BraveURLBarView.CurrentHeight {
+                // keep the web view in the same scroll position by scrolling up the toolbar height 
+                self.scrollView?.contentOffset.y += BraveURLBarView.CurrentHeight
             }
         }
 
