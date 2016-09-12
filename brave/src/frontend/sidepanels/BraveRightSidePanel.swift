@@ -394,13 +394,14 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
     func updateSitenameAndTogglesState() {
         siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
-        
+
+        let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
+        shieldToggle.on = !(state?.isAllOff() ?? false)
+
         let masterOn = shieldToggle.on
         toggleInteractionEnabled(masterOn)
-        
+
         if masterOn {
-            let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
-            shieldToggle.on = !(state?.isAllOff() ?? false)
             toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
             toggleHttpse.on = state?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled
             toggleBlockMalware.on = state?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled
