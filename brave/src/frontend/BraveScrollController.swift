@@ -16,13 +16,21 @@ class BraveScrollController: NSObject {
         willSet {
             self.scrollView?.delegate = nil
             self.scrollView?.removeGestureRecognizer(panGesture)
+            BraveApp.getCurrentWebView()?.removeGestureRecognizer(tapShowBottomBar)
         }
 
         didSet {
+            BraveApp.getCurrentWebView()?.addGestureRecognizer(tapShowBottomBar)
             self.scrollView?.addGestureRecognizer(panGesture)
             scrollView?.delegate = self
         }
     }
+
+    lazy var tapShowBottomBar: UITapGestureRecognizer = {
+        let t = UITapGestureRecognizer(target: self, action: #selector(onTapShowBottomBar))
+        t.delegate = self
+        return t
+    }()
 
     weak var header: UIView?
     weak var footer: UIView?
@@ -87,8 +95,6 @@ class BraveScrollController: NSObject {
 
     override init() {
         super.init()
-
-        (getApp().window as! BraveMainWindow).addTouchFilter(self)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveScrollController.pageUnload), name: kNotificationPageUnload, object: nil)
 
@@ -192,6 +198,18 @@ class BraveScrollController: NSObject {
             if !isScrollHeightIsLargeEnoughForScrolling() && !toolbarsShowing {
                 showToolbars(animated: true, completion: nil)
             }
+        }
+    }
+
+    //// bottom tap //////
+    func onTapShowBottomBar(gesture: UITapGestureRecognizer) {
+        if toolbarsShowing || !BraveApp.isIPhonePortrait() {
+            return
+        }
+
+        guard let height = gesture.view?.frame.height else { return }
+        if gesture.locationInView(gesture.view).y > height - UIConstants.ToolbarHeight {
+            showToolbars(animated: true, isShowingDueToBottomTap: true)
         }
     }
 }
@@ -439,19 +457,5 @@ extension BraveScrollController: UIScrollViewDelegate {
     func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
         showToolbars(animated: true)
         return true
-    }
-}
-
-extension BraveScrollController : WindowTouchFilter {
-    func filterTouch(touch: UITouch) -> Bool {
-        guard let window = getApp().window, braveWebView = BraveApp.getCurrentWebView(), touchView = touch.view where touchView.isDescendantOfView(braveWebView) else {
-            return false
-        }
-        let loc = touch.locationInView(window)
-        if !toolbarsShowing && BraveApp.isIPhonePortrait() && loc.y > window.frame.height - UIConstants.ToolbarHeight {
-            showToolbars(animated: true, isShowingDueToBottomTap: true)
-            return true // eat the event
-        }
-        return false
     }
 }
