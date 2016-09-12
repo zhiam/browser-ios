@@ -108,20 +108,16 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         imageView!.center = borderView.center
 
         if let frame:CGRect = self.textLabel?.frame {
-            self.labelCellWidthDefault = frame.width
+            if frame.width > 0 {
+                self.labelCellWidthDefault = frame.width
+            }
         }
-
-//        updateTextLabelWidthForEditing(editingState)
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         editingState = false
         separatorInset = UIEdgeInsetsMake(0, TwoLineCellUX.BorderFrameSize + 2 * TwoLineCellUX.BorderViewMargin, 0, 0)
-        if let frame:CGRect = self.textLabel?.frame {
-            labelCellWidthDefault = frame.width
-        }
-        
     }
     
     func updateTextLabelWidthForEditing(editingMode:Bool) {
