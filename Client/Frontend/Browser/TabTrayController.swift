@@ -848,6 +848,7 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         }
         
         tabCell.background.image = tab.screenshot.image
+        tab.screenshot.listenerImages.removeAll() // TODO maybe UIImageWithNotify should only ever have one listener?
         tab.screenshot.listenerImages.append(UIImageWithNotify.WeakImageView(tabCell.background))
         
         return tabCell
