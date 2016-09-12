@@ -971,19 +971,17 @@ class BrowserViewController: UIViewController {
         }
         activities.append(findInPageActivity)
         
-        #if !BRAVE
-            if #available(iOS 9.0, *) {
-                if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active {
-                    let requestDesktopSiteActivity = RequestDesktopSiteActivity(requestMobileSite: tab.desktopSite) { [unowned tab] in
-                        tab.toggleDesktopSite()
-                    }
-                    activities.append(requestDesktopSiteActivity)
+        //if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active { // needed for reader mode?
+        if let tab = tab {
+            let requestDesktopSiteActivity = RequestDesktopSiteActivity() { [weak tab] in
+                if let url = tab?.url {
+                    (getApp().browserViewController as! BraveBrowserViewController).newTabForDesktopSite(url: url)
                 }
+                //tab?.toggleDesktopSite()
             }
-        #endif
-        
-        
-        
+            activities.append(requestDesktopSiteActivity)
+        }
+
         helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
         
         helper.setupExtensionItem() {
