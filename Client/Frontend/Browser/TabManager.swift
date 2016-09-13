@@ -404,7 +404,7 @@ class TabManager : NSObject {
             selectTab(tab)
         }
         
-        if selectedTab == nil {
+        if createTabIfNoneLeft && selectedTab == nil {
             selectTab(tabs.displayedTabsForCurrentPrivateMode.first)
         }
 
@@ -586,7 +586,7 @@ extension TabManager {
         let path = TabManager.tabsStateArchivePath()
         var savedTabs = [SavedTab]()
         var savedUUIDs = Set<String>()
-        for (tabIndex, tab) in tabs.internalTabList.enumerate() {
+        for tab in tabs.internalTabList {
             if tab.isPrivate {
                 continue
             }
