@@ -1182,8 +1182,10 @@ extension BrowserViewController: UIPopoverPresentationControllerDelegate {
 }
 
 extension BrowserViewController: IntroViewControllerDelegate {
-    func presentIntroViewController(force: Bool = false) -> Bool{
-        if force || profile.prefs.intForKey(IntroViewControllerSeenProfileKey) == nil {
+    func presentIntroViewController(force: Bool = false) -> Bool {
+        struct autoShowOnlyOnce { static var wasShownThisSession = false } // https://github.com/brave/browser-ios/issues/424
+        if force || (profile.prefs.intForKey(IntroViewControllerSeenProfileKey) == nil && !autoShowOnlyOnce.wasShownThisSession) {
+            autoShowOnlyOnce.wasShownThisSession = true
             let introViewController = IntroViewController()
             introViewController.delegate = self
             // On iPad we present it modally in a controller
