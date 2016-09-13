@@ -309,7 +309,6 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
     }
 
     override func onClick(navigationController: UINavigationController?) {
-        
         //MFMailComposeViewController is wonky on simulator, detect & avoid
         let isDevice = (TARGET_OS_SIMULATOR == 0)
         
@@ -325,14 +324,18 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
             mailComposerVC.setToRecipients([reportBugMailAddress])
             mailComposerVC.setSubject(reportBugMailSubject)
             
+            let iOSVersionLabel = NSLocalizedString("iOS version", comment: "iOS version")
+            let deviceLabel = NSLocalizedString("Device", comment: "Device")
+            let braveVersionLabel = NSLocalizedString("Brave version", comment: "brave version")
+            
             let appVersionString: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
             let buildNumber: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
             let versionAndBuildNumber: String = "\(appVersionString) (\(buildNumber))"
             
             var message = reportBugMailBody
-            message += "iOS version: [\(UIDevice.currentDevice().systemName)/\(UIDevice.currentDevice().systemVersion)]\n"
-            message += "Device: [\(UIDevice.currentDevice().name)/\(UIDevice.currentDevice().model)]\n"
-            message += "Brave version: [\(versionAndBuildNumber)]\n"
+            message += "\(iOSVersionLabel) [\(UIDevice.currentDevice().systemName)/\(UIDevice.currentDevice().systemVersion)]\n"
+            message += "\(deviceLabel): [\(UIDevice.currentDevice().name)/\(UIDevice.currentDevice().model)]\n"
+            message += "\(braveVersionLabel): [\(versionAndBuildNumber)]\n"
             message += "-----------------------------\n"
             mailComposerVC.setMessageBody(message, isHTML: false)
             
