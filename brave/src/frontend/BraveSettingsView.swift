@@ -316,7 +316,7 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
             
             let reportBugMailAddress = "support+ios@brave.com"
             let reportBugMailSubject = NSLocalizedString("Brave for iOS Feedback", comment: "email subject")
-            let reportBugMailBody = "\n\n\n--------------------\nPlease do not modify the information that follows.\nIt is completely anonymous and necessary for the Brave Team to evaluate reports, issues and bugs. Thanks!\n-----------------------------\n";
+            let reportBugMailBody = NSLocalizedString("\n\n---\nApp & Device Version Information:\n", comment: "body");
 
             
             let mailComposerVC = MFMailComposeViewController()
