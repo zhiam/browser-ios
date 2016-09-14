@@ -4,6 +4,7 @@
     import Crashlytics
 #endif
 import Shared
+import MessageUI
 
 let kPrefKeyNoScriptOn = "noscript_on"
 let kPrefKeyFingerprintProtection = "fingerprintprotection_on"
@@ -126,7 +127,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         settings += [
             SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
                 ShowIntroductionSetting(settings: self),
-                BraveSupportLinkSetting(),
+                BraveSupportLinkSetting(parentVC: self),
                 BravePrivacyPolicySetting(), BraveTermsOfUseSetting(),
                 ])]
         //#endif
@@ -277,14 +278,71 @@ class PasswordsClearable: Clearable {
     }
 }
 
-class BraveSupportLinkSetting: Setting{
+class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
+    let parentViewController:UIViewController
+    
+    init(parentVC:UIViewController) {
+        parentViewController = parentVC
+    }
+
     override var title: NSAttributedString? {
         return NSAttributedString(string: NSLocalizedString("Report a bug", comment: "Show mail composer to report a bug."), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
     }
-
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        
+        controller.dismissViewControllerAnimated(true) {
+            if result == MFMailComposeResultSaved || result == MFMailComposeResultSent {
+                //only show 'thanks' dialog when Saved/Sent.
+                //TODO turn this into a Toast-type notification that goes away by itself.
+                let sendFeedbackThanks = UIAlertView(title: "Thanks!", message: "Thank you for your feedback!", delegate: self, cancelButtonTitle: "OK")
+                sendFeedbackThanks.show()
+            } else if result == MFMailComposeResultFailed {
+                self.showMailErrorDialog()
+            }
+        }
+    }
 
     override func onClick(navigationController: UINavigationController?) {
-        UIApplication.sharedApplication().openURL(NSURL(string: "mailto:support+ios@brave.com")!)
+        //MFMailComposeViewController is wonky on simulator, detect & avoid
+        let isDevice = (TARGET_OS_SIMULATOR == 0)
+        
+        if MFMailComposeViewController.canSendMail() && isDevice {
+            
+            let reportBugMailAddress = "support+ios@brave.com"
+            let reportBugMailSubject = NSLocalizedString("Brave for iOS Feedback", comment: "email subject")
+            let reportBugMailBody = NSLocalizedString("\n\n---\nApp & Device Version Information:\n", comment: "body");
+
+            
+            let mailComposerVC = MFMailComposeViewController()
+            mailComposerVC.mailComposeDelegate = self
+            mailComposerVC.setToRecipients([reportBugMailAddress])
+            mailComposerVC.setSubject(reportBugMailSubject)
+            
+            let iOSVersionLabel = NSLocalizedString("iOS version", comment: "iOS version")
+            let deviceLabel = NSLocalizedString("Device", comment: "Device")
+            let braveVersionLabel = NSLocalizedString("Brave version", comment: "brave version")
+            
+            let appVersionString: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+            let buildNumber: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+            let versionAndBuildNumber: String = "\(appVersionString) (\(buildNumber))"
+            
+            var message = reportBugMailBody
+            message += "\(iOSVersionLabel) [\(UIDevice.currentDevice().systemName)/\(UIDevice.currentDevice().systemVersion)]\n"
+            message += "\(deviceLabel): [\(UIDevice.currentDevice().name)/\(UIDevice.currentDevice().model)]\n"
+            message += "\(braveVersionLabel): [\(versionAndBuildNumber)]\n"
+            message += "-----------------------------\n"
+            mailComposerVC.setMessageBody(message, isHTML: false)
+            
+            parentViewController.presentViewController(mailComposerVC, animated: true, completion: nil)
+        } else {
+            showMailErrorDialog()
+        }
+    }
+    
+    func showMailErrorDialog() {
+        let sendMailErrorAlert = UIAlertView(title: "Error sending email", message: "It appears you're not setup for email on this device.  Please check your email configuration and try again.", delegate: self, cancelButtonTitle: "OK")
+        sendMailErrorAlert.show()
     }
 
     override func onConfigureCell(cell: UITableViewCell) {
