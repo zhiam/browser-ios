@@ -85,6 +85,7 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         }
     }
     var labelCellWidthEditMode:CGFloat = 0
+    var labelCellWidthOnLayout:CGFloat = 0
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: UITableViewCellStyle.Subtitle, reuseIdentifier: reuseIdentifier)
@@ -110,6 +111,7 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         if let frame:CGRect = self.textLabel?.frame {
             if frame.width > 0 {
                 self.labelCellWidthDefault = frame.width
+                labelCellWidthOnLayout = self.labelCellWidthDefault
             }
         }
     }
@@ -118,6 +120,9 @@ class HistoryTableViewCell: TwoLineTableViewCell {
         super.prepareForReuse()
         editingState = false
         separatorInset = UIEdgeInsetsMake(0, TwoLineCellUX.BorderFrameSize + 2 * TwoLineCellUX.BorderViewMargin, 0, 0)
+        //restore label width
+        labelCellWidthDefault = labelCellWidthOnLayout
+        updateTextLabelWidthForEditing(editingState)
     }
     
     func updateTextLabelWidthForEditing(editingMode:Bool) {
