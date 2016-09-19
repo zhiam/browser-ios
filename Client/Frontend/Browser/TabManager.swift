@@ -462,9 +462,7 @@ class TabManager : NSObject {
             }
             // The default tab configurations also need to change.
             self.configuration.preferences.javaScriptCanOpenWindowsAutomatically = allowPopups
-            if #available(iOS 9, *) {
-                self.privateConfiguration.preferences.javaScriptCanOpenWindowsAutomatically = allowPopups
-            }
+            self.privateConfiguration.preferences.javaScriptCanOpenWindowsAutomatically = allowPopups
         }
 #endif
     }

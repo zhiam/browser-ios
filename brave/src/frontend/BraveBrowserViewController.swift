@@ -32,10 +32,8 @@ class BraveBrowserViewController : BrowserViewController {
 
         struct RunOnceAtStartup { static var ran = false }
         if !RunOnceAtStartup.ran && profile.prefs.boolForKey(kPrefKeyPrivateBrowsingAlwaysOn) ?? false {
-            if #available(iOS 9, *) {
-                getApp().browserViewController.switchToPrivacyMode()
-                getApp().tabManager.addTabAndSelect(isPrivate: true)
-            }
+            getApp().browserViewController.switchToPrivacyMode()
+            getApp().tabManager.addTabAndSelect(isPrivate: true)
         }
         RunOnceAtStartup.ran = true
     }

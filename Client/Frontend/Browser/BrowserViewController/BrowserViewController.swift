@@ -757,15 +757,14 @@ class BrowserViewController: UIViewController {
             }
         }
         profile.bookmarks.shareItem(shareItem)
-        if #available(iOS 9, *) {
-            var userData = [QuickActions.TabURLKey: shareItem.url]
-            if let title = shareItem.title {
-                userData[QuickActions.TabTitleKey] = title
-            }
+        var userData = [QuickActions.TabURLKey: shareItem.url]
+        if let title = shareItem.title {
+            userData[QuickActions.TabTitleKey] = title
+        }
 //            QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark,
 //                withUserData: userData,
 //                toApplication: UIApplication.sharedApplication())
-        }
+
     }
 
     func removeBookmark(url: String, completion: dispatch_block_t? = nil) {
@@ -877,9 +876,7 @@ class BrowserViewController: UIViewController {
 
         let tabTrayController = self.tabTrayController ?? TabTrayController(tabManager: tabManager, profile: profile, tabTrayDelegate: self)
         if tabTrayController.privateMode != isPrivate {
-            if #available(iOS 9, *) {
-                tabTrayController.changePrivacyMode(isPrivate)
-            }
+            tabTrayController.changePrivacyMode(isPrivate)
         }
         self.tabTrayController = tabTrayController
     }
@@ -908,14 +905,10 @@ class BrowserViewController: UIViewController {
 
         let isPrivate = PrivateBrowsing.singleton.isOn
 
-        if #available(iOS 9, *) {
-            if isPrivate {
-                switchToPrivacyMode()
-            }
-            tabManager.addTabAndSelect(request, isPrivate: isPrivate)
-        } else {
-            tabManager.addTabAndSelect(request)
+        if isPrivate {
+            switchToPrivacyMode()
         }
+        tabManager.addTabAndSelect(request, isPrivate: isPrivate)
     }
 
     func openBlankNewTabAndFocus(isPrivate isPrivate: Bool = false) {
@@ -941,9 +934,6 @@ class BrowserViewController: UIViewController {
     // Mark: User Agent Spoofing
 #if !BRAVE // TODO hookup when adding desktop AU
     private func resetSpoofedUserAgentIfRequired(webView: WKWebView, newURL: NSURL) {
-        guard #available(iOS 9.0, *) else {
-            return
-        }
         // Reset the UA when a different domain is being loaded
         if webView.URL?.host != newURL.host {
             webView.customUserAgent = nil
@@ -951,10 +941,6 @@ class BrowserViewController: UIViewController {
     }
 
     private func restoreSpoofedUserAgentIfRequired(webView: WKWebView, newRequest: NSURLRequest) {
-        guard #available(iOS 9.0, *) else {
-            return
-        }
-
         // Restore any non-default UA from the request's header
         let ua = newRequest.valueForHTTPHeaderField("User-Agent")
         webView.customUserAgent = ua != UserAgent.defaultUserAgent() ? ua : nil

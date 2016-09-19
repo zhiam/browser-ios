@@ -107,11 +107,9 @@ class BraveSettingsView : AppSettingsTableViewController {
                         if !isOn {
                             return
                         }
-                        if #available(iOS 9, *) {
-                            if !PrivateBrowsing.singleton.isOn {
-                                getApp().browserViewController.switchToPrivacyMode()
-                                getApp().tabManager.addTabAndSelect(isPrivate: true)
-                            }
+                        if !PrivateBrowsing.singleton.isOn {
+                            getApp().browserViewController.switchToPrivacyMode()
+                            getApp().tabManager.addTabAndSelect(isPrivate: true)
                         }
                     })]
             ),

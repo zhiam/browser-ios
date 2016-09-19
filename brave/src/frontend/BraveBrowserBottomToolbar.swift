@@ -125,9 +125,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         let app = UIApplication.sharedApplication().delegate as! AppDelegate
         let isPrivate = PrivateBrowsing.singleton.isOn
         if isPrivate {
-            if #available(iOS 9, *) {
-                app.tabManager.addTabAndSelect(nil, configuration: nil, isPrivate: true)
-            }
+            app.tabManager.addTabAndSelect(nil, configuration: nil, isPrivate: true)
         } else {
             app.tabManager.addTabAndSelect()
         }

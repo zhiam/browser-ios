@@ -150,18 +150,8 @@ class SiteDataClearable: Clearable {
     }
 
     func clear() -> Success {
-        if #available(iOS 9.0, *) {
-            let dataTypes = Set([WKWebsiteDataTypeOfflineWebApplicationCache])
-            WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(dataTypes, modifiedSince: NSDate.distantPast(), completionHandler: {})
-        } else {
-            // Then we just wipe the WebKit directory from our Library.
-            do {
-                try deleteLibraryFolder("WebKit")
-            } catch {
-                return deferMaybe(ClearableErrorType(err: error))
-            }
-        }
-
+        let dataTypes = Set([WKWebsiteDataTypeOfflineWebApplicationCache])
+        WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(dataTypes, modifiedSince: NSDate.distantPast(), completionHandler: {})
         log.debug("SiteDataClearable succeeded.")
         return succeed()
     }

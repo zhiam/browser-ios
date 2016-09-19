@@ -52,11 +52,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
     private var _isPrivate: Bool = false
     internal private(set) var isPrivate: Bool {
         get {
-            if #available(iOS 9, *) {
-                return _isPrivate
-            } else {
-                return false
-            }
+            return _isPrivate
         }
         set {
             if newValue {
