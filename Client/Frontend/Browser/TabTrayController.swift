@@ -490,6 +490,8 @@ class TabTrayController: UIViewController {
 
     @available(iOS 9, *)
     func SELdidTogglePrivateMode() {
+        telemetry(action: "Private mode button tapped", props: nil)
+
         let scaleDownTransform = CGAffineTransformMakeScale(0.9, 0.9)
 
         let fromView: UIView

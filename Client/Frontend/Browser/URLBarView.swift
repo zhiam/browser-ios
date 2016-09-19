@@ -504,6 +504,7 @@ class URLBarView: UIView {
     }
 
     func SELdidClickAddTab() {
+        telemetry(action: "show tab tray", props: ["bottomToolbar": "true"])
         delegate?.urlBarDidPressTabs(self)
     }
 

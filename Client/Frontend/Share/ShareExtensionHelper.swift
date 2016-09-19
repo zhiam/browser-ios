@@ -116,52 +116,43 @@ class ShareExtensionHelper: NSObject {
 
         activityViewController.completionWithItemsHandler = {
             activityType, completed, returnedItems, activityError in
-            
+
             defer {
+                telemetry(action: "share item", props: ["selected" : activityType ?? ""])
                 completionHandler(completed)
             }
-            
-            if activityType == nil || !completed || returnedItems == nil || returnedItems!.count == 0 {
 
+            if activityType == nil || !completed || returnedItems == nil || returnedItems!.count == 0 {
                 return
             }
-            
+
             //'password-find-login-action' is for Keeper, matches 'password'
             if activityType!.contains("com.dashlane")
                 || activityType!.contains("lastpass")
                 || activityType!.contains("password") {
-//                NSLog("obtained \(returnedItems!.count) items")
+                //                NSLog("obtained \(returnedItems!.count) items")
                 let item = returnedItems![0] as? NSExtensionItem
-                
+
                 if let itemProvider = item!.attachments?.first as? NSItemProvider {
-//                    debugPrint(itemProvider.registeredTypeIdentifiers)
-                        let ident = kUTTypePropertyList as String
-                        if itemProvider.hasItemConformingToTypeIdentifier(ident) {
-                            itemProvider.loadItemForTypeIdentifier(ident, options: nil) { (dict, error) in
-                                if error != nil {
-                                    NSLog("Error loading from password extension \(error)")
-                                }
-                                else if dict != nil {
-                                    
-                                    OnePasswordExtension.sharedExtension().fillReturnedItems(returnedItems, intoWebView: selectedWebView!, completion: { (success, returnedItemsError) -> Void in
-                                                        if !success {
-                                                            log.error("Failed to fill item into webview: \(returnedItemsError).")
-                                                        }
-                                                    })
-
-                                }
+                    //                    debugPrint(itemProvider.registeredTypeIdentifiers)
+                    let ident = kUTTypePropertyList as String
+                    if itemProvider.hasItemConformingToTypeIdentifier(ident) {
+                        itemProvider.loadItemForTypeIdentifier(ident, options: nil) { (dict, error) in
+                            if error != nil {
+                                NSLog("Error loading from password extension \(error)")
+                            } else if dict != nil {
+                                OnePasswordExtension.sharedExtension().fillReturnedItems(returnedItems, intoWebView: selectedWebView!, completion: { (success, returnedItemsError) -> Void in
+                                    if !success {
+                                        log.error("Failed to fill item into webview: \(returnedItemsError).")
+                                    }
+                                })
                             }
-                            
-                            
-                            
                         }
-
+                    }
                 }
-                
-
             }
         }
         
         return activityViewController
     }
-    }
+}

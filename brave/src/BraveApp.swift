@@ -156,7 +156,11 @@ class BraveApp {
 
     class func shouldHandleOpenURL(components: NSURLComponents) -> Bool {
         // TODO look at what x-callback is for
-        return components.scheme == "brave" || components.scheme == "brave-x-callback"
+        let handled = components.scheme == "brave" || components.scheme == "brave-x-callback"
+        if (handled) {
+            telemetry(action: "Open in brave", props: nil)
+        }
+        return handled
     }
 
     class func getPrefs() -> Prefs? {

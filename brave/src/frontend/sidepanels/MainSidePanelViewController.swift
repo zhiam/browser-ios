@@ -89,6 +89,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         postAsyncToMain {
             self.history.refresh()
         }
+        telemetry(action: "page changed", props: nil)
     }
     
     func willHide() {

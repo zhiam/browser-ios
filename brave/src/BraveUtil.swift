@@ -4,7 +4,7 @@ import Foundation
 import Storage
 import Mixpanel
 
-func telemetry(action action: String, props: [String: String]) {
+func telemetry(action action: String, props: [String: String]?) {
     let mixpanel = Mixpanel.sharedInstance()
     mixpanel.track(action, properties: props)
 }

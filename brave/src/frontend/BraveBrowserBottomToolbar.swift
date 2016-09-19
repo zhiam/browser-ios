@@ -122,6 +122,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
     }
 
     func onClickAddTab() {
+        telemetry(action: "add tab", props: ["bottomToolbar": "true"])
         let app = UIApplication.sharedApplication().delegate as! AppDelegate
         let isPrivate = PrivateBrowsing.singleton.isOn
         if isPrivate {
