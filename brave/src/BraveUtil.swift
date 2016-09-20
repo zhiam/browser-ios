@@ -4,12 +4,16 @@ import Foundation
 import Storage
 
 func telemetry(action action: String, props: [String: String]?) {
-    if MixpanelManager.sharedInstance.getMainInstance() == nil {
-        assert(false, "Mixpanel not initialized yet!")
+    #if NO_FABRIC
         return
-    }
-    let mixpanel = Mixpanel.mainInstance()
-    mixpanel.track(event: action, properties: props)
+    #else
+        if MixpanelManager.sharedInstance.getMainInstance() == nil {
+            assert(false, "Mixpanel not initialized yet!")
+            return
+        }
+        let mixpanel = Mixpanel.mainInstance()
+        mixpanel.track(event: action, properties: props)
+    #endif
 }
 
 func debugNoteIfNotMainThread() {
