@@ -20,7 +20,17 @@ class BraveMainWindow : UIWindow {
     // *Any* filter can stop the call to super.sendEvent
     func addTouchFilter(filter: WindowTouchFilter) {
         delegatesForTouchFiltering = delegatesForTouchFiltering.filter { $0.value != nil }
+        if let _ = delegatesForTouchFiltering.indexOf({ $0.value === filter }) {
+            return
+        }
         delegatesForTouchFiltering.append(Weak_WindowTouchFilter(value: filter))
+    }
+
+    func removeTouchFilter(filter: WindowTouchFilter) {
+        let found = delegatesForTouchFiltering.indexOf { $0.value === filter }
+        if let found = found {
+            delegatesForTouchFiltering.removeAtIndex(found)
+        }
     }
 
     override func sendEvent(event: UIEvent) {

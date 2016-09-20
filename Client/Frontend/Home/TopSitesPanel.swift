@@ -307,6 +307,7 @@ class TopSitesPanel: UIViewController {
 
 extension TopSitesPanel: HomePanel {
     func endEditing() {
+        (view.window as! BraveMainWindow).removeTouchFilter(self)
         editingThumbnails = false
         collection?.reloadData()
     }
@@ -748,7 +749,6 @@ extension TopSitesPanel : WindowTouchFilter {
     func filterTouch(touch: UITouch) -> Bool {
         if (touch.view as? UIButton) == nil && touch.phase == .Began {
             self.endEditing()
-            return true
         }
         return false
     }
