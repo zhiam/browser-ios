@@ -4,6 +4,10 @@ import Foundation
 import Storage
 
 func telemetry(action action: String, props: [String: String]?) {
+    if MixpanelManager.sharedInstance.getMainInstance() == nil {
+        assert(false, "Mixpanel not initialized yet!")
+        return
+    }
     let mixpanel = Mixpanel.mainInstance()
     mixpanel.track(event: action, properties: props)
 }
