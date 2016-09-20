@@ -8,8 +8,9 @@ echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/.bundle-id.xcconfig
 [[  -z $1 ]] || echo BETA=Beta >> xcconfig/.bundle-id.xcconfig
 echo $app_id
 # if a brave build, setup fabric and mixpanel
-if [ $app_id = com.brave.ios.browser ]; then
-  echo "./Fabric.framework/run $(head -1 ~/.brave-fabric-keys) $(tail -1 ~/.brave-fabric-keys)" > build-system/.fabric-key-setup.sh
+if [[ $app_id == com.brave.ios.browser* ]]; then
+    echo adding fabric
+    echo "./Fabric.framework/run $(head -1 ~/.brave-fabric-keys) $(tail -1 ~/.brave-fabric-keys)" > build-system/.fabric-key-setup.sh
   sed -e s/FABRIC_KEY_REMOVED/$(head -1 ~/.brave-fabric-keys)/  | 
   sed -e s/MIXPANEL_TOKEN_REMOVED/$(head -1 ~/.brave-mixpanel-key)/ BraveInfo.plist.template > BraveInfo.plist
 else
