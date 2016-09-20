@@ -198,6 +198,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        telemetry(action: "history item picked", props: nil)
         if let site = self.siteForIndexPath(indexPath),
            let url = NSURL(string: site.url) {
             let visitType = VisitType.Typed    // Means History, too.

@@ -190,6 +190,8 @@ class BoolSetting: Setting {
     @objc func switchValueChanged(control: UISwitch) {
         prefs.setBool(control.on, forKey: prefKey)
         settingDidChange?(control.on)
+
+        telemetry(action: "setting changed", props: ["(control.title)" : "\(control.on)"])
     }
 }
 

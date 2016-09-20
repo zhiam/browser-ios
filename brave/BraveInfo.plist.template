@@ -41,6 +41,10 @@
     <string>itms-books</string>
 		<string>org-appextension-feature-password-management</string>
 	</array>
+	
+		<key>MIXPANEL_TOKEN</key>
+		<string>MIXPANEL_TOKEN_REMOVED</string>
+	
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>

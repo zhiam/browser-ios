@@ -123,12 +123,16 @@ extension BrowserViewController: TabManagerDelegate {
             updateTabCountUsingTabManager(tabManager)
         }
         tab.browserDelegate = self
+
+        telemetry(action: "add tab", props: ["isPrivate" : "\(tab.isPrivate)"])
     }
 
     func tabManager(tabManager: TabManager, didRemoveTab tab: Browser) {
         updateTabCountUsingTabManager(tabManager)
         // browserDelegate is a weak ref (and the tab's webView may not be destroyed yet)
         // so we don't expcitly unset it.
+
+        telemetry(action: "remove tab", props: ["isPrivate" : "\(tab.isPrivate)"])
     }
 
     func tabManagerDidAddTabs(tabManager: TabManager) {

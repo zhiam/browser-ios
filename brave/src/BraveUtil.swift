@@ -2,6 +2,12 @@
 
 import Foundation
 import Storage
+import Mixpanel
+
+func telemetry(action action: String, props: [String: String]?) {
+    let mixpanel = Mixpanel.sharedInstance()
+    mixpanel.track(action, properties: props)
+}
 
 func debugNoteIfNotMainThread() {
     assert(NSThread.isMainThread(), "Func not for off-main use. This crashes in debug.")

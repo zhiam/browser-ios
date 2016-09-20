@@ -3,10 +3,10 @@
 import Foundation
 import Shared
 import Deferred
-
 #if !NO_FABRIC
     import Fabric
     import Crashlytics
+    import Mixpanel
 #endif
 
 #if !DEBUG
@@ -62,6 +62,9 @@ class BraveApp {
     class func willFinishLaunching_begin() {
         #if !NO_FABRIC
             Fabric.with([Crashlytics.self])
+            if let dict = NSBundle.mainBundle().infoDictionary, token = dict["MIXPANEL_TOKEN"] as? String {
+                Mixpanel.sharedInstanceWithToken(token)
+            }
         #endif
         BraveApp.setupCacheDefaults()
         NSURLProtocol.registerClass(URLProtocol);
@@ -153,7 +156,11 @@ class BraveApp {
 
     class func shouldHandleOpenURL(components: NSURLComponents) -> Bool {
         // TODO look at what x-callback is for
-        return components.scheme == "brave" || components.scheme == "brave-x-callback"
+        let handled = components.scheme == "brave" || components.scheme == "brave-x-callback"
+        if (handled) {
+            telemetry(action: "Open in brave", props: nil)
+        }
+        return handled
     }
 
     class func getPrefs() -> Prefs? {

@@ -127,6 +127,8 @@ class PicklistSettingMainItem<T>: Setting, PicklistSettingOptionsViewDelegate {
 
     func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
         profile.prefs.setInt(Int32(pickedOptionId), forKey: prefName)
+
+        telemetry(action: "setting changed", props: [prefName : status.string])
     }
 }
 

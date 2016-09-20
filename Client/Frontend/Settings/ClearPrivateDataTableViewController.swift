@@ -176,6 +176,8 @@ class ClearPrivateDataTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         guard indexPath.section == SectionButton else { return }
 
+        telemetry(action: "Clear private data", props: nil)
+        
         getApp().profile?.prefs.setObject(self.toggles, forKey: TogglesPrefKey)
         self.clearButtonEnabled = false
         tableView.deselectRowAtIndexPath(indexPath, animated: false)

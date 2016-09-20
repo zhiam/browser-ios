@@ -3448,6 +3448,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/OnePasswordExtension.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Deferred.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftKeychainWrapper.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/MixPanel.framework",
 			);
 			name = "Copy Carthage Dependencies";
 			outputPaths = (

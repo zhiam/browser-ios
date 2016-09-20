@@ -203,6 +203,7 @@ extension BrowserViewController: URLBarDelegate {
 
 extension BrowserViewController: BrowserToolbarDelegate {
     func browserToolbarDidPressBack(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+        telemetry(action: "back button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.goBack()
     }
 
@@ -215,14 +216,17 @@ extension BrowserViewController: BrowserToolbarDelegate {
     }
 
     func browserToolbarDidPressReload(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+        telemetry(action: "reload button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.reload()
     }
 
     func browserToolbarDidPressStop(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+        telemetry(action: "stop button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.stop()
     }
 
     func browserToolbarDidPressForward(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+        telemetry(action: "forward button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.goForward()
     }
 
@@ -256,6 +260,7 @@ extension BrowserViewController: BrowserToolbarDelegate {
     }
 
     func browserToolbarDidPressShare(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+        telemetry(action: "share button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         if let tab = tabManager.selectedTab, url = tab.displayURL {
             let sourceView = self.navigationToolbar.shareButton
             presentActivityViewController(url, tab: tab, sourceView: sourceView.superview, sourceRect: sourceView.frame, arrowDirection: .Up)
