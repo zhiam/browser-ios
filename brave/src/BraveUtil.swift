@@ -2,7 +2,6 @@
 
 import Foundation
 import Storage
-import Mixpanel
 
 func telemetry(action action: String, props: [String: String]?) {
     let mixpanel = Mixpanel.mainInstance()
