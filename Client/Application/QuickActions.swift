@@ -12,7 +12,6 @@ import Storage
 import Shared
 import XCGLogger
 
-@available(iOS 9, *)
 enum ShortcutType: String {
     case NewTab
     case NewPrivateTab
@@ -30,12 +29,10 @@ enum ShortcutType: String {
     }
 }
 
-@available(iOS 9, *)
 protocol QuickActionHandlerDelegate {
     func handleShortCutItemType(type: ShortcutType, userData: [String: NSSecureCoding]?)
 }
 
-@available(iOS 9, *)
 class QuickActions: NSObject {
 
     private let log = Logger.browserLogger

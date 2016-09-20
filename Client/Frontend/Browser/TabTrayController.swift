@@ -228,7 +228,6 @@ class TabCell: UICollectionViewCell {
     }
 }
 
-@available(iOS 9, *)
 struct PrivateModeStrings {
     static let toggleAccessibilityLabel = NSLocalizedString("Private Mode", tableName: "PrivateBrowsing", comment: "Accessibility label for toggling on/off private mode")
     static let toggleAccessibilityHint = NSLocalizedString("Turns private mode on or off", tableName: "PrivateBrowsing", comment: "Accessiblity hint for toggling on/off private mode")
@@ -269,7 +268,6 @@ class TabTrayController: UIViewController {
     }
 
 #if !BRAVE_NO_PRIVATE_MODE
-    @available(iOS 9, *)
     lazy var togglePrivateMode: UIButton = {
         let button = UIButton()
         button.setTitle(NSLocalizedString("Private", comment: "Private button title"), forState: .Normal)
@@ -291,7 +289,6 @@ class TabTrayController: UIViewController {
         return button
     }()
 
-    @available(iOS 9, *)
     private lazy var emptyPrivateTabsView: EmptyPrivateTabsView = {
         let emptyView = EmptyPrivateTabsView()
         emptyView.learnMoreButton.addTarget(self, action: #selector(TabTrayController.SELdidTapLearnMore), forControlEvents: UIControlEvents.TouchUpInside)
@@ -477,7 +474,6 @@ class TabTrayController: UIViewController {
         openNewTab()
     }
   #if !BRAVE_NO_PRIVATE_MODE
-    @available(iOS 9, *)
     func SELdidTapLearnMore() {
         let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
         if let langID = NSLocale.preferredLanguages().first {
@@ -486,9 +482,6 @@ class TabTrayController: UIViewController {
         }
     }
     
-    
-
-    @available(iOS 9, *)
     func SELdidTogglePrivateMode() {
         let scaleDownTransform = CGAffineTransformMakeScale(0.9, 0.9)
 
@@ -565,13 +558,11 @@ class TabTrayController: UIViewController {
         }
     }
 
-    @available(iOS 9, *)
     private func privateTabsAreEmpty() -> Bool {
         return privateMode && tabManager.tabs.privateTabs.count == 0
     }
 #endif
 
-    @available(iOS 9, *)
     func changePrivacyMode(isPrivate: Bool) {
 #if !BRAVE_NO_PRIVATE_MODE
         if isPrivate != privateMode {
