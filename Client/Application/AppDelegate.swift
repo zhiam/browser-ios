@@ -212,6 +212,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         log.debug("Done with applicationDidFinishLaunching.")
+
+        BraveApp.didFinishLaunching()
+        
         return shouldPerformAdditionalDelegateHandling
     }
 

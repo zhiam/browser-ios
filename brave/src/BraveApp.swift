@@ -57,14 +57,18 @@ class BraveApp {
         NSURLCache.sharedURLCache().diskCapacity = 40 * 1024 * 1024;
     }
 
-    // Be aware: the Prefs object has not been created yet
-    class func willFinishLaunching_begin() {
+    class func didFinishLaunching() {
         #if !NO_FABRIC
             Fabric.with([Crashlytics.self])
             if let dict = NSBundle.mainBundle().infoDictionary, token = dict["MIXPANEL_TOKEN"] as? String {
                 Mixpanel.initialize(token: token)
+                // ^ note setting this in willFinishLaunching is causing a crash, keep it in didFinish
             }
         #endif
+    }
+
+    // Be aware: the Prefs object has not been created yet
+    class func willFinishLaunching_begin() {
         BraveApp.setupCacheDefaults()
         NSURLProtocol.registerClass(URLProtocol);
 
