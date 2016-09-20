@@ -6,7 +6,6 @@ import Deferred
 #if !NO_FABRIC
     import Fabric
     import Crashlytics
-    import Mixpanel
 #endif
 
 #if !DEBUG
@@ -63,7 +62,7 @@ class BraveApp {
         #if !NO_FABRIC
             Fabric.with([Crashlytics.self])
             if let dict = NSBundle.mainBundle().infoDictionary, token = dict["MIXPANEL_TOKEN"] as? String {
-                Mixpanel.sharedInstanceWithToken(token)
+                Mixpanel.initialize(token: token)
             }
         #endif
         BraveApp.setupCacheDefaults()

@@ -5,8 +5,8 @@ import Storage
 import Mixpanel
 
 func telemetry(action action: String, props: [String: String]?) {
-    let mixpanel = Mixpanel.sharedInstance()
-    mixpanel.track(action, properties: props)
+    let mixpanel = Mixpanel.mainInstance()
+    mixpanel.track(event: action, properties: props)
 }
 
 func debugNoteIfNotMainThread() {

@@ -10,7 +10,7 @@ echo $app_id
 # if a brave build, setup fabric and mixpanel
 if [ $app_id = com.brave.ios.browser ]; then
   echo "./Fabric.framework/run $(head -1 ~/.brave-fabric-keys) $(tail -1 ~/.brave-fabric-keys)" > build-system/.fabric-key-setup.sh
-  sed -e s/FABRIC_KEY_REMOVED/$(head -1 ~/.brave-fabric-keys)/ BraveInfo.plist.template | 
+  sed -e s/FABRIC_KEY_REMOVED/$(head -1 ~/.brave-fabric-keys)/  | 
   sed -e s/MIXPANEL_TOKEN_REMOVED/$(head -1 ~/.brave-mixpanel-key)/ BraveInfo.plist.template > BraveInfo.plist
 else
    >build-system/.fabric-key-setup.sh
