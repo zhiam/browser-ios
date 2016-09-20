@@ -46,6 +46,12 @@ class AdBlocker {
         if domain.contains("yahoo") && url.contains("s.yimg.com/zz/combo") {
             return true
         }
+
+        // issue 385
+        if domain.contains("m.jpost.com") {
+            return true
+        }
+
         return false
     }
 
