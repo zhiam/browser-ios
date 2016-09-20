@@ -1,5 +1,6 @@
 github "Alamofire/Alamofire" "2.0.2"
 github "mozilla/Deferred" "2.0.1"
+github "xmartlabs/Eureka" "1.7.0"
 github "swisspol/GCDWebServer" "3.3.2"
 github "kif-framework/KIF" "v3.3.2"
 github "rs/SDWebImage" "3.8.2"

@@ -177,7 +177,9 @@ extension SQLiteHistory: BrowserHistory {
             // Insert instead.
             let j = self.insertSite(site, atTime: now, withConnection: conn)
             if j > 0 {
-                NSNotificationCenter.defaultCenter().postNotificationName(kNotificationSiteAddedToHistory, object: nil)
+                dispatch_async(dispatch_get_main_queue()) {
+                    NSNotificationCenter.defaultCenter().postNotificationName(kNotificationSiteAddedToHistory, object: nil)
+                }
             }
             return j
         }

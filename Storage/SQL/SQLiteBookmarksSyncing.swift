@@ -453,33 +453,50 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
             return success
         }
     }
-    
-    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID:String?, completion:dispatch_block_t)  {
-        if newTitle == nil && newParentID == nil {
-            //just return
+
+    public func editBookmarkFolder(folder:BookmarkFolder, title:String, completion:dispatch_block_t)  {
+        
+        let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
+            + "set title='\(title)' "
+            +  "where guid='\(folder.guid)'"
+        
+        let structureArgs = Args()
+        var err: NSError?
+        
+        self.db.transaction(&err) { (conn, err) -> Bool in
+            
+            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(folder.guid) to title=[\(title)].") {
+                return false
+            }
+            
             completion()
-            return
+            return true
         }
+    }
+
+    
+    public func editBookmarkItem(bookmark:BookmarkNode, title:String, parentGUID:String, completion:dispatch_block_t)  {
         
-        var updateQuery = "UPDATE \(TableBookmarksLocal) "
-        if newTitle != nil && newParentID != nil {
-            updateQuery += " set title='\(newTitle)', parentid='\(newParentID)' "
-        }
-        else if newTitle != nil {
-            updateQuery += " set title='\(newTitle)' "
-        }
-        else {
-            updateQuery += " set parentid='\(newParentID)' "
-        }
+        let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
+                                + "set title='\(title)', parentid='\(parentGUID)' "
+                                +  "where guid='\(bookmark.guid)'"
+
+        let newIndex = "(SELECT (COALESCE(MAX(idx), -1) + 1) AS newIndex FROM \(TableBookmarksLocalStructure) WHERE parent = ?)"
+        let structSQL = "UPDATE \(TableBookmarksLocalStructure) set parent=?, idx=" +
+            "\(newIndex) where child='\(bookmark.guid)'"
+        let structArgs: Args = [parentGUID, parentGUID]
         
-        updateQuery +=  " where guid='\(bookmark.guid)'"
         
         let structureArgs = Args()
         var err: NSError?
 
         self.db.transaction(&err) { (conn, err) -> Bool in
-            //TODO moving a bookmark to another folder seems to be failing
-            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to new title \(newTitle).") {
+
+            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
+                return false
+            }
+            
+            if !self.change(conn, sql: structSQL, args: structArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
                 return false
             }
             
@@ -701,8 +718,12 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
         return self.buffer.applyRecords(records)
     }
 
-    public func editBookmark(bookmark:BookmarkNode, newTitle:String?, newParentID: String? = nil, completion:dispatch_block_t)  {
-        self.buffer.editBookmark(bookmark, newTitle:newTitle, newParentID:newParentID, completion:completion)
+    public func editBookmarkFolder(bookmark:BookmarkFolder, title:String, completion:dispatch_block_t)  {
+        self.buffer.editBookmarkFolder(bookmark, title:title, completion:completion)
+    }
+
+    public func editBookmarkItem(bookmark:BookmarkItem, title:String, parentGUID: String, completion:dispatch_block_t)  {
+        self.buffer.editBookmarkItem(bookmark, title:title, parentGUID:parentGUID, completion:completion)
     }
     
     public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
@@ -922,7 +943,9 @@ extension SQLiteBookmarkBufferStorage {
         }.allSucceed()
 
         deferred.upon { success in
-            notificationCenter.postNotificationName(NotificationBookmarkBufferValidated, object: Box(validations))
+            dispatch_async(dispatch_get_main_queue()) {
+                notificationCenter.postNotificationName(NotificationBookmarkBufferValidated, object: Box(validations))
+            }
         }
 
         return deferred

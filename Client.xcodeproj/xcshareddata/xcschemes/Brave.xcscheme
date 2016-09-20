@@ -56,6 +56,26 @@
                ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2FCAE2231ABB51F800877008"
+               BuildableName = "StorageTests.xctest"
+               BlueprintName = "StorageTests"
+               ReferencedContainer = "container:Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E4D567211ADECE2700F1EFE7"
+               BuildableName = "ReadingListTests.xctest"
+               BlueprintName = "ReadingListTests"
+               ReferencedContainer = "container:Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

@@ -9,7 +9,7 @@ import Shared
 /**
  * The kinda-immutable base interface for bookmarks and folders.
  */
-public class BookmarkNode {
+public class BookmarkNode : Equatable {
     public var id: Int? = nil
     public let guid: GUID
     public var title: String
@@ -25,6 +25,10 @@ public class BookmarkNode {
     public var canDelete: Bool {
         return self.isEditable
     }
+}
+
+public func==(lhs:BookmarkNode, rhs:BookmarkNode) -> Bool {
+    return lhs.guid == rhs.guid
 }
 
 public class BookmarkSeparator: BookmarkNode {
