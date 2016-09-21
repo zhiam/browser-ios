@@ -5,12 +5,14 @@ struct BraveUX {
 
     static var PanelShadowWidth = 15
 
-    static var TitleForBraveProtectionOff = "Shields Down"
-    static var TitleForBraveProtectionOn = "Shields Up"
+    static var TitleForBraveProtectionOff = NSLocalizedString("Shields Down", comment: "message shown briefly in URL bar")
+    static var TitleForBraveProtectionOn = NSLocalizedString("Shields Up", comment: "message shown briefly in URL bar")
     static let BraveOrange = UIColor(colorLiteralRed: 1.0, green: 80/255.0, blue: 0, alpha: 1.0)
     static let BraveButtonMessageInUrlBarColor = BraveOrange
     static let BraveButtonMessageInUrlBarShowTime = 0.5
     static let BraveButtonMessageInUrlBarFadeTime = 0.7
+
+    static let TabsBarPlusButtonWidth = (UIDevice.currentDevice().userInterfaceIdiom == .Pad) ? 40 : 0
 
     // I am considering using DeviceInfo.isBlurSupported() to set this, and reduce heavy animations
     static var IsHighLoadAnimationAllowed = true

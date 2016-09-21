@@ -19,6 +19,7 @@ class TabsBarViewController: UIViewController {
 
     var tabs = [TabWidget]()
     var spacerLeftmost = UIView() // Hiddens space on the left used during drag-and-drop
+    var plusButton = UIButton()
 
     var leftOverflowIndicator : CAGradientLayer = CAGradientLayer()
     var rightOverflowIndicator : CAGradientLayer = CAGradientLayer()
@@ -40,7 +41,33 @@ class TabsBarViewController: UIViewController {
         view.addSubview(scrollView)
 
         scrollView.snp_makeConstraints { (make) in
-            make.edges.equalTo(scrollView.superview!)
+            make.bottom.top.left.equalTo(view)
+            make.right.equalTo(view).inset(BraveUX.TabsBarPlusButtonWidth)
+        }
+
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            plusButton.setImage(UIImage(named: "add-16px")!.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+            plusButton.imageEdgeInsets = UIEdgeInsetsMake(6, 6, 6, 10)
+            plusButton.tintColor = UIColor.whiteColor()
+            plusButton.contentMode = .ScaleAspectFit
+            plusButton.addTarget(self, action: #selector(addTabPressed), forControlEvents: .TouchUpInside)
+            view.addSubview(plusButton)
+
+            plusButton.snp_makeConstraints { (make) in
+                make.right.top.bottom.equalTo(view)
+                make.width.equalTo(BraveUX.TabsBarPlusButtonWidth)
+            }
+
+            let vertLine = UIView()
+            vertLine.backgroundColor = UIColor.blackColor()
+            plusButton.addSubview(vertLine)
+            vertLine.snp_makeConstraints { (make) in
+                make.left.equalTo(plusButton)
+                make.width.equalTo(1)
+                make.height.equalTo(22)
+                make.centerY.equalTo(plusButton.snp_centerY)
+            }
+
         }
 
         getApp().tabManager.addDelegate(self)
@@ -63,8 +90,12 @@ class TabsBarViewController: UIViewController {
         }
     }
 
+    func addTabPressed() {
+        getApp().tabManager.addTabAndSelect()
+    }
+
     func tabOverflowWidth(tabCount: Int) -> CGFloat {
-        let overflow = CGFloat(tabCount) * minTabWidth - view.frame.width
+        let overflow = CGFloat(tabCount) * minTabWidth - scrollView.frame.width
         return overflow > 0 ? overflow : 0
     }
 
@@ -82,13 +113,13 @@ class TabsBarViewController: UIViewController {
 
     func updateContentSize(tabCount: Int) {
         struct staticWidth { static var val = CGFloat(0) }
-        if abs(staticWidth.val - view.bounds.width) > 10 {
+        if abs(staticWidth.val - scrollView.bounds.width) > 10 {
             let w = calcTabWidth(tabs.count)
             updateTabWidthConstraint(width: w)
             overflowIndicators()
         }
-        staticWidth.val = view.bounds.width
-        scrollView.contentSize = CGSizeMake(view.bounds.width + tabOverflowWidth(tabCount), view.bounds.height)
+        staticWidth.val = scrollView.bounds.width
+        scrollView.contentSize = CGSizeMake(scrollView.bounds.width + tabOverflowWidth(tabCount), scrollView.bounds.height)
     }
 
     func overflowIndicators() {
@@ -130,9 +161,9 @@ class TabsBarViewController: UIViewController {
     func calcTabWidth(tabCount: Int) -> CGFloat {
         func calc() -> CGFloat {
             if tabCount < 2 {
-                return view.frame.width
+                return scrollView.frame.width
             }
-            var w = view.frame.width / (CGFloat(tabCount))
+            var w = scrollView.frame.width / (CGFloat(tabCount))
             if w < minTabWidth {
                 w = minTabWidth
             }
