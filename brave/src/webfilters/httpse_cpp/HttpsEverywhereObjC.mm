@@ -34,6 +34,9 @@ HTTPSEverywhere httpse;
 {
     @synchronized(self) {
         NSString *host = url.host;
+        if (!host || host.length < 1) {
+            return @"";
+        }
         NSString *path = [url.absoluteString stringByReplacingOccurrencesOfString:[@"http://" stringByAppendingString:host]
                                                       withString:@""];
         if (path.length < 1) {
