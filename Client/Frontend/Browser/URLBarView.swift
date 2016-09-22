@@ -298,15 +298,11 @@ class URLBarView: UIView {
     }
 
     class func updateTabCount(tabsButton: TabsButton, inout clonedTabsButton: TabsButton?, count: Int, animated: Bool = true) {
-
-        struct LastCount {
-            static var value = -1
-        }
+        let currentCount = tabsButton.titleLabel.text
         // only animate a tab count change if the tab count has actually changed
-        if LastCount.value > -1 && LastCount.value == count {
+        if currentCount == "\(count)" {
             return
         }
-        LastCount.value = count
 
         // make a 'clone' of the tabs button
         let newTabsButton = tabsButton.clone() as! TabsButton
@@ -358,7 +354,6 @@ class URLBarView: UIView {
 
             // By this time, the 'count' func argument may be out of date, use the correct current count
             let currentCount = getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.count
-            LastCount.value = currentCount
             tabsButton.titleLabel.text = "\(currentCount)"
             tabsButton.accessibilityLabel = "\(currentCount)"
         }
@@ -489,8 +484,8 @@ class URLBarView: UIView {
             self.transitionToOverlay(cancel)
             self.setNeedsUpdateConstraints()
             self.layoutIfNeeded()
-        }, completion: { _ in
-            self.updateViewsForOverlayModeAndToolbarChanges()
+            }, completion: { _ in
+                self.updateViewsForOverlayModeAndToolbarChanges()
         })
     }
 
@@ -575,7 +570,7 @@ extension URLBarView: BrowserLocationViewDelegate {
     func browserLocationViewDidTapReload(browserLocationView: BrowserLocationView) {
         delegate?.urlBarDidPressReload(self)
     }
-    
+
     func browserLocationViewDidTapStop(browserLocationView: BrowserLocationView) {
         delegate?.urlBarDidPressStop(self)
     }
@@ -629,7 +624,7 @@ extension URLBarView {
 }
 
 extension URLBarView: Themeable {
-    
+
     func applyTheme(themeName: String) {
         locationView.applyTheme(themeName)
         locationTextField?.applyTheme(themeName)
@@ -742,7 +737,7 @@ extension ToolbarTextField: Themeable {
             log.error("Unable to apply unknown theme \(themeName)")
             return
         }
-
+        
         backgroundColor = theme.backgroundColor
         textColor = theme.textColor
         clearButtonTintColor = theme.buttonTintColor
