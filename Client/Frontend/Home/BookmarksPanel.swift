@@ -608,6 +608,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 cell.imageView?.setIcon(bookmark.favicon, withPlaceholder: FaviconFetcher.defaultFavicon)
             }
             cell.accessoryType = .None
+            cell.setNeedsLayout()
 
             return cell
         case is BookmarkSeparator:
@@ -616,9 +617,11 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
             cell.textLabel?.font = UIFont.boldSystemFontOfSize(14)
             cell.textLabel?.text = bookmark.title
+            cell.textLabel?.setNeedsLayout()
             cell.imageView?.image = UIImage(named: "bookmarks_folder_hollow")
 
             cell.accessoryType = .DisclosureIndicator
+            cell.setNeedsLayout()
 
             return cell
         default:
