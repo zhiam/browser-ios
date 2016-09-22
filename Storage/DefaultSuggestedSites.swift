@@ -25,7 +25,7 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://m.facebook.com/",
-                bgColor: "6685cd",
+                bgColor: "3b5998",
                 imageUrl: "asset://suggestedsites_facebook",
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 632,
