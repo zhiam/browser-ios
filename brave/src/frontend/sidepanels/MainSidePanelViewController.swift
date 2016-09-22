@@ -93,6 +93,10 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     }
     
     func willHide() {
+        //check if we are editing bookmark, if so pop controller then continue
+        if self.bookmarksNavController?.visibleViewController is BookmarkEditingViewController {
+           self.bookmarksNavController?.popViewControllerAnimated(false)
+        }
         if self.bookmarksPanel.currentBookmarksPanel().tableView.editing {
             self.bookmarksPanel.currentBookmarksPanel().disableTableEditingMode()
         }
