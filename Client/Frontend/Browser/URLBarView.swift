@@ -298,31 +298,22 @@ class URLBarView: UIView {
     }
 
     class func updateTabCount(tabsButton: TabsButton, inout clonedTabsButton: TabsButton?, count: Int, animated: Bool = true) {
-        let currentCount = tabsButton.titleLabel.text
+
+        struct LastCount {
+            static var value = -1
+        }
         // only animate a tab count change if the tab count has actually changed
-        if currentCount == count.description {
+        if LastCount.value > -1 && LastCount.value == count {
             return
         }
-//
-//            // make a 'clone' of the tabs button
-//            let newTabsButton = self.tabsButton.clone() as! TabsButton
-//            self.clonedTabsButton = newTabsButton
-//            newTabsButton.addTarget(self, action: #selector(URLBarView.SELdidClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
-//            newTabsButton.titleLabel.text = count.description
-//            newTabsButton.accessibilityValue = count.description
-//            addSubview(newTabsButton)
-//            newTabsButton.snp_makeConstraints { make in
-//                make.centerY.equalTo(self.locationContainer)
-//                make.trailing.equalTo(self)
-//                make.size.equalTo(UIConstants.ToolbarHeight)
-//            }
+        LastCount.value = count
 
         // make a 'clone' of the tabs button
         let newTabsButton = tabsButton.clone() as! TabsButton
         clonedTabsButton = newTabsButton
         // BRAVE: see clone(), do not to this here: newTabsButton.addTarget(parent, action: "SELdidClickAddTab", forControlEvents: UIControlEvents.TouchUpInside)
-        newTabsButton.titleLabel.text = count.description
-        newTabsButton.accessibilityValue = count.description
+        newTabsButton.titleLabel.text = "\(count)"
+        newTabsButton.accessibilityValue = "\(count)"
 
         // BRAVE added
         guard let parentView = tabsButton.superview else { return }
@@ -365,10 +356,11 @@ class URLBarView: UIView {
             tabsButton.insideButton.layer.transform = CATransform3DIdentity
             tabsButton.accessibilityLabel = NSLocalizedString("Show Tabs", comment: "Accessibility label for the tabs button in the (top) browser toolbar")
 
-            if finished {
-                tabsButton.titleLabel.text = count.description
-                tabsButton.accessibilityValue = count.description
-            }
+            // By this time, the 'count' func argument may be out of date, use the correct current count
+            let currentCount = getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.count
+            LastCount.value = currentCount
+            tabsButton.titleLabel.text = "\(currentCount)"
+            tabsButton.accessibilityLabel = "\(currentCount)"
         }
 
         if animated {
@@ -376,7 +368,6 @@ class URLBarView: UIView {
         } else {
             completion(true)
         }
-
     }
 
     func updateProgressBar(progress: Float, dueToTabChange: Bool = false) {
