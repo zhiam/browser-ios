@@ -100,13 +100,23 @@ class BraveContextMenu {
             return
         }
 
-        guard let hit = ElementAtPoint().getHit(tapLocation) else {
+        guard let webView = BraveApp.getCurrentWebView() else { return }
+
+        let hit: (url: String?, image: String?, urlTarget: String?)?
+
+        if [".jpg", ".png", ".gif"].filter({ webView.URL?.absoluteString.endsWith($0) ?? false }).count > 0 {
+            // web view is just showing an image
+            hit = (url:nil, image:webView.URL!.absoluteString, urlTarget:nil)
+        } else {
+            hit = ElementAtPoint().getHit(tapLocation)
+        }
+        if hit == nil {
             // No link or image found, not for this class to handle
             resetTimer()
             return
         }
 
-        tappedElement = ContextMenuHelper.Elements(link: hit.url != nil ? NSURL(string: hit.url!) : nil, image: hit.image != nil ? NSURL(string: hit.image!) : nil)
+        tappedElement = ContextMenuHelper.Elements(link: hit!.url != nil ? NSURL(string: hit!.url!) : nil, image: hit!.image != nil ? NSURL(string: hit!.image!) : nil)
 
         func blockOtherGestures(views: [UIView]?) {
             guard let views = views else { return }
