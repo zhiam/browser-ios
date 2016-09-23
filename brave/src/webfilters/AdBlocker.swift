@@ -143,7 +143,7 @@ class AdBlocker {
         var mainDocDomain = request.mainDocumentURL?.host ?? ""
         mainDocDomain = stripLocalhostWebServer(mainDocDomain)
 
-        if isWhitelistedUrl(url.absoluteString, forMainDocDomain: mainDocDomain) {
+        if isWhitelistedUrl(url.absoluteString!, forMainDocDomain: mainDocDomain) {
             return false
         }
 
@@ -152,7 +152,7 @@ class AdBlocker {
         }
 
         // A cache entry is like: fifoOfCachedUrlChunks[0]["www.microsoft.com_http://some.url"] = true/false for blocking
-        let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString)
+        let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString!)
 
         if let checkedItem = fifoCacheOfUrlsChecked.getItem(key) {
             if checkedItem === NSNull() {

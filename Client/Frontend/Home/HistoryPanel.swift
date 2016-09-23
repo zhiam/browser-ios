@@ -112,7 +112,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
     /**
     * fetch from the profile
     **/
-    private func fetchData() -> Deferred<Maybe<Cursor<Site>>> {
+    private func fetchData() -> Deferred {
         return profile.history.getSitesByLastVisit(QueryLimit)
     }
 

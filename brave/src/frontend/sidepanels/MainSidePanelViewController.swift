@@ -130,7 +130,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         //TODO -- need to separate the knowledge of whether current site is bookmarked or not from this UI button
         //tracked in https://github.com/brave/browser-ios/issues/375
         if addBookmarkButton.selected {
-            browserViewController?.removeBookmark(url) {
+            browserViewController?.removeBookmark(url!) {
                 self.bookmarksPanel.currentBookmarksPanel().reloadData()
             }
         } else {
@@ -141,9 +141,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 folderTitle = currentFolder.title
             }
 
-            browserViewController?.addBookmark(url, title: tab.title, folderId: folderId, folderTitle: folderTitle){
+            browserViewController?.addBookmark(url!, title: tab.title, folderId: folderId, folderTitle: folderTitle) {
                 self.bookmarksPanel.currentBookmarksPanel().reloadData()
-                
             }
         }
     }

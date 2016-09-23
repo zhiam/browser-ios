@@ -13,12 +13,12 @@ public protocol Favicons {
     /**
      * Returns the ID of the added favicon.
      */
-    func addFavicon(icon: Favicon) -> Deferred<Maybe<Int>>
+    func addFavicon(icon: Favicon) -> Deferred
 
     /**
      * Returns the ID of the added favicon.
      */
-    func addFavicon(icon: Favicon, forSite site: Site) -> Deferred<Maybe<Int>>
+    func addFavicon(icon: Favicon, forSite site: Site) -> Deferred
 
-    func getFavicon(forSite site: Site) -> Deferred<Maybe<Cursor<Favicon?>>>
+    func getFavicon(forSite site: Site) -> Deferred
 }

@@ -93,12 +93,12 @@ class OpenPdfInHelper: NSObject, OpenInHelper, UIDocumentInteractionControllerDe
             }
             let contentsOfFile = NSData(contentsOfURL: url)
             let dirPath = NSURL(string: NSTemporaryDirectory())!.URLByAppendingPathComponent("pdfs")
-            let filePath = dirPath.URLByAppendingPathComponent(lastPathComponent)
+            let filePath = dirPath!.URLByAppendingPathComponent(lastPathComponent)
             let fileManager = NSFileManager.defaultManager()
             do {
-                try fileManager.createDirectoryAtPath(dirPath.absoluteString, withIntermediateDirectories: true, attributes: nil)
-                if fileManager.createFileAtPath(filePath.absoluteString, contents: contentsOfFile, attributes: nil) {
-                    let openInURL = NSURL(fileURLWithPath: filePath.absoluteString)
+                try fileManager.createDirectoryAtPath(dirPath!.absoluteString!, withIntermediateDirectories: true, attributes: nil)
+                if fileManager.createFileAtPath(filePath!.absoluteString!, contents: contentsOfFile, attributes: nil) {
+                    let openInURL = NSURL(fileURLWithPath: filePath!.absoluteString!)
                     createDocumentControllerForURL(openInURL)
                 } else {
                     log.error("Unable to create local version of PDF file at \(filePath)")

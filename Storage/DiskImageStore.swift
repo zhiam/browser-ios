@@ -43,7 +43,7 @@ public class DiskImageStore {
     }
 
     /// Gets an image for the given key if it is in the store.
-    public func get(key: String) -> Deferred<Maybe<UIImage>> {
+    public func get(key: String) -> Deferred {
         if !keys.contains(key) {
             return deferMaybe(DiskImageStoreErrorType(description: "Image key not found"))
         }

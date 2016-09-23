@@ -21,7 +21,7 @@ protocol Changeable {
 }
 
 protocol Queryable {
-    func runQuery<T>(sql: String, args: Args?, factory: SDRow -> T) -> Deferred<Maybe<Cursor<T>>>
+    func runQuery<T>(sql: String, args: Args?, factory: SDRow -> T) -> Deferred
 }
 
 // Version 1 - Basic history table.
@@ -363,11 +363,11 @@ extension BrowserDB {
         return walk(chunks, f: { insertChunk(Array($0)) })
     }
 
-    func runWithConnection<T>(block: (connection: SQLiteDBConnection, inout err: NSError?) -> T) -> Deferred<Maybe<T>> {
+    func runWithConnection<T>(block: (connection: SQLiteDBConnection, inout err: NSError?) -> T) -> Deferred {
         return DeferredDBOperation(db: self.db, block: block).start()
     }
 
-    func write(sql: String, withArgs args: Args? = nil) -> Deferred<Maybe<Int>> {
+    func write(sql: String, withArgs args: Args? = nil) -> Deferred {
         return self.runWithConnection() { (connection, err) -> Int in
             err = connection.executeChange(sql, withArgs: args)
             if err == nil {
@@ -424,18 +424,18 @@ extension BrowserDB: Changeable {
 }
 
 extension BrowserDB: Queryable {
-    func runQuery<T>(sql: String, args: Args?, factory: SDRow -> T) -> Deferred<Maybe<Cursor<T>>> {
+    func runQuery<T>(sql: String, args: Args?, factory: SDRow -> T) -> Deferred {
         return runWithConnection { (connection, err) -> Cursor<T> in
             return connection.executeQuery(sql, factory: factory, withArgs: args)
         }
     }
 
-    func queryReturnsResults(sql: String, args: Args?=nil) -> Deferred<Maybe<Bool>> {
+    func queryReturnsResults(sql: String, args: Args?=nil) -> Deferred {
         return self.runQuery(sql, args: args, factory: { row in true })
          >>== { deferMaybe($0[0] ?? false) }
     }
 
-    func queryReturnsNoResults(sql: String, args: Args?=nil) -> Deferred<Maybe<Bool>> {
+    func queryReturnsNoResults(sql: String, args: Args?=nil) -> Deferred {
         return self.runQuery(sql, args: nil, factory: { row in false })
           >>== { deferMaybe($0[0] ?? true) }
     }

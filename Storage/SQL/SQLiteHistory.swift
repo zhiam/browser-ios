@@ -23,7 +23,7 @@ class NoSuchRecordError: MaybeErrorType {
     }
 }
 
-func failOrSucceed<T>(err: NSError?, op: String, val: T) -> Deferred<Maybe<T>> {
+func failOrSucceed<T>(err: NSError?, op: String, val: T) -> Deferred {
     if let err = err {
         log.debug("\(op) failed: \(err.localizedDescription)")
         return deferMaybe(DatabaseError(err: err))
@@ -40,7 +40,7 @@ private var ignoredSchemes = ["about"]
 
 public func isIgnoredURL(url: NSURL) -> Bool {
     let scheme = url.scheme
-    if let _ = ignoredSchemes.indexOf(scheme) {
+    if let _ = ignoredSchemes.indexOf(scheme!) {
         return true
     }
 
@@ -263,17 +263,17 @@ extension SQLiteHistory: BrowserHistory {
          >>> { self.addLocalVisitForExistingSite(visit) }
     }
 
-    public func getSitesByFrecencyWithHistoryLimit(limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getSitesByFrecencyWithHistoryLimit(limit: Int) -> Deferred {
         return self.getSitesByFrecencyWithHistoryLimit(limit, includeIcon: true)
     }
 
-    public func getSitesByFrecencyWithHistoryLimit(limit: Int, includeIcon: Bool) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getSitesByFrecencyWithHistoryLimit(limit: Int, includeIcon: Bool) -> Deferred {
         // Exclude redirect domains. Bug 1194852.
         let (whereData, groupBy) = self.topSiteClauses()
         return self.getFilteredSitesByFrecencyWithHistoryLimit(limit, bookmarksLimit: 0, groupClause: groupBy, whereData: whereData, includeIcon: includeIcon)
     }
 
-    public func getTopSitesWithLimit(limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getTopSitesWithLimit(limit: Int) -> Deferred {
         let topSitesQuery = "SELECT * FROM \(TableCachedTopSites) ORDER BY frecencies DESC LIMIT (?)"
         let factory = SQLiteHistory.iconHistoryColumnFactory
         return self.db.runQuery(topSitesQuery, args: [limit], factory: factory)
@@ -283,7 +283,7 @@ extension SQLiteHistory: BrowserHistory {
         prefs.setBool(false, forKey: PrefsKeys.KeyTopSitesCacheIsValid)
     }
 
-    public func updateTopSitesCacheIfInvalidated() -> Deferred<Maybe<Bool>> {
+    public func updateTopSitesCacheIfInvalidated() -> Deferred {
         if prefs.boolForKey(PrefsKeys.KeyTopSitesCacheIsValid) ?? false {
             return deferMaybe(false)
         }
@@ -338,15 +338,15 @@ extension SQLiteHistory: BrowserHistory {
         }
     }
 
-    public func getSitesByFrecencyWithHistoryLimit(limit: Int, bookmarksLimit: Int, whereURLContains filter: String) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getSitesByFrecencyWithHistoryLimit(limit: Int, bookmarksLimit: Int, whereURLContains filter: String) -> Deferred {
         return self.getFilteredSitesByFrecencyWithHistoryLimit(limit, bookmarksLimit: bookmarksLimit, whereURLContains: filter, includeIcon: true)
     }
 
-    public func getSitesByFrecencyWithHistoryLimit(limit: Int, whereURLContains filter: String) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getSitesByFrecencyWithHistoryLimit(limit: Int, whereURLContains filter: String) -> Deferred {
         return self.getFilteredSitesByFrecencyWithHistoryLimit(limit, bookmarksLimit: 0, whereURLContains: filter, includeIcon: true)
     }
 
-    public func getSitesByLastVisit(limit: Int) -> Deferred<Maybe<Cursor<Site>>> {
+    public func getSitesByLastVisit(limit: Int) -> Deferred {
         return self.getFilteredSitesByVisitDateWithLimit(limit, whereURLContains: nil, includeIcon: false)
     }
 
@@ -462,7 +462,7 @@ extension SQLiteHistory: BrowserHistory {
 
     private func getFilteredSitesByVisitDateWithLimit(limit: Int,
                                                       whereURLContains filter: String? = nil,
-                                                      includeIcon: Bool = true) -> Deferred<Maybe<Cursor<Site>>> {
+                                                      includeIcon: Bool = true) -> Deferred {
         let args: Args?
         let whereClause: String
         if let filter = filter?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) where !filter.isEmpty {
@@ -525,7 +525,7 @@ extension SQLiteHistory: BrowserHistory {
                                                             whereURLContains filter: String? = nil,
                                                             groupClause: String = "GROUP BY historyID ",
                                                             whereData: String? = nil,
-                                                            includeIcon: Bool = true) -> Deferred<Maybe<Cursor<Site>>> {
+                                                            includeIcon: Bool = true) -> Deferred {
         let factory: (SDRow) -> Site
         if includeIcon {
             factory = SQLiteHistory.iconHistoryColumnFactory
@@ -683,7 +683,7 @@ extension SQLiteHistory: BrowserHistory {
 }
 
 extension SQLiteHistory: Favicons {
-    public func getFavicon(forSite site: Site) -> Deferred<Maybe<Cursor<Favicon?>>> {
+    public func getFavicon(forSite site: Site) -> Deferred {
         let sql = "SELECT favicons.* from history, favicons, favicon_sites WHERE favicon_sites.faviconID = favicons.id AND history.id = favicon_sites.siteID AND history.id = ?"
         let args: Args = [site.id]
 
@@ -691,7 +691,7 @@ extension SQLiteHistory: Favicons {
     }
 
     // These two getter functions are only exposed for testing purposes (and aren't part of the public interface).
-    func getFaviconsForURL(url: String) -> Deferred<Maybe<Cursor<Favicon?>>> {
+    func getFaviconsForURL(url: String) -> Deferred {
         let sql = "SELECT iconID AS id, iconURL AS url, iconDate AS date, iconType AS type, iconWidth AS width FROM " +
             "\(ViewWidestFaviconsForSites), \(TableHistory) WHERE " +
             "\(TableHistory).id = siteID AND \(TableHistory).url = ?"
@@ -699,7 +699,7 @@ extension SQLiteHistory: Favicons {
         return db.runQuery(sql, args: args, factory: SQLiteHistory.iconColumnFactory)
     }
 
-    func getFaviconsForBookmarkedURL(url: String) -> Deferred<Maybe<Cursor<Favicon?>>> {
+    func getFaviconsForBookmarkedURL(url: String) -> Deferred {
         let sql =
         "SELECT " +
         "  \(TableFavicons).id AS id" +
@@ -727,7 +727,7 @@ extension SQLiteHistory: Favicons {
         return failOrSucceed(err, op: "Clear favicons")
     }
 
-    public func addFavicon(icon: Favicon) -> Deferred<Maybe<Int>> {
+    public func addFavicon(icon: Favicon) -> Deferred {
         var err: NSError?
         let res = db.withWritableConnection(&err) { (conn, inout err: NSError?) -> Int in
             // Blind! We don't see failure here.
@@ -745,11 +745,11 @@ extension SQLiteHistory: Favicons {
      * This method assumes that the site has already been recorded
      * in the history table.
      */
-    public func addFavicon(icon: Favicon, forSite site: Site) -> Deferred<Maybe<Int>> {
+    public func addFavicon(icon: Favicon, forSite site: Site) -> Deferred {
         #if DEBUG
         //print("Adding favicon \(icon.url) for site \(site.url).")
         #endif
-        func doChange(query: String, args: Args?) -> Deferred<Maybe<Int>> {
+        func doChange(query: String, args: Args?) -> Deferred {
             var deferredId = Deferred<Maybe<Int>>()
 
             succeed().upon() { _res in // move off main thread
@@ -836,7 +836,7 @@ extension SQLiteHistory: SyncableHistory {
     }
 
     // Fails on non-existence.
-    private func getSiteIDForGUID(guid: GUID) -> Deferred<Maybe<Int>> {
+    private func getSiteIDForGUID(guid: GUID) -> Deferred {
         let args: Args = [guid]
         let query = "SELECT id FROM history WHERE guid = ?"
         let factory: SDRow -> Int = { return $0["id"] as! Int }
@@ -877,7 +877,7 @@ extension SQLiteHistory: SyncableHistory {
         let title: String
     }
 
-    private func metadataForGUID(guid: GUID) -> Deferred<Maybe<HistoryMetadata?>> {
+    private func metadataForGUID(guid: GUID) -> Deferred {
         let select = "SELECT id, server_modified, local_modified, is_deleted, should_upload, title FROM \(TableHistory) WHERE guid = ?"
         let args: Args = [guid]
         let factory = { (row: SDRow) -> HistoryMetadata in
@@ -895,7 +895,7 @@ extension SQLiteHistory: SyncableHistory {
         }
     }
 
-    public func insertOrUpdatePlace(place: Place, modified: Timestamp) -> Deferred<Maybe<GUID>> {
+    public func insertOrUpdatePlace(place: Place, modified: Timestamp) -> Deferred {
         // One of these things will be true here.
         // 0. The item is new.
         //    (a) We have a local place with the same URL but a different GUID.
@@ -916,7 +916,7 @@ extension SQLiteHistory: SyncableHistory {
         let serverModified = NSNumber(unsignedLongLong: modified)
 
         // Check to see if our modified time is unchanged, if the record exists locally, etc.
-        let insertWithMetadata = { (metadata: HistoryMetadata?) -> Deferred<Maybe<GUID>> in
+        let insertWithMetadata = { (metadata: HistoryMetadata?) -> Deferred in
             if let metadata = metadata {
                 // The item exists locally (perhaps originally with a different GUID).
                 if metadata.serverModified == modified {
@@ -982,7 +982,7 @@ extension SQLiteHistory: SyncableHistory {
             >>> { self.metadataForGUID(place.guid) >>== insertWithMetadata }
     }
 
-    public func getDeletedHistoryToUpload() -> Deferred<Maybe<[GUID]>> {
+    public func getDeletedHistoryToUpload() -> Deferred {
         // Use the partial index on should_upload to make this nice and quick.
         let sql = "SELECT guid FROM \(TableHistory) WHERE \(TableHistory).should_upload = 1 AND \(TableHistory).is_deleted = 1"
         let f: SDRow -> String = { $0["guid"] as! String }
@@ -990,7 +990,7 @@ extension SQLiteHistory: SyncableHistory {
         return self.db.runQuery(sql, args: nil, factory: f) >>== { deferMaybe($0.asArray()) }
     }
 
-    public func getModifiedHistoryToUpload() -> Deferred<Maybe<[(Place, [Visit])]>> {
+    public func getModifiedHistoryToUpload() -> Deferred {
         // What we want to do: find all items flagged for update, selecting some number of their
         // visits alongside.
         //
@@ -1094,7 +1094,7 @@ extension SQLiteHistory: SyncableHistory {
         return self.db.run(sql, withArgs: args)
     }
 
-    public func markAsSynchronized(guids: [GUID], modified: Timestamp) -> Deferred<Maybe<Timestamp>> {
+    public func markAsSynchronized(guids: [GUID], modified: Timestamp) -> Deferred {
         // TODO: support longer GUID lists.
         assert(guids.count < 99)
 
@@ -1130,7 +1130,7 @@ extension SQLiteHistory {
     // Because we clear this when we reset or remove the account, and never set server_modified
     // without syncing, the presence of matching rows directly indicates that a deletion
     // would be synced to the server.
-    public func hasSyncedHistory() -> Deferred<Maybe<Bool>> {
+    public func hasSyncedHistory() -> Deferred {
         return self.db.queryReturnsResults("SELECT 1 FROM \(TableHistory) WHERE server_modified IS NOT NULL LIMIT 1")
     }
 }

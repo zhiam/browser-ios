@@ -15,11 +15,11 @@ private let log = Logger.syncLogger
 var insertingBookmark:Bool = false
 
 extension SQLiteBookmarks: LocalItemSource {
-    public func getLocalItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    public func getLocalItemWithGUID(guid: GUID) -> Deferred {
         return self.db.getMirrorItemFromTable(TableBookmarksLocal, guid: guid)
     }
 
-    public func getLocalItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    public func getLocalItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
         return self.db.getMirrorItemsFromTable(TableBookmarksLocal, guids: guids)
     }
 
@@ -30,11 +30,11 @@ extension SQLiteBookmarks: LocalItemSource {
 }
 
 extension SQLiteBookmarks: MirrorItemSource {
-    public func getMirrorItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    public func getMirrorItemWithGUID(guid: GUID) -> Deferred {
         return self.db.getMirrorItemFromTable(TableBookmarksMirror, guid: guid)
     }
 
-    public func getMirrorItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    public func getMirrorItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
         return self.db.getMirrorItemsFromTable(TableBookmarksMirror, guids: guids)
     }
 
@@ -419,7 +419,7 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
         return deleteStructureForGUIDs(guids, fromTable: TableBookmarksBufferStructure, connection: connection, withMaxVars: maxVars)
     }
 
-    public func isEmpty() -> Deferred<Maybe<Bool>> {
+    public func isEmpty() -> Deferred {
         return self.db.queryReturnsNoResults("SELECT 1 FROM \(TableBookmarksBuffer)")
     }
 
@@ -669,11 +669,11 @@ public class SQLiteBookmarkBufferStorage: BookmarkBufferStorage {
 }
 
 extension SQLiteBookmarkBufferStorage: BufferItemSource {
-    public func getBufferItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    public func getBufferItemWithGUID(guid: GUID) -> Deferred {
         return self.db.getMirrorItemFromTable(TableBookmarksBuffer, guid: guid)
     }
 
-    public func getBufferItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    public func getBufferItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
         return self.db.getMirrorItemsFromTable(TableBookmarksBuffer, guids: guids)
     }
 
@@ -684,7 +684,7 @@ extension SQLiteBookmarkBufferStorage: BufferItemSource {
 }
 
 extension BrowserDB {
-    private func getMirrorItemFromTable(table: String, guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    private func getMirrorItemFromTable(table: String, guid: GUID) -> Deferred {
         let args: Args = [guid]
         let sql = "SELECT * FROM \(table) WHERE guid = ?"
         return self.runQuery(sql, args: args, factory: BookmarkFactory.mirrorItemFactory)
@@ -696,7 +696,7 @@ extension BrowserDB {
         }
     }
 
-    private func getMirrorItemsFromTable<T: CollectionType where T.Generator.Element == GUID>(table: String, guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    private func getMirrorItemsFromTable<T: CollectionType where T.Generator.Element == GUID>(table: String, guids: T) -> Deferred {
         var acc: [GUID: BookmarkMirrorItem] = [:]
         func accumulate(args: Args) -> Success {
             let sql = "SELECT * FROM \(table) WHERE guid IN \(BrowserDB.varlist(args.count))"
@@ -726,7 +726,7 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
         return self.buffer.synchronousBufferCount()
     }
 
-    public func isEmpty() -> Deferred<Maybe<Bool>> {
+    public func isEmpty() -> Deferred {
         return self.buffer.isEmpty()
     }
 
@@ -759,7 +759,7 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
         return self.buffer.validate()
     }
 
-    public func getBufferedDeletions() -> Deferred<Maybe<[(GUID, Timestamp)]>> {
+    public func getBufferedDeletions() -> Deferred {
         return self.buffer.getBufferedDeletions()
     }
 
@@ -769,11 +769,11 @@ extension MergedSQLiteBookmarks: BookmarkBufferStorage {
 }
 
 extension MergedSQLiteBookmarks: BufferItemSource {
-    public func getBufferItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    public func getBufferItemWithGUID(guid: GUID) -> Deferred {
         return self.buffer.getBufferItemWithGUID(guid)
     }
 
-    public func getBufferItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    public func getBufferItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
         return self.buffer.getBufferItemsWithGUIDs(guids)
     }
 
@@ -783,11 +783,11 @@ extension MergedSQLiteBookmarks: BufferItemSource {
 }
 
 extension MergedSQLiteBookmarks: MirrorItemSource {
-    public func getMirrorItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    public func getMirrorItemWithGUID(guid: GUID) -> Deferred {
         return self.local.getMirrorItemWithGUID(guid)
     }
 
-    public func getMirrorItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    public func getMirrorItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
         return self.local.getMirrorItemsWithGUIDs(guids)
     }
 
@@ -797,11 +797,11 @@ extension MergedSQLiteBookmarks: MirrorItemSource {
 }
 
 extension MergedSQLiteBookmarks: LocalItemSource {
-    public func getLocalItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
+    public func getLocalItemWithGUID(guid: GUID) -> Deferred {
         return self.local.getLocalItemWithGUID(guid)
     }
 
-    public func getLocalItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
+    public func getLocalItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
         return self.local.getLocalItemsWithGUIDs(guids)
     }
 
@@ -818,11 +818,11 @@ extension MergedSQLiteBookmarks: ShareToDestination {
 
 // Not actually implementing SyncableBookmarks, just a utility for MergedSQLiteBookmarks to do so.
 extension SQLiteBookmarks {
-    public func isUnchanged() -> Deferred<Maybe<Bool>> {
+    public func isUnchanged() -> Deferred {
         return self.db.queryReturnsNoResults("SELECT 1 FROM \(TableBookmarksLocal)")
     }
 
-    public func getLocalDeletions() -> Deferred<Maybe<[(GUID, Timestamp)]>> {
+    public func getLocalDeletions() -> Deferred {
         let sql =
         "SELECT guid, local_modified FROM \(TableBookmarksLocal) " +
         "WHERE is_deleted = 1"
@@ -833,19 +833,19 @@ extension SQLiteBookmarks {
 }
 
 extension MergedSQLiteBookmarks: SyncableBookmarks {
-    public func isUnchanged() -> Deferred<Maybe<Bool>> {
+    public func isUnchanged() -> Deferred {
         return self.local.isUnchanged()
     }
 
-    public func getLocalDeletions() -> Deferred<Maybe<[(GUID, Timestamp)]>> {
+    public func getLocalDeletions() -> Deferred {
         return self.local.getLocalDeletions()
     }
 
-    public func treeForMirror() -> Deferred<Maybe<BookmarkTree>> {
+    public func treeForMirror() -> Deferred {
         return self.local.treeForMirror()
     }
 
-    public func treesForEdges() -> Deferred<Maybe<(local: BookmarkTree, buffer: BookmarkTree)>> {
+    public func treesForEdges() -> Deferred {
         return self.local.treeForLocal() >>== { local in
             return self.local.treeForBuffer() >>== { buffer in
                 return deferMaybe((local: local, buffer: buffer))
@@ -967,7 +967,7 @@ extension SQLiteBookmarkBufferStorage {
         return deferred
     }
 
-    public func getBufferedDeletions() -> Deferred<Maybe<[(GUID, Timestamp)]>> {
+    public func getBufferedDeletions() -> Deferred {
         let sql =
         "SELECT guid, server_modified FROM \(TableBookmarksBuffer) " +
         "WHERE is_deleted = 1"
@@ -1014,7 +1014,7 @@ extension SQLiteBookmarks {
         return "SELECT guid, is_deleted FROM \(table)"
     }
 
-    private func treeForTable(table: String, structure: String, alwaysIncludeRoots includeRoots: Bool) -> Deferred<Maybe<BookmarkTree>> {
+    private func treeForTable(table: String, structure: String, alwaysIncludeRoots includeRoots: Bool) -> Deferred {
         // The structure query doesn't give us non-structural rows -- that is, if you
         // make a value-only change to a record, and it's not otherwise mentioned by
         // way of being a child of a structurally modified folder, it won't appear here at all.
@@ -1075,15 +1075,15 @@ extension SQLiteBookmarks {
         }
     }
 
-    public func treeForMirror() -> Deferred<Maybe<BookmarkTree>> {
+    public func treeForMirror() -> Deferred {
         return self.treeForTable(TableBookmarksMirror, structure: TableBookmarksMirrorStructure, alwaysIncludeRoots: true)
     }
 
-    public func treeForBuffer() -> Deferred<Maybe<BookmarkTree>> {
+    public func treeForBuffer() -> Deferred {
         return self.treeForTable(TableBookmarksBuffer, structure: TableBookmarksBufferStructure, alwaysIncludeRoots: false)
     }
 
-    public func treeForLocal() -> Deferred<Maybe<BookmarkTree>> {
+    public func treeForLocal() -> Deferred {
         return self.treeForTable(TableBookmarksLocal, structure: TableBookmarksLocalStructure, alwaysIncludeRoots: false)
     }
 }

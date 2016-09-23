@@ -20,10 +20,10 @@ public class SQLiteBookmarks: BookmarksModelFactorySource {
         self.favicons = FaviconsTable<Favicon>()
     }
 
-    public var modelFactory: Deferred<Maybe<BookmarksModelFactory>> {
+    public var modelFactory: Deferred {
         struct Singleton {
             static var token: dispatch_once_t = 0
-            static var instance: Deferred<Maybe<BookmarksModelFactory>>!
+            static var instance: Deferred
         }
 
         // We never need to fetch the factory more than once.

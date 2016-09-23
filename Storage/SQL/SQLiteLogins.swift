@@ -220,7 +220,7 @@ public class SQLiteLogins: BrowserLogins {
         NSNotificationCenter.defaultCenter().postNotification(notification)
     }
 
-    public func getUsageDataForLoginByGUID(guid: GUID) -> Deferred<Maybe<LoginUsageData>> {
+    public func getUsageDataForLoginByGUID(guid: GUID) -> Deferred {
         let projection = SQLiteLogins.LoginColumns
         let sql =
         "SELECT \(projection) FROM " +
@@ -237,7 +237,7 @@ public class SQLiteLogins: BrowserLogins {
         }
     }
 
-    public func getLoginDataForGUID(guid: GUID) -> Deferred<Maybe<Login>> {
+    public func getLoginDataForGUID(guid: GUID) -> Deferred {
         let projection = SQLiteLogins.LoginColumns
         let sql =
         "SELECT \(projection) FROM " +
@@ -259,7 +259,7 @@ public class SQLiteLogins: BrowserLogins {
         }
     }
 
-    public func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred<Maybe<Cursor<LoginData>>> {
+    public func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred {
         let projection = SQLiteLogins.MainWithLastUsedColumns
 
         let sql =
@@ -286,7 +286,7 @@ public class SQLiteLogins: BrowserLogins {
     }
 
     // username is really Either<String, NULL>; we explicitly match no username.
-    public func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred<Maybe<Cursor<LoginData>>> {
+    public func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred {
         let projection = SQLiteLogins.MainWithLastUsedColumns
 
         let args: Args
@@ -320,11 +320,11 @@ public class SQLiteLogins: BrowserLogins {
         return db.runQuery(sql, args: args, factory: SQLiteLogins.LoginDataFactory)
     }
 
-    public func getAllLogins() -> Deferred<Maybe<Cursor<Login>>> {
+    public func getAllLogins() -> Deferred {
         return searchLoginsWithQuery(nil)
     }
 
-    public func searchLoginsWithQuery(query: String?) -> Deferred<Maybe<Cursor<Login>>> {
+    public func searchLoginsWithQuery(query: String?) -> Deferred {
         let projection = SQLiteLogins.LoginColumns
         var searchClauses = [String]()
         var args: Args? = nil
@@ -405,7 +405,7 @@ public class SQLiteLogins: BrowserLogins {
                 >>> effect(self.notifyLoginDidChange)
     }
 
-    private func cloneMirrorToOverlay(whereClause whereClause: String?, args: Args?) -> Deferred<Maybe<Int>> {
+    private func cloneMirrorToOverlay(whereClause whereClause: String?, args: Args?) -> Deferred {
         let shared = "guid, hostname, httpRealm, formSubmitURL, usernameField, passwordField, timeCreated, timeLastUsed, timePasswordChanged, timesUsed, username, password "
         let local = ", local_modified, is_deleted, sync_status "
         let sql = "INSERT OR IGNORE INTO \(TableLoginsLocal) (\(shared)\(local)) SELECT \(shared), NULL AS local_modified, 0 AS is_deleted, 0 AS sync_status FROM \(TableLoginsMirror) \(whereClause ?? "")"
@@ -437,7 +437,7 @@ public class SQLiteLogins: BrowserLogins {
         }
     }
 
-    private func cloneMirrorToOverlay(guid: GUID) -> Deferred<Maybe<Int>> {
+    private func cloneMirrorToOverlay(guid: GUID) -> Deferred {
         let whereClause = "WHERE guid = ?"
         let args: Args = [guid]
 
@@ -620,13 +620,13 @@ extension SQLiteLogins: SyncableLogins {
         return self.db.run(local, withArgs: args) >>> { self.db.run(remote, withArgs: args) }
     }
 
-    func getExistingMirrorRecordByGUID(guid: GUID) -> Deferred<Maybe<MirrorLogin?>> {
+    func getExistingMirrorRecordByGUID(guid: GUID) -> Deferred {
         let sql = "SELECT * FROM \(TableLoginsMirror) WHERE guid = ? LIMIT 1"
         let args: Args = [guid]
         return self.db.runQuery(sql, args: args, factory: SQLiteLogins.MirrorLoginFactory) >>== { deferMaybe($0[0]) }
     }
 
-    func getExistingLocalRecordByGUID(guid: GUID) -> Deferred<Maybe<LocalLogin?>> {
+    func getExistingLocalRecordByGUID(guid: GUID) -> Deferred {
         let sql = "SELECT * FROM \(TableLoginsLocal) WHERE guid = ? LIMIT 1"
         let args: Args = [guid]
         return self.db.runQuery(sql, args: args, factory: SQLiteLogins.LocalLoginFactory) >>== { deferMaybe($0[0]) }
@@ -810,7 +810,7 @@ extension SQLiteLogins: SyncableLogins {
      * This is roughly the same as desktop's .matches():
      * <https://mxr.mozilla.org/mozilla-central/source/toolkit/components/passwordmgr/nsLoginInfo.js#41>
      */
-    private func findLocalRecordByContent(login: Login) -> Deferred<Maybe<LocalLogin?>> {
+    private func findLocalRecordByContent(login: Login) -> Deferred {
         let primary =
         "SELECT * FROM \(TableLoginsLocal) WHERE " +
         "hostname IS ? AND httpRealm IS ? AND username IS ?"
@@ -894,7 +894,7 @@ extension SQLiteLogins: SyncableLogins {
             >>> { self.db.run("DELETE FROM \(TableLoginsLocal) WHERE guid = ?", withArgs: args) }
     }
 
-    public func getModifiedLoginsToUpload() -> Deferred<Maybe<[Login]>> {
+    public func getModifiedLoginsToUpload() -> Deferred {
         let sql =
         "SELECT * FROM \(TableLoginsLocal) " +
         "WHERE sync_status IS NOT \(SyncStatus.Synced.rawValue) AND is_deleted = 0"
@@ -904,7 +904,7 @@ extension SQLiteLogins: SyncableLogins {
           >>== { deferMaybe($0.asArray()) }
     }
 
-    public func getDeletedLoginsToUpload() -> Deferred<Maybe<[GUID]>> {
+    public func getDeletedLoginsToUpload() -> Deferred {
         // There are no logins that are marked as deleted that were not originally synced --
         // others are deleted immediately.
         let sql =
@@ -919,7 +919,7 @@ extension SQLiteLogins: SyncableLogins {
     /**
      * Chains through the provided timestamp.
      */
-    public func markAsSynchronized(guids: [GUID], modified: Timestamp) -> Deferred<Maybe<Timestamp>> {
+    public func markAsSynchronized(guids: [GUID], modified: Timestamp) -> Deferred {
         // Update the mirror from the local record that we just uploaded.
         // sqlite doesn't support UPDATE FROM, so instead of running 10 subqueries * n GUIDs,
         // we issue a single DELETE and a single INSERT on the mirror, then throw away the
@@ -963,7 +963,7 @@ extension SQLiteLogins: SyncableLogins {
          >>> { self.db.run("DELETE FROM \(TableLoginsLocal) WHERE guid IN \(inClause)", withArgs: args) }
     }
 
-    public func hasSyncedLogins() -> Deferred<Maybe<Bool>> {
+    public func hasSyncedLogins() -> Deferred {
         let checkLoginsMirror = "SELECT 1 FROM \(TableLoginsMirror)"
         let checkLoginsLocal = "SELECT 1 FROM \(TableLoginsLocal) WHERE sync_status IS NOT \(SyncStatus.New.rawValue)"
 

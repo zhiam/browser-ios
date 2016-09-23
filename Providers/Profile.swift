@@ -272,11 +272,11 @@ public class BrowserProfile: Profile {
         return CertStore()
     }()
 
-    public func getCachedClientsAndTabs() -> Deferred<Maybe<[ClientAndTabs]>> {
+    public func getCachedClientsAndTabs() -> Deferred {
         return self.remoteClientsAndTabs.getClientsAndTabs()
     }
 
-    func storeTabs(tabs: [RemoteTab]) -> Deferred<Maybe<Int>> {
+    func storeTabs(tabs: [RemoteTab]) -> Deferred {
         return self.remoteClientsAndTabs.insertOrUpdateTabs(tabs)
     }
 

@@ -136,7 +136,7 @@ class BraveWebView: UIWebView {
         _url.prevUrl = _url.url
         _url.isReliableSource = reliableSource
         if URL?.absoluteString.endsWith("?") ?? false {
-            if let noQuery = URL?.absoluteString.componentsSeparatedByString("?")[0] {
+            if let noQuery = URL?.absoluteString!.componentsSeparatedByString("?")[0] {
                 _url.url = NSURL(string: noQuery)
             }
         } else {
@@ -697,21 +697,21 @@ extension BraveWebView: UIWebViewDelegate {
         broadcastToPageStateDelegates()
     }
 
-    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
-        if (error?.code == NSURLErrorCancelled) {
+    func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
+        if (error.code == NSURLErrorCancelled) {
             return
         }
         print("didFailLoadWithError: \(error)")
 
-        if (error?.domain == NSURLErrorDomain) {
-            if (error?.code == NSURLErrorServerCertificateHasBadDate      ||
-                error?.code == NSURLErrorServerCertificateUntrusted         ||
-                error?.code == NSURLErrorServerCertificateHasUnknownRoot    ||
-                error?.code == NSURLErrorServerCertificateNotYetValid)
+        if (error.domain == NSURLErrorDomain) {
+            if (error.code == NSURLErrorServerCertificateHasBadDate      ||
+                error.code == NSURLErrorServerCertificateUntrusted         ||
+                error.code == NSURLErrorServerCertificateHasUnknownRoot    ||
+                error.code == NSURLErrorServerCertificateNotYetValid)
             {
-                guard let errorUrl = error?.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
+                guard let errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
 
-                if errorUrl.absoluteString.regexReplacePattern("^.+://", with: "") != URL?.absoluteString.regexReplacePattern("^.+://", with: "") {
+                if errorUrl.absoluteString!.regexReplacePattern("^.+://", with: "") != URL?.absoluteString!.regexReplacePattern("^.+://", with: "") {
                     print("only show cert error for top-level page")
                     return
                 }

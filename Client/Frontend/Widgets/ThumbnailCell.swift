@@ -128,7 +128,7 @@ class ThumbnailCell: UICollectionViewCell {
         image.drawInRect(scaledImageRect);
         let scaledImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
-        return scaledImage;
+        return scaledImage!;
     }
 
     var image: UIImage? = nil {

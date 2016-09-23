@@ -205,7 +205,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
             var updatedURLs = [String]()
             for url in sessionData.urls {
                 let updatedURL = WebServer.sharedInstance.updateLocalURL(url)!.absoluteString
-                updatedURLs.append(updatedURL)
+                updatedURLs.append(updatedURL!)
             }
             let currentPage = sessionData.currentPage
             self.sessionData = nil

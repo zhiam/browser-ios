@@ -2,4 +2,4 @@
 
 ./carthage.sh
 
-carthage bootstrap --platform ios --no-use-binaries
+carthage checkout --platform ios --no-use-binaries --toolchain com.apple.dt.toolchain.Swift_2_3

@@ -79,7 +79,7 @@ public class BookmarkFolder: BookmarkNode {
  */
 public class BookmarksModel: BookmarksModelFactorySource {
     private let factory: BookmarksModelFactory
-    public let modelFactory: Deferred<Maybe<BookmarksModelFactory>>
+    public let modelFactory: Deferred
     public let current: BookmarkFolder
 
     public init(modelFactory: BookmarksModelFactory, root: BookmarkFolder) {
@@ -91,21 +91,21 @@ public class BookmarksModel: BookmarksModelFactorySource {
     /**
      * Produce a new model rooted at the appropriate folder. Fails if the folder doesn't exist.
      */
-    public func selectFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>> {
+    public func selectFolder(folder: BookmarkFolder) -> Deferred {
         return self.factory.modelForFolder(folder)
     }
 
     /**
      * Produce a new model rooted at the appropriate folder. Fails if the folder doesn't exist.
      */
-    public func selectFolder(guid: String) -> Deferred<Maybe<BookmarksModel>> {
+    public func selectFolder(guid: String) -> Deferred {
         return self.factory.modelForFolder(guid)
     }
 
     /**
      * Produce a new model rooted at the base of the hierarchy. Should never fail.
      */
-    public func selectRoot() -> Deferred<Maybe<BookmarksModel>> {
+    public func selectRoot() -> Deferred {
         return self.factory.modelForRoot()
     }
 
@@ -113,7 +113,7 @@ public class BookmarksModel: BookmarksModelFactorySource {
      * Produce a new model rooted at the same place as this model. Can fail if
      * the folder has been deleted from the backing store.
      */
-    public func reloadData() -> Deferred<Maybe<BookmarksModel>> {
+    public func reloadData() -> Deferred {
         return self.factory.modelForFolder(current)
     }
 
@@ -123,21 +123,21 @@ public class BookmarksModel: BookmarksModelFactorySource {
 }
 
 public protocol BookmarksModelFactorySource {
-    var modelFactory: Deferred<Maybe<BookmarksModelFactory>> { get }
+    var modelFactory: Deferred { get }
 }
 
 public protocol BookmarksModelFactory {
-    func modelForFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>>
-    func modelForFolder(guid: GUID) -> Deferred<Maybe<BookmarksModel>>
-    func modelForFolder(guid: GUID, title: String) -> Deferred<Maybe<BookmarksModel>>
+    func modelForFolder(folder: BookmarkFolder) -> Deferred
+    func modelForFolder(guid: GUID) -> Deferred
+    func modelForFolder(guid: GUID, title: String) -> Deferred
 
-    func modelForRoot() -> Deferred<Maybe<BookmarksModel>>
+    func modelForRoot() -> Deferred
 
     // Whenever async construction is necessary, we fall into a pattern of needing
     // a placeholder that behaves correctly for the period between kickoff and set.
     var nullModel: BookmarksModel { get }
 
-    func isBookmarked(url: String) -> Deferred<Maybe<Bool>>
+    func isBookmarked(url: String) -> Deferred
     func removeByGUID(guid: GUID) -> Success
     func removeByURL(url: String) -> Success
 
@@ -177,7 +177,7 @@ public class MemoryBookmarkFolder: BookmarkFolder, SequenceType {
         get {
             if let path = NSBundle.mainBundle().pathForResource("bookmarkFolder", ofType: "png") {
                 let url = NSURL(fileURLWithPath: path)
-                return Favicon(url: url.absoluteString, date: NSDate(), type: IconType.Local)
+                return Favicon(url: url.absoluteString!, date: NSDate(), type: IconType.Local)
             }
             return nil
         }
@@ -291,15 +291,15 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         root = MemoryBookmarkFolder(guid: BookmarkRoots.RootGUID, title: "Root", children: [mobile, unsorted])
     }
 
-    public func modelForFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>> {
+    public func modelForFolder(folder: BookmarkFolder) -> Deferred {
         return self.modelForFolder(folder.guid, title: folder.title)
     }
 
-    public func modelForFolder(guid: GUID) -> Deferred<Maybe<BookmarksModel>> {
+    public func modelForFolder(guid: GUID) -> Deferred {
         return self.modelForFolder(guid, title: "")
     }
 
-    public func modelForFolder(guid: GUID, title: String) -> Deferred<Maybe<BookmarksModel>> {
+    public func modelForFolder(guid: GUID, title: String) -> Deferred {
         var m: BookmarkFolder
         switch (guid) {
         case BookmarkRoots.MobileFolderGUID:
@@ -319,7 +319,7 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         return deferMaybe(BookmarksModel(modelFactory: self, root: m))
     }
 
-    public func modelForRoot() -> Deferred<Maybe<BookmarksModel>> {
+    public func modelForRoot() -> Deferred {
         return deferMaybe(BookmarksModel(modelFactory: self, root: self.root))
     }
 
@@ -335,7 +335,7 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         self.sink.shareItem(item)
     }
 
-    public func isBookmarked(url: String) -> Deferred<Maybe<Bool>> {
+    public func isBookmarked(url: String) -> Deferred {
         return deferMaybe(DatabaseError(description: "Not implemented"))
     }
 

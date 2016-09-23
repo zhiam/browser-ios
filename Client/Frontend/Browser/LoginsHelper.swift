@@ -97,7 +97,7 @@ class LoginsHelper: BrowserHelper {
         return attr
     }
 
-    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred<Maybe<Cursor<LoginData>>> {
+    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred {
         return profile.logins.getLoginsForProtectionSpace(protectionSpace)
     }
 

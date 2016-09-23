@@ -24,14 +24,14 @@ public protocol BrowserHistory {
     func removeHistoryForURL(url: String) -> Success
     func removeSiteFromTopSites(site: Site) -> Success
 
-    func getSitesByFrecencyWithHistoryLimit(limit: Int) -> Deferred<Maybe<Cursor<Site>>>
-    func getSitesByFrecencyWithHistoryLimit(limit: Int, whereURLContains filter: String) -> Deferred<Maybe<Cursor<Site>>>
-    func getSitesByFrecencyWithHistoryLimit(limit: Int, bookmarksLimit: Int, whereURLContains filter: String) -> Deferred<Maybe<Cursor<Site>>>
-    func getSitesByLastVisit(limit: Int) -> Deferred<Maybe<Cursor<Site>>>
+    func getSitesByFrecencyWithHistoryLimit(limit: Int) -> Deferred
+    func getSitesByFrecencyWithHistoryLimit(limit: Int, whereURLContains filter: String) -> Deferred
+    func getSitesByFrecencyWithHistoryLimit(limit: Int, bookmarksLimit: Int, whereURLContains filter: String) -> Deferred
+    func getSitesByLastVisit(limit: Int) -> Deferred
 
-    func getTopSitesWithLimit(limit: Int) -> Deferred<Maybe<Cursor<Site>>>
+    func getTopSitesWithLimit(limit: Int) -> Deferred
     func setTopSitesNeedsInvalidation()
-    func updateTopSitesCacheIfInvalidated() -> Deferred<Maybe<Bool>>
+    func updateTopSitesCacheIfInvalidated() -> Deferred
     func setTopSitesCacheSize(size: Int32)
     func clearTopSitesCache() -> Success
     func refreshTopSitesCache() -> Success
@@ -54,15 +54,15 @@ public protocol SyncableHistory: AccountRemovalDelegate {
     func deleteByGUID(guid: GUID, deletedAt: Timestamp) -> Success
 
     func storeRemoteVisits(visits: [Visit], forGUID guid: GUID) -> Success
-    func insertOrUpdatePlace(place: Place, modified: Timestamp) -> Deferred<Maybe<GUID>>
+    func insertOrUpdatePlace(place: Place, modified: Timestamp) -> Deferred
 
-    func getModifiedHistoryToUpload() -> Deferred<Maybe<[(Place, [Visit])]>>
-    func getDeletedHistoryToUpload() -> Deferred<Maybe<[GUID]>>
+    func getModifiedHistoryToUpload() -> Deferred
+    func getDeletedHistoryToUpload() -> Deferred
 
     /**
      * Chains through the provided timestamp.
      */
-    func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred<Maybe<Timestamp>>
+    func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred
     func markAsDeleted(guids: [GUID]) -> Success
 
     func doneApplyingRecordsAfterDownload() -> Success
@@ -71,7 +71,7 @@ public protocol SyncableHistory: AccountRemovalDelegate {
     /**
      * For inspecting whether we're an active participant in history sync.
      */
-    func hasSyncedHistory() -> Deferred<Maybe<Bool>>
+    func hasSyncedHistory() -> Deferred
 }
 
 // TODO: integrate Site with this.

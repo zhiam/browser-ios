@@ -25,24 +25,24 @@ infix operator >>> { associativity left precedence 150 }
 public func >>> <T, U>(x: Deferred<Maybe<T>>, f: () -> Deferred<Maybe<U>>) -> Deferred<Maybe<U>> {
     return x.bind { res in
         if res.isSuccess {
-            return f();
+            return f()
         }
         return deferMaybe(res.failureValue!)
     }
 }
 
 // Another termination case.
-public func >>> <T>(x: Deferred<Maybe<T>>, f: () -> ())  {
+public func >>> <T>(x: Deferred<Maybe<T>>, f: () -> ()) {
     return x.upon { res in
         if res.isSuccess {
-            f();
+            f()
         }
     }
 }
 
 /**
-* Returns a thunk that return a Deferred that resolves to the provided value.
-*/
+ * Returns a thunk that return a Deferred that resolves to the provided value.
+ */
 public func always<T>(t: T) -> () -> Deferred<Maybe<T>> {
     return { deferMaybe(t) }
 }
@@ -55,7 +55,7 @@ public func deferMaybe<T>(e: MaybeErrorType) -> Deferred<Maybe<T>> {
     return Deferred(value: Maybe(failure: e))
 }
 
-public typealias Success = Deferred<Maybe<()>>
+public typealias Success = Deferred<Maybe<Void>>
 
 public func succeed() -> Success {
     return deferMaybe(())
@@ -178,6 +178,6 @@ public func deferDispatchAsync<T>(queue: dispatch_queue_t, f: () -> Deferred<May
             deferred.fill(result)
         }
     })
-
+    
     return deferred
 }

@@ -286,7 +286,7 @@ public class Login: CustomStringConvertible, LoginData, LoginUsageData, Equatabl
     public class func fromScript(url: NSURL, script: [String: AnyObject]) -> LoginData? {
         guard let username = script["username"] as? String,
               let password = script["password"] as? String,
-              let pwOrigin = getPasswordOrigin(url.absoluteString) else {
+              let pwOrigin = getPasswordOrigin(url.absoluteString!) else {
                 return nil
         }
 
@@ -309,7 +309,7 @@ public class Login: CustomStringConvertible, LoginData, LoginUsageData, Equatabl
 
     private class func getPasswordOrigin(uriString: String, allowJS: Bool = false) -> String? {
         var realm: String? = nil
-        if let uri = NSURL(string: uriString) where !uri.scheme.isEmpty {
+        if let uri = NSURL(string: uriString) where !uri.scheme!.isEmpty {
             if allowJS && uri.scheme == "javascript" {
                 return "javascript:"
             }
@@ -564,12 +564,12 @@ class LocalLogin: Login {
 }
 
 public protocol BrowserLogins {
-    func getUsageDataForLoginByGUID(guid: GUID) -> Deferred<Maybe<LoginUsageData>>
-    func getLoginDataForGUID(guid: GUID) -> Deferred<Maybe<Login>>
-    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred<Maybe<Cursor<LoginData>>>
-    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred<Maybe<Cursor<LoginData>>>
-    func getAllLogins() -> Deferred<Maybe<Cursor<Login>>>
-    func searchLoginsWithQuery(query: String?) -> Deferred<Maybe<Cursor<Login>>>
+    func getUsageDataForLoginByGUID(guid: GUID) -> Deferred
+    func getLoginDataForGUID(guid: GUID) -> Deferred
+    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred
+    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred
+    func getAllLogins() -> Deferred
+    func searchLoginsWithQuery(query: String?) -> Deferred
 
     // Add a new login regardless of whether other logins might match some fields. Callers
     // are responsible for querying first if they care.
@@ -593,19 +593,19 @@ public protocol SyncableLogins: AccountRemovalDelegate {
 
     func applyChangedLogin(upstream: ServerLogin) -> Success
 
-    func getModifiedLoginsToUpload() -> Deferred<Maybe<[Login]>>
-    func getDeletedLoginsToUpload() -> Deferred<Maybe<[GUID]>>
+    func getModifiedLoginsToUpload() -> Deferred
+    func getDeletedLoginsToUpload() -> Deferred
 
     /**
      * Chains through the provided timestamp.
      */
-    func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred<Maybe<Timestamp>>
+    func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred
     func markAsDeleted(guids: [GUID]) -> Success
 
     /**
      * For inspecting whether we're an active participant in login sync.
      */
-    func hasSyncedLogins() -> Deferred<Maybe<Bool>>
+    func hasSyncedLogins() -> Deferred
 }
 
 public class LoginDataError: MaybeErrorType {

@@ -40,7 +40,7 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
         return false
     }
 
-    func getRows() -> Deferred<Maybe<[BraveShieldTableRow]>> {
+    func getRows() -> Deferred {
         var err: NSError?
 
         let cursor = db.withReadableConnection(&err) { connection, _ -> Cursor<BraveShieldTableRow> in
@@ -134,8 +134,8 @@ extension BrowserProfile {
         return deferred
     }
 
-    public func loadBraveShieldsPerBaseDomain() -> Deferred<()> {
-        let deferred = Deferred<()>()
+    public func loadBraveShieldsPerBaseDomain() -> Deferred {
+        let deferred = Deferred
         succeed().upon() { _ in // move off main thread
             BraveShieldState.perNormalizedDomain.removeAll()
             braveShieldForDomainTable = BraveShieldTable.initialize(self.db)

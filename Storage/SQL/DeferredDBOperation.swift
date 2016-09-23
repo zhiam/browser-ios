@@ -25,7 +25,7 @@ private let DeferredQueue = dispatch_queue_create("BrowserDBQueue", DISPATCH_QUE
     // ... Some time later
     deferred.cancel()
 */
-class DeferredDBOperation<T>: Deferred<Maybe<T>>, Cancellable {
+class DeferredDBOperation<T>: Deferred, Cancellable {
     /// Cancelled is wrapping a ReadWrite lock to make access to it thread-safe.
     private var cancelledLock = LockProtected<Bool>(item: false)
     var cancelled: Bool {

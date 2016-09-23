@@ -21,7 +21,11 @@ public extension Logger {
     static let keychainLogger: XCGLogger = Logger.fileLoggerWithName("keychain")
 
     /// Logger used for logging database errors such as corruption
-    static let corruptLogger = RollingFileLogger(filenameRoot: "corruptLogger", logDirectoryPath: Logger.logFileDirectoryPath())
+    static let corruptLogger: RollingFileLogger = {
+        let logger = RollingFileLogger(filenameRoot: "corruptLogger", logDirectoryPath: Logger.logFileDirectoryPath())
+        logger.newLogWithDate(NSDate())
+        return logger
+    }()
 
     /**
     Return the log file directory path. If the directory doesn't exist, make sure it exist first before returning the path.
@@ -51,7 +55,7 @@ public extension Logger {
         if let logFileURL = urlForLogNamed(name) {
             let fileDestination = XCGFileLogDestination(
                 owner: log,
-                writeToFile: logFileURL.absoluteString,
+                writeToFile: logFileURL.absoluteString!,
                 identifier: "com.mozilla.firefox.filelogger.\(name)"
             )
             log.addLogDestination(fileDestination)
@@ -86,7 +90,7 @@ public extension Logger {
         } catch _ {
         }
 
-        return filenamesAndURLs.map { ($0, NSData(contentsOfFile: $1.absoluteString)) }
+        return filenamesAndURLs.map { ($0, NSData(contentsOfFile: $1.absoluteString!)) }
     }
 }
 

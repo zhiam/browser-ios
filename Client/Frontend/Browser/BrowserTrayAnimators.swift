@@ -46,7 +46,7 @@ private extension TrayToBrowserAnimator {
         // Take a snapshot of the collection view that we can scale/fade out. We don't need to wait for screen updates since it's already rendered on the screen
         let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(false)
         tabTray.collectionView.alpha = 0
-        tabCollectionViewSnapshot.frame = tabTray.collectionView.frame
+        tabCollectionViewSnapshot!.frame = tabTray.collectionView.frame
         container.insertSubview(tabCollectionViewSnapshot, aboveSubview: tabTray.view)
 
         // Create a fake cell to use for the upscaling animation
@@ -82,8 +82,8 @@ private extension TrayToBrowserAnimator {
 
             bvc.tabTrayDidDismiss(tabTray)
 
-            tabCollectionViewSnapshot.transform = CGAffineTransformMakeScale(0.9, 0.9)
-            tabCollectionViewSnapshot.alpha = 0
+            tabCollectionViewSnapshot!.transform = CGAffineTransformMakeScale(0.9, 0.9)
+            tabCollectionViewSnapshot!.alpha = 0
 
             // Push out the navigation bar buttons
             let buttonOffset = tabTray.addTabButton.frame.width + TabTrayControllerUX.ToolbarButtonOffset
@@ -95,7 +95,7 @@ private extension TrayToBrowserAnimator {
         }, completion: { finished in
             // Remove any of the views we used for the animation
             cell.removeFromSuperview()
-            tabCollectionViewSnapshot.removeFromSuperview()
+            tabCollectionViewSnapshot!.removeFromSuperview()
             bvc.footer.alpha = 1
             bvc.toggleSnackBarVisibility(show: true)
             toggleWebViewVisibility(show: true, usingTabManager: bvc.tabManager)
@@ -147,10 +147,10 @@ private extension BrowserToTrayAnimator {
 
         // Take a snapshot of the collection view to perform the scaling/alpha effect
         let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(true)
-        tabCollectionViewSnapshot.frame = tabTray.collectionView.frame
-        tabCollectionViewSnapshot.transform = CGAffineTransformMakeScale(0.9, 0.9)
-        tabCollectionViewSnapshot.alpha = 0
-        tabTray.view.addSubview(tabCollectionViewSnapshot)
+        tabCollectionViewSnapshot!.frame = tabTray.collectionView.frame
+        tabCollectionViewSnapshot!.transform = CGAffineTransformMakeScale(0.9, 0.9)
+        tabCollectionViewSnapshot!.alpha = 0
+        tabTray.view.addSubview(tabCollectionViewSnapshot!)
 
         container.addSubview(cell)
         cell.layoutIfNeeded()
@@ -184,7 +184,7 @@ private extension BrowserToTrayAnimator {
 
                 bvc.urlBar.updateAlphaForSubviews(0)
                 bvc.footer.alpha = 0
-                tabCollectionViewSnapshot.alpha = 1
+                tabCollectionViewSnapshot!.alpha = 1
 
                 var viewsToReset: [UIView?] = [tabCollectionViewSnapshot, tabTray.addTabButton]
 #if !BRAVE
@@ -194,7 +194,7 @@ private extension BrowserToTrayAnimator {
             }, completion: { finished in
                 // Remove any of the views we used for the animation
                 cell.removeFromSuperview()
-                tabCollectionViewSnapshot.removeFromSuperview()
+                tabCollectionViewSnapshot!.removeFromSuperview()
                 tabTray.collectionView.hidden = false
 
                 bvc.toggleSnackBarVisibility(show: true)

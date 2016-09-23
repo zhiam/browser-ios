@@ -101,11 +101,11 @@ class PrivateBrowsing {
         NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivacyModeChanged, object: nil)
     }
 
-    private var exitDeferred = Deferred<()>()
-    func exit() -> Deferred<()> {
+    private var exitDeferred = Deferred
+    func exit() -> Deferred {
         let isAlwaysPrivate = getApp().profile?.prefs.boolForKey(kPrefKeyPrivateBrowsingAlwaysOn) ?? false
 
-        exitDeferred = Deferred<()>()
+        exitDeferred = Deferred
         if isAlwaysPrivate || !isOn {
             exitDeferred.fill(())
             return exitDeferred

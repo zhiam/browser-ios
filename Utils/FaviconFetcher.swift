@@ -32,12 +32,12 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         return UIImage(named: "defaultFavicon")!
     }()
 
-    class func getForURL(url: NSURL, profile: Profile) -> Deferred<Maybe<[Favicon]>> {
+    class func getForURL(url: NSURL, profile: Profile) -> Deferred {
         let f = FaviconFetcher()
         return f.loadFavicons(url, profile: profile)
     }
 
-    private func loadFavicons(url: NSURL, profile: Profile, oldIcons: [Favicon] = [Favicon]()) -> Deferred<Maybe<[Favicon]>> {
+    private func loadFavicons(url: NSURL, profile: Profile, oldIcons: [Favicon] = [Favicon]()) -> Deferred {
         if isIgnoredURL(url) {
             return deferMaybe(FaviconFetcherErrorType(description: "Not fetching ignored URL to find favicons."))
         }
@@ -47,13 +47,13 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         var oldIcons: [Favicon] = oldIcons
 
         dispatch_async(queue) { _ in
-            self.parseHTMLForFavicons(url).bind({ (result: Maybe<[Favicon]>) -> Deferred<[Maybe<Favicon>]> in
+            self.parseHTMLForFavicons(url).bind({ (result: Maybe<[Favicon]>) -> Deferred in
                 var deferreds = [Deferred<Maybe<Favicon>>]()
                 if let icons = result.successValue {
                     deferreds = icons.map { self.getFavicon(url, icon: $0, profile: profile) }
                 }
                 return all(deferreds)
-            }).bind({ (results: [Maybe<Favicon>]) -> Deferred<Maybe<[Favicon]>> in
+            }).bind({ (results: [Maybe<Favicon>]) -> Deferred in
                 for result in results {
                     if let icon = result.successValue {
                         oldIcons.append(icon)
@@ -81,7 +81,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         return Alamofire.Manager.managerWithUserAgent(userAgent, configuration: configuration)
     }()
 
-    private func fetchDataForURL(url: NSURL) -> Deferred<Maybe<NSData>> {
+    private func fetchDataForURL(url: NSURL) -> Deferred {
         let deferred = Deferred<Maybe<NSData>>()
         alamofire.request(.GET, url).response { (request, response, data, error) in
             // Don't cancel requests just because our Manager is deallocated.
@@ -100,7 +100,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
     }
 
     // Loads and parses an html document and tries to find any known favicon-type tags for the page
-    private func parseHTMLForFavicons(url: NSURL) -> Deferred<Maybe<[Favicon]>> {
+    private func parseHTMLForFavicons(url: NSURL) -> Deferred {
         return fetchDataForURL(url).bind({ result -> Deferred<Maybe<[Favicon]>> in
             var icons = [Favicon]()
 
@@ -170,7 +170,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         })
     }
 
-    func getFavicon(siteUrl: NSURL, icon: Favicon, profile: Profile) -> Deferred<Maybe<Favicon>> {
+    func getFavicon(siteUrl: NSURL, icon: Favicon, profile: Profile) -> Deferred {
         let deferred = Deferred<Maybe<Favicon>>()
         let url = icon.url
         let manager = SDWebImageManager.sharedManager()

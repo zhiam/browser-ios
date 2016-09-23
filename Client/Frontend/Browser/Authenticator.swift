@@ -14,7 +14,7 @@ private let log = Logger.browserLogger
 class Authenticator {
     private static let MaxAuthenticationAttempts = 3
 
-    static func handleAuthRequest(viewController: UIViewController, challenge: NSURLAuthenticationChallenge, loginsHelper: LoginsHelper?) -> Deferred<Maybe<LoginData>> {
+    static func handleAuthRequest(viewController: UIViewController, challenge: NSURLAuthenticationChallenge, loginsHelper: LoginsHelper?) -> Deferred {
         // If there have already been too many login attempts, we'll just fail.
         if challenge.previousFailureCount >= Authenticator.MaxAuthenticationAttempts {
             return deferMaybe(LoginDataError(description: "Too many attempts to open site"))
@@ -52,7 +52,7 @@ class Authenticator {
         return self.promptForUsernamePassword(viewController, credentials: nil, protectionSpace: challenge.protectionSpace, loginsHelper: nil)
     }
 
-    static func findMatchingCredentialsForChallenge(challenge: NSURLAuthenticationChallenge, fromLoginsProvider loginsProvider: BrowserLogins) -> Deferred<Maybe<NSURLCredential?>> {
+    static func findMatchingCredentialsForChallenge(challenge: NSURLAuthenticationChallenge, fromLoginsProvider loginsProvider: BrowserLogins) -> Deferred {
         return loginsProvider.getLoginsForProtectionSpace(challenge.protectionSpace) >>== { cursor in
             guard cursor.count >= 1 else {
                 return deferMaybe(nil)
@@ -96,7 +96,7 @@ class Authenticator {
         }
     }
 
-    private static func promptForUsernamePassword(viewController: UIViewController, credentials: NSURLCredential?, protectionSpace: NSURLProtectionSpace, loginsHelper: LoginsHelper?) -> Deferred<Maybe<LoginData>> {
+    private static func promptForUsernamePassword(viewController: UIViewController, credentials: NSURLCredential?, protectionSpace: NSURLProtectionSpace, loginsHelper: LoginsHelper?) -> Deferred {
         if protectionSpace.host.isEmpty {
             print("Unable to show a password prompt without a hostname")
             return deferMaybe(LoginDataError(description: "Unable to show a password prompt without a hostname"))

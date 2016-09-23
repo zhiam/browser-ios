@@ -123,7 +123,7 @@ public class WebViewProgress
         var isFragmentJump: Bool = false
 
         if let fragment = request.URL?.fragment {
-            let nonFragmentUrl = request.URL?.absoluteString.stringByReplacingOccurrencesOfString("#" + fragment,
+            let nonFragmentUrl = request.URL?.absoluteString!.stringByReplacingOccurrencesOfString("#" + fragment,
                                                                                                   withString: "")
 
             isFragmentJump = nonFragmentUrl == webView?.request?.URL?.absoluteString
