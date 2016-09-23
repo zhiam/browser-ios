@@ -284,16 +284,30 @@ extension SQLiteBookmarks {
         return true
     }
 
+    //added as a check for multiple fast taps on toolbar. This wouldn't block more than 
+    //one bookmark being added since there's no way to request insertion of multiple new
+    //bookmarks simultaneously
+    var insertingBookmark:Bool = false
     /**
      * Assumption: the provided folder GUID exists in either the local table or the mirror table.
      */
     func insertBookmark(url: NSURL, title: String, favicon: Favicon?, intoFolder parent: GUID, withTitle parentTitle: String) -> Success {
+        if insertingBookmark {
+            return Success()
+        }
+        insertingBookmark = true
         log.debug("Inserting bookmark task on thread \(NSThread.currentThread())")
         let deferred = Success()
 
         var error: NSError?
         error = self.db.transaction(synchronous: false, err: &error) { (conn, err) -> Bool in
             self.insertBookmarkInTransaction(deferred, url: url, title: title, favicon: favicon, intoFolder: parent, withTitle: parentTitle, conn: conn, err: &err)
+            insertingBookmark = false
+        }
+        
+        if error != nil {
+            //setting up the transaction may have failed, clear the flag
+            insertingBookmark = false
         }
 
         log.debug("Returning deferred on thread \(NSThread.currentThread())")
