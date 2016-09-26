@@ -120,19 +120,9 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
 {
 
   JSContext* context = _context;
-  NSString* script = [NSString stringWithFormat:@""
-                      "if (!window.hasOwnProperty('webkit')) {"
-                      "  Window.prototype.webkit = {};"
-                      "  Window.prototype.webkit.messageHandlers = {};"
-                      "}"
-                      "if (!window.webkit.messageHandlers.hasOwnProperty('%@'))"
-                      "  Window.prototype.webkit.messageHandlers.%@ = {};",
-                      handlerName, handlerName];
-
-  [context evaluateScript:script];
-
-  context[@"Window"][@"prototype"][@"webkit"][@"messageHandlers"][handlerName][@"postMessage"] =
-    blockFactory(handlerName, handler, webView);
+  NSString* func = [@"__bravejs___" stringByAppendingString:handlerName];
+  context[@"Window"][@"prototype"][func] =
+  blockFactory(handlerName, handler, webView);
 }
 
 - (void)installHandlerForWebView:(UIWebView *)webView

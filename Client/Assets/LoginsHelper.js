@@ -37,7 +37,7 @@ var LoginManagerContent = {
   _sendRequest: function(requestData, messageData) {
     var requestId = this._getRandomId();
     messageData.requestId = requestId;
-    webkit.messageHandlers.loginsManagerMessageHandler.postMessage(messageData);
+    __bravejs___loginsManagerMessageHandler(messageData);
 
     var self = this;
     return new Promise(function(resolve, reject) {
@@ -362,7 +362,7 @@ var LoginManagerContent = {
     // Make sure to pass the opener's top in case it was in a frame.
     var opener = win.opener ? win.opener.top : null;
 
-    webkit.messageHandlers.loginsManagerMessageHandler.postMessage({
+    __bravejs___loginsManagerMessageHandler({
       type: "submit",
       hostname: hostname,
       username: mockUsername.value,

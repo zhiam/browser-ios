@@ -37,7 +37,7 @@ window.__firefox__.favicons = function() {
   
   function getFavicons() {
     var favicons = getAll();
-    webkit.messageHandlers.faviconsMessageHandler.postMessage(favicons);
+    __bravejs___faviconsMessageHandler(favicons);
   }
   
   return {

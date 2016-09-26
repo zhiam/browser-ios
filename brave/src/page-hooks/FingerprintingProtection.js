@@ -1,9 +1,8 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 function reportBlock (msg) {
-    if (Window.prototype.hasOwnProperty('webkit') && Window.prototype.webkit.hasOwnProperty('messageHandlers') &&
-        Window.prototype.webkit.messageHandlers.hasOwnProperty('fingerprinting')) {
-            webkit.messageHandlers.fingerprinting.postMessage(msg)
+    if (Window.prototype.hasOwnProperty('__bravejs___fingerprinting')) {
+        __bravejs___fingerprinting(msg)
     }
 }
 

@@ -5,7 +5,7 @@
 (function () {
   var _close = window.close;
   window.close = function () {
-    webkit.messageHandlers.windowCloseHelper.postMessage(null);
+    __bravejs___windowCloseHelper(null);
     _close();
   };
 })();
