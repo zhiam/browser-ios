@@ -24,7 +24,7 @@ extension BrowserViewController: WKUIDelegate {
         // If the page we just opened has a bad scheme, we return nil here so that JavaScript does not
         // get a reference to it which it can return from window.open() - this will end up as a
         // CFErrorHTTPBadURL being presented.
-        guard let scheme = navigationAction.request.URL?.scheme!.lowercaseString where SchemesAllowedToOpenPopups.contains(scheme) else {
+        guard let scheme = navigationAction.request.URL?.scheme!.lowercaseString  where SchemesAllowedToOpenPopups.contains(scheme) else {
             return nil
         }
 

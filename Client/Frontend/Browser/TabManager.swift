@@ -167,7 +167,7 @@ class TabManager : NSObject {
         }
         objc_sync_enter(self); defer { objc_sync_exit(self) }
 
-        if let tab = tab where selectedTab === tab && tab.webView != nil {
+        if let tab = tab  where selectedTab === tab && tab.webView != nil {
             return
         }
 

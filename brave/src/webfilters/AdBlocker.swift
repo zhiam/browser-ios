@@ -41,7 +41,8 @@ class AdBlocker {
     }
 
     // We can add whitelisting logic here for puzzling adblock problems
-    private func isWhitelistedUrl(url: String, forMainDocDomain domain: String) -> Bool {
+    private func isWhitelistedUrl(url: String?, forMainDocDomain domain: String) -> Bool {
+        guard let url = url else { return false }
         // https://github.com/brave/browser-ios/issues/89
         if domain.contains("yahoo") && url.contains("s.yimg.com/zz/combo") {
             return true
@@ -124,7 +125,7 @@ class AdBlocker {
         if url.host?.contains("forbes.com") ?? false {
             setForbesCookie()
 
-            if url.absoluteString.contains("/forbes/welcome") {
+            if url.absoluteString?.contains("/forbes/welcome") ?? false {
                 forbesRedirectGuard.increment()
                 if !forbesRedirectGuard.isLooping() {
                     postAsyncToMain(0.5) {
@@ -136,23 +137,23 @@ class AdBlocker {
         }
 
 
-        if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
+        if request.mainDocumentURL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false {
             return false
         }
 
         var mainDocDomain = request.mainDocumentURL?.host ?? ""
         mainDocDomain = stripLocalhostWebServer(mainDocDomain)
 
-        if isWhitelistedUrl(url.absoluteString!, forMainDocDomain: mainDocDomain) {
+        if isWhitelistedUrl(url.absoluteString, forMainDocDomain: mainDocDomain) {
             return false
         }
 
-        if !mainDocDomain.isEmpty && url.absoluteString.contains(mainDocDomain) {
+        if !mainDocDomain.isEmpty && url.absoluteString?.contains(mainDocDomain) ?? false {
             return false // ignore top level doc
         }
 
         // A cache entry is like: fifoOfCachedUrlChunks[0]["www.microsoft.com_http://some.url"] = true/false for blocking
-        let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString!)
+        let key = "\(mainDocDomain)_" + stripLocalhostWebServer(url.absoluteString)
 
         if let checkedItem = fifoCacheOfUrlsChecked.getItem(key) {
             if checkedItem === NSNull() {

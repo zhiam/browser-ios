@@ -217,12 +217,12 @@ public class Login: CustomStringConvertible, LoginData, LoginUsageData, Equatabl
     // Desktop ignores usernameField and hostnameField.
     public func isSignificantlyDifferentFrom(login: LoginData) -> Bool {
         return login.password != self.password ||
-               login.hostname != self.hostname ||
-               login.username != self.username ||
-               login.formSubmitURL != self.formSubmitURL ||
-               login.httpRealm != self.httpRealm
+            login.hostname != self.hostname ||
+            login.username != self.username ||
+            login.formSubmitURL != self.formSubmitURL ||
+            login.httpRealm != self.httpRealm
     }
-    
+
     /* Used for testing purposes since formSubmitURL should be given back to use from the Logins.js script */
     public class func createWithHostname(hostname: String, username: String, password: String, formSubmitURL: String?) -> LoginData {
         let loginData = Login(hostname: hostname, username: username, password: password) as LoginData
@@ -285,12 +285,11 @@ public class Login: CustomStringConvertible, LoginData, LoginUsageData, Equatabl
 
     public class func fromScript(url: NSURL, script: [String: AnyObject]) -> LoginData? {
         guard let username = script["username"] as? String,
-              let password = script["password"] as? String,
-              let pwOrigin = getPasswordOrigin(url.absoluteString!) else {
+            let password = script["password"] as? String else {
                 return nil
         }
 
-        let login = Login(hostname: pwOrigin, username: username, password: password)
+        let login = Login(hostname: getPasswordOrigin(url.absoluteString ?? "")!, username: username, password: password)
 
         if let formSubmit = script["formSubmitURL"] as? String {
             login.formSubmitURL = formSubmit
@@ -309,12 +308,13 @@ public class Login: CustomStringConvertible, LoginData, LoginUsageData, Equatabl
 
     private class func getPasswordOrigin(uriString: String, allowJS: Bool = false) -> String? {
         var realm: String? = nil
-        if let uri = NSURL(string: uriString) where !uri.scheme!.isEmpty {
-            if allowJS && uri.scheme == "javascript" {
+        if let uri = NSURL(string: uriString),
+            scheme = uri.scheme where !scheme.isEmpty {
+            if allowJS && scheme == "javascript" {
                 return "javascript:"
             }
 
-            realm = "\(uri.scheme)://\(uri.host!)"
+            realm = "\(scheme)://\(uri.host!)"
 
             // If the URI explicitly specified a port, only include it when
             // it's not the default. (We never want "http://foo.com:80")
@@ -564,12 +564,12 @@ class LocalLogin: Login {
 }
 
 public protocol BrowserLogins {
-    func getUsageDataForLoginByGUID(guid: GUID) -> Deferred
-    func getLoginDataForGUID(guid: GUID) -> Deferred
-    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred
-    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred
-    func getAllLogins() -> Deferred
-    func searchLoginsWithQuery(query: String?) -> Deferred
+    func getUsageDataForLoginByGUID(guid: GUID) -> Deferred<Maybe<LoginUsageData>>
+    func getLoginDataForGUID(guid: GUID) -> Deferred<Maybe<Login>>
+    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace) -> Deferred<Maybe<Cursor<LoginData>>>
+    func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred<Maybe<Cursor<LoginData>>>
+    func getAllLogins() -> Deferred<Maybe<Cursor<Login>>>
+    func searchLoginsWithQuery(query: String?) -> Deferred<Maybe<Cursor<Login>>>
 
     // Add a new login regardless of whether other logins might match some fields. Callers
     // are responsible for querying first if they care.
@@ -593,19 +593,19 @@ public protocol SyncableLogins: AccountRemovalDelegate {
 
     func applyChangedLogin(upstream: ServerLogin) -> Success
 
-    func getModifiedLoginsToUpload() -> Deferred
-    func getDeletedLoginsToUpload() -> Deferred
+    func getModifiedLoginsToUpload() -> Deferred<Maybe<[Login]>>
+    func getDeletedLoginsToUpload() -> Deferred<Maybe<[GUID]>>
 
     /**
      * Chains through the provided timestamp.
      */
-    func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred
-    func markAsDeleted(guids: [GUID]) -> Success
-
+    func markAsSynchronized<T: CollectionType where T.Generator.Element == GUID>(_: T, modified: Timestamp) -> Deferred<Maybe<Timestamp>>
+    func markAsDeleted<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Success
+    
     /**
      * For inspecting whether we're an active participant in login sync.
      */
-    func hasSyncedLogins() -> Deferred
+    func hasSyncedLogins() -> Deferred<Maybe<Bool>>
 }
 
 public class LoginDataError: MaybeErrorType {

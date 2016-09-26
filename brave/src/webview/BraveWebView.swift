@@ -95,7 +95,7 @@ class BraveWebView: UIWebView {
     var certificateInvalidConnection:NSURLConnection?
     var braveShieldState = BraveShieldState() {
         didSet {
-            if let fpOn = braveShieldState.isOnFingerprintProtection(), browser = getApp().tabManager.tabForWebView(self) where fpOn {
+            if let fpOn = braveShieldState.isOnFingerprintProtection(), let browser = getApp().tabManager.tabForWebView(self) where fpOn {
                 if browser.getHelper(FingerprintingProtection.self) == nil {
                     let fp = FingerprintingProtection(browser: browser)
                     browser.addHelper(fp)
@@ -135,8 +135,8 @@ class BraveWebView: UIWebView {
     func setUrl(url: NSURL?, reliableSource: Bool) {
         _url.prevUrl = _url.url
         _url.isReliableSource = reliableSource
-        if URL?.absoluteString.endsWith("?") ?? false {
-            if let noQuery = URL?.absoluteString!.componentsSeparatedByString("?")[0] {
+        if URL?.absoluteString?.endsWith("?") ?? false {
+            if let noQuery = URL?.absoluteString?.componentsSeparatedByString("?")[0] {
                 _url.url = NSURL(string: noQuery)
             }
         } else {
@@ -377,7 +377,7 @@ class BraveWebView: UIWebView {
             guard let docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href") else { return }
 
             if docLoc != me.prevDocumentLocation {
-                if !(me.URL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false) && !docLoc.startsWith(WebServer.sharedInstance.base) {
+                if !(me.URL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false) && !docLoc.startsWith(WebServer.sharedInstance.base) {
                     me.title = me.stringByEvaluatingJavaScriptFromString("document.title") ?? NSURL(string: docLoc)?.baseDomain() ?? ""
                 }
                 #if DEBUG
@@ -587,10 +587,10 @@ extension BraveWebView: UIWebViewDelegate {
         }
 
         #if DEBUG
-            var printedUrl = url.absoluteString
+            var printedUrl = url.absoluteString ?? ""
             let maxLen = 100
-            if printedUrl.characters.count > maxLen {
-                printedUrl =  printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
+            if printedUrl.characters.count ?? 0 > maxLen {
+                printedUrl = printedUrl.substringToIndex(printedUrl.startIndex.advancedBy(maxLen)) + "..."
             }
             //print("webview load: " + printedUrl)
         #endif
@@ -601,7 +601,7 @@ extension BraveWebView: UIWebViewDelegate {
             return true
         }
 
-        if url.absoluteString.contains(specialStopLoadUrl) {
+        if url.absoluteString?.contains(specialStopLoadUrl) ?? false {
             progress?.completeProgress()
             return false
         }
@@ -624,7 +624,7 @@ extension BraveWebView: UIWebViewDelegate {
             }
         }
 
-        if url.scheme.startsWith("itms") || url.host == "itunes.apple.com" {
+        if url.scheme?.startsWith("itms") ?? false || url.host == "itunes.apple.com" {
             progress?.completeProgress()
             return false
         }
@@ -711,7 +711,7 @@ extension BraveWebView: UIWebViewDelegate {
             {
                 guard let errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
 
-                if errorUrl.absoluteString!.regexReplacePattern("^.+://", with: "") != URL?.absoluteString!.regexReplacePattern("^.+://", with: "") {
+                if errorUrl.absoluteString?.regexReplacePattern("^.+://", with: "") != URL?.absoluteString?.regexReplacePattern("^.+://", with: "") {
                     print("only show cert error for top-level page")
                     return
                 }
@@ -746,7 +746,7 @@ extension BraveWebView: UIWebViewDelegate {
 
         // The error may not be the main document that failed to load. Check if the failing URL matches the URL being loaded
 
-        if let error = error, errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
+        if let errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
             var handled = false
             if error.code == -1009 /*kCFURLErrorNotConnectedToInternet*/ {
                 let cache = NSURLCache.sharedURLCache().cachedResponseForRequest(NSURLRequest(URL: errorUrl))

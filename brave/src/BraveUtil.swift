@@ -121,7 +121,8 @@ extension NSURL {
 }
 
 // Firefox has uses urls of the form  http://localhost:6571/errors/error.html?url=http%3A//news.google.ca/ to populate the browser history, and load+redirect using GCDWebServer
-func stripLocalhostWebServer(url: String) -> String {
+func stripLocalhostWebServer(url: String?) -> String {
+    guard let url = url else { return "" }
 #if !TEST // TODO fix up the fact lots of code isn't available in the test suite, this is just an additional check, so for testing the rest of the code will work fine
     if !url.startsWith(WebServer.sharedInstance.base) {
         return url
@@ -169,7 +170,7 @@ func getBestFavicon(favicons: [Favicon]) -> Favicon? {
 
         if icon.type.isPreferredTo(best!.type) || best!.url.endsWith(".svg") {
             best = icon
-        } else if let width = icon.width, widthBest = best!.width where width > 0 && width > widthBest {
+        } else if let width = icon.width, let widthBest = best!.width where width > 0 && width > widthBest {
             best = icon
         } else {
             // the last number in the url is likely a size (...72x72.png), use as a best-guess as to which icon comes next

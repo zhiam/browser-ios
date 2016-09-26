@@ -33,8 +33,8 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         var dialogTitle: String?
         actionSheetController.view.tag = BraveWebViewConstants.kContextMenuBlockNavigation
 
-        if let url = elements.link, currentTab = tabManager.selectedTab {
-            dialogTitle = url.absoluteString!.regexReplacePattern("^mailto:", with: "")
+        if let url = elements.link, let currentTab = tabManager.selectedTab {
+            dialogTitle = url.absoluteString?.regexReplacePattern("^mailto:", with: "")
             let isPrivate = currentTab.isPrivate
             let newTabTitle = NSLocalizedString("Open In Background", comment: "Context menu item for opening a link in a new tab")
             let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in

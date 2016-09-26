@@ -64,7 +64,7 @@ class HttpsEverywhere {
 
 
     func tryRedirectingUrl(url: NSURL) -> NSURL? {
-        if url.scheme.startsWith("https") {
+        if url.scheme?.startsWith("https") ?? false {
             return nil
         }
 
@@ -146,7 +146,7 @@ extension HttpsEverywhere {
             }
 
             let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d/")!)
-            if url == nil || !url!.absoluteString.hasSuffix("?sa=L&ai=CD0d/") {
+            if url == nil || !(url!.absoluteString?.hasSuffix("?sa=L&ai=CD0d/") ?? false) {
                 BraveApp.showErrorAlert(title: "Debug Error", error: "HTTPS-E validation failed for url args")
             }
         #endif

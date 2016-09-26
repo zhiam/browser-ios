@@ -32,12 +32,12 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         return UIImage(named: "defaultFavicon")!
     }()
 
-    class func getForURL(url: NSURL, profile: Profile) -> Deferred {
+    class func getForURL(url: NSURL, profile: Profile) -> Deferred<Maybe<[Favicon]>> {
         let f = FaviconFetcher()
         return f.loadFavicons(url, profile: profile)
     }
 
-    private func loadFavicons(url: NSURL, profile: Profile, oldIcons: [Favicon] = [Favicon]()) -> Deferred {
+    private func loadFavicons(url: NSURL, profile: Profile, oldIcons: [Favicon] = [Favicon]()) -> Deferred<Maybe<[Favicon]>> {
         if isIgnoredURL(url) {
             return deferMaybe(FaviconFetcherErrorType(description: "Not fetching ignored URL to find favicons."))
         }
@@ -47,13 +47,13 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         var oldIcons: [Favicon] = oldIcons
 
         dispatch_async(queue) { _ in
-            self.parseHTMLForFavicons(url).bind({ (result: Maybe<[Favicon]>) -> Deferred in
+            self.parseHTMLForFavicons(url).bind({ (result: Maybe<[Favicon]>) -> Deferred<[Maybe<Favicon>]> in
                 var deferreds = [Deferred<Maybe<Favicon>>]()
                 if let icons = result.successValue {
                     deferreds = icons.map { self.getFavicon(url, icon: $0, profile: profile) }
                 }
                 return all(deferreds)
-            }).bind({ (results: [Maybe<Favicon>]) -> Deferred in
+            }).bind({ (results: [Maybe<Favicon>]) -> Deferred<Maybe<[Favicon]>> in
                 for result in results {
                     if let icon = result.successValue {
                         oldIcons.append(icon)
@@ -81,7 +81,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         return Alamofire.Manager.managerWithUserAgent(userAgent, configuration: configuration)
     }()
 
-    private func fetchDataForURL(url: NSURL) -> Deferred {
+    private func fetchDataForURL(url: NSURL) -> Deferred<Maybe<NSData>> {
         let deferred = Deferred<Maybe<NSData>>()
         alamofire.request(.GET, url).response { (request, response, data, error) in
             // Don't cancel requests just because our Manager is deallocated.
@@ -100,11 +100,11 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
     }
 
     // Loads and parses an html document and tries to find any known favicon-type tags for the page
-    private func parseHTMLForFavicons(url: NSURL) -> Deferred {
+    private func parseHTMLForFavicons(url: NSURL) -> Deferred<Maybe<[Favicon]>> {
         return fetchDataForURL(url).bind({ result -> Deferred<Maybe<[Favicon]>> in
             var icons = [Favicon]()
 
-            if let data = result.successValue where result.isSuccess,
+            if let data = result.successValue  where result.isSuccess,
                let element = RXMLElement(fromHTMLData: data) where element.isValid {
                 var reloadUrl: NSURL? = nil
                 element.iterate("head.meta") { meta in
@@ -148,7 +148,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
 
                     if let type = iconType where !bestType.isPreferredTo(type),
                         let iconUrl = NSURL(string: href, relativeToURL: url) {
-                            let icon = Favicon(url: iconUrl.absoluteString, date: NSDate(), type: type)
+                            let icon = Favicon(url: iconUrl.absoluteString ?? "", date: NSDate(), type: type)
                             // If we already have a list of Favicons going already, then add it…
                             if (type == bestType) {
                                 icons.append(icon)
@@ -162,7 +162,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
 
                 // If we haven't got any options icons, then use the default at the root of the domain.
                 if let url = NSURL(string: "/favicon.ico", relativeToURL: url) where icons.isEmpty {
-                    let icon = Favicon(url: url.absoluteString, date: NSDate(), type: .Guess)
+                    let icon = Favicon(url: url.absoluteString ?? "", date: NSDate(), type: .Guess)
                     icons = [icon]
                 }
             }
@@ -170,11 +170,11 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         })
     }
 
-    func getFavicon(siteUrl: NSURL, icon: Favicon, profile: Profile) -> Deferred {
+    func getFavicon(siteUrl: NSURL, icon: Favicon, profile: Profile) -> Deferred<Maybe<Favicon>> {
         let deferred = Deferred<Maybe<Favicon>>()
         let url = icon.url
         let manager = SDWebImageManager.sharedManager()
-        let site = Site(url: siteUrl.absoluteString, title: "")
+        let site = Site(url: siteUrl.absoluteString ?? "", title: "")
 
         var fav = Favicon(url: url, type: icon.type)
         if let url = url.asURL {
@@ -182,7 +182,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
                 options: SDWebImageOptions.LowPriority,
                 progress: nil,
                 completed: { (img, err, cacheType, success, url) -> Void in
-                fav = Favicon(url: url.absoluteString,
+                fav = Favicon(url: url.absoluteString ?? "",
                     type: icon.type)
 
                 if let img = img where !PrivateBrowsing.singleton.isOn {

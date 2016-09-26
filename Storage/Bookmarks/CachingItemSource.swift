@@ -26,7 +26,7 @@ private class CachedSource {
         }
     }
 
-    func lookup(guid: GUID) -> Deferred {
+    func lookup(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>>? {
         guard self.seen.contains(guid) else {
             log.warning("Cache miss for \(guid).")
             return nil
@@ -61,7 +61,7 @@ private class CachedSource {
         self.seen.unionInPlace(guids)
     }
 
-    func takingGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
+    func takingGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
         var out: [GUID: BookmarkMirrorItem] = [:]
         guids.forEach {
             if let v = self.cache[$0] {
@@ -85,7 +85,7 @@ public class CachingLocalItemSource: LocalItemSource {
         self.source = source
     }
 
-    public func getLocalItemWithGUID(guid: GUID) -> Deferred {
+    public func getLocalItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
         if let found = self.cache.lookup(guid) {
             return found
         }
@@ -96,7 +96,7 @@ public class CachingLocalItemSource: LocalItemSource {
         }
     }
 
-    public func getLocalItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
+    public func getLocalItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
         return self.prefetchLocalItemsWithGUIDs(guids) >>> { self.cache.takingGUIDs(guids) }
     }
 
@@ -122,7 +122,7 @@ public class CachingMirrorItemSource: MirrorItemSource {
         self.source = source
     }
 
-    public func getMirrorItemWithGUID(guid: GUID) -> Deferred {
+    public func getMirrorItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
         if let found = self.cache.lookup(guid) {
             return found
         }
@@ -133,7 +133,7 @@ public class CachingMirrorItemSource: MirrorItemSource {
         }
     }
 
-    public func getMirrorItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
+    public func getMirrorItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
         return self.prefetchMirrorItemsWithGUIDs(guids) >>> { self.cache.takingGUIDs(guids) }
     }
 
@@ -159,7 +159,7 @@ public class CachingBufferItemSource: BufferItemSource {
         self.source = source
     }
 
-    public func getBufferItemWithGUID(guid: GUID) -> Deferred {
+    public func getBufferItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
         if let found = self.cache.lookup(guid) {
             return found
         }
@@ -170,7 +170,7 @@ public class CachingBufferItemSource: BufferItemSource {
         }
     }
 
-    public func getBufferItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred {
+    public func getBufferItemsWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Deferred<Maybe<[GUID: BookmarkMirrorItem]>> {
         return self.prefetchBufferItemsWithGUIDs(guids) >>> { self.cache.takingGUIDs(guids) }
     }
 

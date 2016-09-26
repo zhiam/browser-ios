@@ -12,7 +12,7 @@ import Shared
 public class BookmarkNode : Equatable {
     public var id: Int? = nil
     public let guid: GUID
-    public var title: String
+    public let title: String
     public let isEditable: Bool
     public var favicon: Favicon? = nil
 
@@ -27,6 +27,7 @@ public class BookmarkNode : Equatable {
     }
 }
 
+//Brave added
 public func==(lhs:BookmarkNode, rhs:BookmarkNode) -> Bool {
     return lhs.guid == rhs.guid
 }
@@ -79,7 +80,7 @@ public class BookmarkFolder: BookmarkNode {
  */
 public class BookmarksModel: BookmarksModelFactorySource {
     private let factory: BookmarksModelFactory
-    public let modelFactory: Deferred
+    public let modelFactory: Deferred<Maybe<BookmarksModelFactory>>
     public let current: BookmarkFolder
 
     public init(modelFactory: BookmarksModelFactory, root: BookmarkFolder) {
@@ -91,21 +92,21 @@ public class BookmarksModel: BookmarksModelFactorySource {
     /**
      * Produce a new model rooted at the appropriate folder. Fails if the folder doesn't exist.
      */
-    public func selectFolder(folder: BookmarkFolder) -> Deferred {
+    public func selectFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>> {
         return self.factory.modelForFolder(folder)
     }
 
     /**
      * Produce a new model rooted at the appropriate folder. Fails if the folder doesn't exist.
      */
-    public func selectFolder(guid: String) -> Deferred {
+    public func selectFolder(guid: String) -> Deferred<Maybe<BookmarksModel>> {
         return self.factory.modelForFolder(guid)
     }
 
     /**
      * Produce a new model rooted at the base of the hierarchy. Should never fail.
      */
-    public func selectRoot() -> Deferred {
+    public func selectRoot() -> Deferred<Maybe<BookmarksModel>> {
         return self.factory.modelForRoot()
     }
 
@@ -113,7 +114,7 @@ public class BookmarksModel: BookmarksModelFactorySource {
      * Produce a new model rooted at the same place as this model. Can fail if
      * the folder has been deleted from the backing store.
      */
-    public func reloadData() -> Deferred {
+    public func reloadData() -> Deferred<Maybe<BookmarksModel>> {
         return self.factory.modelForFolder(current)
     }
 
@@ -123,21 +124,21 @@ public class BookmarksModel: BookmarksModelFactorySource {
 }
 
 public protocol BookmarksModelFactorySource {
-    var modelFactory: Deferred { get }
+    var modelFactory: Deferred<Maybe<BookmarksModelFactory>> { get }
 }
 
 public protocol BookmarksModelFactory {
-    func modelForFolder(folder: BookmarkFolder) -> Deferred
-    func modelForFolder(guid: GUID) -> Deferred
-    func modelForFolder(guid: GUID, title: String) -> Deferred
+    func modelForFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>>
+    func modelForFolder(guid: GUID) -> Deferred<Maybe<BookmarksModel>>
+    func modelForFolder(guid: GUID, title: String) -> Deferred<Maybe<BookmarksModel>>
 
-    func modelForRoot() -> Deferred
+    func modelForRoot() -> Deferred<Maybe<BookmarksModel>>
 
     // Whenever async construction is necessary, we fall into a pattern of needing
     // a placeholder that behaves correctly for the period between kickoff and set.
     var nullModel: BookmarksModel { get }
 
-    func isBookmarked(url: String) -> Deferred
+    func isBookmarked(url: String) -> Deferred<Maybe<Bool>>
     func removeByGUID(guid: GUID) -> Success
     func removeByURL(url: String) -> Success
 
@@ -177,7 +178,7 @@ public class MemoryBookmarkFolder: BookmarkFolder, SequenceType {
         get {
             if let path = NSBundle.mainBundle().pathForResource("bookmarkFolder", ofType: "png") {
                 let url = NSURL(fileURLWithPath: path)
-                return Favicon(url: url.absoluteString!, date: NSDate(), type: IconType.Local)
+                return Favicon(url: url.absoluteString ?? "", date: NSDate(), type: IconType.Local)
             }
             return nil
         }
@@ -222,10 +223,10 @@ public class MemoryBookmarksSink: ShareToDestination {
         let title = item.title == nil ? "Untitled" : item.title!
         func exists(e: BookmarkNode) -> Bool {
             if let bookmark = e as? BookmarkItem {
-                return bookmark.url == item.url;
+                return bookmark.url == item.url
             }
 
-            return false;
+            return false
         }
 
         // Don't create duplicates.
@@ -291,27 +292,27 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         root = MemoryBookmarkFolder(guid: BookmarkRoots.RootGUID, title: "Root", children: [mobile, unsorted])
     }
 
-    public func modelForFolder(folder: BookmarkFolder) -> Deferred {
+    public func modelForFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>> {
         return self.modelForFolder(folder.guid, title: folder.title)
     }
 
-    public func modelForFolder(guid: GUID) -> Deferred {
+    public func modelForFolder(guid: GUID) -> Deferred<Maybe<BookmarksModel>> {
         return self.modelForFolder(guid, title: "")
     }
 
-    public func modelForFolder(guid: GUID, title: String) -> Deferred {
+    public func modelForFolder(guid: GUID, title: String) -> Deferred<Maybe<BookmarksModel>> {
         var m: BookmarkFolder
         switch (guid) {
         case BookmarkRoots.MobileFolderGUID:
             // Transparently merges in any queued items.
             m = self.mobile.append(self.sink.queue)
-            break;
+            break
         case BookmarkRoots.RootGUID:
             m = self.root
-            break;
+            break
         case BookmarkRoots.UnfiledFolderGUID:
             m = self.unsorted
-            break;
+            break
         default:
             return deferMaybe(DatabaseError(description: "No such folder \(guid)."))
         }
@@ -319,13 +320,13 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         return deferMaybe(BookmarksModel(modelFactory: self, root: m))
     }
 
-    public func modelForRoot() -> Deferred {
+    public func modelForRoot() -> Deferred<Maybe<BookmarksModel>> {
         return deferMaybe(BookmarksModel(modelFactory: self, root: self.root))
     }
 
     /**
-    * This class could return the full data immediately. We don't, because real DB-backed code won't.
-    */
+     * This class could return the full data immediately. We don't, because real DB-backed code won't.
+     */
     public var nullModel: BookmarksModel {
         let f = MemoryBookmarkFolder(guid: BookmarkRoots.RootGUID, title: "Root", children: [])
         return BookmarksModel(modelFactory: self, root: f)
@@ -335,18 +336,18 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         self.sink.shareItem(item)
     }
 
-    public func isBookmarked(url: String) -> Deferred {
+    public func isBookmarked(url: String) -> Deferred<Maybe<Bool>> {
         return deferMaybe(DatabaseError(description: "Not implemented"))
     }
 
     public func removeByGUID(guid: GUID) -> Success {
         return deferMaybe(DatabaseError(description: "Not implemented"))
     }
-
+    
     public func removeByURL(url: String) -> Success {
         return deferMaybe(DatabaseError(description: "Not implemented"))
     }
-
+    
     public func clearBookmarks() -> Success {
         return succeed()
     }

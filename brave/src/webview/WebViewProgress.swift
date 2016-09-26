@@ -52,7 +52,7 @@ public class WebViewProgress
         }
 
         @objc override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-            guard let path = keyPath where path == kvoLoading else { return }
+            guard let path = keyPath  where path == kvoLoading else { return }
             postAsyncToMain(0) { // ensure closure is on main thread, by-definition this func can be off-main
                 if !(self.webView?.loading ?? true) && self.webView?.estimatedProgress < 1.0 {
                     self.timer?.invalidate()
@@ -123,7 +123,7 @@ public class WebViewProgress
         var isFragmentJump: Bool = false
 
         if let fragment = request.URL?.fragment {
-            let nonFragmentUrl = request.URL?.absoluteString!.stringByReplacingOccurrencesOfString("#" + fragment,
+            let nonFragmentUrl = request.URL?.absoluteString?.stringByReplacingOccurrencesOfString("#" + fragment,
                                                                                                   withString: "")
 
             isFragmentJump = nonFragmentUrl == webView?.request?.URL?.absoluteString
@@ -131,8 +131,8 @@ public class WebViewProgress
 
         let isTopLevelNavigation = request.mainDocumentURL == request.URL
 
-        let isHTTPOrLocalFile = request.URL?.scheme.startsWith("http") == true ||
-            request.URL?.scheme.startsWith("file") == true
+        let isHTTPOrLocalFile = (request.URL?.scheme?.startsWith("http") ?? false) ||
+            (request.URL?.scheme?.startsWith("file") ?? false)
 
         if (!isFragmentJump && isHTTPOrLocalFile && isTopLevelNavigation) {
             currentURL = request.URL
@@ -148,7 +148,7 @@ public class WebViewProgress
 
         func injectLoadDetection() {
             if let scheme = webView?.request?.mainDocumentURL?.scheme,
-                host = webView?.request?.mainDocumentURL?.host
+                let host = webView?.request?.mainDocumentURL?.host
             {
                 let waitForCompleteJS = String(format:
                     "if (!__waitForCompleteJS__) {" +

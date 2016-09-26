@@ -49,7 +49,7 @@ class TrackingProtection {
         }
         guard var host = url.host else { return false}
 
-        if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
+        if request.mainDocumentURL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false {
             return false
         }
 

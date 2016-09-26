@@ -76,7 +76,7 @@ class ShareExtensionHelper: NSObject {
         var activityItems = [AnyObject]()
 
         let printInfo = UIPrintInfo(dictionary: nil)
-        printInfo.jobName = selectedTab?.url?.absoluteString ?? selectedURL.absoluteString!
+        printInfo.jobName = selectedTab?.url?.absoluteString ?? (selectedURL.absoluteString ?? "")
         printInfo.outputType = .General
         activityItems.append(printInfo)
 
@@ -98,7 +98,7 @@ class ShareExtensionHelper: NSObject {
         
         if let url = selectedTab?.webView?.URL {
             if self.onePasswordExtensionItem != nil {
-                let act:URLActivityItemSource = URLActivityItemSource(urlString: url.absoluteString!, item: self.onePasswordExtensionItem)
+                let act:URLActivityItemSource = URLActivityItemSource(urlString: url.absoluteString ?? "", item: self.onePasswordExtensionItem)
                 activityItems.append(act)
             }
         }

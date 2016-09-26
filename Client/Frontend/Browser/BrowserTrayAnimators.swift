@@ -19,7 +19,7 @@ class TrayToBrowserAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
 private extension TrayToBrowserAnimator {
     func transitionFromTray(tabTray: TabTrayController, toBrowser bvc: BrowserViewController, usingContext transitionContext: UIViewControllerContextTransitioning) {
-        guard let container = transitionContext.containerView() else { return }
+        let container = transitionContext.containerView()
         guard let selectedTab = bvc.tabManager.selectedTab else { return }
 
         // Bug 1205464 - Top Sites tiles blow up or shrink after rotating
@@ -44,9 +44,9 @@ private extension TrayToBrowserAnimator {
         bvc.webViewContainerBackdrop.hidden = true
 
         // Take a snapshot of the collection view that we can scale/fade out. We don't need to wait for screen updates since it's already rendered on the screen
-        let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(false)
+        guard let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(false) else { return }
         tabTray.collectionView.alpha = 0
-        tabCollectionViewSnapshot!.frame = tabTray.collectionView.frame
+        tabCollectionViewSnapshot.frame = tabTray.collectionView.frame
         container.insertSubview(tabCollectionViewSnapshot, aboveSubview: tabTray.view)
 
         // Create a fake cell to use for the upscaling animation
@@ -82,8 +82,8 @@ private extension TrayToBrowserAnimator {
 
             bvc.tabTrayDidDismiss(tabTray)
 
-            tabCollectionViewSnapshot!.transform = CGAffineTransformMakeScale(0.9, 0.9)
-            tabCollectionViewSnapshot!.alpha = 0
+            tabCollectionViewSnapshot.transform = CGAffineTransformMakeScale(0.9, 0.9)
+            tabCollectionViewSnapshot.alpha = 0
 
             // Push out the navigation bar buttons
             let buttonOffset = tabTray.addTabButton.frame.width + TabTrayControllerUX.ToolbarButtonOffset
@@ -95,7 +95,7 @@ private extension TrayToBrowserAnimator {
         }, completion: { finished in
             // Remove any of the views we used for the animation
             cell.removeFromSuperview()
-            tabCollectionViewSnapshot!.removeFromSuperview()
+            tabCollectionViewSnapshot.removeFromSuperview()
             bvc.footer.alpha = 1
             bvc.toggleSnackBarVisibility(show: true)
             toggleWebViewVisibility(show: true, usingTabManager: bvc.tabManager)
@@ -123,7 +123,7 @@ class BrowserToTrayAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 private extension BrowserToTrayAnimator {
     func transitionFromBrowser(bvc: BrowserViewController, toTabTray tabTray: TabTrayController, usingContext transitionContext: UIViewControllerContextTransitioning) {
 
-        guard let container = transitionContext.containerView() else { return }
+        let container = transitionContext.containerView()
         guard let selectedTab = bvc.tabManager.selectedTab else { return }
 
         let tabManager = bvc.tabManager

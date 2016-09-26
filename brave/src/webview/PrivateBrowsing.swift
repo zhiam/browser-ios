@@ -39,7 +39,7 @@ class PrivateBrowsing {
         }
     }
 
-    private func cookiesFileDiskOperation(let type: MoveCookies) {
+    private func cookiesFileDiskOperation( type: MoveCookies) {
         let fm = NSFileManager.defaultManager()
         let baseDir = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)[0]
         let cookiesDir = baseDir + "/Cookies"
@@ -101,11 +101,11 @@ class PrivateBrowsing {
         NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivacyModeChanged, object: nil)
     }
 
-    private var exitDeferred = Deferred
-    func exit() -> Deferred {
+    private var exitDeferred = Deferred<Void>()
+    func exit() -> Deferred<Void> {
         let isAlwaysPrivate = getApp().profile?.prefs.boolForKey(kPrefKeyPrivateBrowsingAlwaysOn) ?? false
 
-        exitDeferred = Deferred
+        exitDeferred = Deferred<Void>()
         if isAlwaysPrivate || !isOn {
             exitDeferred.fill(())
             return exitDeferred

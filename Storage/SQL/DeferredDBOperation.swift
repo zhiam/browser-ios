@@ -11,21 +11,21 @@ private let log = Logger.syncLogger
 private let DeferredQueue = dispatch_queue_create("BrowserDBQueue", DISPATCH_QUEUE_SERIAL)
 
 /**
-    This class is written to mimick an NSOperation, but also provide Deferred capabilities as well.
-    
-    Usage:
-    let deferred = DeferredDBOperation({ (db, err) -> Int
-      // ... Do something long running
-      return 1
-    }, withDb: myDb, onQueue: myQueue).start(onQueue: myQueue)
-    deferred.upon { res in
-      // if cancelled res.isFailure = true
-    })
+ This class is written to mimick an NSOperation, but also provide Deferred capabilities as well.
 
-    // ... Some time later
-    deferred.cancel()
-*/
-class DeferredDBOperation<T>: Deferred, Cancellable {
+ Usage:
+ let deferred = DeferredDBOperation({ (db, err) -> Int
+ // ... Do something long running
+ return 1
+ }, withDb: myDb, onQueue: myQueue).start(onQueue: myQueue)
+ deferred.upon { res in
+ // if cancelled res.isFailure = true
+ })
+
+ // ... Some time later
+ deferred.cancel()
+ */
+class DeferredDBOperation<T>: Deferred<Maybe<T>>, Cancellable {
     /// Cancelled is wrapping a ReadWrite lock to make access to it thread-safe.
     private var cancelledLock = LockProtected<Bool>(item: false)
     var cancelled: Bool {

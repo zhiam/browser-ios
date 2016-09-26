@@ -88,7 +88,7 @@ class DiskReaderModeCache: ReaderModeCache {
     }
 
     func get(url: NSURL) throws -> ReadabilityResult {
-        if let (_, contentFilePath) = cachePathsForURL(url) where NSFileManager.defaultManager().fileExistsAtPath(contentFilePath) {
+        if let (_, contentFilePath) = cachePathsForURL(url)  where NSFileManager.defaultManager().fileExistsAtPath(contentFilePath) {
             let string = try NSString(contentsOfFile: contentFilePath, encoding: NSUTF8StringEncoding)
             if let value = ReadabilityResult(string: string as String) {
                 return value
@@ -138,7 +138,7 @@ class DiskReaderModeCache: ReaderModeCache {
     }
 
     private func hashForURL(url: NSURL) -> NSString? {
-        guard let data = url.absoluteString!.dataUsingEncoding(NSUTF8StringEncoding) else { return nil }
+        guard let data = url.absoluteString?.dataUsingEncoding(NSUTF8StringEncoding) else { return nil }
 
         return data.sha1.hexEncodedString
     }

@@ -28,23 +28,23 @@ public struct ClientAndTabs: Equatable, CustomStringConvertible {
 
 public func ==(lhs: ClientAndTabs, rhs: ClientAndTabs) -> Bool {
     return (lhs.client == rhs.client) &&
-           (lhs.tabs == rhs.tabs)
+        (lhs.tabs == rhs.tabs)
 }
 
 public protocol RemoteClientsAndTabs: SyncCommands {
-    func wipeClients() -> Deferred
-    func wipeRemoteTabs() -> Deferred
-    func wipeTabs() -> Deferred
-    func getClientGUIDs() -> Deferred
-    func getClients() -> Deferred
-    func getClientsAndTabs() -> Deferred
-    func getTabsForClientWithGUID(guid: GUID?) -> Deferred
-    func insertOrUpdateClient(client: RemoteClient) -> Deferred
-    func insertOrUpdateClients(clients: [RemoteClient]) -> Deferred
+    func wipeClients() -> Deferred<Maybe<()>>
+    func wipeRemoteTabs() -> Deferred<Maybe<()>>
+    func wipeTabs() -> Deferred<Maybe<()>>
+    func getClientGUIDs() -> Deferred<Maybe<Set<GUID>>>
+    func getClients() -> Deferred<Maybe<[RemoteClient]>>
+    func getClientsAndTabs() -> Deferred<Maybe<[ClientAndTabs]>>
+    func getTabsForClientWithGUID(guid: GUID?) -> Deferred<Maybe<[RemoteTab]>>
+    func insertOrUpdateClient(client: RemoteClient) -> Deferred<Maybe<()>>
+    func insertOrUpdateClients(clients: [RemoteClient]) -> Deferred<Maybe<()>>
 
     // Returns number of tabs inserted.
-    func insertOrUpdateTabs(tabs: [RemoteTab]) -> Deferred // Insert into the local client.
-    func insertOrUpdateTabsForClientGUID(clientGUID: String?, tabs: [RemoteTab]) -> Deferred
+    func insertOrUpdateTabs(tabs: [RemoteTab]) -> Deferred<Maybe<Int>> // Insert into the local client.
+    func insertOrUpdateTabsForClientGUID(clientGUID: String?, tabs: [RemoteTab]) -> Deferred<Maybe<Int>>
 }
 
 public struct RemoteTab: Equatable {

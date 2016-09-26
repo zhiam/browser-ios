@@ -45,8 +45,8 @@ class SafeBrowsing {
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
 
-        if request.mainDocumentURL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false ||
-            request.URL?.absoluteString.startsWith(WebServer.sharedInstance.base) ?? false {
+        if request.mainDocumentURL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false ||
+            request.URL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false {
             return false
         }
 
@@ -55,7 +55,7 @@ class SafeBrowsing {
         let host: String = request.mainDocumentURL?.host ?? url.host ?? ""
 
         // A cache entry is like: fifoOfCachedUrlChunks[0]["www.microsoft.com_http://some.url"] = true/false for blocking
-        let key = "\(host)_" + url.absoluteString!
+        let key = "\(host)_" + (url.absoluteString ?? "")
 
         if let checkedItem = fifoCacheOfUrlsChecked.getItem(key) {
             if checkedItem === NSNull() {

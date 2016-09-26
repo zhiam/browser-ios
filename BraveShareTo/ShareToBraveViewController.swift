@@ -31,7 +31,7 @@ class ShareToBraveViewController: SLComposeServiceViewController {
         if itemProvider.hasItemConformingToTypeIdentifier(type) {
             itemProvider.loadItemForTypeIdentifier(type, options: nil, completionHandler: {
                 (urlItem, error) in
-                guard let url = (urlItem as! NSURL).absoluteString!.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.alphanumericCharacterSet()),
+                guard let url = (urlItem as! NSURL).absoluteString?.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.alphanumericCharacterSet()),
                     let braveUrl = NSURL(string: "brave://open-url?url=\(url)") else { return }
 
                 // From http://stackoverflow.com/questions/24297273/openurl-not-work-in-action-extension

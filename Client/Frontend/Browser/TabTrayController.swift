@@ -414,7 +414,7 @@ class TabTrayController: UIViewController {
             make.edges.equalTo(self.view)
         }
 
-        if let tab = tabManager.selectedTab where tab.isPrivate {
+        if let tab = tabManager.selectedTab  where tab.isPrivate {
             privateMode = true
         } else if PrivateBrowsing.singleton.isOn {
             privateMode = true

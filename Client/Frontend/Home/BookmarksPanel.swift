@@ -8,6 +8,27 @@ import Shared
 import XCGLogger
 import Eureka
 
+
+// Brave extension
+extension MergedSQLiteBookmarks {
+    public func editBookmarkFolder(bookmark:BookmarkFolder, title:String, completion:dispatch_block_t)  {
+        self.buffer.editBookmarkFolder(bookmark, title:title, completion:completion)
+    }
+
+    public func editBookmarkItem(bookmark:BookmarkItem, title:String, parentGUID: String, completion:dispatch_block_t)  {
+        self.buffer.editBookmarkItem(bookmark, title:title, parentGUID:parentGUID, completion:completion)
+    }
+
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
+        self.buffer.reorderBookmarks(folderGUID, bookmarksOrder:bookmarksOrder, completion:completion)
+    }
+
+    public func createFolder(folderName:String, completion:dispatch_block_t)  {
+        self.buffer.createFolder(folderName, completion:completion)
+    }
+}
+
+
 private let log = Logger.browserLogger
 
 let BookmarkStatusChangedNotification = "BookmarkStatusChangedNotification"

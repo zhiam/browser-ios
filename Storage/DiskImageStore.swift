@@ -43,7 +43,7 @@ public class DiskImageStore {
     }
 
     /// Gets an image for the given key if it is in the store.
-    public func get(key: String) -> Deferred {
+    public func get(key: String) -> Deferred<Maybe<UIImage>> {
         if !keys.contains(key) {
             return deferMaybe(DiskImageStoreErrorType(description: "Image key not found"))
         }
@@ -51,7 +51,7 @@ public class DiskImageStore {
         return deferDispatchAsync(queue) { () -> Deferred<Maybe<UIImage>> in
             let imagePath = (self.filesDir as NSString).stringByAppendingPathComponent(key)
             if let data = NSData(contentsOfFile: imagePath),
-                   image = UIImage.imageFromDataThreadSafe(data) {
+                image = UIImage.imageFromDataThreadSafe(data) {
                 return deferMaybe(image)
             }
 
@@ -92,7 +92,7 @@ public class DiskImageStore {
                 log.warning("Failed to remove DiskImageStore item at \(path): \(error)")
             }
         }
-
+        
         self.keys = self.keys.intersect(keys)
     }
 }
