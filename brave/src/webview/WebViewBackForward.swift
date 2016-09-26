@@ -27,7 +27,7 @@ class LegacyBackForwardListItem {
         // In order to mimic the built-in API somewhat, the initial url is stripped of mobile site
         // parts of the host (mobile.nytimes.com -> initial url is nytimes.com). The initial url
         // is the pre-page-forwarding url
-        let normal = url.scheme! + "://" + (url.normalizedHostAndPath() ?? url.absoluteString ?? "")
+        let normal = url.scheme ?? "http" + "://" + (url.normalizedHostAndPath() ?? url.absoluteString ?? "")
         initialURL = NSURL(string: normal) ?? url
     }
 }

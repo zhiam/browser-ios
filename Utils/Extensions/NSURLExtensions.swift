@@ -196,7 +196,7 @@ extension NSURL {
      */
     public func domainURL() -> NSURL {
         if let normalized = self.normalizedHost() {
-            return NSURL(scheme: self.scheme!, host: normalized, path: "/") ?? self
+            return NSURL(scheme: self.scheme ?? "http", host: normalized, path: "/") ?? self
         }
         return self
     }
@@ -228,7 +228,7 @@ extension NSURL {
     public func isWebPage() -> Bool {
         let httpSchemes = ["http", "https"]
 
-        if let _ = httpSchemes.indexOf(scheme!) {
+        if let scheme = scheme, let _ = httpSchemes.indexOf(scheme) {
             return true
         }
 
