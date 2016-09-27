@@ -35,7 +35,13 @@ class BraveBrowserViewController : BrowserViewController {
             getApp().browserViewController.switchToPrivacyMode()
             getApp().tabManager.addTabAndSelect(isPrivate: true)
         }
+
         RunOnceAtStartup.ran = true
+
+        let showingIntroScreen = profile.prefs.intForKey(IntroViewControllerSeenProfileKey) == nil
+        if !showingIntroScreen && profile.prefs.intForKey(BraveUX.PrefKeyOptInDialogWasSeen) == nil {
+            presentOptInDialog()
+        }
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -177,6 +183,56 @@ class BraveBrowserViewController : BrowserViewController {
     func newTabForDesktopSite(url url: NSURL) {
         let tab = tabManager.addTabForDesktopSite()
         tab.loadRequest(NSURLRequest(URL: url))
+    }
+
+    @objc func learnMoreTapped() {
+        UIApplication.sharedApplication().openURL(BraveUX.BravePrivacyURL)
+    }
+
+    func presentOptInDialog() {
+        if profile.prefs.intForKey(BraveUX.PrefKeyOptInDialogWasSeen) != nil {
+            return // double-check as presentOptInDialog is called from IntroViewController as well as this class
+        }
+
+        // Find the UIAlertController message view, and make it hyperlink style and clickable
+        func findAndReplaceWithLink(view: UIView, placeholderToFind: String) {
+            for subview in view.subviews {
+                if let label = subview as? UILabel where label.text == placeholderToFind {
+                    let attr = [NSForegroundColorAttributeName : UIColor.blueColor(), NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue];
+
+                    let link = NSLocalizedString("Brave privacy policy", comment: "opt-in dialog link to privacy policy")
+                    let fullText = NSLocalizedString("Learn more: \(link)", comment: "opt-in dialog message")
+                    let mut = NSMutableAttributedString(string: fullText)
+                    let range = (fullText as NSString).rangeOfString(link)
+                    if range.location != NSNotFound {
+                        mut.setAttributes(attr, range: range)
+                    }
+
+                    label.attributedText = mut
+                    label.userInteractionEnabled = true
+                    label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(learnMoreTapped)))
+                    return
+                }
+
+                findAndReplaceWithLink(subview, placeholderToFind: placeholderToFind)
+            }
+        }
+
+        func answered(canSend: Bool) {
+            self.profile.prefs.setInt(canSend ? 1 : 0, forKey: BraveUX.PrefKeyUserAllowsTelemetry)
+            profile.prefs.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
+        }
+
+        let placeholder = "    "
+        let alert = UIAlertController(title: NSLocalizedString("Allow Brave to send info to improve our app?", comment: "startup opt-in message"), message: placeholder, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: "yes, allow brave to send info"), style: .Default) { _ in
+            answered(true) })
+        alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: "no, do not allow brave to send info"), style: .Default) { _ in
+            answered(false) })
+
+        getApp().braveTopViewController.presentViewController(alert, animated: true) {
+            findAndReplaceWithLink(alert.view, placeholderToFind:placeholder)
+        }
     }
 }
 

@@ -8,7 +8,6 @@ func telemetry(action action: String, props: [String: String]?) {
         return
     #else
         if MixpanelManager.sharedInstance.getMainInstance() == nil {
-            assert(false, "Mixpanel not initialized yet!")
             return
         }
         let mixpanel = Mixpanel.mainInstance()
