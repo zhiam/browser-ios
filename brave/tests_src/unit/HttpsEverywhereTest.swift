@@ -27,7 +27,7 @@ class HttpsEverywhereTest: XCTestCase {
 
         for url in urls {
             let redirected = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://" + url)!)
-            XCTAssert(redirected != nil && redirected!.scheme.startsWith("https"), "failed:" + url)
+            XCTAssert(redirected != nil && redirected!.scheme!.startsWith("https"), "failed:" + url)
         }
 
         let exceptions = ["m.slashdot.com"]
@@ -39,7 +39,7 @@ class HttpsEverywhereTest: XCTestCase {
 
         // test suffix maintained
         let url = HttpsEverywhere.singleton.tryRedirectingUrl(NSURL(string: "http://www.googleadservices.com/pagead/aclk?sa=L&ai=CD0d/")!)
-        XCTAssert(url != nil && url!.absoluteString.hasSuffix("?sa=L&ai=CD0d/"))
+        XCTAssert(url != nil && url!.absoluteString!.hasSuffix("?sa=L&ai=CD0d/"))
     }
 
   /* 

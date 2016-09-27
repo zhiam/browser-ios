@@ -441,7 +441,6 @@
 		E6231C051B90A472005ABB0D /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C041B90A472005ABB0D /* libxml2.2.tbd */; };
 		E62FD3F126ABE03669E5BD73 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6BFEC103054810F8925EAF /* UIColorExtensions.swift */; };
 		E6C7EAF1D5A5AB6A64949CB2 /* SetupPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAA917A9C1187CA85A6FB5 /* SetupPasscodeViewController.swift */; };
-		E6E5D77E1C5286CD00CC6696 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B9A62DF1C4002B1005C83DC /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E6F965121B2F1CF20034B023 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288A2D861AB8B3260023ABC3 /* Shared.framework */; };
 		E7026A766AA17FE4022C8F83 /* NSUserDefaultsPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D05ABFBD9436E6D8F2DB5 /* NSUserDefaultsPrefs.swift */; };
 		E7137CFBEDF3A241B3FF612E /* MockLogins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CB429412ED076CFF5E85FD /* MockLogins.swift */; };
@@ -564,20 +563,6 @@
 			remoteGlobalIDString = DC2B29EC1B26F718001C60EA;
 			remoteInfo = "SQLite iOS Tests";
 		};
-		7B9A62DE1C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DC7253AC1B52ADEB009B38B1;
-			remoteInfo = "SQLite Mac";
-		};
-		7B9A62E01C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DC7253B51B52ADEC009B38B1;
-			remoteInfo = "SQLite Mac Tests";
-		};
 		7B9A62E21C4002B1005C83DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
@@ -591,20 +576,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = DCE7BB831B7434F90040D364;
 			remoteInfo = "SQLiteCipher iOS Tests";
-		};
-		7B9A62E61C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DCE7BBB01B7438610040D364;
-			remoteInfo = "SQLiteCipher Mac";
-		};
-		7B9A62E81C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DCE7BBB91B7438620040D364;
-			remoteInfo = "SQLiteCipher Mac Tests";
 		};
 		7B9A62F81C400303005C83DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -717,7 +688,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E6E5D77E1C5286CD00CC6696 /* SQLite.framework in Copy Frameworks */,
 				E4D567301ADECE2800F1EFE7 /* ReadingList.framework in Copy Frameworks */,
 				2FCAE2321ABB51F800877008 /* Storage.framework in Copy Frameworks */,
 				288A2D9E1AB8B3260023ABC3 /* Shared.framework in Copy Frameworks */,
@@ -2028,12 +1998,8 @@
 			children = (
 				7B9A62DB1C4002B1005C83DC /* SQLite.framework */,
 				7B9A62DD1C4002B1005C83DC /* SQLite iOS Tests.xctest */,
-				7B9A62DF1C4002B1005C83DC /* SQLite.framework */,
-				7B9A62E11C4002B1005C83DC /* SQLite Mac Tests.xctest */,
 				7B9A62E31C4002B1005C83DC /* SQLiteCipher.framework */,
 				7B9A62E51C4002B1005C83DC /* SQLiteCipher iOS Tests.xctest */,
-				7B9A62E71C4002B1005C83DC /* SQLiteCipher.framework */,
-				7B9A62E91C4002B1005C83DC /* SQLiteCipher Mac Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3312,20 +3278,6 @@
 			remoteRef = 7B9A62DC1C4002B1005C83DC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7B9A62DF1C4002B1005C83DC /* SQLite.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLite.framework;
-			remoteRef = 7B9A62DE1C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7B9A62E11C4002B1005C83DC /* SQLite Mac Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "SQLite Mac Tests.xctest";
-			remoteRef = 7B9A62E01C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		7B9A62E31C4002B1005C83DC /* SQLiteCipher.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -3338,20 +3290,6 @@
 			fileType = wrapper.cfbundle;
 			path = "SQLiteCipher iOS Tests.xctest";
 			remoteRef = 7B9A62E41C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7B9A62E71C4002B1005C83DC /* SQLiteCipher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLiteCipher.framework;
-			remoteRef = 7B9A62E61C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7B9A62E91C4002B1005C83DC /* SQLiteCipher Mac Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "SQLiteCipher Mac Tests.xctest";
-			remoteRef = 7B9A62E81C4002B1005C83DC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D30EBB641C75503800105AE9 /* libKIF.a */ = {
@@ -4669,7 +4607,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4684,7 +4622,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = UITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
