@@ -2,11 +2,12 @@
 
 # Pro Tip for ad-hoc building: add your app id as an arg, like ./setup.sh org.foo.myapp
 
-app_id=${1:-com.brave.ios.browser}
+app_id=${1:-`whoami`.brave}
+echo Using APPID of $app_id, you can customize using ./setup.sh org.foo.myapp
+
 echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/.bundle-id.xcconfig
 # Custom IDs get the BETA property set automatically
 [[  -z $1 ]] || echo BETA=Beta >> xcconfig/.bundle-id.xcconfig
-echo $app_id
 # if a brave build, setup fabric and mixpanel
 if [[ $app_id == com.brave.ios.browser* ]]; then
     echo adding fabric
