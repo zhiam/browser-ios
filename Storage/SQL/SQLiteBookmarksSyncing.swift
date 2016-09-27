@@ -12,7 +12,7 @@ private let log = Logger.syncLogger
 //added as a check for multiple fast taps on toolbar. This wouldn't block more than
 //one bookmark being added since there's no way to request insertion of multiple new
 //bookmarks simultaneously
-var insertingBookmark:Bool = false
+private var insertingBookmark:Bool = false
 
 extension SQLiteBookmarks: LocalItemSource {
     public func getLocalItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
