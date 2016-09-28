@@ -50,36 +50,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EB8E9B351C7CB4E1003AA90E"
-               BuildableName = "brave-unit-KIF-tests.xctest"
-               BlueprintName = "brave-unit-KIF-tests"
-               ReferencedContainer = "container:Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2FCAE2231ABB51F800877008"
-               BuildableName = "StorageTests.xctest"
-               BlueprintName = "StorageTests"
-               ReferencedContainer = "container:Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E4D567211ADECE2700F1EFE7"
-               BuildableName = "ReadingListTests.xctest"
-               BlueprintName = "ReadingListTests"
-               ReferencedContainer = "container:Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "EB53D0FA1D9C2BB20093077A"
                BuildableName = "brave-ui-test.xctest"
                BlueprintName = "brave-ui-test"
@@ -90,9 +60,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EB53D1081D9C2BBE0093077A"
-               BuildableName = "unit-testing-bundle.xctest"
-               BlueprintName = "unit-testing-bundle"
+               BlueprintIdentifier = "EB8E9B351C7CB4E1003AA90E"
+               BuildableName = "brave-unit-KIF-tests.xctest"
+               BlueprintName = "brave-unit-KIF-tests"
                ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -101,10 +101,15 @@ class BraveApp {
 
     // Prefs are created at this point
     class func willFinishLaunching_end() {
-        if AppConstants.IsRunningTest {
-            print("In test mode, bypass automatic vault registration.")
-        } else {
-            // TODO hookup VaultManager.userProfileInit()
+        let args = NSProcessInfo.processInfo().arguments
+        if args.contains("BRAVE-TEST-CLEAR-PREFS") {
+            BraveApp.getPrefs()!.clearAll()
+        }
+        if args.contains("BRAVE-TEST-NO-SHOW-INTRO") {
+            BraveApp.getPrefs()!.setInt(1, forKey: IntroViewControllerSeenProfileKey)
+        }
+        if args.contains("BRAVE-TEST-SHOW-OPT-IN") {
+            BraveApp.getPrefs()!.removeObjectForKey(BraveUX.PrefKeyOptInDialogWasSeen)
         }
 
         BraveApp.isSafeToRestoreTabs = BraveApp.getPrefs()?.stringForKey(kAppBootingIncompleteFlag) == nil

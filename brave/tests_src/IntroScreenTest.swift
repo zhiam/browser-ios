@@ -9,29 +9,40 @@ class IntroScreenTest: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        restart(reset: true)
     }
 
     override func tearDown() {
         super.tearDown()
     }
 
-    func restart(reset reset: Bool) {
+    private func restart(bootArgs: [String] = []) {
         let app = XCUIApplication()
         
         app.terminate()
-       /* app.launchArguments.append("BRAVE-UI-TEST")
-        if reset {
-            app.launchArguments.append("BRAVE-TEST-RESET")
-        }*/
+        app.launchArguments.append("BRAVE-UI-TEST")
+        bootArgs.forEach {
+            app.launchArguments.append($0)
+        }
         app.launch()
         sleep(1)
     }
 
+    func testIntroScreenAndOptInDialog() {
+        restart(["BRAVE-TEST-CLEAR-PREFS"])
+        let app = XCUIApplication()
+        app.buttons["Start Browsing"].tap()
+        app.buttons["Yes"].tap()
+    }
 
-    func testIntroScreen() {
-       // getApp().profile?.prefs.removeObjectForKey(IntroViewControllerSeenProfileKey)
+    func testOptInDialogWithoutIntroScreen() {
+        restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
+        let app = XCUIApplication()
+        app.buttons["Yes"].tap()
 
-        
+        restart()
+        // Ensure UI isn't blocked with modal dialog
+        sleep(1)
+        app.buttons["Bookmarks and History Panel"].tap()
+        app.scrollViews.otherElements.buttons["Settings"].tap()
     }
 }
