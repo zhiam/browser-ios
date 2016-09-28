@@ -466,9 +466,10 @@
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EB3661751D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
+		EB3661781D9C3CEC00445C92 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB36616F1D9C3CEC00445C92 /* Info.plist */; };
 		EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661701D9C3CEC00445C92 /* top500.swift */; };
-		EB36618B1D9C3CF900445C92 /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
@@ -3465,6 +3466,7 @@
 				6EA5759D8C8DB32D81620895 /* ElementAtPoint.js in Resources */,
 				A0A20F790B43EED1614DC822 /* FingerprintingProtection.js in Resources */,
 				4C8CFF069B42CD78C72CC4F4 /* HideEmptyImages.js in Resources */,
+				EB3661771D9C3CEC00445C92 /* Info.plist in Resources */,
 				DDF18B7D90D1BF9E6072344C /* PageUnload.js in Resources */,
 				4305183B54F23C211BD5112A /* SafeBrowsingError.html in Resources */,
 				A6E598067FE0B003D66CEBF9 /* LaunchScreen.xib in Resources */,
@@ -3734,8 +3736,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB36617C1D9C3CEC00445C92 /* WebViewLoadTest.swift in Sources */,
 				EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */,
-				EB9D8F201D9CCC3500CA1624 /* WebViewLoadTestUtils.swift in Sources */,
+				EB36617E1D9C3CEC00445C92 /* WebViewLoadTestUtils.swift in Sources */,
 				EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3794,6 +3797,7 @@
 				CF1FD6B869DAC754B459302B /* BraveBrowserBottomToolbar.swift in Sources */,
 				B559CDC0AF8A6D35DE545B6A /* BraveBrowserViewController.swift in Sources */,
 				CBE8F9770BF74CCB68E0807A /* BraveMainWindow.swift in Sources */,
+				EB36617B1D9C3CEC00445C92 /* WebViewLoadTest.swift in Sources */,
 				184619D873835F18B9731D1E /* BraveScrollController.swift in Sources */,
 				8999244A8E5D55AF862B8167 /* BraveSettingsView.swift in Sources */,
 				42BB62D8A935B31499CE77E3 /* BraveTopViewController.swift in Sources */,
@@ -3824,15 +3828,18 @@
 				2F0860C25F7367CEED17E283 /* HttpsEverywhere.cpp in Sources */,
 				A2F643975578B7DA57C4B7A4 /* HttpsEverywhereObjC.mm in Sources */,
 				A026D2C7D56306D65820F5EA /* LICENSE in Sources */,
+				EB3661791D9C3CEC00445C92 /* top500.swift in Sources */,
 				16B5C378276A21598A9BFD31 /* Makefile in Sources */,
 				70B5479B872B9E556BC787DE /* HttpsEverywhere.swift in Sources */,
 				7F17B9DFB20A62DAECBE0350 /* NetworkDataFileLoader.swift in Sources */,
 				512E10479437E91E0C460A9E /* SafeBrowsing.swift in Sources */,
 				D1C86DA5CC9837EE549A6AB9 /* TrackingProtection.swift in Sources */,
 				4BC045726236C11E7D507089 /* TrackingProtectionCpp.mm in Sources */,
+				EB36617D1D9C3CEC00445C92 /* WebViewLoadTestUtils.swift in Sources */,
 				86D3B9819FCA03016E9B9C4B /* UrlProtocol.swift in Sources */,
 				B68CFF88E0641A0F8CA9C1BE /* BraveWebView.swift in Sources */,
 				65D7C98408394E5F2E760894 /* LegacyJSContext.m in Sources */,
+				EB3661751D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */,
 				1F2948B4093DD581ADBB7FA4 /* PrivateBrowsing.swift in Sources */,
 				62859AF44506E17DCC0A2759 /* WebViewBackForward.swift in Sources */,
 				C5A2E6F2033E5897F1F43AD7 /* WebViewDocScale.m in Sources */,
