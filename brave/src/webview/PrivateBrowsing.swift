@@ -97,6 +97,8 @@ class PrivateBrowsing {
         webkitDirLocker(lock: true)
 
         NSUserDefaults.standardUserDefaults().setBool(true, forKey: "WebKitPrivateBrowsingEnabled")
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivacyModeChanged, object: nil)
     }
 
     private var exitDeferred = Deferred<()>()
@@ -123,6 +125,8 @@ class PrivateBrowsing {
                 }
             #endif
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivacyModeChanged, object: nil)
 
         return exitDeferred
     }

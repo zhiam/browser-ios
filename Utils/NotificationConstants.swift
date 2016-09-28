@@ -11,3 +11,6 @@ public let NotificationPrivateDataClearedHistory = "PrivateDataClearedHistoryNot
 
 // Fired when the login synchronizer has finished applying remote changes
 public let NotificationDataRemoteLoginChangesWereApplied = "NotificationDataRemoteLoginChangesWereApplied"
+
+// Fired when privacy mode changed
+public let NotificationPrivacyModeChanged = "PrivacyModeChangedNotification"

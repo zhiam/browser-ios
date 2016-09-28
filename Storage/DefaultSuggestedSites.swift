@@ -9,7 +9,7 @@ public class DefaultSuggestedSites {
         "default": [
             SuggestedSiteData(
                 url: "https://www.google.com",
-                bgColor: "e6e6e6",
+                bgColor: "f4f4f4",
                 imageUrl: "asset://suggestedsites_google",
                 faviconUrl: "asset://braveLogo",
                 trackingId: 632,
@@ -17,7 +17,7 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://www.yahoo.com",
-                bgColor: "ffffff",
+                bgColor: "400190",
                 imageUrl: "asset://suggestedsites_yahoo",
                 faviconUrl: "asset://braveLogo",
                 trackingId: 632,
@@ -25,7 +25,7 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://m.facebook.com/",
-                bgColor: "3b5998",
+                bgColor: "475a96",
                 imageUrl: "asset://suggestedsites_facebook",
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 632,
@@ -33,7 +33,7 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://m.youtube.com/",
-                bgColor: "0xcd201f",
+                bgColor: "c8302a",
                 imageUrl: "asset://suggestedsites_youtube",
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 631,
@@ -41,7 +41,7 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://www.amazon.com/",
-                bgColor: "0x666666",
+                bgColor: "231f20",
                 imageUrl: "asset://suggestedsites_amazon",
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 630,
@@ -49,7 +49,7 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://mobile.twitter.com/",
-                bgColor: "ffffff",
+                bgColor: "2aaae1",
                 imageUrl: "asset://suggestedsites_twitter",
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 628,
@@ -57,15 +57,15 @@ public class DefaultSuggestedSites {
             ),
             SuggestedSiteData(
                 url: "https://www.wikipedia.org/",
-                bgColor: "e6e6e6",
-                imageUrl: "asset://suggestedsites_wiki",
+                bgColor: "000000",
+                imageUrl: "asset://suggestedsites_wikipedia",
                 faviconUrl: "asset://defaultFavicon",
                 trackingId: 629,
                 title: NSLocalizedString("Wikipedia", comment: "Tile title for Wikipedia")
             ),
             SuggestedSiteData(
                 url: "https://www.duckduckgo.com/?t=brave",
-                bgColor: "ffffff",
+                bgColor: "f8f8f8",
                 imageUrl: "asset://suggestedsites_DDG",
                 faviconUrl: "asset://braveLogo",
                 trackingId: 632,

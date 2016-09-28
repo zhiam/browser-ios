@@ -79,6 +79,7 @@ class TopSitesPanel: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TopSitesPanel.notificationReceived(_:)), name: NotificationProfileDidFinishSyncing, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TopSitesPanel.notificationReceived(_:)), name: NotificationPrivateDataClearedHistory, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TopSitesPanel.notificationReceived(_:)), name: NotificationDynamicFontChanged, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TopSitesPanel.notificationReceived(_:)), name: NotificationPrivacyModeChanged, object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -88,7 +89,7 @@ class TopSitesPanel: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let collection = TopSitesCollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        collection.backgroundColor = BraveUX.BackgroundColorForBookmarksHistoryAndTopSites
+        collection.backgroundColor = PrivateBrowsing.singleton.isOn ? BraveUX.BackgroundColorForTopSitesPrivate : BraveUX.BackgroundColorForBookmarksHistoryAndTopSites
         collection.delegate = self
         collection.dataSource = dataSource
         collection.registerClass(ThumbnailCell.self, forCellWithReuseIdentifier: ThumbnailIdentifier)
@@ -115,12 +116,17 @@ class TopSitesPanel: UIViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationProfileDidFinishSyncing, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationPrivateDataClearedHistory, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationPrivacyModeChanged, object: nil)
     }
 
     func notificationReceived(notification: NSNotification) {
         switch notification.name {
         case NotificationFirefoxAccountChanged, NotificationProfileDidFinishSyncing, NotificationPrivateDataClearedHistory, NotificationDynamicFontChanged:
             refreshTopSites(maxFrecencyLimit)
+            break
+        case NotificationPrivacyModeChanged:
+            collection?.backgroundColor = PrivateBrowsing.singleton.isOn ? BraveUX.BackgroundColorForTopSitesPrivate : BraveUX.BackgroundColorForBookmarksHistoryAndTopSites
+            collection?.reloadData()
             break
         default:
             // no need to do anything at all
@@ -619,11 +625,12 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
     }
 
     private func configureCell(cell: ThumbnailCell, forSuggestedSite site: SuggestedSite) {
-        cell.textLabel.text = site.title.isEmpty ? NSURL(string: site.url)?.normalizedHostAndPath() : site.title
+        cell.textLabel.text = site.title.isEmpty ? NSURL(string: site.url)?.normalizedHostAndPath() : site.title.lowercaseString
         cell.imageWrapper.backgroundColor = site.backgroundColor
         cell.imageView.contentMode = .ScaleAspectFit
         cell.imageView.layer.minificationFilter = kCAFilterTrilinear
         cell.accessibilityLabel = cell.textLabel.text
+        cell.showBorder(!PrivateBrowsing.singleton.isOn)
 
         guard let icon = site.wordmark.url.asURL,
             let host = icon.host else {
@@ -726,6 +733,7 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
     }
 
     @objc func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
         // Cells for the top site thumbnails.
         let site = self[indexPath.item]!
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(ThumbnailIdentifier, forIndexPath: indexPath) as! ThumbnailCell
@@ -754,3 +762,4 @@ extension TopSitesPanel : WindowTouchFilter {
     }
 }
 #endif
+

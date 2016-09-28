@@ -8,10 +8,10 @@ import Shared
 struct ThumbnailCellUX {
     /// Ratio of width:height of the thumbnail image.
     static let ImageAspectRatio: Float = 1.0
-    static let BorderColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
+    static let BorderColor = UIColor.blackColor().colorWithAlphaComponent(0.2)
     static let BorderWidth: CGFloat = 1
     static let LabelColor = UIAccessibilityDarkerSystemColorsEnabled() ? UIColor.blackColor() : UIColor(rgb: 0x353535)
-    static let LabelBackgroundColor = UIColor(white: 1.0, alpha: 0.5)
+    static let LabelBackgroundColor = UIColor(white: 1.0, alpha: 0.7)
     static let LabelAlignment: NSTextAlignment = .Center
     static let SelectedOverlayColor = UIColor(white: 0.0, alpha: 0.25)
 //    static let InsetSize: CGFloat = 20
@@ -65,9 +65,9 @@ struct ThumbnailCellUX {
         }
     }
 
-    static let LabelInsets = UIEdgeInsetsMake(7, 3, 7, 3)
+    static let LabelInsets = UIEdgeInsetsMake(0, 3, 2, 3)
     static let PlaceholderImage = UIImage(named: "defaultTopSiteIcon")
-    static let CornerRadius: CGFloat = 3
+    static let CornerRadius: CGFloat = 1.5
 
     // Make the remove button look 20x20 in size but have the clickable area be 44x44
     static let RemoveButtonSize: CGFloat = 44
@@ -173,16 +173,13 @@ class ThumbnailCell: UICollectionViewCell {
     lazy var textWrapper: UIView = {
         let wrapper = UIView()
         wrapper.backgroundColor = ThumbnailCellUX.LabelBackgroundColor
-#if BRAVE
-        wrapper.backgroundColor = UIColor.clearColor()
-#endif
         return wrapper
     }()
 
     lazy var textLabel: UILabel = {
         let textLabel = UILabel()
         textLabel.setContentHuggingPriority(1000, forAxis: UILayoutConstraintAxis.Vertical)
-        textLabel.font = DynamicFontHelper.defaultHelper.DefaultSmallFont
+        textLabel.font = DynamicFontHelper.defaultHelper.ExtraSmallFont
         textLabel.textColor = ThumbnailCellUX.LabelColor
         textLabel.textAlignment = ThumbnailCellUX.LabelAlignment
         return textLabel
@@ -200,12 +197,8 @@ class ThumbnailCell: UICollectionViewCell {
 
     lazy var imageWrapper: UIView = {
         let imageWrapper = UIView()
-    #if !BRAVE
-        imageWrapper.layer.borderColor = ThumbnailCellUX.BorderColor.CGColor
-        imageWrapper.layer.borderWidth = ThumbnailCellUX.BorderWidth
         imageWrapper.layer.cornerRadius = ThumbnailCellUX.CornerRadius
         imageWrapper.clipsToBounds = true
-    #endif
         return imageWrapper
     }()
 
@@ -297,7 +290,6 @@ class ThumbnailCell: UICollectionViewCell {
         delegate?.didRemoveThumbnail(self)
     }
 
-
     func SELdidLongPress() {
         delegate?.didLongPressThumbnail(self)
     }
@@ -326,6 +318,17 @@ class ThumbnailCell: UICollectionViewCell {
                     self.removeButton.hidden = true
                 }
             })
+    }
+    
+    func showBorder(show: Bool) {
+        if show {
+            imageWrapper.layer.borderColor = ThumbnailCellUX.BorderColor.CGColor
+            imageWrapper.layer.borderWidth = ThumbnailCellUX.BorderWidth
+        }
+        else {
+            imageWrapper.layer.borderColor = UIColor.clearColor().CGColor
+            imageWrapper.layer.borderWidth = 0
+        }
     }
 
     /**

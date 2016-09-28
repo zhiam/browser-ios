@@ -24,6 +24,7 @@ class DynamicFontHelper: NSObject {
         deviceFontSize = defaultStandardFontSize * (UIDevice.currentDevice().userInterfaceIdiom == .Pad ? iPadFactor : iPhoneFactor)
         defaultMediumFontSize = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleFootnote).pointSize // 12pt -> 13pt -> 19pt
         defaultSmallFontSize = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleCaption2).pointSize // 11pt -> 11pt -> 17pt
+        extraSmallFontSize = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleCaption2).pointSize - 2
 
         super.init()
     }
@@ -66,6 +67,20 @@ class DynamicFontHelper: NSObject {
     }
     var DeviceFontSmallBold: UIFont {
         return UIFont.systemFontOfSize(deviceFontSize - 1, weight: UIFontWeightBold)
+    }
+    
+    /**
+     * ExtraSmall
+     */
+    private var extraSmallFontSize: CGFloat
+    var ExtraSmallFontSize: CGFloat {
+        return extraSmallFontSize
+    }
+    var ExtraSmallFont: UIFont {
+        return UIFont.systemFontOfSize(extraSmallFontSize, weight: UIFontWeightRegular)
+    }
+    var ExtraSmallFontBold: UIFont {
+        return UIFont.boldSystemFontOfSize(extraSmallFontSize)
     }
 
     /**
@@ -135,6 +150,7 @@ class DynamicFontHelper: NSObject {
         deviceFontSize = defaultStandardFontSize * (UIDevice.currentDevice().userInterfaceIdiom == .Pad ? iPadFactor : iPhoneFactor)
         defaultMediumFontSize = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleFootnote).pointSize
         defaultSmallFontSize = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleCaption2).pointSize
+        extraSmallFontSize = UIFontDescriptor.preferredFontDescriptorWithTextStyle(UIFontTextStyleCaption2).pointSize - 2
     }
 
     func SELcontentSizeCategoryDidChange(notification: NSNotification) {
