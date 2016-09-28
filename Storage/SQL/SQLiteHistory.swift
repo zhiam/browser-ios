@@ -11,7 +11,7 @@ private let log = Logger.syncLogger
 
 public let kNotificationSiteAddedToHistory = "kNotificationSiteAddedToHistory"
 
-private let MinSiteVisitsForTopSiteInclusion = 20 // brave added, sites should be visited many times before added to top sites
+private let MinPageVisitsForTopSiteInclusion = 4 // brave added, page should be visited many times before added to top sites
 
 class NoSuchRecordError: MaybeErrorType {
     let guid: GUID
@@ -600,7 +600,7 @@ extension SQLiteHistory: BrowserHistory {
         "SELECT *, (\(localFrecencySQL) + \(remoteFrecencySQL)) AS frecency" +
         " FROM (" + ungroupedSQL + ")" +
         " WHERE (" +
-        "((localVisitCount > \(MinSiteVisitsForTopSiteInclusion)) OR (remoteVisitCount > \(MinSiteVisitsForTopSiteInclusion))) AND " +                         // Eliminate dead rows from coalescing.
+        "((localVisitCount > \(MinPageVisitsForTopSiteInclusion)) OR (remoteVisitCount > \(MinPageVisitsForTopSiteInclusion))) AND " +                         // Eliminate dead rows from coalescing.
         "((localVisitDate > \(sixMonthsAgo)) OR (remoteVisitDate > \(sixMonthsAgo)))" +    // Exclude really old items.
         ") ORDER BY frecency DESC" +
         " LIMIT 1000"                                 // Don't even look at a huge set. This avoids work.
