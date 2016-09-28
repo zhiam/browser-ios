@@ -44,10 +44,13 @@ class Setting : NSObject {
     // Called when the cell is setup. Call if you need the default behaviour.
     func onConfigureCell(cell: UITableViewCell) {
         cell.detailTextLabel?.attributedText = status
-        cell.detailTextLabel?.numberOfLines = 0
+        cell.detailTextLabel?.numberOfLines = 2
+        cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+        cell.detailTextLabel?.lineBreakMode = .ByWordWrapping
         cell.textLabel?.attributedText = title
         cell.textLabel?.textAlignment = textAlignment
         cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         cell.accessoryType = accessoryType
         cell.accessoryView = nil
         cell.selectionStyle = enabled ? .Default : .None
