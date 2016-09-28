@@ -471,6 +471,7 @@
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EB53D1181D9C2EE60093077A /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB53D0E51D9C238A0093077A /* IntroScreenTest.swift */; };
 		EB5678A41D91D03B00EFCCD3 /* AutomaticProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678931D91D03B00EFCCD3 /* AutomaticProperties.swift */; };
 		EB5678A51D91D03B00EFCCD3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678941D91D03B00EFCCD3 /* Constants.swift */; };
 		EB5678A61D91D03B00EFCCD3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678951D91D03B00EFCCD3 /* Error.swift */; };
@@ -699,6 +700,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = EB0F42501C9A46D800676650;
 			remoteInfo = BraveShareTo;
+		};
+		EB53D1001D9C2BB20093077A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F84B21B61A090F8100AAB793 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F84B21BD1A090F8100AAB793;
+			remoteInfo = Client;
 		};
 		EB8E9B371C7CB4E1003AA90E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1306,6 +1314,8 @@
 		EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSURLProtectionSpaceExtensions.swift; path = ./Utils/Extensions/NSURLProtectionSpaceExtensions.swift; sourceTree = "<group>"; };
 		EB4A77361CC97AC50088E774 /* BaseConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = BaseConfig.xcconfig; sourceTree = "<group>"; };
 		EB4EC7836B7D80B31285DCC6 /* SiteTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiteTableViewController.swift; path = ./Client/Frontend/Widgets/SiteTableViewController.swift; sourceTree = "<group>"; };
+		EB53D0E51D9C238A0093077A /* IntroScreenTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntroScreenTest.swift; path = brave/tests_src/IntroScreenTest.swift; sourceTree = "<group>"; };
+		EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-ui-test.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB5678931D91D03B00EFCCD3 /* AutomaticProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutomaticProperties.swift; sourceTree = "<group>"; };
 		EB5678941D91D03B00EFCCD3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		EB5678951D91D03B00EFCCD3 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -1319,7 +1329,7 @@
 		EB5678A01D91D03B00EFCCD3 /* People.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = People.swift; sourceTree = "<group>"; };
 		EB5678A11D91D03B00EFCCD3 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		EB5678A31D91D03B00EFCCD3 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
-		EB8E9B6B1C7CB4E1003AA90E /* UITests_brave.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests_brave.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECDCB9A9BE94C1AA75F29565 /* ReadingListServerMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListServerMetadata.swift; path = ./ReadingList/ReadingListServerMetadata.swift; sourceTree = "<group>"; };
 		ED441214938259EBE2ACD8DF /* BraveRightSidePanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveRightSidePanel.swift; path = ./brave/src/frontend/sidepanels/BraveRightSidePanel.swift; sourceTree = "<group>"; };
 		EE6184965624CC221A1AEEDE /* FindInPageHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FindInPageHelper.swift; path = ./Client/Frontend/Browser/FindInPageHelper.swift; sourceTree = "<group>"; };
@@ -1436,6 +1446,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EB0F424E1C9A46D800676650 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB53D0F81D9C2BB20093077A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1902,6 +1919,7 @@
 		4FF62081E91139DF82A34D63 /* tests_src */ = {
 			isa = PBXGroup;
 			children = (
+				EB53D0E51D9C238A0093077A /* IntroScreenTest.swift */,
 				07F0FC9B65C9451C5621BF30 /* HttpsEverywhereTest.swift */,
 				F5AD5DFC61C7B8622F752C11 /* Info.plist */,
 				9CA25D8EFF7A755D51A8BABB /* top500.swift */,
@@ -2838,8 +2856,9 @@
 				E4D567181ADECE2700F1EFE7 /* ReadingList.framework */,
 				E4D567221ADECE2700F1EFE7 /* ReadingListTests.xctest */,
 				E6F9650C1B2F1CF20034B023 /* SharedTests.xctest */,
-				EB8E9B6B1C7CB4E1003AA90E /* UITests_brave.xctest */,
+				EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */,
 				EB0F42511C9A46D800676650 /* BraveShareTo.appex */,
+				EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3146,9 +3165,27 @@
 			productReference = EB0F42511C9A46D800676650 /* BraveShareTo.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		EB8E9B351C7CB4E1003AA90E /* UITests_brave */ = {
+		EB53D0FA1D9C2BB20093077A /* brave-ui-test */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EB8E9B651C7CB4E1003AA90E /* Build configuration list for PBXNativeTarget "UITests_brave" */;
+			buildConfigurationList = EB53D1021D9C2BB20093077A /* Build configuration list for PBXNativeTarget "brave-ui-test" */;
+			buildPhases = (
+				EB53D0F71D9C2BB20093077A /* Sources */,
+				EB53D0F81D9C2BB20093077A /* Frameworks */,
+				EB53D0F91D9C2BB20093077A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EB53D1011D9C2BB20093077A /* PBXTargetDependency */,
+			);
+			name = "brave-ui-test";
+			productName = "ui-testing-bundle";
+			productReference = EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		EB8E9B351C7CB4E1003AA90E /* brave-unit-KIF-tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB8E9B651C7CB4E1003AA90E /* Build configuration list for PBXNativeTarget "brave-unit-KIF-tests" */;
 			buildPhases = (
 				EB8E9B381C7CB4E1003AA90E /* Sources */,
 				EB8E9B541C7CB4E1003AA90E /* Frameworks */,
@@ -3159,9 +3196,9 @@
 			dependencies = (
 				EB8E9B361C7CB4E1003AA90E /* PBXTargetDependency */,
 			);
-			name = UITests_brave;
+			name = "brave-unit-KIF-tests";
 			productName = UITests;
-			productReference = EB8E9B6B1C7CB4E1003AA90E /* UITests_brave.xctest */;
+			productReference = EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		F84B21BD1A090F8100AAB793 /* Client */ = {
@@ -3198,7 +3235,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0720;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Mozilla;
 				TargetAttributes = {
@@ -3224,6 +3261,10 @@
 					};
 					EB0F42501C9A46D800676650 = {
 						CreatedOnToolsVersion = 7.2;
+					};
+					EB53D0FA1D9C2BB20093077A = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
 					F84B21BD1A090F8100AAB793 = {
 						CreatedOnToolsVersion = 6.1;
@@ -3275,8 +3316,9 @@
 				E4D567171ADECE2700F1EFE7 /* ReadingList */,
 				E4D567211ADECE2700F1EFE7 /* ReadingListTests */,
 				E6F9650B1B2F1CF20034B023 /* SharedTests */,
-				EB8E9B351C7CB4E1003AA90E /* UITests_brave */,
 				EB0F42501C9A46D800676650 /* BraveShareTo */,
+				EB53D0FA1D9C2BB20093077A /* brave-ui-test */,
+				EB8E9B351C7CB4E1003AA90E /* brave-unit-KIF-tests */,
 			);
 		};
 /* End PBXProject section */
@@ -3423,6 +3465,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F3A7ACB3815515E64F34F35 /* Brave.entitlements in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB53D0F91D9C2BB20093077A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3697,6 +3746,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2400342EEA3D538F524687DB /* ShareToBraveViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB53D0F71D9C2BB20093077A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB53D1181D9C2EE60093077A /* IntroScreenTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4038,6 +4095,11 @@
 			target = EB0F42501C9A46D800676650 /* BraveShareTo */;
 			targetProxy = EB0F42591C9A46D800676650 /* PBXContainerItemProxy */;
 		};
+		EB53D1011D9C2BB20093077A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F84B21BD1A090F8100AAB793 /* Client */;
+			targetProxy = EB53D1001D9C2BB20093077A /* PBXContainerItemProxy */;
+		};
 		EB8E9B361C7CB4E1003AA90E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F84B21BD1A090F8100AAB793 /* Client */;
@@ -4062,7 +4124,6 @@
 				);
 				INFOPLIST_FILE = "Shared/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4094,7 +4155,6 @@
 				);
 				INFOPLIST_FILE = Storage/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-DSQLITE_HAS_CODEC";
 				OTHER_LDFLAGS = "-ObjC";
@@ -4115,7 +4175,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = StorageTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4161,7 +4220,6 @@
 					$SRCROOT/,
 					$SDKROOT/usr/include/libxml2,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -4233,7 +4291,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Shared/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4288,7 +4345,6 @@
 				);
 				INFOPLIST_FILE = Storage/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-DSQLITE_HAS_CODEC";
@@ -4333,7 +4389,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = StorageTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4382,7 +4437,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = ReadingList/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4428,7 +4482,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = ReadingListTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4458,7 +4511,6 @@
 				);
 				INFOPLIST_FILE = ReadingList/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4481,7 +4533,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ReadingListTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4500,7 +4551,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SharedTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4539,7 +4589,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SharedTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4606,6 +4655,45 @@
 			};
 			name = Release;
 		};
+		EB53D1031D9C2BB20093077A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = brave/tests_src/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/UITests/UITests-Bridging-Header.h";
+				TEST_TARGET_NAME = Client;
+			};
+			name = Debug;
+		};
+		EB53D1041D9C2BB20093077A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = brave/tests_src/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/UITests/UITests-Bridging-Header.h";
+				TEST_TARGET_NAME = Client;
+			};
+			name = Release;
+		};
 		EB8E9B661C7CB4E1003AA90E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4615,7 +4703,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = UITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4630,7 +4717,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = UITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4643,7 +4729,6 @@
 		EB8E9B691C7CB4E1003AA90E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4693,7 +4778,6 @@
 					$SRCROOT/,
 					$SDKROOT/usr/include/libxml2,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -4796,7 +4880,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		EB8E9B651C7CB4E1003AA90E /* Build configuration list for PBXNativeTarget "UITests_brave" */ = {
+		EB53D1021D9C2BB20093077A /* Build configuration list for PBXNativeTarget "brave-ui-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB53D1031D9C2BB20093077A /* Debug */,
+				EB53D1041D9C2BB20093077A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EB8E9B651C7CB4E1003AA90E /* Build configuration list for PBXNativeTarget "brave-unit-KIF-tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EB8E9B661C7CB4E1003AA90E /* Debug */,

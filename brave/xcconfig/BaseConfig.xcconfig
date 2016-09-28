@@ -22,6 +22,8 @@ CODE_SIGN_IDENTITY_Debug = iPhone Developer
 CODE_SIGN_IDENTITY_Release = iPhone Distribution
 CODE_SIGN_IDENTITY=$(CODE_SIGN_IDENTITY_$(CONFIGURATION))
 
+IPHONEOS_DEPLOYMENT_TARGET = 9.0
+
 // The pre-built ssl lib in FXA requires this off
 ENABLE_BITCODE = NO
 

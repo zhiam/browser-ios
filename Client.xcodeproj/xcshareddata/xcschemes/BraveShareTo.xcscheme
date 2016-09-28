@@ -63,6 +63,26 @@
                ReferencedContainer = "container:Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EB53D0FA1D9C2BB20093077A"
+               BuildableName = "brave-ui-test.xctest"
+               BlueprintName = "brave-ui-test"
+               ReferencedContainer = "container:Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EB53D1081D9C2BBE0093077A"
+               BuildableName = "unit-testing-bundle.xctest"
+               BlueprintName = "unit-testing-bundle"
+               ReferencedContainer = "container:Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
