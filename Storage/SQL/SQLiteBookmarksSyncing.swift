@@ -9,6 +9,11 @@ import XCGLogger
 
 private let log = Logger.syncLogger
 
+//added as a check for multiple fast taps on toolbar. This wouldn't block more than
+//one bookmark being added since there's no way to request insertion of multiple new
+//bookmarks simultaneously
+var insertingBookmark:Bool = false
+
 extension SQLiteBookmarks: LocalItemSource {
     public func getLocalItemWithGUID(guid: GUID) -> Deferred<Maybe<BookmarkMirrorItem>> {
         return self.db.getMirrorItemFromTable(TableBookmarksLocal, guid: guid)
@@ -284,10 +289,6 @@ extension SQLiteBookmarks {
         return true
     }
 
-    //added as a check for multiple fast taps on toolbar. This wouldn't block more than 
-    //one bookmark being added since there's no way to request insertion of multiple new
-    //bookmarks simultaneously
-    var insertingBookmark:Bool = false
     /**
      * Assumption: the provided folder GUID exists in either the local table or the mirror table.
      */
@@ -303,6 +304,7 @@ extension SQLiteBookmarks {
         error = self.db.transaction(synchronous: false, err: &error) { (conn, err) -> Bool in
             self.insertBookmarkInTransaction(deferred, url: url, title: title, favicon: favicon, intoFolder: parent, withTitle: parentTitle, conn: conn, err: &err)
             insertingBookmark = false
+            return true
         }
         
         if error != nil {
