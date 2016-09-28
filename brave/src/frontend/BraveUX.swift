@@ -1,6 +1,10 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 struct BraveUX {
+    static let BravePrivacyURL = NSURL(string: "https://www.brave.com/privacy_ios")!
+    static let PrefKeyOptInDialogWasSeen = "OptInDialogWasSeen"
+    static let PrefKeyUserAllowsTelemetry = "userallowstelemetry"
+
     static let MaxTabsInMemory = 9
 
     static var PanelShadowWidth = 15

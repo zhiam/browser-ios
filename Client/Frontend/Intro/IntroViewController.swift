@@ -198,6 +198,12 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
+
+        getApp().profile!.prefs.setInt(1, forKey: IntroViewControllerSeenProfileKey)
+
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            (getApp().browserViewController as! BraveBrowserViewController).presentOptInDialog()
+        }
     }
 
     func SELDynamicFontChanged(notification: NSNotification) {
