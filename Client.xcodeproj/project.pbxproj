@@ -459,7 +459,6 @@
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		EB3661751D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
 		EB3661781D9C3CEC00445C92 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB36616F1D9C3CEC00445C92 /* Info.plist */; };
 		EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661701D9C3CEC00445C92 /* top500.swift */; };
@@ -3191,12 +3190,13 @@
 						CreatedOnToolsVersion = 7.2;
 						LastSwiftMigration = 0800;
 					};
-					EB8E9B351C7CB4E1003AA90E = {
-						LastSwiftMigration = 0800;
-					};
 					EB53D0FA1D9C2BB20093077A = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
+					};
+					EB8E9B351C7CB4E1003AA90E = {
+						LastSwiftMigration = 0800;
 					};
 					F84B21BD1A090F8100AAB793 = {
 						CreatedOnToolsVersion = 6.1;
@@ -3399,7 +3399,6 @@
 				6EA5759D8C8DB32D81620895 /* ElementAtPoint.js in Resources */,
 				A0A20F790B43EED1614DC822 /* FingerprintingProtection.js in Resources */,
 				4C8CFF069B42CD78C72CC4F4 /* HideEmptyImages.js in Resources */,
-				EB3661771D9C3CEC00445C92 /* Info.plist in Resources */,
 				DDF18B7D90D1BF9E6072344C /* PageUnload.js in Resources */,
 				4305183B54F23C211BD5112A /* SafeBrowsingError.html in Resources */,
 				A6E598067FE0B003D66CEBF9 /* LaunchScreen.xib in Resources */,
@@ -3730,7 +3729,6 @@
 				CF1FD6B869DAC754B459302B /* BraveBrowserBottomToolbar.swift in Sources */,
 				B559CDC0AF8A6D35DE545B6A /* BraveBrowserViewController.swift in Sources */,
 				CBE8F9770BF74CCB68E0807A /* BraveMainWindow.swift in Sources */,
-				EB36617B1D9C3CEC00445C92 /* WebViewLoadTest.swift in Sources */,
 				184619D873835F18B9731D1E /* BraveScrollController.swift in Sources */,
 				8999244A8E5D55AF862B8167 /* BraveSettingsView.swift in Sources */,
 				42BB62D8A935B31499CE77E3 /* BraveTopViewController.swift in Sources */,
@@ -3761,18 +3759,15 @@
 				2F0860C25F7367CEED17E283 /* HttpsEverywhere.cpp in Sources */,
 				A2F643975578B7DA57C4B7A4 /* HttpsEverywhereObjC.mm in Sources */,
 				A026D2C7D56306D65820F5EA /* LICENSE in Sources */,
-				EB3661791D9C3CEC00445C92 /* top500.swift in Sources */,
 				16B5C378276A21598A9BFD31 /* Makefile in Sources */,
 				70B5479B872B9E556BC787DE /* HttpsEverywhere.swift in Sources */,
 				7F17B9DFB20A62DAECBE0350 /* NetworkDataFileLoader.swift in Sources */,
 				512E10479437E91E0C460A9E /* SafeBrowsing.swift in Sources */,
 				D1C86DA5CC9837EE549A6AB9 /* TrackingProtection.swift in Sources */,
 				4BC045726236C11E7D507089 /* TrackingProtectionCpp.mm in Sources */,
-				EB36617D1D9C3CEC00445C92 /* WebViewLoadTestUtils.swift in Sources */,
 				86D3B9819FCA03016E9B9C4B /* UrlProtocol.swift in Sources */,
 				B68CFF88E0641A0F8CA9C1BE /* BraveWebView.swift in Sources */,
 				65D7C98408394E5F2E760894 /* LegacyJSContext.m in Sources */,
-				EB3661751D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */,
 				1F2948B4093DD581ADBB7FA4 /* PrivateBrowsing.swift in Sources */,
 				62859AF44506E17DCC0A2759 /* WebViewBackForward.swift in Sources */,
 				C5A2E6F2033E5897F1F43AD7 /* WebViewDocScale.m in Sources */,
@@ -4049,7 +4044,7 @@
 				);
 				INFOPLIST_FILE = Storage/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-DSQLITE_HAS_CODEC";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
@@ -4243,7 +4238,7 @@
 				);
 				INFOPLIST_FILE = Storage/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-DSQLITE_HAS_CODEC";
 				OTHER_LDFLAGS = "-ObjC";
@@ -4577,6 +4572,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = Client;
 			};
 			name = Debug;
@@ -4594,6 +4590,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = Client;
 			};
 			name = Release;
@@ -4607,7 +4604,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = UITests/Info.plist;
-			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4622,7 +4619,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = UITests/Info.plist;
-			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
