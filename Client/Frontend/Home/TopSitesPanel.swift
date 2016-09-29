@@ -518,8 +518,6 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
     private var sitesInvalidated = true
 
     weak var collectionView: UICollectionView?
-
-    private let blurQueue = dispatch_queue_create("FaviconBlurQueue", DISPATCH_QUEUE_CONCURRENT)
     private let BackgroundFadeInDuration: NSTimeInterval = 0.3
 
     init(profile: Profile) {
@@ -543,20 +541,43 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
         cell.imageView.image = UIImage(named: "defaultTopSiteIcon")!
         cell.imageView.contentMode = UIViewContentMode.Center
     }
-
-    private func setBlurredBackground(image: UIImage, withURL url: NSURL, forCell cell: ThumbnailCell) {
-        let blurredKey = "\(url.absoluteString)!blurred"
-        if let blurredImage = SDImageCache.sharedImageCache().imageFromMemoryCacheForKey(blurredKey) {
-            cell.backgroundImage.image = blurredImage
-        } else {
-            let blurredImage = image.applyLightEffect()
-            SDImageCache.sharedImageCache().storeImage(blurredImage, forKey: blurredKey, toDisk: false)
-            cell.backgroundImage.alpha = 0
-            cell.backgroundImage.image = blurredImage
-            UIView.animateWithDuration(self.BackgroundFadeInDuration) {
-                cell.backgroundImage.alpha = 1
-            }
+    
+    private func setColorBackground(image: UIImage, withURL url: NSURL, forCell cell: ThumbnailCell) {
+        let colorKey = "\(url.absoluteString)!color"
+        if let backgroundImage = SDImageCache.sharedImageCache().imageFromMemoryCacheForKey(colorKey) {
+            cell.backgroundImage.image = backgroundImage
+            cell.backgroundImage.contentMode = .ScaleToFill
+            return
         }
+        
+        guard let cgimage = image.CGImage else { return }
+        let contextImage: UIImage = UIImage(CGImage: cgimage)
+        let contextSize: CGSize = contextImage.size
+        
+        let rgba = UnsafeMutablePointer<CUnsignedChar>.alloc(4)
+        let colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!
+        let info = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue)
+        let context: CGContextRef = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, info.rawValue)!
+        
+        CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), contextImage.CGImage)
+        
+        let red = CGFloat(rgba[0]) / 255.0
+        let green = CGFloat(rgba[1]) / 255.0
+        let blue = CGFloat(rgba[2]) / 255.0
+        let alpha: CGFloat = 1.0
+        let colorFill: UIColor = UIColor(red: red, green: green, blue: blue, alpha: alpha)
+        
+        let rect = CGRectMake(0, 0, contextSize.width, contextSize.height)
+        UIGraphicsBeginImageContextWithOptions(contextSize, false, 0)
+        colorFill.setFill()
+        UIRectFill(rect)
+        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        SDImageCache.sharedImageCache().storeImage(image, forKey: colorKey, toDisk: false)
+        cell.backgroundImage.image = image
+        cell.backgroundImage.contentMode = .ScaleToFill
+        cell.backgroundImage.alpha = 1
     }
 
     private func downloadFaviconsAndUpdateForSite(site: Site) {
@@ -577,7 +598,7 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
                     return
                 }
                 cell.image = img
-                self.setBlurredBackground(img, withURL: url, forCell: cell)
+                self.setColorBackground(img, withURL: url, forCell: cell)
             }
         }
     }
@@ -615,7 +636,7 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
             cell.imageView.sd_setImageWithURL(icon.url.asURL, completed: { (img, err, type, url) -> Void in
                 if let img = img {
                     cell.image = img
-                    self.setBlurredBackground(img, withURL: url, forCell: cell)
+                    self.setColorBackground(img, withURL: url, forCell: cell)
                 } else {
                     self.setDefaultThumbnailBackgroundForCell(cell)
                     self.downloadFaviconsAndUpdateForSite(site)
@@ -629,9 +650,10 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
         cell.imageWrapper.backgroundColor = site.backgroundColor
         cell.imageView.contentMode = .ScaleAspectFit
         cell.imageView.layer.minificationFilter = kCAFilterTrilinear
-        cell.accessibilityLabel = cell.textLabel.text
         cell.showBorder(!PrivateBrowsing.singleton.isOn)
 
+        cell.accessibilityLabel = cell.textLabel.text
+        
         guard let icon = site.wordmark.url.asURL,
             let host = icon.host else {
                 self.setDefaultThumbnailBackgroundForCell(cell)
