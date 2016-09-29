@@ -468,9 +468,7 @@
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
 		EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661701D9C3CEC00445C92 /* top500.swift */; };
-		EB36617E1D9C3CEC00445C92 /* WebViewLoadTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661721D9C3CEC00445C92 /* WebViewLoadTestUtils.swift */; };
 		EB36618B1D9C3CF900445C92 /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
-		EB3661A91D9C3E7D00445C92 /* WebViewLoadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661711D9C3CEC00445C92 /* WebViewLoadTest.swift */; };
 		EB5678A41D91D03B00EFCCD3 /* AutomaticProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678931D91D03B00EFCCD3 /* AutomaticProperties.swift */; };
 		EB5678A51D91D03B00EFCCD3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678941D91D03B00EFCCD3 /* Constants.swift */; };
 		EB5678A61D91D03B00EFCCD3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678951D91D03B00EFCCD3 /* Error.swift */; };
@@ -487,6 +485,9 @@
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
+		EB9D8F201D9CCC3500CA1624 /* WebViewLoadTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661721D9C3CEC00445C92 /* WebViewLoadTestUtils.swift */; };
+		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
+		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
 		ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */ = {isa = PBXBuildFile; fileRef = C33D93B9B0CD0D4AD9E461AE /* ODRefreshControl.h */; };
 		ED86C167052A9F70FAF747C4 /* log_reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FEEC5779DCE986A2ADCC758 /* log_reader.h */; };
 		EE1BFCBBE63887C050C3658B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F3EC59F5985F716F89D46B /* ArrayExtensions.swift */; };
@@ -1329,6 +1330,8 @@
 		EB5678A11D91D03B00EFCCD3 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		EB5678A31D91D03B00EFCCD3 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
+		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
 		ECDCB9A9BE94C1AA75F29565 /* ReadingListServerMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListServerMetadata.swift; path = ./ReadingList/ReadingListServerMetadata.swift; sourceTree = "<group>"; };
 		ED441214938259EBE2ACD8DF /* BraveRightSidePanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveRightSidePanel.swift; path = ./brave/src/frontend/sidepanels/BraveRightSidePanel.swift; sourceTree = "<group>"; };
 		EE6184965624CC221A1AEEDE /* FindInPageHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FindInPageHelper.swift; path = ./Client/Frontend/Browser/FindInPageHelper.swift; sourceTree = "<group>"; };
@@ -2737,6 +2740,8 @@
 		EB36616B1D9C3CEC00445C92 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */,
+				EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */,
 				EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */,
 			);
 			name = ui;
@@ -3769,6 +3774,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB36618B1D9C3CF900445C92 /* IntroScreenTest.swift in Sources */,
+				EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */,
+				EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3777,8 +3784,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */,
-				EB3661A91D9C3E7D00445C92 /* WebViewLoadTest.swift in Sources */,
-				EB36617E1D9C3CEC00445C92 /* WebViewLoadTestUtils.swift in Sources */,
+				EB9D8F201D9CCC3500CA1624 /* WebViewLoadTestUtils.swift in Sources */,
 				EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4682,10 +4688,9 @@
 				);
 				INFOPLIST_FILE = brave/tests_src/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/UITests/UITests-Bridging-Header.h";
 				TEST_TARGET_NAME = Client;
 			};
 			name = Debug;
@@ -4700,10 +4705,9 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = brave/tests_src/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/UITests/UITests-Bridging-Header.h";
 				TEST_TARGET_NAME = Client;
 			};
 			name = Release;

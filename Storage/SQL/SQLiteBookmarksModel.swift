@@ -171,6 +171,10 @@ public class SQLiteBookmarksModelFactory: BookmarksModelFactory {
         return self.bookmarks.removeGUIDs([guid])
     }
 
+    public func clearBookmarks() -> Success {
+        return bookmarks.clearBookmarks()
+    }
+
     func hasDesktopBookmarks() -> Deferred<Maybe<Bool>> {
         // This is very lazy, but it has the nice property of keeping Desktop Bookmarks visible
         // for a while after you mark the last desktop child as deleted.
@@ -352,7 +356,7 @@ extension SQLiteBookmarks {
     }
 
     // This is only used from tests.
-    func clearBookmarks() -> Success {
+    public func clearBookmarks() -> Success {
         log.warning("CALLING clearBookmarks -- this should only be used from tests.")
         return self.db.run([
             ("DELETE FROM \(TableBookmarksLocal) WHERE parentid IS NOT ?", [BookmarkRoots.RootGUID]),
@@ -769,6 +773,10 @@ public class UnsyncedBookmarksFallbackModelFactory: BookmarksModelFactory {
         // This relies on SQLiteBookmarks being the storage for both directions.
         self.localFactory = SQLiteBookmarksModelFactory(bookmarks: bookmarks, direction: .Local)
         self.bufferFactory = SQLiteBookmarksModelFactory(bookmarks: bookmarks, direction: .Buffer)
+    }
+
+    public func clearBookmarks() -> Success {
+        return succeed()
     }
 
     public func modelForFolder(folder: BookmarkFolder) -> Deferred<Maybe<BookmarksModel>> {

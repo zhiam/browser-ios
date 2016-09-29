@@ -101,6 +101,15 @@ class BraveApp {
 
     // Prefs are created at this point
     class func willFinishLaunching_end() {
+        BraveApp.isSafeToRestoreTabs = BraveApp.getPrefs()?.stringForKey(kAppBootingIncompleteFlag) == nil
+        BraveApp.getPrefs()?.setString("remove me when booted", forKey: kAppBootingIncompleteFlag)
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, BraveApp.kDelayBeforeDecidingAppHasBootedOk),
+                       dispatch_get_main_queue(), {
+                        BraveApp.getPrefs()?.removeObjectForKey(kAppBootingIncompleteFlag)
+        })
+
+
         let args = NSProcessInfo.processInfo().arguments
         if args.contains("BRAVE-TEST-CLEAR-PREFS") {
             BraveApp.getPrefs()!.clearAll()
@@ -111,14 +120,20 @@ class BraveApp {
         if args.contains("BRAVE-TEST-SHOW-OPT-IN") {
             BraveApp.getPrefs()!.removeObjectForKey(BraveUX.PrefKeyOptInDialogWasSeen)
         }
+        if args.contains("BRAVE-DELETE-BOOKMARKS") {
+            succeed().upon { _ in
+                getApp().profile!.bookmarks.modelFactory >>== {
+                    $0.clearBookmarks().uponQueue(dispatch_get_main_queue()) { res in
+                        // test case should just sleep or wait for bm count to be zero
+                    }
+                }
+            }
+        }
+        if args.contains("BRAVE-UI-TEST") {
+            // Maybe we will need a specific flag to keep tabs for restoration testing
+            BraveApp.isSafeToRestoreTabs = false
+        }
 
-        BraveApp.isSafeToRestoreTabs = BraveApp.getPrefs()?.stringForKey(kAppBootingIncompleteFlag) == nil
-        BraveApp.getPrefs()?.setString("remove me when booted", forKey: kAppBootingIncompleteFlag)
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, BraveApp.kDelayBeforeDecidingAppHasBootedOk),
-                       dispatch_get_main_queue(), {
-                        BraveApp.getPrefs()?.removeObjectForKey(kAppBootingIncompleteFlag)
-        })
 
         AdBlocker.singleton.networkFileLoader.loadData()
         SafeBrowsing.singleton.networkFileLoader.loadData()

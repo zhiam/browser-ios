@@ -2,8 +2,30 @@
 
 import Foundation
 import XCTest
-@testable import Client
-import Shared
+
+extension XCUIElement {
+    func forceTapElement() {
+        if self.hittable {
+            self.tap()
+        }
+        else {
+            let coordinate: XCUICoordinate = self.coordinateWithNormalizedOffset(CGVectorMake(0.0, 0.0))
+            coordinate.tap()
+        }
+    }
+}
+
+func restart(bootArgs: [String] = []) {
+    let app = XCUIApplication()
+
+    app.terminate()
+    app.launchArguments.append("BRAVE-UI-TEST")
+    bootArgs.forEach {
+        app.launchArguments.append($0)
+    }
+    app.launch()
+    sleep(1)
+}
 
 class IntroScreenTest: XCTestCase {
 
@@ -13,18 +35,6 @@ class IntroScreenTest: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-    }
-
-    private func restart(bootArgs: [String] = []) {
-        let app = XCUIApplication()
-        
-        app.terminate()
-        app.launchArguments.append("BRAVE-UI-TEST")
-        bootArgs.forEach {
-            app.launchArguments.append($0)
-        }
-        app.launch()
-        sleep(1)
     }
 
     func testIntroScreenAndOptInDialog() {

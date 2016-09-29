@@ -42,7 +42,11 @@ class HttpsEverywhereTest: XCTestCase {
         XCTAssert(url != nil && url!.absoluteString.hasSuffix("?sa=L&ai=CD0d/"))
     }
 
-    private func doTest(httpseOn on: Bool, group: [String]) {
+  /* 
+     Some optional timing tests, might be useful to measure regressions
+     during development of HTTPS-E. But otherwise load timing is too erratic to be used as part of an assertion.
+
+     private func doTest(httpseOn on: Bool, group: [String]) {
         WebViewLoadTestUtils.httpseEnabled(on)
         measureBlock({
             WebViewLoadTestUtils.loadSites(self, sites: group)
@@ -64,6 +68,6 @@ class HttpsEverywhereTest: XCTestCase {
     func testTimeHttpseOff_B() {
         doTest(httpseOn: false, group: groupB)
     }
-    
+ */
 
 }

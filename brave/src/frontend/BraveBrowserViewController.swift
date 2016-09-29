@@ -9,7 +9,7 @@ class BraveBrowserViewController : BrowserViewController {
     override func applyTheme(themeName: String) {
         super.applyTheme(themeName)
 
-        toolbar?.accessibilityLabel = "toolbar thing"
+        toolbar?.accessibilityLabel = "bottomToolbar"
         headerBackdrop.accessibilityLabel = "headerBackdrop"
         webViewContainerBackdrop.accessibilityLabel = "webViewContainerBackdrop"
         webViewContainer.accessibilityLabel = "webViewContainer"

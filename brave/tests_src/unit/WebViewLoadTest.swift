@@ -4,6 +4,8 @@ import XCTest
 @testable import Client
 import Shared
 
+// Timings are too erratic to be used as part of an assertion of success,
+// therefore this test is not part of regular test suite
 
 var groupA = ["businessinsider.com", "kotaku.com", "cnn.com"]
 var groupB = ["imore.com", "nytimes.com"]
