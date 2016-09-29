@@ -21,17 +21,18 @@ struct IntroViewControllerUX {
 
     static let CardTextLineHeight = CGFloat(6)
 
-    static let CardTitlePage1 = NSLocalizedString("Welcome to Brave.", tableName: "Intro", comment: "")
-    static let CardTextPage1 = NSLocalizedString("Get ready to experience a Faster, Safer, Better Web.", tableName: "Intro", comment: "")
+    static let l10n_note = "intro screen message"
+    static let CardTitlePage1 = NSLocalizedString("Welcome to Brave.", tableName: "Intro", comment: l10n_note)
+    static let CardTextPage1 = NSLocalizedString("Get ready to experience a Faster, Safer, Better Web.", tableName: "Intro", comment: l10n_note)
 
-    static let CardTitlePage2 = NSLocalizedString("Brave is Faster,\nand here's why...", tableName: "Intro", comment: "")
-    static let CardTextPage2 = NSLocalizedString("Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency.", tableName: "Intro", comment: "")
+    static let CardTitlePage2 = NSLocalizedString("Brave is Faster,\nand here's why...", tableName: "Intro", comment: l10n_note)
+    static let CardTextPage2 = NSLocalizedString("Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency.", tableName: "Intro", comment: l10n_note)
 
-    static let CardTitlePage3 = NSLocalizedString("Brave keeps you safe as you browse.", tableName: "Intro", comment: "")
-    static let CardTextPage3 = NSLocalizedString("Browse with us and your privacy is protected, with nothing further to install, learn or configure.", tableName: "Intro", comment: "")
+    static let CardTitlePage3 = NSLocalizedString("Brave keeps you safe as you browse.", tableName: "Intro", comment: l10n_note)
+    static let CardTextPage3 = NSLocalizedString("Browse with us and your privacy is protected, with nothing further to install, learn or configure.", tableName: "Intro", comment: l10n_note)
 
-    static let CardTitlePage4 = NSLocalizedString("In case you hit a speed bump", tableName: "Intro", comment: "")
-    static let CardTextPage4 = NSLocalizedString("Tap the Brave button to temporarily disable ad blocking and privacy features.", tableName: "Intro", comment: "")
+    static let CardTitlePage4 = NSLocalizedString("In case you hit a speed bump", tableName: "Intro", comment: l10n_note)
+    static let CardTextPage4 = NSLocalizedString("Tap the Brave button to temporarily disable ad blocking and privacy features.", tableName: "Intro", comment: l10n_note)
 
     static let CardTextSyncOffsetFromCenter = 25
     static let Card3ButtonOffsetFromCenter = -10
