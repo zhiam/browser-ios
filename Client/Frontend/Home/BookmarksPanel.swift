@@ -219,7 +219,19 @@ class BookmarkEditingViewController: FormViewController {
                 row.displayValueFor = { (rowValue: BookmarkFolder?) in
                     return (rowValue?.title) ?? ""
                 }
-                let foldersArray = self.folders
+
+                // This is a hack to workaround https://github.com/brave/browser-ios/issues/450
+                // TODO: we should be able to just do foldersArray = self.folders, not sure why multiple MemoryBookmarkFolder called 'Root Folder' appear
+                var foundOneRootFolder = false
+                let foldersArray = self.folders.filter({ (folder) -> Bool in
+                    if let _ = folder as? MemoryBookmarkFolder {
+                        if foundOneRootFolder {
+                            return false
+                        }
+                        foundOneRootFolder = true
+                    }
+                    return true
+                })
                 row.options = foldersArray
                 
                 var currentFolder:BookmarkFolder!
@@ -877,10 +889,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             }
         }
         self.isEditingInvidivualBookmark = true
-
-        postAsyncToMain {
-            self.navigationController?.pushViewController(nextController, animated: true)
-        }
+        self.navigationController?.pushViewController(nextController, animated: true)
     }
 
     func updateBookmarkData(bookmark:BookmarkNode, newTitle:String, newFolderGUID: String?, atIndexPath indexPath: NSIndexPath) {
