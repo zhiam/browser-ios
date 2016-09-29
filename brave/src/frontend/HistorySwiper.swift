@@ -89,6 +89,10 @@ class HistorySwiper : NSObject {
         if getApp().browserViewController.homePanelController != nil {
             return
         }
+        if getApp().braveTopViewController.leftPanelShowing() || getApp().braveTopViewController.leftPanelShowing() {
+            return
+        }
+
         guard let tab = getApp().browserViewController.tabManager.selectedTab, webview = tab.webView else { return }
         let p = recognizer.locationInView(recognizer.view)
         let shouldReturnToZero = recognizer == goBackSwipe ? p.x < screenWidth() / 2.0 : p.x > screenWidth() / 2.0
