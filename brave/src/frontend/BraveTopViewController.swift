@@ -186,7 +186,11 @@ class BraveTopViewController : UIViewController {
                 self.clickDetectionView.alpha = 1
             }
         }
-        panel.setHomePanelDelegate(self)
+
+        if willShow {
+            // this will set the profile and trigger DB query, be careful
+            panel.setHomePanelDelegate(self)
+        }
         panel.showPanel(willShow, parentSideConstraints: [leftConstraint, rightConstraint])
     }
 
