@@ -496,7 +496,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
 
     func addFolder(alert: UIAlertAction!, alertController: UIAlertController) {
         postAsyncToBackground {
-            if let folderName = alertController.textFields![0].text  {
+            if let folderName = alertController.textFields?[0].text  {
                 if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
                     sqllitbk.createFolder(folderName) {
                         postAsyncToMain {
@@ -592,7 +592,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        guard let source = source, bookmark = source.current[indexPath.row] else { return super.tableView(tableView, cellForRowAtIndexPath: indexPath) }
+        guard let source = source, bookmark = source.current[indexPath.row] else {
+            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        }
+
         switch (bookmark) {
         case let item as BookmarkItem:
             let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
@@ -608,21 +611,15 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 cell.imageView?.setIcon(bookmark.favicon, withPlaceholder: FaviconFetcher.defaultFavicon)
             }
             cell.accessoryType = .None
-            cell.setNeedsLayout()
-
             return cell
         case is BookmarkSeparator:
             return tableView.dequeueReusableCellWithIdentifier(BookmarkSeparatorCellIdentifier, forIndexPath: indexPath)
         case let bookmark as BookmarkFolder:
-            let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+            let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
             cell.textLabel?.font = UIFont.boldSystemFontOfSize(14)
             cell.textLabel?.text = bookmark.title
-            cell.textLabel?.setNeedsLayout()
             cell.imageView?.image = UIImage(named: "bookmarks_folder_hollow")
-
             cell.accessoryType = .DisclosureIndicator
-            cell.setNeedsLayout()
-
             return cell
         default:
             // This should never happen.
@@ -849,9 +846,9 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             
             if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
                 //we split up the update into class-specific functions so we get more compile time & runtime checks before writing into the DB
-                if let bookmarkItem = bookmark as? BookmarkItem {
+                if let bookmarkItem = bookmark as? BookmarkItem, guid = newFolderGUID {
                     //bookmark items ALWAYS pass along the folderGUID even if not changed hence we can force newFolderGUID!
-                    sqllitbk.editBookmarkItem(bookmarkItem, title:newTitle, parentGUID: newFolderGUID!, completion: refreshBlock)
+                    sqllitbk.editBookmarkItem(bookmarkItem, title:newTitle, parentGUID: guid, completion: refreshBlock)
                     
                 }
                 else if let bookmarkFolder = bookmark as? BookmarkFolder {
