@@ -596,29 +596,77 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         }
 
+        func makeCell(image image: UIImage? = nil, icon: Favicon? = nil, longPressForContextMenu: Bool = false) -> UITableViewCell {
+            let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
+
+            if self.tableView(tableView, hasFullWidthSeparatorForRowAtIndexPath: indexPath) {
+                cell.separatorInset = UIEdgeInsetsZero
+            }
+
+            if longPressForContextMenu {
+                cell.gestureRecognizers?.forEach { cell.removeGestureRecognizer($0) }
+                let lp = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
+                cell.addGestureRecognizer(lp)
+            }
+
+            func restrictImageSize() {
+                if cell.imageView?.image == nil {
+                    return
+                }
+                let itemSize = CGSizeMake(25, 25);
+                UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale);
+                let imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                cell.imageView?.image!.drawInRect(imageRect)
+                cell.imageView?.image! = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+            }
+
+            func setIcon(icon: Favicon?, withPlaceholder placeholder: UIImage) {
+                if let icon = icon {
+                    let imageURL = NSURL(string: icon.url)
+                    cell.imageView?.sd_setImageWithURL(imageURL, placeholderImage: placeholder, completed: {
+                        image, error, cache, url in
+                        restrictImageSize()
+                    })
+                    return
+                }
+                cell.imageView?.image = placeholder
+            }
+
+            if let icon = icon {
+                setIcon(icon, withPlaceholder: FaviconFetcher.defaultFavicon)
+            } else if let image = image {
+                cell.imageView?.image = image
+                restrictImageSize()
+            }
+
+            return cell
+        }
+
         switch (bookmark) {
         case let item as BookmarkItem:
-            let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+            let cell: UITableViewCell!
+            if let url = bookmark.favicon?.url.asURL where url.scheme == "asset" {
+                cell = makeCell(image: UIImage(named: url.host!), longPressForContextMenu: true)
+            } else {
+                cell = makeCell(icon: bookmark.favicon, longPressForContextMenu: true)
+            }
+
             cell.textLabel?.font = UIFont.systemFontOfSize(14)
             if item.title.isEmpty {
                 cell.textLabel?.text = item.url
             } else {
                 cell.textLabel?.text = item.title
             }
-            if let url = bookmark.favicon?.url.asURL where url.scheme == "asset" {
-                cell.imageView?.image = UIImage(named: url.host!)
-            } else {
-                cell.imageView?.setIcon(bookmark.favicon, withPlaceholder: FaviconFetcher.defaultFavicon)
-            }
+
             cell.accessoryType = .None
             return cell
         case is BookmarkSeparator:
             return tableView.dequeueReusableCellWithIdentifier(BookmarkSeparatorCellIdentifier, forIndexPath: indexPath)
         case let bookmark as BookmarkFolder:
-            let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
+            let cell = makeCell(image: UIImage(named: "bookmarks_folder_hollow"))
             cell.textLabel?.font = UIFont.boldSystemFontOfSize(14)
             cell.textLabel?.text = bookmark.title
-            cell.imageView?.image = UIImage(named: "bookmarks_folder_hollow")
             cell.accessoryType = .DisclosureIndicator
             return cell
         default:
