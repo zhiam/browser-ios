@@ -12,6 +12,8 @@ Either ensure your app supports [opening urls in a share menu](https://github.co
 
 ## Setup
 
+The master branch (i.e. the mainline) is Xcode8 + Swift2.3
+
 Install [Node.js](https://nodejs.org/en/download/stable/) v5.0.0
 
 Install Carthage: `brew install carthage`
