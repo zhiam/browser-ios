@@ -190,6 +190,7 @@ class BraveBrowserViewController : BrowserViewController {
     }
 
     func presentOptInDialog() {
+/* TODO: GROWTH:
         if profile.prefs.intForKey(BraveUX.PrefKeyOptInDialogWasSeen) != nil {
             return // double-check as presentOptInDialog is called from IntroViewController as well as this class
         }
@@ -217,7 +218,6 @@ class BraveBrowserViewController : BrowserViewController {
                 findAndReplaceWithLink(subview, placeholderToFind: placeholderToFind)
             }
         }
-
         func answered(canSend: Bool) {
             self.profile.prefs.setInt(canSend ? 1 : 0, forKey: BraveUX.PrefKeyUserAllowsTelemetry)
             profile.prefs.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
@@ -233,6 +233,7 @@ class BraveBrowserViewController : BrowserViewController {
         getApp().braveTopViewController.presentViewController(alert, animated: true) {
             findAndReplaceWithLink(alert.view, placeholderToFind:placeholder)
         }
+ */
     }
 }
 

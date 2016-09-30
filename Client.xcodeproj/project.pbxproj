@@ -469,19 +469,6 @@
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
 		EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661701D9C3CEC00445C92 /* top500.swift */; };
 		EB36618B1D9C3CF900445C92 /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
-		EB5678A41D91D03B00EFCCD3 /* AutomaticProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678931D91D03B00EFCCD3 /* AutomaticProperties.swift */; };
-		EB5678A51D91D03B00EFCCD3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678941D91D03B00EFCCD3 /* Constants.swift */; };
-		EB5678A61D91D03B00EFCCD3 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678951D91D03B00EFCCD3 /* Error.swift */; };
-		EB5678A81D91D03B00EFCCD3 /* Flush.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678971D91D03B00EFCCD3 /* Flush.swift */; };
-		EB5678A91D91D03B00EFCCD3 /* FlushRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678981D91D03B00EFCCD3 /* FlushRequest.swift */; };
-		EB5678AB1D91D03B00EFCCD3 /* JSONHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB56789A1D91D03B00EFCCD3 /* JSONHandler.swift */; };
-		EB5678AD1D91D03B00EFCCD3 /* Mixpanel.h in Headers */ = {isa = PBXBuildFile; fileRef = EB56789C1D91D03B00EFCCD3 /* Mixpanel.h */; };
-		EB5678AE1D91D03B00EFCCD3 /* Mixpanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB56789D1D91D03B00EFCCD3 /* Mixpanel.swift */; };
-		EB5678AF1D91D03B00EFCCD3 /* MixpanelInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB56789E1D91D03B00EFCCD3 /* MixpanelInstance.swift */; };
-		EB5678B01D91D03B00EFCCD3 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB56789F1D91D03B00EFCCD3 /* Network.swift */; };
-		EB5678B11D91D03B00EFCCD3 /* People.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678A01D91D03B00EFCCD3 /* People.swift */; };
-		EB5678B21D91D03B00EFCCD3 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678A11D91D03B00EFCCD3 /* Persistence.swift */; };
-		EB5678B41D91D03B00EFCCD3 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5678A31D91D03B00EFCCD3 /* Track.swift */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
@@ -1316,19 +1303,6 @@
 		EB4A77361CC97AC50088E774 /* BaseConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = BaseConfig.xcconfig; sourceTree = "<group>"; };
 		EB4EC7836B7D80B31285DCC6 /* SiteTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiteTableViewController.swift; path = ./Client/Frontend/Widgets/SiteTableViewController.swift; sourceTree = "<group>"; };
 		EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-ui-test.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB5678931D91D03B00EFCCD3 /* AutomaticProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutomaticProperties.swift; sourceTree = "<group>"; };
-		EB5678941D91D03B00EFCCD3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		EB5678951D91D03B00EFCCD3 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
-		EB5678971D91D03B00EFCCD3 /* Flush.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flush.swift; sourceTree = "<group>"; };
-		EB5678981D91D03B00EFCCD3 /* FlushRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlushRequest.swift; sourceTree = "<group>"; };
-		EB56789A1D91D03B00EFCCD3 /* JSONHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONHandler.swift; sourceTree = "<group>"; };
-		EB56789C1D91D03B00EFCCD3 /* Mixpanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mixpanel.h; sourceTree = "<group>"; };
-		EB56789D1D91D03B00EFCCD3 /* Mixpanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mixpanel.swift; sourceTree = "<group>"; };
-		EB56789E1D91D03B00EFCCD3 /* MixpanelInstance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixpanelInstance.swift; sourceTree = "<group>"; };
-		EB56789F1D91D03B00EFCCD3 /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
-		EB5678A01D91D03B00EFCCD3 /* People.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = People.swift; sourceTree = "<group>"; };
-		EB5678A11D91D03B00EFCCD3 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		EB5678A31D91D03B00EFCCD3 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
@@ -2340,7 +2314,6 @@
 		AEC7CC1649CB3DF5D490AFD2 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				EB5678921D91D03B00EFCCD3 /* Mixpanel */,
 				F1D471871D777C7C007B443D /* OnePassword */,
 				BB67FBA7FC78E3187AF22B8B /* leveldb */,
 				8FD32DFF23D2E6882260066D /* NSData+GZIP.h */,
@@ -2769,27 +2742,6 @@
 			path = brave/xcconfig;
 			sourceTree = "<group>";
 		};
-		EB5678921D91D03B00EFCCD3 /* Mixpanel */ = {
-			isa = PBXGroup;
-			children = (
-				EB5678931D91D03B00EFCCD3 /* AutomaticProperties.swift */,
-				EB5678941D91D03B00EFCCD3 /* Constants.swift */,
-				EB5678951D91D03B00EFCCD3 /* Error.swift */,
-				EB5678971D91D03B00EFCCD3 /* Flush.swift */,
-				EB5678981D91D03B00EFCCD3 /* FlushRequest.swift */,
-				EB56789A1D91D03B00EFCCD3 /* JSONHandler.swift */,
-				EB56789C1D91D03B00EFCCD3 /* Mixpanel.h */,
-				EB56789D1D91D03B00EFCCD3 /* Mixpanel.swift */,
-				EB56789E1D91D03B00EFCCD3 /* MixpanelInstance.swift */,
-				EB56789F1D91D03B00EFCCD3 /* Network.swift */,
-				EB5678A01D91D03B00EFCCD3 /* People.swift */,
-				EB5678A11D91D03B00EFCCD3 /* Persistence.swift */,
-				EB5678A31D91D03B00EFCCD3 /* Track.swift */,
-			);
-			name = Mixpanel;
-			path = brave/ThirdParty/Mixpanel;
-			sourceTree = "<group>";
-		};
 		F1D471871D777C7C007B443D /* OnePassword */ = {
 			isa = PBXGroup;
 			children = (
@@ -2999,7 +2951,6 @@
 				49B0DDB0C82A7C833ED598C0 /* atomic_pointer.h in Headers */,
 				99A8ED133A5230AFA8C7BEA2 /* port.h in Headers */,
 				F6E88652464919F38A8A93DA /* port_example.h in Headers */,
-				EB5678AD1D91D03B00EFCCD3 /* Mixpanel.h in Headers */,
 				E04B515A88DAC58FCCF4E991 /* port_posix.h in Headers */,
 				EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */,
 				B64FB3A60347666F539215A8 /* block_.h in Headers */,
@@ -3801,7 +3752,6 @@
 				A6A180ED09280A17C5C11B72 /* dumpfile.cc in Sources */,
 				252BFD86BA8B20F6B485D561 /* filename.cc in Sources */,
 				7823B137D3AA2D991BC8DC5C /* log_reader.cc in Sources */,
-				EB5678A41D91D03B00EFCCD3 /* AutomaticProperties.swift in Sources */,
 				4AF02687F2E5153D0D0632EF /* log_writer.cc in Sources */,
 				0A2551764195AA45DBDDF655 /* memtable.cc in Sources */,
 				ADE19CAE7AB6DE0B2401742F /* repair.cc in Sources */,
@@ -3809,7 +3759,6 @@
 				217F00AA07C08EBEA35CFFA4 /* version_edit.cc in Sources */,
 				3078EC63F4D0D10D8CE0B5E5 /* version_set.cc in Sources */,
 				7BA3C826C13C285AA2A6F789 /* write_batch.cc in Sources */,
-				EB5678A51D91D03B00EFCCD3 /* Constants.swift in Sources */,
 				23E105570490AC11F27B26E8 /* memenv.cc in Sources */,
 				5E5E76550DFB4EB71194132F /* LICENSE in Sources */,
 				8C37559D5128842F1EA41DC1 /* port_posix.cc in Sources */,
@@ -3838,7 +3787,6 @@
 				D974018CF8F1728469457616 /* status.cc in Sources */,
 				8C1EF9076148B5DE1EEC4A0B /* testharness.cc in Sources */,
 				5F05A9BDFA985F96C2CFCA35 /* testutil.cc in Sources */,
-				EB5678B21D91D03B00EFCCD3 /* Persistence.swift in Sources */,
 				23699E7ECA45D2C23FFEB992 /* NSData+GZIP.m in Sources */,
 				736EF030429F5288A4EDE179 /* NSFileManager+Tar.m in Sources */,
 				676AF6C41649B4E23DA21306 /* BraveApp.swift in Sources */,
@@ -3854,8 +3802,6 @@
 				D36C19A448AA81DB6DFD701D /* BraveUX.swift in Sources */,
 				3EB8444F3C93E29BB8817AF7 /* HistorySwiper.swift in Sources */,
 				86D123F20829658238ECF3A8 /* ODRefreshControl.m in Sources */,
-				EB5678B01D91D03B00EFCCD3 /* Network.swift in Sources */,
-				EB5678AF1D91D03B00EFCCD3 /* MixpanelInstance.swift in Sources */,
 				778AC5C1DE79E2AE7550D92E /* PicklistSetting.swift in Sources */,
 				E9396A65893407CA10034653 /* BraveRightSidePanel.swift in Sources */,
 				41C8C73403C41EA2B3504989 /* MainSidePanelViewController.swift in Sources */,
@@ -3876,7 +3822,6 @@
 				A4997544E81DF456966522E6 /* BraveShieldState.swift in Sources */,
 				F0EA069256DABEECB329C591 /* binding.gyp in Sources */,
 				2F0860C25F7367CEED17E283 /* HttpsEverywhere.cpp in Sources */,
-				EB5678A61D91D03B00EFCCD3 /* Error.swift in Sources */,
 				A2F643975578B7DA57C4B7A4 /* HttpsEverywhereObjC.mm in Sources */,
 				A026D2C7D56306D65820F5EA /* LICENSE in Sources */,
 				16B5C378276A21598A9BFD31 /* Makefile in Sources */,
@@ -3891,7 +3836,6 @@
 				1F2948B4093DD581ADBB7FA4 /* PrivateBrowsing.swift in Sources */,
 				62859AF44506E17DCC0A2759 /* WebViewBackForward.swift in Sources */,
 				C5A2E6F2033E5897F1F43AD7 /* WebViewDocScale.m in Sources */,
-				EB5678AE1D91D03B00EFCCD3 /* Mixpanel.swift in Sources */,
 				5B352CB4FE3A4ED634975490 /* WebViewProgress.swift in Sources */,
 				968634F419DEA85A0922394A /* WebViewScripting.swift in Sources */,
 				592036CE6D10474A5F1A6A0F /* ABPFilterParser.cpp in Sources */,
@@ -3909,14 +3853,12 @@
 				D503AACFCAC42E22324494E2 /* QuickActions.swift in Sources */,
 				62B5EDA86994D2198B91FFFC /* TestAppDelegate.swift in Sources */,
 				AB8A81FEB9405517D11D668D /* WebServer.swift in Sources */,
-				EB5678A81D91D03B00EFCCD3 /* Flush.swift in Sources */,
 				989986E4AD89740E7F458CD3 /* NSAttributedStringExtensions.swift in Sources */,
 				4FCC90F45C8CC749A62A5F4D /* UIAlertControllerExtensions.swift in Sources */,
 				E2D33EC35C1599109A588B7E /* UIImageViewExtensions.swift in Sources */,
 				B0247C5844D0AEA9CC20D3EF /* UIPasteboardExtensions.swift in Sources */,
 				C1C4DCD6066DAF734C2DD720 /* AppAuthenticator.swift in Sources */,
 				503C43DDE6E783C220EF94E8 /* AuthenticationManagerConstants.swift in Sources */,
-				EB5678B41D91D03B00EFCCD3 /* Track.swift in Sources */,
 				A3EC85A5D1578A6D28610D40 /* AuthenticationSettingsViewController.swift in Sources */,
 				D09B12556E1B79AA8E238868 /* BasePasscodeViewController.swift in Sources */,
 				43648B9C9AC6E10DDF960217 /* ChangePasscodeViewController.swift in Sources */,
@@ -4005,7 +3947,6 @@
 				F3DF5AD139E1BA9D27631B8C /* TitleActivityItemProvider.swift in Sources */,
 				309EA23114E638AD05EBCD27 /* UIConstants.swift in Sources */,
 				E46B3A85CE3EEB162E7691FF /* AuralProgressBar.swift in Sources */,
-				EB5678B11D91D03B00EFCCD3 /* People.swift in Sources */,
 				718321E1107FDDED70FDD449 /* AutocompleteTextField.swift in Sources */,
 				D719AFA2D991F2D6493368D1 /* ChevronView.swift in Sources */,
 				DACC149A83086DD5BA322C21 /* ErrorToast.swift in Sources */,
@@ -4021,7 +3962,6 @@
 				10443C68C8505F7FDDE1C6F2 /* ThumbnailCell.swift in Sources */,
 				E9788E828C3C9FEF2E9BD34E /* ToggleButton.swift in Sources */,
 				98AAC06AB032F173C2F60733 /* Toolbar.swift in Sources */,
-				EB5678A91D91D03B00EFCCD3 /* FlushRequest.swift in Sources */,
 				EEEF79E07492339CF13D856A /* TwoLineCell.swift in Sources */,
 				3696DC8F3824B7E55FDE2466 /* SpotlightHelper.swift in Sources */,
 				E7026A766AA17FE4022C8F83 /* NSUserDefaultsPrefs.swift in Sources */,
@@ -4036,7 +3976,6 @@
 				1AFBE027A34F2AA8EDE758EF /* SWUtilityButtonView.m in Sources */,
 				1610DE47378FA4C024E4F384 /* UIImageViewAligned.m in Sources */,
 				05CB8811A90FFA41ACBFA3E5 /* AboutUtils.swift in Sources */,
-				EB5678AB1D91D03B00EFCCD3 /* JSONHandler.swift in Sources */,
 				8B8862C9D4EECB136E146B2B /* DynamicFontHelper.swift in Sources */,
 				0898F8B2D74306D3F75DA1F1 /* GeometryExtensions.swift in Sources */,
 				0D9650FB68A8312C170546DE /* UIViewExtensions.swift in Sources */,

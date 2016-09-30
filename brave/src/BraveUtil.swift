@@ -4,6 +4,7 @@ import Foundation
 import Storage
 
 func telemetry(action action: String, props: [String: String]?) {
+/* TODO: GROWTH:
     #if NO_FABRIC
         return
     #else
@@ -13,6 +14,7 @@ func telemetry(action action: String, props: [String: String]?) {
         let mixpanel = Mixpanel.mainInstance()
         mixpanel.track(event: action, properties: props)
     #endif
+ */
 }
 
 func debugNoteIfNotMainThread() {
