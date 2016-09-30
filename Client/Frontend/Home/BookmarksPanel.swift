@@ -299,7 +299,12 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationFirefoxAccountChanged, object: nil)
     }
-    
+
+    override func viewDidAppear(animated: Bool) {
+        print("BookmarksPanel: viewdidappear")
+        reloadData()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -356,26 +361,8 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func switchTableEditingMode(forceOff:Bool = false) {
-        //check if the table has been reordered, if so make the changes persistent
-        if self.tableView.editing && bookmarksOrderChanged {
-            orderedBookmarkGUIDs = orderUpdatedBookmarkGUIDs
-            postAsyncToBackground {
-                if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
-                    let folderGUID = self.bookmarkFolder?.guid ?? BookmarkRoots.MobileFolderGUID
-                    
-                    sqllitbk.reorderBookmarks(folderGUID, bookmarksOrder: self.orderedBookmarkGUIDs) {
-                        postAsyncToMain {
-                            //reorder ok
-                            //TODO add toast popup with message for success
-                        }
-                    }
-                }
-            }
-            
-        }
-        
+        // TODO: why async??
         dispatch_async(dispatch_get_main_queue()) {
-
             let editMode:Bool = forceOff ? false : !self.tableView.editing
             self.tableView.setEditing(editMode, animated: forceOff ? false : true)
             //only when the 'edit' button has been pressed
@@ -527,8 +514,25 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         let item = orderUpdatedBookmarkGUIDs.removeAtIndex(sourceIndexPath.item)
         orderUpdatedBookmarkGUIDs.insert(item, atIndex: destinationIndexPath.item)
+
+        //check if the table has been reordered, if so make the changes persistent
+        if self.tableView.editing && bookmarksOrderChanged {
+            orderedBookmarkGUIDs = orderUpdatedBookmarkGUIDs
+            postAsyncToBackground {
+                if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
+                    let folderGUID = self.bookmarkFolder?.guid ?? BookmarkRoots.MobileFolderGUID
+
+                    sqllitbk.reorderBookmarks(folderGUID, bookmarksOrder: self.orderedBookmarkGUIDs) {
+                        postAsyncToMain {
+                            self.reloadData()
+                        }
+                    }
+                }
+            }
+
+        }
     }
-    
+
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
@@ -553,6 +557,10 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         self.onNewModel(model)
     }
 
+    private func hasRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath) -> Bool {
+        return indexPath.section < tableView.numberOfSections && indexPath.row < tableView.numberOfRowsInSection(indexPath.section)
+    }
+
     private func onNewModel(model: BookmarksModel) {
         postAsyncToMain {
             let count = self.currentItemCount
@@ -567,7 +575,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             let rootFolder = MemoryBookmarkFolder(guid: BookmarkRoots.MobileFolderGUID, title: "Root Folder", children: [])
             self.folderList.append(rootFolder)
             for i in 0..<newCount {
-                if let item = self.source!.current[i] {
+                if let item = model.current[i] {
                     self.orderedBookmarkGUIDs.append(item.guid)
                     if let f = item as? BookmarkFolder {
                         self.folderList.append(f)
@@ -579,7 +587,11 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             self.tableView.reloadData()
             if count != newCount && newCount > 0 {
                 let newIndexPath = NSIndexPath(forRow: newCount-1, inSection: 0)
-                self.currentBookmarksPanel().tableView.scrollToRowAtIndexPath(newIndexPath, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
+                if self.hasRowAtIndexPath(self.currentBookmarksPanel().tableView, indexPath: newIndexPath) {
+                    self.currentBookmarksPanel().tableView.scrollToRowAtIndexPath(newIndexPath, atScrollPosition: UITableViewScrollPosition.Middle, animated: true)
+                } else {
+                    print("😡 This is a nasty bug, it should be fixed.")
+                }
             }
         }
     }
@@ -590,10 +602,16 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func currentBookmarksPanel() -> BookmarksPanel {
-        return self.navigationController?.visibleViewController as! BookmarksPanel
+        guard let controllers = navigationController?.viewControllers.filter({ $0 as? BookmarksPanel != nil }) else {
+            return self
+        }
+        return controllers.last as? BookmarksPanel ?? self
     }
     
     override func reloadData() {
+        print("reload data")
+        //profile = getApp().profile
+
         if let source = self.source {
             source.reloadData().upon(self.onModelFetched)
         }
@@ -754,7 +772,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 self.showEditBookmarkController(tableView, indexPath: indexPath)
             }
             else {
-                log.debug("Selected \(folder.guid)")
+                print("Selected \(folder.guid)")
                 let nextController = BookmarksPanel()
                 nextController.parentFolders = parentFolders + [source.current]
                 nextController.bookmarkFolder = folder
@@ -895,11 +913,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     func updateBookmarkData(bookmark:BookmarkNode, newTitle:String, newFolderGUID: String?, atIndexPath indexPath: NSIndexPath) {
         postAsyncToBackground {
             
-            let refreshBlock:dispatch_block_t = {
-                                                    postAsyncToMain {
-                                                        self.reloadData()
-                                                    }
-                                                }
+            let refreshBlock:dispatch_block_t = { postAsyncToMain { self.reloadData() }}
             
             if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
                 //we split up the update into class-specific functions so we get more compile time & runtime checks before writing into the DB

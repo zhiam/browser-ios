@@ -72,12 +72,7 @@ class SiteTableViewHeader : UITableViewHeaderFooterView {
 class SiteTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private let CellIdentifier = "CellIdentifier"
     private let HeaderIdentifier = "HeaderIdentifier"
-    var profile: Profile! {
-        didSet {
-            reloadData()
-        }
-    }
-    
+    var profile: Profile!
     var iconForSiteId = [Int : Favicon]()
     var data: Cursor<Site> = Cursor<Site>(status: .Success, msg: "No data set")
     var tableView = UITableView()

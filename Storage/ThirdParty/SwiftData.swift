@@ -127,7 +127,9 @@ public class SwiftData {
 
         if synchronous {
             var error: NSError? = nil
-            assert(!NSThread.isMainThread())
+            if !NSThread.isMainThread() {
+                print("SwiftData synchronous call detected on main thread. Try move these off-main.")
+            }
             dispatch_sync(connection.queue) {
                 error = cb(db: connection)
             }

@@ -139,8 +139,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 folderId = currentFolder.guid
                 folderTitle = currentFolder.title
             }
-            
-            let count = self.bookmarksPanel.currentBookmarksPanel().currentItemCount
+
             browserViewController?.addBookmark(url, title: tab.title, folderId: folderId, folderTitle: folderTitle){
                 self.bookmarksPanel.currentBookmarksPanel().reloadData()
                 
