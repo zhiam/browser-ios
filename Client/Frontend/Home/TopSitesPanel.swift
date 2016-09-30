@@ -555,11 +555,12 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
         let contextSize: CGSize = contextImage.size
         
         let rgba = UnsafeMutablePointer<CUnsignedChar>.alloc(4)
-        let colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!
+        let colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()
         let info = CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedLast.rawValue)
         let context: CGContextRef = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, info.rawValue)!
-        
-        CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), contextImage.CGImage)
+
+        guard let newImage = contextImage.CGImage else { return }
+        CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), newImage)
         
         let red = CGFloat(rgba[0]) / 255.0
         let green = CGFloat(rgba[1]) / 255.0
@@ -571,7 +572,7 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
         UIGraphicsBeginImageContextWithOptions(contextSize, false, 0)
         colorFill.setFill()
         UIRectFill(rect)
-        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         SDImageCache.sharedImageCache().storeImage(image, forKey: colorKey, toDisk: false)

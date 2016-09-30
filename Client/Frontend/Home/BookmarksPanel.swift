@@ -664,12 +664,13 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 if cell.imageView?.image == nil {
                     return
                 }
-                let itemSize = CGSizeMake(25, 25);
-                UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale);
-                let imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
+                let itemSize = CGSizeMake(25, 25)
+                UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale)
+                let imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height)
                 cell.imageView?.image!.drawInRect(imageRect)
-                cell.imageView?.image! = UIGraphicsGetImageFromCurrentImageContext();
-                UIGraphicsEndImageContext();
+                guard let context = UIGraphicsGetImageFromCurrentImageContext() else { return }
+                cell.imageView?.image! = context
+                UIGraphicsEndImageContext()
             }
 
             func setIcon(icon: Favicon?, withPlaceholder placeholder: UIImage) {
