@@ -1,0 +1,30 @@
+/* Description text displayed when there are no open tabs while in private mode */
+"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave не будет запоминать историю и cookies, но закладки будут сохранены.";
+
+/* Setting for closing private tabs */
+"Close Private Tabs" = "Закрыть приватные вкладки";
+
+/* Text button displayed when there are no tabs open while in private mode */
+"Learn More" = "Узнать больше";
+
+/* Toggled OFF accessibility value */
+"Off" = "Выкл";
+
+/* Toggled ON accessibility value */
+"On" = "Вкл";
+
+/* Context menu option for opening a link in a new private tab */
+"Open In New Private Tab" = "Открыть в новой приватной вкладке";
+
+/* Title displayed for when there are no open tabs while in private mode */
+"Private Browsing" = "Приватный просмотр";
+
+/* Accessibility label for toggling on/off private mode */
+"Private Mode" = "Приватный режим";
+
+/* Accessiblity hint for toggling on/off private mode */
+"Turns private mode on or off" = "Включает/Выключает приватный режим";
+
+/* Will be displayed in Settings under 'Close Private Tabs' */
+"When Leaving Private Browsing" = "Когда покидаешь приватный просмотр";
+

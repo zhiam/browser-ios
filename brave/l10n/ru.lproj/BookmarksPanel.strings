@@ -1,0 +1,6 @@
+/* Action button for deleting bookmarks in the bookmarks panel. */
+"Delete" = "Удалить";
+
+/* Action button for editing bookmarks in the bookmarks panel. */
+"Edit" = "Редактировать";
+
