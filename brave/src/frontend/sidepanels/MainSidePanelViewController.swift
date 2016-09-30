@@ -33,6 +33,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         let font = UIFont.boldSystemFontOfSize(14)
         UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.blackColor()];
         bookmarksNavController = UINavigationController(rootViewController: bookmarksPanel)
+        bookmarksNavController.view.backgroundColor = UIColor.whiteColor()
         containerView.addSubview(topButtonsView)
 
         topButtonsView.addSubview(triangleView)
