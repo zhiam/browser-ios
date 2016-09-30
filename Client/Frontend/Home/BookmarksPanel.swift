@@ -786,6 +786,8 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                     }
                     nextController.source = BookmarksModel(modelFactory: factory, root: folder)
                     //on subfolders, the folderpicker is the same as the root
+                    let backButton = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self.navigationController, action: nil)
+                    self.navigationItem.leftBarButtonItem = backButton
                     self.navigationController?.pushViewController(nextController, animated: true)
                 }
             }
