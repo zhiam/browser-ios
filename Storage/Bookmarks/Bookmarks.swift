@@ -68,8 +68,8 @@ public class ItemSources {
 
     public func prefetchWithGUIDs<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Success {
         return self.local.prefetchLocalItemsWithGUIDs(guids)
-         >>> { self.mirror.prefetchMirrorItemsWithGUIDs(guids) }
-         >>> { self.buffer.prefetchBufferItemsWithGUIDs(guids) }
+            >>> { self.mirror.prefetchMirrorItemsWithGUIDs(guids) }
+            >>> { self.buffer.prefetchBufferItemsWithGUIDs(guids) }
     }
 }
 
@@ -89,13 +89,13 @@ public struct BookmarkRoots {
         BookmarkRoots.ToolbarFolderGUID,
         BookmarkRoots.UnfiledFolderGUID,
         BookmarkRoots.MobileFolderGUID,
-    ]
+        ]
 
     public static let DesktopRoots: [GUID] = [
         BookmarkRoots.MenuFolderGUID,
         BookmarkRoots.ToolbarFolderGUID,
         BookmarkRoots.UnfiledFolderGUID,
-    ]
+        ]
 
     public static let Real = Set<GUID>([
         BookmarkRoots.RootGUID,
@@ -103,7 +103,7 @@ public struct BookmarkRoots {
         BookmarkRoots.MenuFolderGUID,
         BookmarkRoots.ToolbarFolderGUID,
         BookmarkRoots.UnfiledFolderGUID,
-    ])
+        ])
 
     public static let All = Set<GUID>([
         BookmarkRoots.RootGUID,
@@ -112,7 +112,7 @@ public struct BookmarkRoots {
         BookmarkRoots.ToolbarFolderGUID,
         BookmarkRoots.UnfiledFolderGUID,
         BookmarkRoots.FakeDesktopFolderGUID,
-    ])
+        ])
 
     /**
      * Sync records are a horrible mess of Places-native GUIDs and Sync-native IDs.
@@ -143,7 +143,7 @@ public struct BookmarkRoots {
             "menu": MenuFolderGUID,
             "toolbar": ToolbarFolderGUID,
             "unfiled": UnfiledFolderGUID
-        ][guid] ?? guid
+            ][guid] ?? guid
     }
 
     public static func translateOutgoingRootGUID(guid: GUID) -> GUID {
@@ -153,12 +153,12 @@ public struct BookmarkRoots {
             MenuFolderGUID: "menu",
             ToolbarFolderGUID: "toolbar",
             UnfiledFolderGUID: "unfiled"
-        ][guid] ?? guid
+            ][guid] ?? guid
     }
 
     /*
-    public static let TagsFolderGUID =         "tags________"
-    public static let PinnedFolderGUID =       "pinned______"
+     public static let TagsFolderGUID =         "tags________"
+     public static let PinnedFolderGUID =       "pinned______"
      */
 
     static let RootID =    0
@@ -190,24 +190,24 @@ public enum BookmarkNodeType: Int {
 
 public func == (lhs: BookmarkMirrorItem, rhs: BookmarkMirrorItem) -> Bool {
     if lhs.type != rhs.type ||
-       lhs.guid != rhs.guid ||
-       lhs.serverModified != rhs.serverModified ||
-       lhs.isDeleted != rhs.isDeleted ||
-       lhs.hasDupe != rhs.hasDupe ||
-       lhs.pos != rhs.pos ||
-       lhs.faviconID != rhs.faviconID ||
-       lhs.localModified != rhs.localModified ||
-       lhs.parentID != rhs.parentID ||
-       lhs.parentName != rhs.parentName ||
-       lhs.feedURI != rhs.feedURI ||
-       lhs.siteURI != rhs.siteURI ||
-       lhs.title != rhs.title ||
-       lhs.description != rhs.description ||
-       lhs.bookmarkURI != rhs.bookmarkURI ||
-       lhs.tags != rhs.tags ||
-       lhs.keyword != rhs.keyword ||
-       lhs.folderName != rhs.folderName ||
-       lhs.queryID != rhs.queryID {
+        lhs.guid != rhs.guid ||
+        lhs.serverModified != rhs.serverModified ||
+        lhs.isDeleted != rhs.isDeleted ||
+        lhs.hasDupe != rhs.hasDupe ||
+        lhs.pos != rhs.pos ||
+        lhs.faviconID != rhs.faviconID ||
+        lhs.localModified != rhs.localModified ||
+        lhs.parentID != rhs.parentID ||
+        lhs.parentName != rhs.parentName ||
+        lhs.feedURI != rhs.feedURI ||
+        lhs.siteURI != rhs.siteURI ||
+        lhs.title != rhs.title ||
+        lhs.description != rhs.description ||
+        lhs.bookmarkURI != rhs.bookmarkURI ||
+        lhs.tags != rhs.tags ||
+        lhs.keyword != rhs.keyword ||
+        lhs.folderName != rhs.folderName ||
+        lhs.queryID != rhs.queryID {
         return false
     }
 
@@ -283,19 +283,19 @@ public struct BookmarkMirrorItem: Equatable {
     // Does compare child GUIDs!
     public func sameAs(rhs: BookmarkMirrorItem) -> Bool {
         if self.type != rhs.type ||
-           self.isDeleted != rhs.isDeleted ||
-           self.pos != rhs.pos ||
-           self.parentID != rhs.parentID ||
-           self.parentName != rhs.parentName ||
-           self.feedURI != rhs.feedURI ||
-           self.siteURI != rhs.siteURI ||
-           self.title != rhs.title ||
-           (self.description ?? "") != (rhs.description ?? "") ||
-           self.bookmarkURI != rhs.bookmarkURI ||
-           self.tags != rhs.tags ||
-           self.keyword != rhs.keyword ||
-           self.folderName != rhs.folderName ||
-           self.queryID != rhs.queryID {
+            self.isDeleted != rhs.isDeleted ||
+            self.pos != rhs.pos ||
+            self.parentID != rhs.parentID ||
+            self.parentName != rhs.parentName ||
+            self.feedURI != rhs.feedURI ||
+            self.siteURI != rhs.siteURI ||
+            self.title != rhs.title ||
+            (self.description ?? "") != (rhs.description ?? "") ||
+            self.bookmarkURI != rhs.bookmarkURI ||
+            self.tags != rhs.tags ||
+            self.keyword != rhs.keyword ||
+            self.folderName != rhs.folderName ||
+            self.queryID != rhs.queryID {
             return false
         }
 
@@ -407,14 +407,14 @@ public struct BookmarkMirrorItem: Equatable {
         let parent = BookmarkRoots.translateIncomingRootGUID(parentID)
 
         return BookmarkMirrorItem(guid: id, type: .Folder, serverModified: modified,
-            isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
-            feedURI: nil, siteURI: nil,
-            pos: nil,
-            title: title, description: description,
-            bookmarkURI: nil, tags: nil, keyword: nil,
-            folderName: nil, queryID: nil,
-            children: children,
-            faviconID: nil, localModified: nil, syncStatus: nil)
+                                  isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
+                                  feedURI: nil, siteURI: nil,
+                                  pos: nil,
+                                  title: title, description: description,
+                                  bookmarkURI: nil, tags: nil, keyword: nil,
+                                  folderName: nil, queryID: nil,
+                                  children: children,
+                                  faviconID: nil, localModified: nil, syncStatus: nil)
     }
 
     public static func livemark(guid: GUID, modified: Timestamp, hasDupe: Bool, parentID: GUID, parentName: String?, title: String?, description: String?, feedURI: String, siteURI: String) -> BookmarkMirrorItem {
@@ -422,14 +422,14 @@ public struct BookmarkMirrorItem: Equatable {
         let parent = BookmarkRoots.translateIncomingRootGUID(parentID)
 
         return BookmarkMirrorItem(guid: id, type: .Livemark, serverModified: modified,
-            isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
-            feedURI: feedURI, siteURI: siteURI,
-            pos: nil,
-            title: title, description: description,
-            bookmarkURI: nil, tags: nil, keyword: nil,
-            folderName: nil, queryID: nil,
-            children: nil,
-            faviconID: nil, localModified: nil, syncStatus: nil)
+                                  isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
+                                  feedURI: feedURI, siteURI: siteURI,
+                                  pos: nil,
+                                  title: title, description: description,
+                                  bookmarkURI: nil, tags: nil, keyword: nil,
+                                  folderName: nil, queryID: nil,
+                                  children: nil,
+                                  faviconID: nil, localModified: nil, syncStatus: nil)
     }
 
     public static func separator(guid: GUID, modified: Timestamp, hasDupe: Bool, parentID: GUID, parentName: String, pos: Int) -> BookmarkMirrorItem {
@@ -437,14 +437,14 @@ public struct BookmarkMirrorItem: Equatable {
         let parent = BookmarkRoots.translateIncomingRootGUID(parentID)
 
         return BookmarkMirrorItem(guid: id, type: .Separator, serverModified: modified,
-            isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
-            feedURI: nil, siteURI: nil,
-            pos: pos,
-            title: nil, description: nil,
-            bookmarkURI: nil, tags: nil, keyword: nil,
-            folderName: nil, queryID: nil,
-            children: nil,
-            faviconID: nil, localModified: nil, syncStatus: nil)
+                                  isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
+                                  feedURI: nil, siteURI: nil,
+                                  pos: pos,
+                                  title: nil, description: nil,
+                                  bookmarkURI: nil, tags: nil, keyword: nil,
+                                  folderName: nil, queryID: nil,
+                                  children: nil,
+                                  faviconID: nil, localModified: nil, syncStatus: nil)
     }
 
     public static func bookmark(guid: GUID, modified: Timestamp, hasDupe: Bool, parentID: GUID, parentName: String, title: String, description: String?, URI: String, tags: String, keyword: String?) -> BookmarkMirrorItem {
@@ -452,14 +452,14 @@ public struct BookmarkMirrorItem: Equatable {
         let parent = BookmarkRoots.translateIncomingRootGUID(parentID)
 
         return BookmarkMirrorItem(guid: id, type: .Bookmark, serverModified: modified,
-            isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
-            feedURI: nil, siteURI: nil,
-            pos: nil,
-            title: title, description: description,
-            bookmarkURI: URI, tags: tags, keyword: keyword,
-            folderName: nil, queryID: nil,
-            children: nil,
-            faviconID: nil, localModified: nil, syncStatus: nil)
+                                  isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
+                                  feedURI: nil, siteURI: nil,
+                                  pos: nil,
+                                  title: title, description: description,
+                                  bookmarkURI: URI, tags: tags, keyword: keyword,
+                                  folderName: nil, queryID: nil,
+                                  children: nil,
+                                  faviconID: nil, localModified: nil, syncStatus: nil)
     }
 
     public static func query(guid: GUID, modified: Timestamp, hasDupe: Bool, parentID: GUID, parentName: String, title: String, description: String?, URI: String, tags: String, keyword: String?, folderName: String?, queryID: String?) -> BookmarkMirrorItem {
@@ -467,27 +467,27 @@ public struct BookmarkMirrorItem: Equatable {
         let parent = BookmarkRoots.translateIncomingRootGUID(parentID)
 
         return BookmarkMirrorItem(guid: id, type: .Query, serverModified: modified,
-            isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
-            feedURI: nil, siteURI: nil,
-            pos: nil,
-            title: title, description: description,
-            bookmarkURI: URI, tags: tags, keyword: keyword,
-            folderName: folderName, queryID: queryID,
-            children: nil,
-            faviconID: nil, localModified: nil, syncStatus: nil)
+                                  isDeleted: false, hasDupe: hasDupe, parentID: parent, parentName: parentName,
+                                  feedURI: nil, siteURI: nil,
+                                  pos: nil,
+                                  title: title, description: description,
+                                  bookmarkURI: URI, tags: tags, keyword: keyword,
+                                  folderName: folderName, queryID: queryID,
+                                  children: nil,
+                                  faviconID: nil, localModified: nil, syncStatus: nil)
     }
-
+    
     public static func deleted(type: BookmarkNodeType, guid: GUID, modified: Timestamp) -> BookmarkMirrorItem {
         let id = BookmarkRoots.translateIncomingRootGUID(guid)
-
+        
         return BookmarkMirrorItem(guid: id, type: type, serverModified: modified,
-            isDeleted: true, hasDupe: false, parentID: nil, parentName: nil,
-            feedURI: nil, siteURI: nil,
-            pos: nil,
-            title: nil, description: nil,
-            bookmarkURI: nil, tags: nil, keyword: nil,
-            folderName: nil, queryID: nil,
-            children: nil,
-            faviconID: nil, localModified: nil, syncStatus: nil)
+                                  isDeleted: true, hasDupe: false, parentID: nil, parentName: nil,
+                                  feedURI: nil, siteURI: nil,
+                                  pos: nil,
+                                  title: nil, description: nil,
+                                  bookmarkURI: nil, tags: nil, keyword: nil,
+                                  folderName: nil, queryID: nil,
+                                  children: nil,
+                                  faviconID: nil, localModified: nil, syncStatus: nil)
     }
 }

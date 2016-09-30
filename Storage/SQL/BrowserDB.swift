@@ -69,7 +69,7 @@ public class BrowserDB {
         log.debug("Try create \(table.name) version \(table.version)")
         if !table.create(conn) {
             // If creating failed, we'll bail without storing the table info
-            print("Creation failed.")
+            log.debug("Creation failed.")
             return .Failed
         }
 
@@ -107,7 +107,7 @@ public class BrowserDB {
         // to a different Table. It'll trigger exists, and thus take the update path, but we won't
         // necessarily have an existing schema entry -- i.e., we'll be updating from 0.
         if schemaTable.update(conn, item: table, err: &err) > 0 ||
-           schemaTable.insert(conn, item: table, err: &err) > 0 {
+            schemaTable.insert(conn, item: table, err: &err) > 0 {
             return .Updated
         }
         return .Failed
@@ -138,7 +138,7 @@ public class BrowserDB {
             for table in tables {
                 log.debug("Create or update \(table.name) version \(table.version) on \(thread).")
                 if !table.exists(connection) {
-                    print("Doesn't exist. Creating table \(table.name).")
+                    log.debug("Doesn't exist. Creating table \(table.name).")
                     doCreate(table, connection)
                 } else {
                     // Otherwise, we'll update it
@@ -234,21 +234,19 @@ public class BrowserDB {
                 }
                 return success
             }) {
-                success = false;
+                success = false
             }
         }
 
         return success
     }
 
-    typealias IntCallback = (connection: SQLiteDBConnection, inout err: NSError?) -> Int
+    typealias IntCallback = (connection: SQLiteDBConnection, err: inout NSError?) -> Int
 
     func withConnection<T>(flags flags: SwiftData.Flags, inout err: NSError?, callback: (connection: SQLiteDBConnection, inout err: NSError?) -> T) -> T {
         var res: T!
         err = db.withConnection(flags) { connection in
-            // This should never occur. Make it fail hard in debug builds.
-            assert(!(connection is FailedSQLiteDBConnection))
-
+            // An error may occur if the internet connection is dropped.
             var err: NSError? = nil
             res = callback(connection: connection, err: &err)
             return err
@@ -382,6 +380,10 @@ extension BrowserDB {
     public func forceClose() {
         db.forceClose()
     }
+
+    public func reopenIfClosed() {
+        db.reopenIfClosed()
+    }
 }
 
 extension BrowserDB: Changeable {
@@ -432,12 +434,12 @@ extension BrowserDB: Queryable {
 
     func queryReturnsResults(sql: String, args: Args?=nil) -> Deferred<Maybe<Bool>> {
         return self.runQuery(sql, args: args, factory: { row in true })
-         >>== { deferMaybe($0[0] ?? false) }
+            >>== { deferMaybe($0[0] ?? false) }
     }
 
     func queryReturnsNoResults(sql: String, args: Args?=nil) -> Deferred<Maybe<Bool>> {
         return self.runQuery(sql, args: nil, factory: { row in false })
-          >>== { deferMaybe($0[0] ?? true) }
+            >>== { deferMaybe($0[0] ?? true) }
     }
 }
 
@@ -446,7 +448,7 @@ extension SQLiteDBConnection {
         let count = names.count
         let inClause = BrowserDB.varlist(names.count)
         let tablesSQL = "SELECT name FROM sqlite_master WHERE type = 'table' AND name IN \(inClause)"
-
+        
         let res = self.executeQuery(tablesSQL, factory: StringFactory, withArgs: names.map { $0 as AnyObject })
         log.debug("\(res.count) tables exist. Expected \(count)")
         return res.count > 0

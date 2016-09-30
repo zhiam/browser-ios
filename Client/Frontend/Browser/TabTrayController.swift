@@ -414,7 +414,7 @@ class TabTrayController: UIViewController {
             make.edges.equalTo(self.view)
         }
 
-        if let tab = tabManager.selectedTab where tab.isPrivate {
+        if let tab = tabManager.selectedTab  where tab.isPrivate {
             privateMode = true
         } else if PrivateBrowsing.singleton.isOn {
             privateMode = true
@@ -492,9 +492,9 @@ class TabTrayController: UIViewController {
             fromView = emptyPrivateTabsView
         } else {
             let snapshot = collectionView.snapshotViewAfterScreenUpdates(false)
-            snapshot.frame = collectionView.frame
-            view.insertSubview(snapshot, aboveSubview: collectionView)
-            fromView = snapshot
+            snapshot!.frame = collectionView.frame
+            view.insertSubview(snapshot!, aboveSubview: collectionView)
+            fromView = snapshot!
         }
 
         privateMode = !privateMode
@@ -536,10 +536,10 @@ class TabTrayController: UIViewController {
             toView = emptyPrivateTabsView
         } else {
             let newSnapshot = collectionView.snapshotViewAfterScreenUpdates(true)
-            newSnapshot.frame = collectionView.frame
-            view.insertSubview(newSnapshot, aboveSubview: fromView)
+            newSnapshot!.frame = collectionView.frame
+            view.insertSubview(newSnapshot!, aboveSubview: fromView)
             collectionView.alpha = 0
-            toView = newSnapshot
+            toView = newSnapshot!
         }
         toView.alpha = 0
         toView.transform = scaleDownTransform

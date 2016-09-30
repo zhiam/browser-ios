@@ -26,7 +26,7 @@ public class MockLogins: BrowserLogins, SyncableLogins {
     public func getLoginsForProtectionSpace(protectionSpace: NSURLProtectionSpace, withUsername username: String?) -> Deferred<Maybe<Cursor<LoginData>>> {
         let cursor = ArrayCursor(data: cache.filter({ login in
             return login.protectionSpace.host == protectionSpace.host &&
-                   login.username == username
+                login.username == username
         }).sort({ (loginA, loginB) -> Bool in
             return loginA.timeLastUsed > loginB.timeLastUsed
         }).map({ login in
@@ -142,8 +142,8 @@ public class MockLogins: BrowserLogins, SyncableLogins {
     // TODO
     public func deleteByGUID(guid: GUID, deletedAt: Timestamp) -> Success { return succeed() }
     public func applyChangedLogin(upstream: ServerLogin) -> Success { return succeed() }
-    public func markAsSynchronized(_: [GUID], modified: Timestamp) -> Deferred<Maybe<Timestamp>> { return deferMaybe(0) }
-    public func markAsDeleted(guids: [GUID]) -> Success { return succeed() }
+    public func markAsSynchronized<T: CollectionType where T.Generator.Element == GUID>(_: T, modified: Timestamp) -> Deferred<Maybe<Timestamp>> { return deferMaybe(0) }
+    public func markAsDeleted<T: CollectionType where T.Generator.Element == GUID>(guids: T) -> Success { return succeed() }
     public func onRemovedAccount() -> Success { return succeed() }
 }
 

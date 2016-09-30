@@ -19,7 +19,7 @@ class TrayToBrowserAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
 private extension TrayToBrowserAnimator {
     func transitionFromTray(tabTray: TabTrayController, toBrowser bvc: BrowserViewController, usingContext transitionContext: UIViewControllerContextTransitioning) {
-        guard let container = transitionContext.containerView() else { return }
+        let container = transitionContext.containerView()
         guard let selectedTab = bvc.tabManager.selectedTab else { return }
 
         // Bug 1205464 - Top Sites tiles blow up or shrink after rotating
@@ -44,7 +44,7 @@ private extension TrayToBrowserAnimator {
         bvc.webViewContainerBackdrop.hidden = true
 
         // Take a snapshot of the collection view that we can scale/fade out. We don't need to wait for screen updates since it's already rendered on the screen
-        let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(false)
+        guard let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(false) else { return }
         tabTray.collectionView.alpha = 0
         tabCollectionViewSnapshot.frame = tabTray.collectionView.frame
         container.insertSubview(tabCollectionViewSnapshot, aboveSubview: tabTray.view)
@@ -123,7 +123,7 @@ class BrowserToTrayAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 private extension BrowserToTrayAnimator {
     func transitionFromBrowser(bvc: BrowserViewController, toTabTray tabTray: TabTrayController, usingContext transitionContext: UIViewControllerContextTransitioning) {
 
-        guard let container = transitionContext.containerView() else { return }
+        let container = transitionContext.containerView()
         guard let selectedTab = bvc.tabManager.selectedTab else { return }
 
         let tabManager = bvc.tabManager
@@ -147,10 +147,10 @@ private extension BrowserToTrayAnimator {
 
         // Take a snapshot of the collection view to perform the scaling/alpha effect
         let tabCollectionViewSnapshot = tabTray.collectionView.snapshotViewAfterScreenUpdates(true)
-        tabCollectionViewSnapshot.frame = tabTray.collectionView.frame
-        tabCollectionViewSnapshot.transform = CGAffineTransformMakeScale(0.9, 0.9)
-        tabCollectionViewSnapshot.alpha = 0
-        tabTray.view.addSubview(tabCollectionViewSnapshot)
+        tabCollectionViewSnapshot!.frame = tabTray.collectionView.frame
+        tabCollectionViewSnapshot!.transform = CGAffineTransformMakeScale(0.9, 0.9)
+        tabCollectionViewSnapshot!.alpha = 0
+        tabTray.view.addSubview(tabCollectionViewSnapshot!)
 
         container.addSubview(cell)
         cell.layoutIfNeeded()
@@ -184,7 +184,7 @@ private extension BrowserToTrayAnimator {
 
                 bvc.urlBar.updateAlphaForSubviews(0)
                 bvc.footer.alpha = 0
-                tabCollectionViewSnapshot.alpha = 1
+                tabCollectionViewSnapshot!.alpha = 1
 
                 var viewsToReset: [UIView?] = [tabCollectionViewSnapshot, tabTray.addTabButton]
 #if !BRAVE
@@ -194,7 +194,7 @@ private extension BrowserToTrayAnimator {
             }, completion: { finished in
                 // Remove any of the views we used for the animation
                 cell.removeFromSuperview()
-                tabCollectionViewSnapshot.removeFromSuperview()
+                tabCollectionViewSnapshot!.removeFromSuperview()
                 tabTray.collectionView.hidden = false
 
                 bvc.toggleSnackBarVisibility(show: true)

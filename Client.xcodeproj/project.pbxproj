@@ -58,7 +58,6 @@
 		1A23068D5E66CD83B1512D15 /* URIFixup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E73012CDCAD318AC829281 /* URIFixup.swift */; };
 		1A8A23CF250C3C55D7A59952 /* Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1351869FA6D75F5DF93BDC2 /* Accessibility.swift */; };
 		1AD5A92B8D7E128A09DCB480 /* AboutHomeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC754FCC79857891055187B /* AboutHomeHandler.swift */; };
-		1AFBE027A34F2AA8EDE758EF /* SWUtilityButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD8936B4B2AAEC5751B29A04 /* SWUtilityButtonView.m */; };
 		1BB69837CDB9BA1A8ED56628 /* OpenSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEF54F179B81FB069863662 /* OpenSearch.swift */; };
 		1BCE28AC15D1870A4B2DE65A /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A96420AA85436FEC1EF938 /* filter.cpp */; };
 		1BEC203DBC0FE2B59740A167 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A16E42938DD99B48BCB7015 /* Functions.swift */; };
@@ -76,7 +75,6 @@
 		2400342EEA3D538F524687DB /* ShareToBraveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E53BE1E3B81364A9985D3 /* ShareToBraveViewController.swift */; };
 		24F13EC5A582B77E0F00EB61 /* BrowserViewController+TabManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154ABFEE676FAE0D12F2C7D5 /* BrowserViewController+TabManagerDelegate.swift */; };
 		252BFD86BA8B20F6B485D561 /* filename.cc in Sources */ = {isa = PBXBuildFile; fileRef = 5B7417C2784852C8AA016A94 /* filename.cc */; };
-		25CA3F4F5B51A43503843EB1 /* SWUtilityButtonTapGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8894102E7E4155089708A512 /* SWUtilityButtonTapGestureRecognizer.m */; };
 		25EC5AB01633FAA4720D56C3 /* arena.cc in Sources */ = {isa = PBXBuildFile; fileRef = E74090B2DC9AACC275A23C78 /* arena.cc */; };
 		2693462AAD80728B82279A60 /* random.h in Headers */ = {isa = PBXBuildFile; fileRef = F2024CD4F94FB00B6E677E44 /* random.h */; };
 		269F556923EACC63E1A2FC42 /* Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1142D481813866CF93EF596 /* Sharing.swift */; };
@@ -187,7 +185,6 @@
 		5FBB6E142EFF5F6E989ABD49 /* block_builder.cc in Sources */ = {isa = PBXBuildFile; fileRef = 42E7370C905EB0AE722AA0C5 /* block_builder.cc */; };
 		5FE1960277EC29D7310008B6 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B844F80947392751D574C56A /* Fabric.framework */; };
 		608485F8D435F9284A3638B1 /* RemovePasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A722E9CB2A0B2BB6DAA747F9 /* RemovePasscodeViewController.swift */; };
-		60851D49E1588341C0234601 /* SWLongPressGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F15FC0AD573F67B846672F1E /* SWLongPressGestureRecognizer.m */; };
 		61464FBEE20CE5E041C799A2 /* ABPFilterLibWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE26A0072322D258FA2595EB /* ABPFilterLibWrapper.h */; };
 		617490D0B2A36246C3AE520C /* Trees.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782049002C40114E12F2B757 /* Trees.swift */; };
 		625E3E06A36AB03EA26439F6 /* ReadingListSyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B55D43847229F7D9F2DD7C /* ReadingListSyncMetadata.swift */; };
@@ -273,7 +270,6 @@
 		8C37559D5128842F1EA41DC1 /* port_posix.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1B76A990D16A2AE724D9324E /* port_posix.cc */; };
 		8C3AB1D6EF08514FD714B10A /* iterator_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7394570E60761F3AC8F2667E /* iterator_wrapper.h */; };
 		8CA4BCCF4C332CB68C926F94 /* KeychainCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56C0596468568F00C4BB675 /* KeychainCache.swift */; };
-		8D38CD6A8B9CD12421AE67D5 /* SWCellScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C0A5476AF65B103E1F0AE635 /* SWCellScrollView.m */; };
 		8DBAF4A0231278A32A7B53E7 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = B504A00429D49AE66EAB5918 /* hash.h */; };
 		8F8FEAE7F3F5794866B0163C /* topdomains.txt in Resources */ = {isa = PBXBuildFile; fileRef = 15CBF8A3328920BDA39ACE03 /* topdomains.txt */; };
 		906F2B9E09174887AE1FFC89 /* cache.h in Headers */ = {isa = PBXBuildFile; fileRef = CB5F1B5D88681643A9C0C7CF /* cache.h */; };
@@ -307,7 +303,6 @@
 		9EAB0C6103188CF38E86ED36 /* hash.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1EDEAAE020488481B5A4A1F /* hash.cc */; };
 		9EC9707BF7ABD93FBB0FFDB9 /* LoginsHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = B6339DA63849AA7EBB1AD756 /* LoginsHelper.js */; };
 		9F50BCE3D5FDCED5636CC737 /* FSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 968A68795E0C74E23C2E6F4F /* FSUtils.m */; };
-		A0083AFCE5B5F3816D3FCCDB /* AuroraAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF03E4586891E04971FE5B6 /* AuroraAppDelegate.swift */; };
 		A017135F85E8E813D1E8DF11 /* WindowCloseHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 18CF882B686F0A49E665B882 /* WindowCloseHelper.js */; };
 		A026D2C7D56306D65820F5EA /* LICENSE in Sources */ = {isa = PBXBuildFile; fileRef = 84234E9D923E84AF3E4E5FB3 /* LICENSE */; };
 		A06E13ADC55EEF9339F0C366 /* TabsBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FD5A6B7436E480B4E55E3 /* TabsBarViewController.swift */; };
@@ -397,7 +392,6 @@
 		D02C77851544A2FC4270D5CB /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD76BA2739773A5DA2D71154 /* Box.swift */; };
 		D09B12556E1B79AA8E238868 /* BasePasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB4E969AFB6E1A8F1EEE66F5 /* BasePasscodeViewController.swift */; };
 		D0BC2CC2B4F1C2E894913805 /* DeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A282A1784AD7B0FBEFDB521 /* DeviceInfo.swift */; };
-		D1A6D181B9852BC33E4044DC /* SWTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EFB752396516A66A96F11CBA /* SWTableViewCell.m */; };
 		D1C86DA5CC9837EE549A6AB9 /* TrackingProtection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8447DC2D14288124090AADAD /* TrackingProtection.swift */; };
 		D22B5AC8588A48662FD6757A /* SearchSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AECDC0CC95E3DB88A22B72 /* SearchSettingsTableViewController.swift */; };
 		D22F3664076BEA8511A9F68D /* NSStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2243796CB0C27B99AED9742 /* NSStringExtensions.swift */; };
@@ -447,7 +441,6 @@
 		E6231C051B90A472005ABB0D /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C041B90A472005ABB0D /* libxml2.2.tbd */; };
 		E62FD3F126ABE03669E5BD73 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6BFEC103054810F8925EAF /* UIColorExtensions.swift */; };
 		E6C7EAF1D5A5AB6A64949CB2 /* SetupPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AAA917A9C1187CA85A6FB5 /* SetupPasscodeViewController.swift */; };
-		E6E5D77E1C5286CD00CC6696 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B9A62DF1C4002B1005C83DC /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E6F965121B2F1CF20034B023 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288A2D861AB8B3260023ABC3 /* Shared.framework */; };
 		E7026A766AA17FE4022C8F83 /* NSUserDefaultsPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D05ABFBD9436E6D8F2DB5 /* NSUserDefaultsPrefs.swift */; };
 		E7137CFBEDF3A241B3FF612E /* MockLogins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CB429412ED076CFF5E85FD /* MockLogins.swift */; };
@@ -464,15 +457,13 @@
 		EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12F8F9AA927469C395A01A8 /* TabTrayController.swift */; };
 		EA57C937929B9D79638AE0C2 /* SupportUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2B94BA962519A13DDE91E3 /* SupportUtils.swift */; };
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
+		EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
-		EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661701D9C3CEC00445C92 /* top500.swift */; };
-		EB36618B1D9C3CF900445C92 /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
-		EB9D8F201D9CCC3500CA1624 /* WebViewLoadTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661721D9C3CEC00445C92 /* WebViewLoadTestUtils.swift */; };
 		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
 		ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */ = {isa = PBXBuildFile; fileRef = C33D93B9B0CD0D4AD9E461AE /* ODRefreshControl.h */; };
@@ -569,20 +560,6 @@
 			remoteGlobalIDString = DC2B29EC1B26F718001C60EA;
 			remoteInfo = "SQLite iOS Tests";
 		};
-		7B9A62DE1C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DC7253AC1B52ADEB009B38B1;
-			remoteInfo = "SQLite Mac";
-		};
-		7B9A62E01C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DC7253B51B52ADEC009B38B1;
-			remoteInfo = "SQLite Mac Tests";
-		};
 		7B9A62E21C4002B1005C83DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
@@ -596,20 +573,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = DCE7BB831B7434F90040D364;
 			remoteInfo = "SQLiteCipher iOS Tests";
-		};
-		7B9A62E61C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DCE7BBB01B7438610040D364;
-			remoteInfo = "SQLiteCipher Mac";
-		};
-		7B9A62E81C4002B1005C83DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7B9A62B91C4002B1005C83DC /* SQLite.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DCE7BBB91B7438620040D364;
-			remoteInfo = "SQLiteCipher Mac Tests";
 		};
 		7B9A62F81C400303005C83DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -722,7 +685,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E6E5D77E1C5286CD00CC6696 /* SQLite.framework in Copy Frameworks */,
 				E4D567301ADECE2800F1EFE7 /* ReadingList.framework in Copy Frameworks */,
 				2FCAE2321ABB51F800877008 /* Storage.framework in Copy Frameworks */,
 				288A2D9E1AB8B3260023ABC3 /* Shared.framework in Copy Frameworks */,
@@ -818,7 +780,6 @@
 		1EE4AD12872C0C02E21DFC2C /* SearchViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchViewController.swift; path = ./Client/Frontend/Browser/SearchViewController.swift; sourceTree = "<group>"; };
 		1F2B94BA962519A13DDE91E3 /* SupportUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SupportUtils.swift; path = ./Utils/SupportUtils.swift; sourceTree = "<group>"; };
 		209D7E86C279706A100E8D88 /* SidePanelBaseViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SidePanelBaseViewController.swift; path = ./brave/src/frontend/sidepanels/SidePanelBaseViewController.swift; sourceTree = "<group>"; };
-		2187DF89D20AB273C66CE644 /* SWTableViewCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SWTableViewCell.h; path = ./ThirdParty/SWTableViewCell/PodFiles/SWTableViewCell.h; sourceTree = "<group>"; };
 		221C89002AFF8CAA7A46AED0 /* write_batch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = write_batch.h; path = ./brave/ThirdParty/leveldb/include/leveldb/write_batch.h; sourceTree = "<group>"; };
 		23742BDDA52668C11FC7C59F /* DatabaseError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DatabaseError.swift; path = ./Storage/DatabaseError.swift; sourceTree = "<group>"; };
 		24E7EB795FD310C03CA104FF /* scrape_plugins.py */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.python; name = scrape_plugins.py; path = ./Client/Assets/Search/scrape_plugins.py; sourceTree = "<group>"; };
@@ -866,7 +827,7 @@
 		38D2A7274015F5CFD209EA31 /* slice.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = slice.h; path = ./brave/ThirdParty/leveldb/include/leveldb/slice.h; sourceTree = "<group>"; };
 		392EA1C4570EF57722D166C3 /* table_builder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = table_builder.h; path = ./brave/ThirdParty/leveldb/include/leveldb/table_builder.h; sourceTree = "<group>"; };
 		394747630A3208C0183000C2 /* FaviconManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaviconManager.swift; path = ./Client/Frontend/Browser/FaviconManager.swift; sourceTree = "<group>"; };
-		3A1603EBC9F917E49206597F /* Logins.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logins.swift; path = ./Storage/Logins.swift; sourceTree = "<group>"; };
+		3A1603EBC9F917E49206597F /* Logins.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Logins.swift; path = ./Storage/Logins.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		3A17EA52E38E83395749035F /* c.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = c.cc; path = ./brave/ThirdParty/leveldb/db/c.cc; sourceTree = "<group>"; };
 		3A2DE0F39BB39DADF655D114 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.storyboard; name = MainStoryboard.storyboard; path = ./ThirdParty/SWTableViewCell/en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		3A34CC3E591D2465D0000AAA /* write_batch.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = write_batch.cc; path = ./brave/ThirdParty/leveldb/db/write_batch.cc; sourceTree = "<group>"; };
@@ -898,7 +859,7 @@
 		430FDA25DAA3C35191998991 /* SwizzlingToHideSharePicker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SwizzlingToHideSharePicker.h; path = ./brave/src/frontend/SwizzlingToHideSharePicker.h; sourceTree = "<group>"; };
 		4380F19554944742F9E55A9B /* UIViewExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UIViewExtensions.swift; path = ./Utils/Extensions/UIViewExtensions.swift; sourceTree = "<group>"; };
 		43D1777F9AA8762221511A28 /* BraveScrollController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveScrollController.swift; path = ./brave/src/frontend/BraveScrollController.swift; sourceTree = "<group>"; };
-		4437752A4BCEA31464EF010B /* ExtensionUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExtensionUtils.swift; path = ./Utils/ExtensionUtils.swift; sourceTree = "<group>"; };
+		4437752A4BCEA31464EF010B /* ExtensionUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = ExtensionUtils.swift; path = ./Utils/ExtensionUtils.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		44A1D7CEF39DC47354E3383E /* ABPFilterLibWrapper.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ABPFilterLibWrapper.mm; path = ./brave/src/webfilters/ABPFilterLibWrapper.mm; sourceTree = "<group>"; };
 		44B732CC7870DC69264D3197 /* FBSnapshotTestCase-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "FBSnapshotTestCase-Info.plist"; path = "./ThirdParty/FBSnapshotTestCase/FBSnapshotTestCase-Info.plist"; sourceTree = "<group>"; };
 		452C39CD747B928F9CF126B1 /* SearchInputView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchInputView.swift; path = ./Client/Frontend/Widgets/SearchInputView.swift; sourceTree = "<group>"; };
@@ -922,7 +883,6 @@
 		4BC23E768DAEB6A039B62C56 /* Makefile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.make; name = Makefile; path = ./brave/src/webfilters/httpse_cpp/Makefile; sourceTree = "<group>"; };
 		4C0EF34FD8FF09F54B890AAD /* SnackBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SnackBar.swift; path = ./Client/Frontend/Widgets/SnackBar.swift; sourceTree = "<group>"; };
 		4C88E5E907585E86BD78ED19 /* FBSnapshotTestController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FBSnapshotTestController.m; path = ./ThirdParty/FBSnapshotTestCase/FBSnapshotTestController.m; sourceTree = "<group>"; };
-		4CB9D15E3186DF66D219EAC7 /* SWLongPressGestureRecognizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SWLongPressGestureRecognizer.h; path = ./ThirdParty/SWTableViewCell/PodFiles/SWLongPressGestureRecognizer.h; sourceTree = "<group>"; };
 		4CBE7FF4F344A9910FA8CA92 /* UserAgent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UserAgent.swift; path = ./Shared/UserAgent.swift; sourceTree = "<group>"; };
 		4D3874D9BE90A50CE9FD63DC /* PageUnload.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; name = PageUnload.js; path = "./brave/src/page-hooks/PageUnload.js"; sourceTree = "<group>"; };
 		4D51D3125DCE8021CF113B80 /* FiraSans-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = "FiraSans-Medium.ttf"; path = "./Client/Assets/Fonts/FiraSans-Medium.ttf"; sourceTree = "<group>"; };
@@ -956,7 +916,6 @@
 		5AA509FEB7174C79CDAFE79D /* SwiftData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SwiftData.swift; path = ./Storage/ThirdParty/SwiftData.swift; sourceTree = "<group>"; };
 		5AB640D568784D267BA03D84 /* UIImage+Snapshot.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+Snapshot.h"; path = "./ThirdParty/FBSnapshotTestCase/UIImage+Snapshot.h"; sourceTree = "<group>"; };
 		5ACBCE3DABC6D74A4FCAC427 /* MI.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = MI.png; path = ./ThirdParty/SWTableViewCell/MI.png; sourceTree = "<group>"; };
-		5ACC6737E79224D9F6E64660 /* SWUtilityButtonView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SWUtilityButtonView.h; path = ./ThirdParty/SWTableViewCell/PodFiles/SWUtilityButtonView.h; sourceTree = "<group>"; };
 		5B60ED58454699DB9549B34B /* AutocompleteTextField.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AutocompleteTextField.swift; path = ./Client/Frontend/Widgets/AutocompleteTextField.swift; sourceTree = "<group>"; };
 		5B7417C2784852C8AA016A94 /* filename.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = filename.cc; path = ./brave/ThirdParty/leveldb/db/filename.cc; sourceTree = "<group>"; };
 		5B8A3FF8C10C5708D9DAD03D /* BraveUX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveUX.swift; path = ./brave/src/frontend/BraveUX.swift; sourceTree = "<group>"; };
@@ -966,7 +925,6 @@
 		5DC93C70E9DA3485A2FD2BD3 /* Error.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Error.swift; path = ./ThirdParty/Result/Error.swift; sourceTree = "<group>"; };
 		5E2DD2C9767F04D79BD241B0 /* port_posix.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = port_posix.h; path = ./brave/ThirdParty/leveldb/port/port_posix.h; sourceTree = "<group>"; };
 		5ED8720B8C08231F6A2FC090 /* SettingsTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsTableViewController.swift; path = ./Client/Frontend/Settings/SettingsTableViewController.swift; sourceTree = "<group>"; };
-		5FF03E4586891E04971FE5B6 /* AuroraAppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuroraAppDelegate.swift; path = ./Client/Application/AuroraAppDelegate.swift; sourceTree = "<group>"; };
 		603F85E39F9E018441B742A3 /* amazondotcom.xml */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = amazondotcom.xml; path = ./Client/Assets/Search/SearchOverrides/en/amazondotcom.xml; sourceTree = "<group>"; };
 		603F9DB2AF9BF800E8C52208 /* skiplist.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = skiplist.h; path = ./brave/ThirdParty/leveldb/db/skiplist.h; sourceTree = "<group>"; };
 		60AAA917A9C1187CA85A6FB5 /* SetupPasscodeViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SetupPasscodeViewController.swift; path = ./Client/Frontend/AuthenticationManager/SetupPasscodeViewController.swift; sourceTree = "<group>"; };
@@ -987,7 +945,7 @@
 		688FD5A6B7436E480B4E55E3 /* TabsBarViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TabsBarViewController.swift; path = ./brave/src/frontend/tabsbar/TabsBarViewController.swift; sourceTree = "<group>"; };
 		68BE753A35DBD484DFC00563 /* SQLiteBookmarksModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SQLiteBookmarksModel.swift; path = ./Storage/SQL/SQLiteBookmarksModel.swift; sourceTree = "<group>"; };
 		6928610E288C47F9546A63E4 /* PicklistSetting.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PicklistSetting.swift; path = ./brave/src/frontend/PicklistSetting.swift; sourceTree = "<group>"; };
-		6961928E2984A658CB03CC00 /* BraveTopViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveTopViewController.swift; path = ./brave/src/frontend/BraveTopViewController.swift; sourceTree = "<group>"; };
+		6961928E2984A658CB03CC00 /* BraveTopViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = BraveTopViewController.swift; path = ./brave/src/frontend/BraveTopViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		69F844BC795EEA30C11B370E /* ReadingListRecordResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListRecordResponse.swift; path = ./ReadingList/ReadingListRecordResponse.swift; sourceTree = "<group>"; };
 		6A648044FB6FE3E6891916CA /* JsonCpp.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JsonCpp.h; path = ./brave/src/webfilters/httpse_cpp/JsonCpp.h; sourceTree = "<group>"; };
 		6A8EF46DEDD284137E2279BB /* Storage-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "Storage-Bridging-Header.h"; path = "./Storage/Storage-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -999,7 +957,7 @@
 		6E4F971F06CCD5FE5475FF99 /* adInfo-divquerytemplate.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; name = "adInfo-divquerytemplate.js"; path = "./brave/src/adinfo/adInfo-divquerytemplate.js"; sourceTree = "<group>"; };
 		6EAABA8CA7B7C5801509E9D0 /* repair.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = repair.cc; path = ./brave/ThirdParty/leveldb/db/repair.cc; sourceTree = "<group>"; };
 		6F8856E29DAA2D9EAC4F9A85 /* BraveUtil.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveUtil.swift; path = ./brave/src/BraveUtil.swift; sourceTree = "<group>"; };
-		70ACC2E069D0CB11B0D2A266 /* BookmarksModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BookmarksModel.swift; path = ./Storage/Bookmarks/BookmarksModel.swift; sourceTree = "<group>"; };
+		70ACC2E069D0CB11B0D2A266 /* BookmarksModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = BookmarksModel.swift; path = ./Storage/Bookmarks/BookmarksModel.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		71D20A6CE1238138D7BE1DA1 /* LaunchScreen.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = ./Client/Application/LaunchScreen.xib; sourceTree = "<group>"; };
 		71E0A7D9250B837EB95AF8E5 /* LoginTableViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LoginTableViewCell.swift; path = ./Client/Frontend/Widgets/LoginTableViewCell.swift; sourceTree = "<group>"; };
 		720790A29D8DD7451D408244 /* Reader.css */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.css; name = Reader.css; path = ./Client/Frontend/Reader/Reader.css; sourceTree = "<group>"; };
@@ -1038,7 +996,7 @@
 		7FC8EFB9D2EEECBBC4E226C3 /* histogram.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = histogram.h; path = ./brave/ThirdParty/leveldb/util/histogram.h; sourceTree = "<group>"; };
 		80019BA6EA272282E68FCA7C /* SettingsContentViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsContentViewController.swift; path = ./Client/Frontend/Settings/SettingsContentViewController.swift; sourceTree = "<group>"; };
 		80451726171D6116E291906A /* ImageAlignment-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "ImageAlignment-Info.plist"; path = "./ThirdParty/UIImageViewAligned/Example/ImageAlignment/ImageAlignment-Info.plist"; sourceTree = "<group>"; };
-		80F6AF3AD51405F4E6DD7477 /* ReaderModeCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReaderModeCache.swift; path = ./Client/Frontend/Reader/ReaderModeCache.swift; sourceTree = "<group>"; };
+		80F6AF3AD51405F4E6DD7477 /* ReaderModeCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = ReaderModeCache.swift; path = ./Client/Frontend/Reader/ReaderModeCache.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		816CE109F94469972C475A8C /* Swizzling.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Swizzling.h; path = ./Utils/Swizzling.h; sourceTree = "<group>"; };
 		81718B80CF233F354112CA85 /* FaviconsTable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FaviconsTable.swift; path = ./Storage/SQL/FaviconsTable.swift; sourceTree = "<group>"; };
 		81F57A3BC5DC16D6451500BA /* WebViewScripting.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebViewScripting.swift; path = ./brave/src/webview/WebViewScripting.swift; sourceTree = "<group>"; };
@@ -1059,11 +1017,9 @@
 		87E6BAC631D43FC504CC2291 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ./Client/Assets/Search/README.md; sourceTree = "<group>"; };
 		87F3EC59F5985F716F89D46B /* ArrayExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ArrayExtensions.swift; path = ./Utils/Extensions/ArrayExtensions.swift; sourceTree = "<group>"; };
 		882EBF0C05C3676F1DE9EBE5 /* ImageAlignmentTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = ImageAlignmentTests.m; path = ./ThirdParty/UIImageViewAligned/Example/ImageAlignmentTests/ImageAlignmentTests.m; sourceTree = "<group>"; };
-		8894102E7E4155089708A512 /* SWUtilityButtonTapGestureRecognizer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SWUtilityButtonTapGestureRecognizer.m; path = ./ThirdParty/SWTableViewCell/PodFiles/SWUtilityButtonTapGestureRecognizer.m; sourceTree = "<group>"; };
 		88ED2F5C9425FC56B427D327 /* UIImage+Snapshot.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Snapshot.m"; path = "./ThirdParty/FBSnapshotTestCase/UIImage+Snapshot.m"; sourceTree = "<group>"; };
 		89411D17AEA4B121AF3290A8 /* ReadingListService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListService.swift; path = ./ReadingList/ReadingListService.swift; sourceTree = "<group>"; };
 		8AAE028C64B419AFDEEDD89C /* CharisSILI.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = CharisSILI.ttf; path = ./Client/Assets/Fonts/CharisSILI.ttf; sourceTree = "<group>"; };
-		8AB0C5845B222044738D54B7 /* SWCellScrollView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SWCellScrollView.h; path = ./ThirdParty/SWTableViewCell/PodFiles/SWCellScrollView.h; sourceTree = "<group>"; };
 		8AD518CD61521727267829F7 /* UIAlertControllerExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UIAlertControllerExtensions.swift; path = ./Client/Extensions/UIAlertControllerExtensions.swift; sourceTree = "<group>"; };
 		8B0B5E84787563E258467DE6 /* ReaderModeHandlers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReaderModeHandlers.swift; path = ./Client/Frontend/Reader/ReaderModeHandlers.swift; sourceTree = "<group>"; };
 		8BA42171BC46246A6B974A34 /* FingerprintingProtection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FingerprintingProtection.swift; path = "./brave/src/page-hooks/FingerprintingProtection.swift"; sourceTree = "<group>"; };
@@ -1144,7 +1100,6 @@
 		AD2DD66EF7D3E1C77FF9AD9F /* AsyncReducer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncReducer.swift; path = ./Utils/AsyncReducer.swift; sourceTree = "<group>"; };
 		AD4E2E1A8967DFB81A5BCB99 /* SessionRestore.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = SessionRestore.html; path = ./Client/Assets/SessionRestore.html; sourceTree = "<group>"; };
 		AD7CBCFD75F0459B9E92C54F /* DeferredUtils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DeferredUtils.swift; path = ./Utils/DeferredUtils.swift; sourceTree = "<group>"; };
-		AD8936B4B2AAEC5751B29A04 /* SWUtilityButtonView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SWUtilityButtonView.m; path = ./ThirdParty/SWTableViewCell/PodFiles/SWUtilityButtonView.m; sourceTree = "<group>"; };
 		ADA7DED2447BA5A4E6FE7C35 /* ReaderModeBarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReaderModeBarView.swift; path = ./Client/Frontend/Browser/ReaderModeBarView.swift; sourceTree = "<group>"; };
 		ADB79191D08021A6D529BF4D /* ElementAtPoint.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; name = ElementAtPoint.js; path = "./brave/src/page-hooks/ElementAtPoint.js"; sourceTree = "<group>"; };
 		ADD27FD57D57C14AE7F1A5D6 /* HomePanelViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomePanelViewController.swift; path = ./Client/Frontend/Home/HomePanelViewController.swift; sourceTree = "<group>"; };
@@ -1156,7 +1111,7 @@
 		B19CF3BCBDCAF18D4F994142 /* append.xml */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = append.xml; path = ./Client/Assets/Search/Tests/Overlays/append.xml; sourceTree = "<group>"; };
 		B1C77177C5621E8CAF2BF362 /* IBsetup.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = IBsetup.png; path = ./ThirdParty/UIImageViewAligned/docs/IBsetup.png; sourceTree = "<group>"; };
 		B1D280EC8AAAB26C4BBB484C /* builder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = builder.h; path = ./brave/ThirdParty/leveldb/db/builder.h; sourceTree = "<group>"; };
-		B2122B3144F9374D630138ED /* BraveContextMenu.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveContextMenu.swift; path = "./brave/src/page-hooks/BraveContextMenu.swift"; sourceTree = "<group>"; };
+		B2122B3144F9374D630138ED /* BraveContextMenu.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = BraveContextMenu.swift; path = "./brave/src/page-hooks/BraveContextMenu.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B26E6A052DA6287729B7113D /* WebViewDocScale.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = WebViewDocScale.h; path = ./brave/src/webview/WebViewDocScale.h; sourceTree = "<group>"; };
 		B27FC9AAE4387761CBAF0E07 /* FSReadingList.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FSReadingList.h; path = ./Client/Frontend/Reader/FSReadingList.h; sourceTree = "<group>"; };
 		B2EABAA73084D115EF97BD2E /* GenericTable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenericTable.swift; path = ./Storage/SQL/GenericTable.swift; sourceTree = "<group>"; };
@@ -1173,7 +1128,7 @@
 		B8E155181FB66C692C8277B2 /* SessionData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SessionData.swift; path = ./Client/Frontend/Browser/SessionData.swift; sourceTree = "<group>"; };
 		B98EE41BC6FAF6984EB4300C /* project.pbxproj */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.pbxproject; name = project.pbxproj; path = ./ThirdParty/UIImageViewAligned/Example/ImageAlignment.xcodeproj/project.pbxproj; sourceTree = "<group>"; };
 		B9B3623FB1D77E75D56BED11 /* Default@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Default@2x.png"; path = "./ThirdParty/SWTableViewCell/Default@2x.png"; sourceTree = "<group>"; };
-		B9DAE86EE9B954590E7537A5 /* BraveWebView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveWebView.swift; path = ./brave/src/webview/BraveWebView.swift; sourceTree = "<group>"; };
+		B9DAE86EE9B954590E7537A5 /* BraveWebView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = BraveWebView.swift; path = ./brave/src/webview/BraveWebView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BA1CCC5576B41343D866CCBE /* um.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = um.png; path = ./ThirdParty/SWTableViewCell/um.png; sourceTree = "<group>"; };
 		BA7C6C87EE3CACD5B49AF023 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ./ThirdParty/Box/README.md; sourceTree = "<group>"; };
 		BAC1DC027204221273BF5341 /* HttpsEverywhere.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = HttpsEverywhere.h; path = ./brave/src/webfilters/httpse_cpp/HttpsEverywhere.h; sourceTree = "<group>"; };
@@ -1185,7 +1140,6 @@
 		BED9E8295A95A1639164EC89 /* two_level_iterator.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = two_level_iterator.cc; path = ./brave/ThirdParty/leveldb/table/two_level_iterator.cc; sourceTree = "<group>"; };
 		BF3C112154BC4FDA280F05B0 /* NetworkDataFileLoader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkDataFileLoader.swift; path = ./brave/src/webfilters/NetworkDataFileLoader.swift; sourceTree = "<group>"; };
 		BF75EF8E72650E5746692B89 /* AuthenticationKeychainInfo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthenticationKeychainInfo.swift; path = ./Utils/AuthenticationKeychainInfo.swift; sourceTree = "<group>"; };
-		C0A5476AF65B103E1F0AE635 /* SWCellScrollView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SWCellScrollView.m; path = ./ThirdParty/SWTableViewCell/PodFiles/SWCellScrollView.m; sourceTree = "<group>"; };
 		C1030EBC20957D91D96E794D /* PasscodeViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PasscodeViews.swift; path = ./Client/Frontend/AuthenticationManager/PasscodeViews.swift; sourceTree = "<group>"; };
 		C1143AB9E6FC53A915F6015E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ./ThirdParty/Result/LICENSE; sourceTree = "<group>"; };
 		C12F8F9AA927469C395A01A8 /* TabTrayController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TabTrayController.swift; path = ./Client/Frontend/Browser/TabTrayController.swift; sourceTree = "<group>"; };
@@ -1225,14 +1179,14 @@
 		D042E0F5F3F943C6FBC6D080 /* FingerprintingProtection.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; name = FingerprintingProtection.js; path = "./brave/src/page-hooks/FingerprintingProtection.js"; sourceTree = "<group>"; };
 		D0D3A98E5AF68BB2BF943647 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = ./Extensions/ViewLater/Info.plist; sourceTree = "<group>"; };
 		D0D48C1BAE5AB7BF2B500584 /* WeakList.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WeakList.swift; path = ./Utils/WeakList.swift; sourceTree = "<group>"; };
-		D105CD957A7B38E9F1BAE848 /* BrowserViewController+ContextMenuHelperDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "BrowserViewController+ContextMenuHelperDelegate.swift"; path = "./Client/Frontend/Browser/BrowserViewController/BrowserViewController+ContextMenuHelperDelegate.swift"; sourceTree = "<group>"; };
+		D105CD957A7B38E9F1BAE848 /* BrowserViewController+ContextMenuHelperDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = "BrowserViewController+ContextMenuHelperDelegate.swift"; path = "./Client/Frontend/Browser/BrowserViewController/BrowserViewController+ContextMenuHelperDelegate.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		D107A9136CC1FD66F2745769 /* ReadingListServerRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListServerRecord.swift; path = ./ReadingList/ReadingListServerRecord.swift; sourceTree = "<group>"; };
 		D1CADC3E350A25BA3BC86931 /* HideEmptyImages.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HideEmptyImages.swift; path = "./brave/src/page-hooks/HideEmptyImages.swift"; sourceTree = "<group>"; };
 		D1E821DACFE5062DF30D1443 /* SearchSuggestClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchSuggestClient.swift; path = ./Client/Frontend/Browser/SearchSuggestClient.swift; sourceTree = "<group>"; };
 		D1F148E463456852B44DE863 /* ErrorPageHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ErrorPageHelper.swift; path = ./Client/Frontend/Browser/ErrorPageHelper.swift; sourceTree = "<group>"; };
 		D1FD470588FCAAC12F09404C /* ReadingListChangeAccumulator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListChangeAccumulator.swift; path = ./ReadingList/ReadingListChangeAccumulator.swift; sourceTree = "<group>"; };
 		D2243796CB0C27B99AED9742 /* NSStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSStringExtensions.swift; path = ./Utils/Extensions/NSStringExtensions.swift; sourceTree = "<group>"; };
-		D2A8EBCF53BB0D14E34F6174 /* OpenPdfHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenPdfHelper.swift; path = ./Client/Frontend/Browser/OpenPdfHelper.swift; sourceTree = "<group>"; };
+		D2A8EBCF53BB0D14E34F6174 /* OpenPdfHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = OpenPdfHelper.swift; path = ./Client/Frontend/Browser/OpenPdfHelper.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		D30EBB5A1C75503800105AE9 /* KIF.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KIF.xcodeproj; path = Carthage/Checkouts/KIF/KIF.xcodeproj; sourceTree = "<group>"; };
 		D345CE98628B405A96720773 /* BrowserPrintPageRenderer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserPrintPageRenderer.swift; path = ./Client/Frontend/Browser/BrowserPrintPageRenderer.swift; sourceTree = "<group>"; };
 		D36998881AD70A0A00650C6C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/IOKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -1311,18 +1265,16 @@
 		EE6184965624CC221A1AEEDE /* FindInPageHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FindInPageHelper.swift; path = ./Client/Frontend/Browser/FindInPageHelper.swift; sourceTree = "<group>"; };
 		EE6A73E84022322BA6158B2D /* BrowserViewController+ReaderModeDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "BrowserViewController+ReaderModeDelegate.swift"; path = "./Client/Frontend/Browser/BrowserViewController/BrowserViewController+ReaderModeDelegate.swift"; sourceTree = "<group>"; };
 		EEACFD6CCE9B72D21CB2ADAD /* TestAppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TestAppDelegate.swift; path = ./Client/Application/TestAppDelegate.swift; sourceTree = "<group>"; };
-		EED4336A9FE18D82E22540A5 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Logger.swift; path = ./Utils/Logger.swift; sourceTree = "<group>"; };
+		EED4336A9FE18D82E22540A5 /* Logger.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Logger.swift; path = ./Utils/Logger.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		EF0AEC1F45A221CAD69A8547 /* list@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "list@2x.png"; path = "./ThirdParty/SWTableViewCell/list@2x.png"; sourceTree = "<group>"; };
-		EF1FC165C17AD4E03F7BA9D8 /* Profile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = ./Providers/Profile.swift; sourceTree = "<group>"; };
+		EF1FC165C17AD4E03F7BA9D8 /* Profile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Profile.swift; path = ./Providers/Profile.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		EF580DF3F5E52AC613B75662 /* snapshot.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = snapshot.h; path = ./brave/ThirdParty/leveldb/db/snapshot.h; sourceTree = "<group>"; };
-		EFB752396516A66A96F11CBA /* SWTableViewCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SWTableViewCell.m; path = ./ThirdParty/SWTableViewCell/PodFiles/SWTableViewCell.m; sourceTree = "<group>"; };
-		EFC7ABC3CB4B07DD065A185B /* BrowserViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserViewController.swift; path = ./Client/Frontend/Browser/BrowserViewController/BrowserViewController.swift; sourceTree = "<group>"; };
+		EFC7ABC3CB4B07DD065A185B /* BrowserViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = BrowserViewController.swift; path = ./Client/Frontend/Browser/BrowserViewController/BrowserViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		EFE2BE53F1A90CDCB42B099C /* AppDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ./ThirdParty/SWTableViewCell/AppDelegate.h; sourceTree = "<group>"; };
 		EFE971F2D921832885989712 /* posix_logger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = posix_logger.h; path = ./brave/ThirdParty/leveldb/util/posix_logger.h; sourceTree = "<group>"; };
 		F0315CF7EDB856F5CC04469D /* HashExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HashExtensions.swift; path = ./Utils/Extensions/HashExtensions.swift; sourceTree = "<group>"; };
 		F067E5532927BFEA1F8027E6 /* FSReadingList.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FSReadingList.m; path = ./Client/Frontend/Reader/FSReadingList.m; sourceTree = "<group>"; };
 		F0ECF41FB25F301AD2BAD62D /* filter_block.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = filter_block.h; path = ./brave/ThirdParty/leveldb/table/filter_block.h; sourceTree = "<group>"; };
-		F15FC0AD573F67B846672F1E /* SWLongPressGestureRecognizer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SWLongPressGestureRecognizer.m; path = ./ThirdParty/SWTableViewCell/PodFiles/SWLongPressGestureRecognizer.m; sourceTree = "<group>"; };
 		F187557596215A3C41963EF0 /* BrowserDB.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserDB.swift; path = ./Storage/SQL/BrowserDB.swift; sourceTree = "<group>"; };
 		F1D3A5A73426CF7D28DAB96E /* status.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = status.h; path = ./brave/ThirdParty/leveldb/include/leveldb/status.h; sourceTree = "<group>"; };
 		F1D471881D777C7C007B443D /* OnePasswordExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
@@ -1346,7 +1298,6 @@
 		FB7FB7DE3558B9BCE2CE7EED /* RXMLElement.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RXMLElement.h; path = ./ThirdParty/RaptureXML/RXMLElement.h; sourceTree = "<group>"; };
 		FBAFB8DBF5E48A81ADD8A7E9 /* bing.xml */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = bing.xml; path = ./Client/Assets/Search/SearchOverrides/en/bing.xml; sourceTree = "<group>"; };
 		FC06D800C038456E4F17FF59 /* SQLiteBookmarksSyncing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SQLiteBookmarksSyncing.swift; path = ./Storage/SQL/SQLiteBookmarksSyncing.swift; sourceTree = "<group>"; };
-		FC9710E3B67B01144ECA8C8A /* SWUtilityButtonTapGestureRecognizer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SWUtilityButtonTapGestureRecognizer.h; path = ./ThirdParty/SWTableViewCell/PodFiles/SWUtilityButtonTapGestureRecognizer.h; sourceTree = "<group>"; };
 		FD0312A6613A6023990734CF /* WindowCloseHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WindowCloseHelper.swift; path = ./Client/Frontend/Browser/WindowCloseHelper.swift; sourceTree = "<group>"; };
 		FDC3246EB07883A76BDD2DCC /* BraveURLBarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveURLBarView.swift; path = ./brave/src/frontend/BraveURLBarView.swift; sourceTree = "<group>"; };
 		FE1FB09C21B187C3C06E32BC /* UIImageViewExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UIImageViewExtensions.swift; path = ./Client/Extensions/UIImageViewExtensions.swift; sourceTree = "<group>"; };
@@ -1950,16 +1901,6 @@
 			children = (
 				BE947DCFE53B5F18FF12053D /* NSMutableArray+SWUtilityButtons.h */,
 				B09BAC548B83576231EBD806 /* NSMutableArray+SWUtilityButtons.m */,
-				8AB0C5845B222044738D54B7 /* SWCellScrollView.h */,
-				C0A5476AF65B103E1F0AE635 /* SWCellScrollView.m */,
-				4CB9D15E3186DF66D219EAC7 /* SWLongPressGestureRecognizer.h */,
-				F15FC0AD573F67B846672F1E /* SWLongPressGestureRecognizer.m */,
-				2187DF89D20AB273C66CE644 /* SWTableViewCell.h */,
-				EFB752396516A66A96F11CBA /* SWTableViewCell.m */,
-				FC9710E3B67B01144ECA8C8A /* SWUtilityButtonTapGestureRecognizer.h */,
-				8894102E7E4155089708A512 /* SWUtilityButtonTapGestureRecognizer.m */,
-				5ACC6737E79224D9F6E64660 /* SWUtilityButtonView.h */,
-				AD8936B4B2AAEC5751B29A04 /* SWUtilityButtonView.m */,
 			);
 			name = PodFiles;
 			sourceTree = "<group>";
@@ -2041,12 +1982,8 @@
 			children = (
 				7B9A62DB1C4002B1005C83DC /* SQLite.framework */,
 				7B9A62DD1C4002B1005C83DC /* SQLite iOS Tests.xctest */,
-				7B9A62DF1C4002B1005C83DC /* SQLite.framework */,
-				7B9A62E11C4002B1005C83DC /* SQLite Mac Tests.xctest */,
 				7B9A62E31C4002B1005C83DC /* SQLiteCipher.framework */,
 				7B9A62E51C4002B1005C83DC /* SQLiteCipher iOS Tests.xctest */,
-				7B9A62E71C4002B1005C83DC /* SQLiteCipher.framework */,
-				7B9A62E91C4002B1005C83DC /* SQLiteCipher Mac Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2123,7 +2060,6 @@
 			children = (
 				9C9584FB83BD374183DEA69E /* AdjustIntegration.swift */,
 				72F94204C0EC007236424A86 /* AppDelegate.swift */,
-				5FF03E4586891E04971FE5B6 /* AuroraAppDelegate.swift */,
 				0994D8CB826BBAE3C446B125 /* Crasher.h */,
 				016FF6C150629D4A91A838B8 /* Crasher.m */,
 				A6AC60F738711305C6585EC4 /* CrashReporter.swift */,
@@ -3212,19 +3148,24 @@
 				TargetAttributes = {
 					288A2D851AB8B3260023ABC3 = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 0800;
 					};
 					2FCAE2191ABB51F800877008 = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 0800;
 					};
 					2FCAE2231ABB51F800877008 = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
 					E4D567171ADECE2700F1EFE7 = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0800;
 					};
 					E4D567211ADECE2700F1EFE7 = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
 					E6F9650B1B2F1CF20034B023 = {
@@ -3232,13 +3173,19 @@
 					};
 					EB0F42501C9A46D800676650 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 					};
 					EB53D0FA1D9C2BB20093077A = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
+					};
+					EB8E9B351C7CB4E1003AA90E = {
+						LastSwiftMigration = 0800;
 					};
 					F84B21BD1A090F8100AAB793 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -3316,20 +3263,6 @@
 			remoteRef = 7B9A62DC1C4002B1005C83DC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7B9A62DF1C4002B1005C83DC /* SQLite.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLite.framework;
-			remoteRef = 7B9A62DE1C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7B9A62E11C4002B1005C83DC /* SQLite Mac Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "SQLite Mac Tests.xctest";
-			remoteRef = 7B9A62E01C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		7B9A62E31C4002B1005C83DC /* SQLiteCipher.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -3342,20 +3275,6 @@
 			fileType = wrapper.cfbundle;
 			path = "SQLiteCipher iOS Tests.xctest";
 			remoteRef = 7B9A62E41C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7B9A62E71C4002B1005C83DC /* SQLiteCipher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLiteCipher.framework;
-			remoteRef = 7B9A62E61C4002B1005C83DC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7B9A62E91C4002B1005C83DC /* SQLiteCipher Mac Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "SQLiteCipher Mac Tests.xctest";
-			remoteRef = 7B9A62E81C4002B1005C83DC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D30EBB641C75503800105AE9 /* libKIF.a */ = {
@@ -3724,8 +3643,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB36618B1D9C3CF900445C92 /* IntroScreenTest.swift in Sources */,
 				EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */,
+				EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */,
 				EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3735,8 +3654,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */,
-				EB9D8F201D9CCC3500CA1624 /* WebViewLoadTestUtils.swift in Sources */,
-				EB36617A1D9C3CEC00445C92 /* top500.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3846,7 +3763,6 @@
 				CCAC3364419AA9AB527A29B9 /* TPParser.cpp in Sources */,
 				D50043B62400690CFBBB5859 /* AdjustIntegration.swift in Sources */,
 				5E6571D452F3C000461D2481 /* AppDelegate.swift in Sources */,
-				A0083AFCE5B5F3816D3FCCDB /* AuroraAppDelegate.swift in Sources */,
 				19503FBC8FFDBFB991DC9387 /* CrashReporter.swift in Sources */,
 				518DC47C3214F272D78DFBD9 /* DebugSettingsBundleOptions.swift in Sources */,
 				5C32C7B6034B41A9C822555E /* main.swift in Sources */,
@@ -3969,11 +3885,6 @@
 				81EC5F76660605C95BC58868 /* UIImage+ImageEffects.m in Sources */,
 				E218BDEDC8B0B54679965D98 /* NSStringPunycodeAdditions.m in Sources */,
 				3563A3B2A9E9EBECDBAF688C /* RXMLElement.m in Sources */,
-				8D38CD6A8B9CD12421AE67D5 /* SWCellScrollView.m in Sources */,
-				60851D49E1588341C0234601 /* SWLongPressGestureRecognizer.m in Sources */,
-				D1A6D181B9852BC33E4044DC /* SWTableViewCell.m in Sources */,
-				25CA3F4F5B51A43503843EB1 /* SWUtilityButtonTapGestureRecognizer.m in Sources */,
-				1AFBE027A34F2AA8EDE758EF /* SWUtilityButtonView.m in Sources */,
 				1610DE47378FA4C024E4F384 /* UIImageViewAligned.m in Sources */,
 				05CB8811A90FFA41ACBFA3E5 /* AboutUtils.swift in Sources */,
 				8B8862C9D4EECB136E146B2B /* DynamicFontHelper.swift in Sources */,
@@ -4089,6 +4000,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4121,6 +4033,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Storage/Storage-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4138,6 +4051,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Storage/Storage-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
 			};
 			name = Debug;
@@ -4211,6 +4125,7 @@
 				PRODUCT_NAME = Client;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Client-Bridging-Header.h";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "Client-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -4257,6 +4172,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4313,6 +4229,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Storage/Storage-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4354,6 +4271,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Storage/Storage-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -4404,6 +4322,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4447,6 +4366,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -4477,6 +4397,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4496,6 +4417,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
 			};
 			name = Debug;
@@ -4570,6 +4492,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -4610,6 +4533,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -4630,6 +4554,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = Client;
 			};
 			name = Debug;
@@ -4647,6 +4572,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "garvankeeley.org.ui-testing-bundle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = Client;
 			};
 			name = Release;
@@ -4665,6 +4591,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/UITests/UITests-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
 			};
 			name = Debug;
@@ -4679,6 +4606,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/UITests/UITests-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
 			};
 			name = Release;
@@ -4689,6 +4617,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(CUSTOM_BUNDLE_ID).$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -4767,6 +4696,7 @@
 				PRODUCT_NAME = Client;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Client-Bridging-Header.h";
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "Client-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;

@@ -16,7 +16,7 @@ class URIFixup {
             
             // First check if the URL includes a scheme. This will handle
             // all valid requests starting with "http://", "about:", etc.
-            if !(url?.scheme.isEmpty ?? true) {
+            if !(url?.scheme?.isEmpty ?? true) {
                 return url
             }
             

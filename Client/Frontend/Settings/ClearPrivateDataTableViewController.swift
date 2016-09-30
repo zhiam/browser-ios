@@ -107,8 +107,8 @@ class ClearPrivateDataTableViewController: UITableViewController {
         return clearButtonEnabled
     }
 
-    static func clearPrivateData(clearables: [Clearable], secondAttempt: Bool = false) -> Deferred<()> {
-        let deferred = Deferred<()>()
+    static func clearPrivateData(clearables: [Clearable], secondAttempt: Bool = false) -> Deferred<Void> {
+        let deferred = Deferred<Void>()
 
         clearables.enumerate().map { clearable in
                 print("Clearing \(clearable.element).")

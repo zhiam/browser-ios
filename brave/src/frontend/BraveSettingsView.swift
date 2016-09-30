@@ -291,12 +291,12 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
     func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
         
         controller.dismissViewControllerAnimated(true) {
-            if result == MFMailComposeResultSaved || result == MFMailComposeResultSent {
+            if result == MFMailComposeResult.Saved || result == MFMailComposeResult.Sent {
                 //only show 'thanks' dialog when Saved/Sent.
                 //TODO turn this into a Toast-type notification that goes away by itself.
                 let sendFeedbackThanks = UIAlertView(title: "Thanks!", message: "Thank you for your feedback!", delegate: self, cancelButtonTitle: "OK")
                 sendFeedbackThanks.show()
-            } else if result == MFMailComposeResultFailed {
+            } else if result == MFMailComposeResult.Failed {
                 self.showMailErrorDialog()
             }
         }

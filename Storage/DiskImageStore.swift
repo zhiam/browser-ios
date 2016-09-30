@@ -51,7 +51,7 @@ public class DiskImageStore {
         return deferDispatchAsync(queue) { () -> Deferred<Maybe<UIImage>> in
             let imagePath = (self.filesDir as NSString).stringByAppendingPathComponent(key)
             if let data = NSData(contentsOfFile: imagePath),
-                   image = UIImage.imageFromDataThreadSafe(data) {
+                image = UIImage.imageFromDataThreadSafe(data) {
                 return deferMaybe(image)
             }
 
@@ -92,7 +92,7 @@ public class DiskImageStore {
                 log.warning("Failed to remove DiskImageStore item at \(path): \(error)")
             }
         }
-
+        
         self.keys = self.keys.intersect(keys)
     }
 }

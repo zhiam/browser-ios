@@ -60,7 +60,7 @@ class FaviconManager : BrowserHelper {
         func downloadIcon(icon: Favicon) {
             if let iconUrl = NSURL(string: icon.url) {
                 manager.downloadImageWithURL(iconUrl, options: SDWebImageOptions(options), progress: nil, completed: { (img, err, cacheType, success, url) -> Void in
-                    let fav = Favicon(url: url.absoluteString,
+                    let fav = Favicon(url: url.absoluteString ?? "",
                         date: NSDate(),
                         type: icon.type)
 

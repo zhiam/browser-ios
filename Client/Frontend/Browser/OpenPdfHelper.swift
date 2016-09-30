@@ -93,12 +93,12 @@ class OpenPdfInHelper: NSObject, OpenInHelper, UIDocumentInteractionControllerDe
             }
             let contentsOfFile = NSData(contentsOfURL: url)
             let dirPath = NSURL(string: NSTemporaryDirectory())!.URLByAppendingPathComponent("pdfs")
-            let filePath = dirPath.URLByAppendingPathComponent(lastPathComponent)
+            let filePath = dirPath!.URLByAppendingPathComponent(lastPathComponent)
             let fileManager = NSFileManager.defaultManager()
             do {
-                try fileManager.createDirectoryAtPath(dirPath.absoluteString, withIntermediateDirectories: true, attributes: nil)
-                if fileManager.createFileAtPath(filePath.absoluteString, contents: contentsOfFile, attributes: nil) {
-                    let openInURL = NSURL(fileURLWithPath: filePath.absoluteString)
+                try fileManager.createDirectoryAtPath(dirPath?.absoluteString ?? "", withIntermediateDirectories: true, attributes: nil)
+                if fileManager.createFileAtPath(filePath?.absoluteString ?? "", contents: contentsOfFile, attributes: nil) {
+                    let openInURL = NSURL(fileURLWithPath: filePath?.absoluteString ?? "")
                     createDocumentControllerForURL(openInURL)
                 } else {
                     log.error("Unable to create local version of PDF file at \(filePath)")
@@ -111,7 +111,7 @@ class OpenPdfInHelper: NSObject, OpenInHelper, UIDocumentInteractionControllerDe
 
     func open() {
         createLocalCopyOfPDF()
-        guard let _parentView = self.openInView.superview, docController = self.docController else { log.error("view doesn't have a superview so can't open anything"); return }
+        guard let _parentView = self.openInView.superview, let docController = self.docController else { log.error("view doesn't have a superview so can't open anything"); return }
         // iBooks should be installed by default on all devices we care about, so regardless of whether or not there are other pdf-capable
         // apps on this device, if we can open in iBooks we can open this PDF
         // simulators do not have iBooks so the open in view will not work on the simulator

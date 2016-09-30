@@ -196,7 +196,7 @@ extension LoginsHelper {
 
     // Using a DB-backed storage for this is under consideration.
     // Use a similar Deferred-style so switching to the DB method is seamless
-    func isInNoShowList(url: NSURL)  -> Deferred<Bool>  {
+    func isInNoShowList(url: NSURL)  -> Deferred<Bool> {
         let deferred = Deferred<Bool>()
         var result = false
         if let host = url.hostWithGenericSubdomainPrefixRemoved() {

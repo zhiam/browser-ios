@@ -91,7 +91,7 @@ extension BrowserViewController: URLBarDelegate {
     func urlBarDidLongPressReaderMode(urlBar: URLBarView) -> Bool {
         guard let tab = tabManager.selectedTab,
             url = tab.displayURL,
-            result = profile.readingList?.createRecordWithURL(url.absoluteString, title: tab.title ?? "", addedBy: UIDevice.currentDevice().name)
+            result = profile.readingList?.createRecordWithURL(url.absoluteString ?? "", title: tab.title ?? "", addedBy: UIDevice.currentDevice().name)
             else {
                 UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Could not add page to Reading list", comment: "Accessibility message e.g. spoken by VoiceOver after adding current webpage to the Reading List failed."))
                 return false

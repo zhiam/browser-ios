@@ -167,7 +167,7 @@ class TabManager : NSObject {
         }
         objc_sync_enter(self); defer { objc_sync_exit(self) }
 
-        if let tab = tab where selectedTab === tab && tab.webView != nil {
+        if let tab = tab  where selectedTab === tab && tab.webView != nil {
             return
         }
 
@@ -555,7 +555,7 @@ extension TabManager {
 
     static private func tabsStateArchivePath() -> String {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-        return NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent("tabsState.archive").path!
+        return NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent("tabsState.archive")!.path!
     }
 
     static func tabArchiveData() -> NSData? {

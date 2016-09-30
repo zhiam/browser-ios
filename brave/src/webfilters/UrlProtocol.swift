@@ -120,11 +120,11 @@ class URLProtocol: NSURLProtocol {
         let rect = CGRectMake(0, 0, 1, 1)
         UIGraphicsBeginImageContext(rect.size)
         let c = UIGraphicsGetCurrentContext()
-        CGContextSetFillColorWithColor(c, UIColor.clearColor().CGColor)
-        CGContextFillRect(c, rect)
+        CGContextSetFillColorWithColor(c!, UIColor.clearColor().CGColor)
+        CGContextFillRect(c!, rect)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return UIImageJPEGRepresentation(image, 0.4)
+        return UIImageJPEGRepresentation(image!, 0.4)
     }()
 
     func returnBlankPixel() {

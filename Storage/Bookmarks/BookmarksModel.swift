@@ -12,7 +12,7 @@ import Shared
 public class BookmarkNode : Equatable {
     public var id: Int? = nil
     public let guid: GUID
-    public var title: String
+    public let title: String
     public let isEditable: Bool
     public var favicon: Favicon? = nil
 
@@ -27,6 +27,7 @@ public class BookmarkNode : Equatable {
     }
 }
 
+//Brave added
 public func==(lhs:BookmarkNode, rhs:BookmarkNode) -> Bool {
     return lhs.guid == rhs.guid
 }
@@ -177,7 +178,7 @@ public class MemoryBookmarkFolder: BookmarkFolder, SequenceType {
         get {
             if let path = NSBundle.mainBundle().pathForResource("bookmarkFolder", ofType: "png") {
                 let url = NSURL(fileURLWithPath: path)
-                return Favicon(url: url.absoluteString, date: NSDate(), type: IconType.Local)
+                return Favicon(url: url.absoluteString ?? "", date: NSDate(), type: IconType.Local)
             }
             return nil
         }
@@ -222,10 +223,10 @@ public class MemoryBookmarksSink: ShareToDestination {
         let title = item.title == nil ? "Untitled" : item.title!
         func exists(e: BookmarkNode) -> Bool {
             if let bookmark = e as? BookmarkItem {
-                return bookmark.url == item.url;
+                return bookmark.url == item.url
             }
 
-            return false;
+            return false
         }
 
         // Don't create duplicates.
@@ -305,13 +306,13 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
         case BookmarkRoots.MobileFolderGUID:
             // Transparently merges in any queued items.
             m = self.mobile.append(self.sink.queue)
-            break;
+            break
         case BookmarkRoots.RootGUID:
             m = self.root
-            break;
+            break
         case BookmarkRoots.UnfiledFolderGUID:
             m = self.unsorted
-            break;
+            break
         default:
             return deferMaybe(DatabaseError(description: "No such folder \(guid)."))
         }
@@ -324,8 +325,8 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
     }
 
     /**
-    * This class could return the full data immediately. We don't, because real DB-backed code won't.
-    */
+     * This class could return the full data immediately. We don't, because real DB-backed code won't.
+     */
     public var nullModel: BookmarksModel {
         let f = MemoryBookmarkFolder(guid: BookmarkRoots.RootGUID, title: "Root", children: [])
         return BookmarksModel(modelFactory: self, root: f)
@@ -342,11 +343,11 @@ public class MockMemoryBookmarksStore: BookmarksModelFactory, ShareToDestination
     public func removeByGUID(guid: GUID) -> Success {
         return deferMaybe(DatabaseError(description: "Not implemented"))
     }
-
+    
     public func removeByURL(url: String) -> Success {
         return deferMaybe(DatabaseError(description: "Not implemented"))
     }
-
+    
     public func clearBookmarks() -> Success {
         return succeed()
     }

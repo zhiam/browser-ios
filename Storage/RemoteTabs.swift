@@ -28,7 +28,7 @@ public struct ClientAndTabs: Equatable, CustomStringConvertible {
 
 public func ==(lhs: ClientAndTabs, rhs: ClientAndTabs) -> Bool {
     return (lhs.client == rhs.client) &&
-           (lhs.tabs == rhs.tabs)
+        (lhs.tabs == rhs.tabs)
 }
 
 public protocol RemoteClientsAndTabs: SyncCommands {

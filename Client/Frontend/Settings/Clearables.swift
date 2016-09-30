@@ -113,10 +113,10 @@ private func deleteLibraryFolderContents(folder: String, validateClearedExceptFo
     let manager = NSFileManager.defaultManager()
     let library = manager.URLsForDirectory(NSSearchPathDirectory.LibraryDirectory, inDomains: .UserDomainMask)[0]
     let dir = library.URLByAppendingPathComponent(folder)
-    var contents = try manager.contentsOfDirectoryAtPath(dir.path!)
+    var contents = try manager.contentsOfDirectoryAtPath(dir!.path!)
     for content in contents {
         do {
-            try manager.removeItemAtURL(dir.URLByAppendingPathComponent(content))
+            try manager.removeItemAtURL(dir!.URLByAppendingPathComponent(content)!)
         } catch where ((error as NSError).userInfo[NSUnderlyingErrorKey] as? NSError)?.code == Int(EPERM) {
             // "Not permitted". We ignore this.
             // Snapshots directory is an example of a Cache dir that is not permitted on device (but is permitted on simulator)
@@ -125,7 +125,7 @@ private func deleteLibraryFolderContents(folder: String, validateClearedExceptFo
 
     #if DEBUG
         guard let allowedFileNames = validateClearedExceptFor else { return }
-        contents = try manager.contentsOfDirectoryAtPath(dir.path!)
+        contents = try manager.contentsOfDirectoryAtPath(dir?.path ?? "")
         for content in contents {
             for name in allowedFileNames {
                 if !content.contains(name) {
@@ -140,7 +140,7 @@ private func deleteLibraryFolder(folder: String) throws {
     let manager = NSFileManager.defaultManager()
     let library = manager.URLsForDirectory(NSSearchPathDirectory.LibraryDirectory, inDomains: .UserDomainMask)[0]
     let dir = library.URLByAppendingPathComponent(folder)
-    try manager.removeItemAtURL(dir)
+    try manager.removeItemAtURL(dir!)
 }
 
 // Removes all app cache storage.

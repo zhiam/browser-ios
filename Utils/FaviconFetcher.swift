@@ -104,7 +104,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         return fetchDataForURL(url).bind({ result -> Deferred<Maybe<[Favicon]>> in
             var icons = [Favicon]()
 
-            if let data = result.successValue where result.isSuccess,
+            if let data = result.successValue  where result.isSuccess,
                let element = RXMLElement(fromHTMLData: data) where element.isValid {
                 var reloadUrl: NSURL? = nil
                 element.iterate("head.meta") { meta in
@@ -148,7 +148,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
 
                     if let type = iconType where !bestType.isPreferredTo(type),
                         let iconUrl = NSURL(string: href, relativeToURL: url) {
-                            let icon = Favicon(url: iconUrl.absoluteString, date: NSDate(), type: type)
+                            let icon = Favicon(url: iconUrl.absoluteString ?? "", date: NSDate(), type: type)
                             // If we already have a list of Favicons going already, then add it…
                             if (type == bestType) {
                                 icons.append(icon)
@@ -162,7 +162,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
 
                 // If we haven't got any options icons, then use the default at the root of the domain.
                 if let url = NSURL(string: "/favicon.ico", relativeToURL: url) where icons.isEmpty {
-                    let icon = Favicon(url: url.absoluteString, date: NSDate(), type: .Guess)
+                    let icon = Favicon(url: url.absoluteString ?? "", date: NSDate(), type: .Guess)
                     icons = [icon]
                 }
             }
@@ -174,7 +174,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
         let deferred = Deferred<Maybe<Favicon>>()
         let url = icon.url
         let manager = SDWebImageManager.sharedManager()
-        let site = Site(url: siteUrl.absoluteString, title: "")
+        let site = Site(url: siteUrl.absoluteString ?? "", title: "")
 
         var fav = Favicon(url: url, type: icon.type)
         if let url = url.asURL {
@@ -182,7 +182,7 @@ public class FaviconFetcher : NSObject, NSXMLParserDelegate {
                 options: SDWebImageOptions.LowPriority,
                 progress: nil,
                 completed: { (img, err, cacheType, success, url) -> Void in
-                fav = Favicon(url: url.absoluteString,
+                fav = Favicon(url: url.absoluteString ?? "",
                     type: icon.type)
 
                 if let img = img where !PrivateBrowsing.singleton.isOn {

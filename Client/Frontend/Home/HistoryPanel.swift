@@ -281,7 +281,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
     // UI sections disappear as categories empty. We need to translate back and forth.
     private func uiSectionToCategory(section: SectionNumber) -> CategoryNumber {
         for i in 0..<self.categories.count {
-            if let s = self.categories[i].section where s == section {
+            if let s = self.categories[i].section  where s == section {
                 return i
             }
         }

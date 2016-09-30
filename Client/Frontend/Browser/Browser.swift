@@ -124,7 +124,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 history: history,
                 lastUsed: NSDate.now(),
                 icon: nil)
-        } else if let sessionData = browser.sessionData where !sessionData.urls.isEmpty {
+        } else if let sessionData = browser.sessionData  where !sessionData.urls.isEmpty {
             let history = Array(sessionData.urls.filter(RemoteTab.shouldIncludeURL).reverse())
             if let displayURL = history.first {
                 return RemoteTab(clientGUID: nil,
@@ -205,7 +205,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
             var updatedURLs = [String]()
             for url in sessionData.urls {
                 let updatedURL = WebServer.sharedInstance.updateLocalURL(url)!.absoluteString
-                updatedURLs.append(updatedURL)
+                updatedURLs.append(updatedURL!)
             }
             let currentPage = sessionData.currentPage
             self.sessionData = nil
@@ -341,7 +341,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 return urlComponents.URL
             }
 
-            if !AboutUtils.isAboutURL(url) && !url.absoluteString.contains(WebServer.sharedInstance.base) {
+            if let path = url.absoluteString where !AboutUtils.isAboutURL(url) && !path.contains(WebServer.sharedInstance.base) {
                 return url
             }
         }

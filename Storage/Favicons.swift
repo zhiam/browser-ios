@@ -20,5 +20,5 @@ public protocol Favicons {
      */
     func addFavicon(icon: Favicon, forSite site: Site) -> Deferred<Maybe<Int>>
 
-    func getFavicon(forSite site: Site) -> Deferred<Maybe<Cursor<Favicon?>>>
+       func getFavicon(forSite site: Site) -> Deferred<Maybe<Cursor<Favicon?>>>
 }

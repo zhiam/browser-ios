@@ -63,12 +63,12 @@ class BraveApp {
             if telemetryOn {
                 Fabric.with([Crashlytics.self])
 //// TODO: GROWTH:
-//                if let dict = NSBundle.mainBundle().infoDictionary, token = dict["MIXPANEL_TOKEN"] as? String {
+//                if let dict = NSBundle.mainBundle().infoDictionary, let token = dict["MIXPANEL_TOKEN"] as? String {
 //                    Mixpanel.initialize(token: token)
 //                    // ^ note setting this in willFinishLaunching is causing a crash, keep it in didFinish
 //                }
             }
-        #endif
+       #endif
     }
 
     // Be aware: the Prefs object has not been created yet
@@ -209,7 +209,7 @@ class BraveApp {
 
     static var isPasswordManagerInstalled: Bool?
 
-    static func is3rdPartyPasswordManagerInstalled(refreshLookup refreshLookup: Bool) -> Deferred<Bool>  {
+    static func is3rdPartyPasswordManagerInstalled(refreshLookup refreshLookup: Bool) -> Deferred<Bool> {
         let deferred = Deferred<Bool>()
         if refreshLookup || isPasswordManagerInstalled == nil {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
