@@ -70,14 +70,8 @@
 "Find in Page" = "Temukan pada Laman";
 
 /* Accessibility label for next result button in Find in Page Toolbar. */
-"Next in-page result" = "Next in-page result";
-
 /* Accessibility label for previous result button in Find in Page Toolbar. */
-"Previous in-page result" = "Previous in-page result";
-
 /* Action button for deleting history entries in the history panel. */
-"Remove" = "Remove";
-
 /* Intro screen message */
 "Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency." = "Brave memblokir iklan.
 Brave menghentikan pelacak.
@@ -100,11 +94,7 @@ dan inilah alasannya...";
 "Get ready to experience a Faster, Safer, Better Web." = "Bersiap untuk merasakan Web yang Lebih Cepat, Lebih Aman dan  Lebih Baik.";
 
 /* No comment provided by engineer. */
-"In case you hit a speed bump" = "In case you hit a speed bump";
-
 /* String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3 */
-"Introductory slide %@ of %@" = "Introductory slide %@ of %@";
-
 /* No comment provided by engineer. */
 "Start Browsing" = "Mulai Menjelajah";
 
@@ -205,8 +195,6 @@ dan inilah alasannya...";
 "Block all cookies" = "Blokir semua kuki";
 
 /* title for section showing page blocking statistics */
-"Blocking Monitor" = "Blocking Monitor";
-
 /* Accessibility Label for the browser toolbar Bookmark button
    Bookmark a URL - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440 */
 "Bookmark" = "Markah";
@@ -227,8 +215,6 @@ dan inilah alasannya...";
 "Brave Shield Defaults" = "Perisai Bawaan Brave";
 
 /* See http://mzl.la/1G7uHo7 */
-"Brave would like to access your Photos" = "Brave would like to access your Photos";
-
 /* Accessibility label for brightness adjustment slider in Reader Mode display settings */
 "Brightness" = "Kecerahan";
 
@@ -295,8 +281,6 @@ dan inilah alasannya...";
 "Delete Folder" = "Hapus Folder";
 
 /* Pending feature; currently unused string! Checkbox label shown after multiple alerts are shown */
-"Disable additional page dialogs" = "Disable additional page dialogs";
-
 /* Name for display settings button in reader mode. Display in the meaning of presentation, not monitor. */
 "Display Settings" = "Pengaturan Tampilan";
 
@@ -344,8 +328,6 @@ dan inilah alasannya...";
 "ErrorPages.AdvancedWarning1.Text" = "Peringatan: kami tidak dapat memastikan koneksi Anda ke situs ini aman.";
 
 /* Additional warning text when clicking the Advanced button on error pages */
-"ErrorPages.AdvancedWarning2.Text" = "ErrorPages.AdvancedWarning2.Text";
-
 /* Title on the certificate error page */
 "ErrorPages.CertWarning.Title" = "Koneksi Anda tidak pribadi";
 
@@ -353,8 +335,6 @@ dan inilah alasannya...";
 "ErrorPages.GoBack.Button" = "Kembali";
 
 /* Button label to temporarily continue to the site from the certificate error page */
-"ErrorPages.VisitOnce.Button" = "ErrorPages.VisitOnce.Button";
-
 /* individual blocking statistic title */
 "Fingerprinting Methods" = "Metode Sidik Jari";
 
@@ -420,8 +400,6 @@ Sidik Jari";
 "Individual Controls" = "Kontrol Individual";
 
 /* Accessibility label for the introduction tour carousel */
-"Intro Tour Carousel" = "Intro Tour Carousel";
-
 /* History tableview section header */
 "Last month" = "Bulan lalu";
 
@@ -479,8 +457,6 @@ Sidik Jari";
 "No" = "Tidak";
 
 /* Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray */
-"No tabs" = "No tabs";
-
 /* Label for button to cancel application update prompt */
 "Not Now" = "Tidak Sekarang";
 
@@ -495,8 +471,6 @@ Sidik Jari";
 "Okay" = "Oke";
 
 /* Share action title */
-"Open Desktop Site tab" = "Open Desktop Site tab";
-
 /* Context menu item for opening a link in a new tab */
 "Open In Background" = "Buka di Latar";
 
@@ -520,8 +494,6 @@ Sidik Jari";
 "Paste" = "Tempel";
 
 /* Paste the URL into the location bar and visit */
-"Paste & Go" = "Paste & Go";
-
 /* Privacy section title
    Privacy settings section title */
 "Privacy" = "Privasi";
@@ -570,8 +542,6 @@ Sidik Jari";
 "Save Image" = "Simpan Gambar";
 
 /* Setting to enable the built-in password manager */
-"Save Logins" = "Save Logins";
-
 "Save pages to your Reading List by tapping the book plus icon in the Reader View controls." = "Simpan laman ke Daftar Baca Anda dengan mengetuk ikon buku plus di kontrol Tampilan Pembaca.";
 
 /* individual blocking statistic title */
@@ -584,39 +554,21 @@ Sidik Jari";
 "Search or enter address" = "Cari atau masukan alamat";
 
 /* Accessibility hint describing the action performed when a search suggestion is clicked */
-"Searches for the suggestion" = "Searches for the suggestion";
-
 /* Accessibility label for the lock icon, which is only present if the connection is secure */
 "Secure connection" = "Koneksi aman";
 
 /* Sepia theme setting in Reading View settings */
-"Sepia" = "Sepia";
-
 /* Font type setting in the reading view settings */
-"Serif" = "Serif";
-
 /* Accessibility label for the Settings button.
    Settings */
 "Settings" = "Pengaturan";
 
 /* Button in settings that clears private data for the selected items. */
-"Settings.ClearPrivateData.Clear.Button" = "Settings.ClearPrivateData.Clear.Button";
-
 /* Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data. */
-"Settings.ClearPrivateData.SectionName" = "Settings.ClearPrivateData.SectionName";
-
 /* Title displayed in header of the setting panel. */
-"Settings.ClearPrivateData.Title" = "Settings.ClearPrivateData.Title";
-
 /* Accessibility Label for the browser toolbar Share button */
-"Share" = "Share";
-
 /* Context menu item for sharing a link URL */
-"Share Link" = "Share Link";
-
 /* Button title for cancelling Share screen */
-"ShareTo.Cancel.Button" = "ShareTo.Cancel.Button";
-
 /* Button to show the bookmarks list */
 "Show Bookmarks" = "Tampilkan Markah";
 
@@ -638,11 +590,7 @@ Sidik Jari";
 "Show Tour" = "Tampilkan Tur";
 
 /* Footer message on picker for 3rd party password manager setting */
-"Show a prompt to open your password manager when the current page has a login form." = "Show a prompt to open your password manager when the current page has a login form.";
-
 /* tabs bar show/hide option */
-"Show in landscape only" = "Show in landscape only";
-
 /* Label for show search suggestions setting. */
 "Show search suggestions" = "Tampilkan saran pencarian";
 
@@ -650,11 +598,7 @@ Sidik Jari";
 "Site shield settings" = "Pengaturan perisai situs";
 
 /* Accessibility Label for the browser toolbar Stop button */
-"Stop" = "Stop";
-
 /* Support section title */
-"Support" = "Support";
-
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
 "Tab %@ of %@" = "Tab %1$@ dari %2$@";
 
@@ -662,16 +606,8 @@ Sidik Jari";
 "Tabs %@ to %@ of %@" = "Tab %1$@ sampai %2$@ dari %3$@";
 
 /* Accessibility label for the Tabs Tray view. */
-"Tabs Tray" = "Tabs Tray";
-
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
-"Terms of Use" = "Terms of Use";
-
 /* Error displayed when reader mode cannot be enabled */
-"There was an error converting the page" = "There was an error converting the page";
-
-"This allows you to save the image to your Camera Roll." = "This allows you to save the image to your Camera Roll.";
-
 /* Opening an external app */
 "This will open in another application" = "Ini akan dibuka di aplikasi lain";
 
@@ -679,35 +615,23 @@ Sidik Jari";
 "Today" = "Hari Ini";
 
 /* Panel accessibility label */
-"Top sites" = "Top sites";
-
 /* Description label for the empty Top Sites state. */
 "TopSites.EmptyState.Description" = "Situs yang paling sering Anda kunjungi akan muncul di sini.";
 
 /* The title for the empty Top Sites state */
-"TopSites.EmptyState.Title" = "TopSites.EmptyState.Title";
-
 /* brave shield on/off toggle on state */
 "Up" = "Naik";
 
 /* Button to update the user's password */
-"Update" = "Update";
-
 /* Setting to enable compact tabs in the tab overview */
-"Use Compact Tabs" = "Use Compact Tabs";
-
 /* Version number of app shown in settings */
 "Version %@ (%@)" = "Versi %1$@ (%2$@)";
 
 /* Accessibility label for the main web content view */
-"Web content" = "Web content";
-
 /* See http://mzl.la/1LXbDOL */
 "Welcome to your Reading List" = "Selamat datang ke Daftar Baca Anda";
 
 /* Restore Tabs Prompt Title */
-"Well, this is embarrassing." = "Well, this is embarrassing.";
-
 /* Tile title for wikipedia */
 "Wikipedia" = "Wikipedia";
 
@@ -721,8 +645,6 @@ Sidik Jari";
 "Yesterday" = "Kemarin";
 
 /* Relative time for a tab that was visited within the last few moments. */
-"just now" = "just now";
-
 /* Relative date for dates older than a month and less than two months. */
 "more than a month ago" = "lebih dari sebulan yang lalu";
 
@@ -730,29 +652,13 @@ Sidik Jari";
 "more than a week ago" = "lebih dari seminggu yang lalu";
 
 /* Accessibility label for read article in reading list. It's a past participle - functions as an adjective. */
-"read" = "read";
-
 /* Relative date for date in past week. */
-"this week" = "this week";
-
 /* Relative date for date older than a minute. */
-"today at %@" = "today at %@";
-
 /* Accessibility label for unread article in reading list. It's a past participle - functions as an adjective. */
-"unread" = "unread";
-
 /* Relative date for yesterday. */
-"yesterday" = "yesterday";
-
 /* Description text displayed when there are no open tabs while in private mode */
-"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave won't remember any of your history or cookies, but new bookmarks will be saved.";
-
 /* Setting for closing private tabs */
-"Close Private Tabs" = "Close Private Tabs";
-
 /* Text button displayed when there are no tabs open while in private mode */
-"Learn More" = "Learn More";
-
 /* Toggled OFF accessibility value */
 "Off" = "Mati";
 
@@ -769,14 +675,8 @@ Sidik Jari";
 "Private Mode" = "Mode Pribadi";
 
 /* Accessiblity hint for toggling on/off private mode */
-"Turns private mode on or off" = "Turns private mode on or off";
-
 /* Will be displayed in Settings under 'Close Private Tabs' */
-"When Leaving Private Browsing" = "When Leaving Private Browsing";
-
 /* Label for search engine buttons. The argument corresponds to the name of the search engine. */
-"%@ search" = "%@ search";
-
 /* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
 "No" = "Tidak";
 

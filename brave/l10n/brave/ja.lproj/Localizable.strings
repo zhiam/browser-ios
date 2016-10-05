@@ -1,6 +1,4 @@
 /* Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
-"Are you sure you want to delete it and its contents?" = "Are you sure you want to delete it and its contents?";
-
 /* Button label to cancel deletion when the user tried to delete a non-empty folder. */
 "Cancel" = "キャンセル";
 
@@ -17,8 +15,6 @@
 "Edit" = "編集";
 
 /* Message shown in the dialog prompting users if they want to clear everything */
-"Are you sure you want to clear all of your data? This will also close all open tabs." = "Are you sure you want to clear all of your data? This will also close all open tabs.";
-
 /* Settings item for clearing browsing history */
 "Browsing History" = "履歴";
 
@@ -42,8 +38,6 @@
 "Cookies" = "クッキー";
 
 /* Settings item for clearing website data */
-"Offline Website Data" = "Offline Website Data";
-
 /* Settings item for clearing passwords and login data */
 "Saved Logins" = "保存したログイン情報";
 
@@ -51,8 +45,6 @@
 "Cancel" = "キャンセル";
 
 /* The button that clears private data. */
-"OK" = "OK";
-
 /* Description of the confirmation dialog shown when a user tries to clear their private data. */
 "This action will clear all of your private data. It cannot be undone." = "全てのプライベートデータが消去されます。これは取り消せません。";
 
@@ -63,57 +55,31 @@
 "Try again" = "再試行する";
 
 /* Done button in Find in Page Toolbar. */
-"Done" = "Done";
-
 /* Share action title
    Text selection menu item */
 "Find in Page" = "ページ内検索";
 
 /* Accessibility label for next result button in Find in Page Toolbar. */
-"Next in-page result" = "Next in-page result";
-
 /* Accessibility label for previous result button in Find in Page Toolbar. */
-"Previous in-page result" = "Previous in-page result";
-
 /* Action button for deleting history entries in the history panel. */
 "Remove" = "削除";
 
 /* Intro screen message */
-"Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency." = "Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency.";
-
 /* intro screen message */
-"Brave is Faster,\nand here's why..." = "Brave is Faster,\nand here's why...";
-
 /* intro screen message */
-"Brave keeps you safe as you browse." = "Brave keeps you safe as you browse.";
-
 /* intro screen message */
 "Browse multiple Web pages at the same time with tabs." = "タブを使えば複数のウェブページを同時に閲覧できます。";
 
 /* intro screen */
-"Browse with us and your privacy is protected, with nothing further to install, learn or configure." = "Browse with us and your privacy is protected, with nothing further to install, learn or configure.";
-
 /* No comment provided by engineer. */
-"Get ready to experience a Faster, Safer, Better Web." = "Get ready to experience a Faster, Safer, Better Web.";
-
 /* No comment provided by engineer. */
-"In case you hit a speed bump" = "In case you hit a speed bump";
-
 /* String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3 */
-"Introductory slide %@ of %@" = "Introductory slide %@ of %@";
-
 /* No comment provided by engineer. */
-"Start Browsing" = "Start Browsing";
-
 /* No comment provided by engineer. */
-"Tap the Brave button to temporarily disable ad blocking and privacy features." = "Tap the Brave button to temporarily disable ad blocking and privacy features.";
-
 /* No comment provided by engineer. */
 "Welcome to Brave." = "Braveへようこそ。";
 
 /* Ask user if site can open iTunes store URL */
-"  Allow (siteName) to open iTunes?" = "  Allow (siteName) to open iTunes?";
-
 /* Button for larger reader font size. Keep this extremely short! This is shown in the reader mode toolbar. */
 "+" = "+";
 
@@ -121,20 +87,10 @@
 "-" = "-";
 
 /* Setting to enable the built-in password manager */
-"3rd-party password manager" = "3rd-party password manager";
-
 /* Authentication prompt message with no realm. Parameter is the hostname of the site */
-"A username and password are being requested by %@." = "A username and password are being requested by %@.";
-
 /* Authentication prompt message with a realm. First parameter is the hostname. Second is the realm string */
-"A username and password are being requested by %@. The site says: %@" = "A username and password are being requested by %@. The site says: %@";
-
 /* Button for reader mode font size. Keep this extremely short! This is shown in the reader mode toolbar. */
-"Aa" = "Aa";
-
 /* About settings section title */
-"About" = "About";
-
 /* Button to add a bookmark */
 "Add Bookmark" = "ブックマークを追加";
 
@@ -151,8 +107,6 @@
 "Added page to Reading List" = "ページをリーディングリストに追加しました";
 
 /* Accessibility label for address and search field, both words (Address, Search) are therefore nouns. */
-"Address and Search" = "Address and Search";
-
 /* individual blocking statistic title */
 "Ads and Trackers " = "広告とトラッキング";
 
@@ -169,8 +123,6 @@
 "Authentication required" = "認証が必要です";
 
 /* Accessibility Label for the browser toolbar Back button */
-"Back" = "Back";
-
 /* Tile title for Bing */
 "Bing" = "Bing";
 
@@ -202,8 +154,6 @@
 "Block all cookies" = "全てのクッキーをブロック";
 
 /* title for section showing page blocking statistics */
-"Blocking Monitor" = "Blocking Monitor";
-
 /* Accessibility Label for the browser toolbar Bookmark button
    Bookmark a URL - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440 */
 "Bookmark" = "ブックマーク";
@@ -221,17 +171,11 @@
 "Brave Panel" = "Braveパネル";
 
 /* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
-"Brave Shield Defaults" = "Brave Shield Defaults";
-
 /* See http://mzl.la/1G7uHo7 */
-"Brave would like to access your Photos" = "Brave would like to access your Photos";
-
 /* Accessibility label for brightness adjustment slider in Reader Mode display settings */
 "Brightness" = "明るさ";
 
 /* Alert Call Button */
-"Call" = "Call";
-
 /* Alert Cancel Button
    Authentication prompt cancel button
    Button label to cancel entering a URL or search query
@@ -253,8 +197,6 @@
 "Close" = "閉じる";
 
 /* No comment provided by engineer. */
-"Closing tab" = "Closing tab";
-
 /* Cookie settings option title */
 "Cookie Control" = "クッキーのコントロール";
 
@@ -268,8 +210,6 @@
 "Copy Link" = "リンクをコピー";
 
 /* Accessibility message e.g. spoken by VoiceOver after the user wanted to add current page to the Reading List and this was not done, likely because it already was in the Reading List, but perhaps also because of real failures. */
-"Could not add page to Reading List. Maybe it's already there?" = "Could not add page to Reading List. Maybe it's already there?";
-
 /* Accessibility message e.g. spoken by VoiceOver after adding current webpage to the Reading List failed. */
 "Could not add page to Reading list" = "ページをリーティングリストに追加できませんでした";
 
@@ -277,8 +217,6 @@
 "Could not load page." = "ページを読み込めませんでした。";
 
 /* Dark theme setting in Reading View settings */
-"Dark" = "Dark";
-
 /* Accessibility label for button decreasing font size in display settings of reader mode */
 "Decrease text size" = "フォントサイズを小さくする";
 
@@ -292,23 +230,13 @@
 "Delete Folder" = "フォルダーを削除";
 
 /* Pending feature; currently unused string! Checkbox label shown after multiple alerts are shown */
-"Disable additional page dialogs" = "Disable additional page dialogs";
-
 /* Name for display settings button in reader mode. Display in the meaning of presentation, not monitor. */
 "Display Settings" = "表示設定";
 
 /* Prompt for saving a password. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"Do you want to save the password for %@ on %@?" = "Do you want to save the password for %@ on %@?";
-
 /* Prompt for saving a password with no username. The parameter is the hostname of the site. */
-"Do you want to save the password on %@?" = "Do you want to save the password on %@?";
-
 /* Prompt for updating a password. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"Do you want to update the password for %@ on %@?" = "Do you want to update the password for %@ on %@?";
-
 /* Prompt for updating a password with on username. The parameter is the hostname of the site. */
-"Do you want to update the password on %@?" = "Do you want to update the password on %@?";
-
 /* Used as a button label for crash dialog prompt */
 "Don't Send" = "送信しない";
 
@@ -320,14 +248,8 @@
    Done button label on back forward list screen
    Done button on left side of the Settings view controller title bar
    Done editing button */
-"Done" = "Done";
-
 /* No comment provided by engineer. */
-"Double tap and hold to open history" = "Double tap and hold to open history";
-
 /* brave shield on/off toggle off state */
-"Down" = "Down";
-
 /* Tile title for DDG */
 "DuckDuckGo" = "DuckDuckGo";
 
@@ -341,8 +263,6 @@
 "ErrorPages.AdvancedWarning1.Text" = "警告: このウェブサイトへの接続が安全であることが確認できません。";
 
 /* Additional warning text when clicking the Advanced button on error pages */
-"ErrorPages.AdvancedWarning2.Text" = "ErrorPages.AdvancedWarning2.Text";
-
 /* Title on the certificate error page */
 "ErrorPages.CertWarning.Title" = "接続がプライベートではありません";
 
@@ -350,11 +270,7 @@
 "ErrorPages.GoBack.Button" = "戻る";
 
 /* Button label to temporarily continue to the site from the certificate error page */
-"ErrorPages.VisitOnce.Button" = "ErrorPages.VisitOnce.Button";
-
 /* individual blocking statistic title */
-"Fingerprinting Methods" = "Fingerprinting Methods";
-
 /* No comment provided by engineer. */
 "Fingerprinting Protection" = "フィンガープリンティングの保護";
 
@@ -402,8 +318,6 @@
 "Hotkeys.Reload.DiscoveryTitle" = "ページを再読み込み";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.SelectLocationBar.DiscoveryTitle" = "Hotkeys.SelectLocationBar.DiscoveryTitle";
-
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
 "Hotkeys.ShowNextTab.DiscoveryTitle" = "次のタブを表示";
 
@@ -414,11 +328,7 @@
 "Increase text size" = "フォントサイズを大きくする";
 
 /* title for per-site shield toggles */
-"Individual Controls" = "Individual Controls";
-
 /* Accessibility label for the introduction tour carousel */
-"Intro Tour Carousel" = "Intro Tour Carousel";
-
 /* History tableview section header */
 "Last month" = "先月";
 
@@ -426,8 +336,6 @@
 "Last week" = "先週";
 
 /* Light theme setting in Reading View settings */
-"Light" = "Light";
-
 /* Authentication prompt log in button */
 "Log in" = "ログイン";
 
@@ -438,8 +346,6 @@
 "LoginsHelper.DontSave.Button" = "保存しない";
 
 /* Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"LoginsHelper.PromptSaveLogin.Title" = "LoginsHelper.PromptSaveLogin.Title";
-
 /* Prompt for saving a password with no username. The parameter is the hostname of the site. */
 "LoginsHelper.PromptSavePassword.Title" = "%@のパスワードを保存しますか？";
 
@@ -476,8 +382,6 @@
 "No" = "いいえ";
 
 /* Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray */
-"No tabs" = "No tabs";
-
 /* Label for button to cancel application update prompt */
 "Not Now" = "後で";
 
@@ -486,30 +390,16 @@
 
 /* Label for OK button in the application update prompt
    OK button */
-"OK" = "OK";
-
 /* Restore Tabs Affirmative Action */
-"Okay" = "Okay";
-
 /* Share action title */
-"Open Desktop Site tab" = "Open Desktop Site tab";
-
 /* Context menu item for opening a link in a new tab */
 "Open In Background" = "バックグラウンドで開く";
 
 "Open Settings" = "設定を開く";
 
-"Open articles in Reader View by tapping the book icon when it appears in the title bar." = "Open articles in Reader View by tapping the book icon when it appears in the title bar.";
-
 /* String indicating that the file can be opened in another application on the device */
-"Open in…" = "Open in…";
-
 /* Opening an external URL */
-"Opening %@" = "Opening %@";
-
 /* Accessibility label for the Home panel's top toolbar containing list of the home panels (top sites, bookmarsk, history, remote tabs, reading list). */
-"Panel Chooser" = "Panel Chooser";
-
 /* Password textbox in Authentication prompt */
 "Password" = "パスワード";
 
@@ -531,8 +421,6 @@
 "Private" = "プライベート";
 
 /* Setting to keep app in private mode */
-"Private Browsing Only" = "Private Browsing Only";
-
 /* Private mode icon next to location string */
 "Private mode icon" = "プライベートモード アイコン";
 
@@ -540,8 +428,6 @@
 "Quick-search Engines" = "クイックサーチ エンジン";
 
 /* Accessibility label for the Reader View button */
-"Reader View" = "Reader View";
-
 /* Panel accessibility label */
 "Reading list" = "リーディングリスト";
 
@@ -569,8 +455,6 @@
 /* Setting to enable the built-in password manager */
 "Save Logins" = "ログイン情報を保存";
 
-"Save pages to your Reading List by tapping the book plus icon in the Reader View controls." = "Save pages to your Reading List by tapping the book plus icon in the Reader View controls.";
-
 /* individual blocking statistic title */
 "Scripts Blocked" = "スクリプトをブロック";
 
@@ -578,11 +462,7 @@
 "Search" = "検索";
 
 /* The text shown in the URL bar on about:home */
-"Search or enter address" = "Search or enter address";
-
 /* Accessibility hint describing the action performed when a search suggestion is clicked */
-"Searches for the suggestion" = "Searches for the suggestion";
-
 /* Accessibility label for the lock icon, which is only present if the connection is secure */
 "Secure connection" = "安全な接続";
 
@@ -635,8 +515,6 @@
 "Show Tour" = "ツアーを表示";
 
 /* Footer message on picker for 3rd party password manager setting */
-"Show a prompt to open your password manager when the current page has a login form." = "Show a prompt to open your password manager when the current page has a login form.";
-
 /* tabs bar show/hide option */
 "Show in landscape only" = "横向きのみで表示";
 
@@ -644,8 +522,6 @@
 "Show search suggestions" = "予測結果を表示";
 
 /* Brave panel topmost title */
-"Site shield settings" = "Site shield settings";
-
 /* Accessibility Label for the browser toolbar Stop button */
 "Stop" = "停止";
 
@@ -653,11 +529,7 @@
 "Support" = "サポート";
 
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
-"Tab %@ of %@" = "Tab %@ of %@";
-
 /* Message spoken by VoiceOver saying the range of tabs that are currently visible in Tabs Tray, along with the total number of tabs. E.g. \"Tabs 8 to 10 of 15\" says tabs 8, 9 and 10 are visible, out of 15 tabs total. */
-"Tabs %@ to %@ of %@" = "Tabs %@ to %@ of %@";
-
 /* Accessibility label for the Tabs Tray view. */
 "Tabs Tray" = "タブトレイ";
 
@@ -665,13 +537,7 @@
 "Terms of Use" = "利用規約";
 
 /* Error displayed when reader mode cannot be enabled */
-"There was an error converting the page" = "There was an error converting the page";
-
-"This allows you to save the image to your Camera Roll." = "This allows you to save the image to your Camera Roll.";
-
 /* Opening an external app */
-"This will open in another application" = "This will open in another application";
-
 /* History tableview section header */
 "Today" = "今日";
 
@@ -685,8 +551,6 @@
 "TopSites.EmptyState.Title" = "上位のサイトへようこそ";
 
 /* brave shield on/off toggle on state */
-"Up" = "Up";
-
 /* Button to update the user's password */
 "Update" = "アップデート";
 
@@ -697,14 +561,10 @@
 "Version %@ (%@)" = "バージョン %1$@ (%2$@)";
 
 /* Accessibility label for the main web content view */
-"Web content" = "Web content";
-
 /* See http://mzl.la/1LXbDOL */
 "Welcome to your Reading List" = "リーディングリストへようこそ";
 
 /* Restore Tabs Prompt Title */
-"Well, this is embarrassing." = "Well, this is embarrassing.";
-
 /* Tile title for wikipedia */
 "Wikipedia" = "Wikipedia";
 
@@ -727,29 +587,19 @@
 "more than a week ago" = "一週間以上前";
 
 /* Accessibility label for read article in reading list. It's a past participle - functions as an adjective. */
-"read" = "read";
-
 /* Relative date for date in past week. */
 "this week" = "今週";
 
 /* Relative date for date older than a minute. */
-"today at %@" = "today at %@";
-
 /* Accessibility label for unread article in reading list. It's a past participle - functions as an adjective. */
-"unread" = "unread";
-
 /* Relative date for yesterday. */
 "yesterday" = "昨日";
 
 /* Description text displayed when there are no open tabs while in private mode */
-"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave won't remember any of your history or cookies, but new bookmarks will be saved.";
-
 /* Setting for closing private tabs */
 "Close Private Tabs" = "プライベートタブを閉じる";
 
 /* Text button displayed when there are no tabs open while in private mode */
-"Learn More" = "Learn More";
-
 /* Toggled OFF accessibility value */
 "Off" = "オフ";
 
@@ -769,11 +619,7 @@
 "Turns private mode on or off" = "プライベートのオンとオフを切り替える";
 
 /* Will be displayed in Settings under 'Close Private Tabs' */
-"When Leaving Private Browsing" = "When Leaving Private Browsing";
-
 /* Label for search engine buttons. The argument corresponds to the name of the search engine. */
-"%@ search" = "%@ search";
-
 /* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
 "No" = "いいえ";
 

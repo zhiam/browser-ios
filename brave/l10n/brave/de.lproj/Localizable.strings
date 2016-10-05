@@ -154,8 +154,6 @@ Wie kommt das?";
 "Added page to Reading List" = "Die Seite wurde zur Lese Liste hinzugefügt";
 
 /* Accessibility label for address and search field, both words (Address, Search) are therefore nouns. */
-"Address and Search" = "Address and Search";
-
 /* individual blocking statistic title */
 "Ads and Trackers " = "Werbung und Tracker";
 
@@ -256,8 +254,6 @@ Wie kommt das?";
 "Close" = "Schließen";
 
 /* No comment provided by engineer. */
-"Closing tab" = "Closing tab";
-
 /* Cookie settings option title */
 "Cookie Control" = "Verwaltung der Cookies";
 
@@ -405,8 +401,6 @@ Schutz";
 "Hotkeys.Reload.DiscoveryTitle" = "Seite neu laden";
 
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.SelectLocationBar.DiscoveryTitle" = "Hotkeys.SelectLocationBar.DiscoveryTitle";
-
 /* Label to display in the Discoverability overlay for keyboard shortcuts */
 "Hotkeys.ShowNextTab.DiscoveryTitle" = "Nächsten Tab anzeigen";
 
@@ -420,8 +414,6 @@ Schutz";
 "Individual Controls" = "Benutzerdefinierte Steuerung";
 
 /* Accessibility label for the introduction tour carousel */
-"Intro Tour Carousel" = "Intro Tour Carousel";
-
 /* History tableview section header */
 "Last month" = "Letzter Monat";
 
@@ -467,8 +459,6 @@ Schutz";
 "Mark as Unread" = "Als ungelesen markieren";
 
 /* Accessibility label for the navigation toolbar displayed at the bottom of the screen. */
-"Navigation Toolbar" = "Navigation Toolbar";
-
 /* tabs bar show/hide option */
 "Never show" = "Nie anzeigen";
 
@@ -495,8 +485,6 @@ Schutz";
 "Okay" = "Okay";
 
 /* Share action title */
-"Open Desktop Site tab" = "Open Desktop Site tab";
-
 /* Context menu item for opening a link in a new tab */
 "Open In Background" = "Im Hintergrund öffnen";
 
@@ -584,8 +572,6 @@ Schutz";
 "Search or enter address" = "Suchen oder URL eingeben";
 
 /* Accessibility hint describing the action performed when a search suggestion is clicked */
-"Searches for the suggestion" = "Searches for the suggestion";
-
 /* Accessibility label for the lock icon, which is only present if the connection is secure */
 "Secure connection" = "Sichere Verbindung";
 
@@ -662,8 +648,6 @@ Schutz";
 "Tabs %@ to %@ of %@" = "Tab %1$@ bis %2$@ von %3$@";
 
 /* Accessibility label for the Tabs Tray view. */
-"Tabs Tray" = "Tabs Tray";
-
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
 "Terms of Use" = "Nutzungsbedingungen";
 

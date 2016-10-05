@@ -638,8 +638,6 @@ Brave专为更快的速度，更高的效率而设计";
 "Show Tour" = "演示";
 
 /* Footer message on picker for 3rd party password manager setting */
-"Show a prompt to open your password manager when the current page has a login form." = "Show a prompt to open your password manager when the current page has a login form.";
-
 /* tabs bar show/hide option */
 "Show in landscape only" = "仅显示景观";
 
