@@ -24,6 +24,7 @@ from lxml import etree
 
 NS = {'x':'urn:oasis:names:tc:xliff:document:1.2'}
 
+
 def export_xliff_file(file_node, export_path, target_language):
     directory = os.path.dirname(export_path)
     if not os.path.exists(directory):
@@ -35,17 +36,19 @@ def export_xliff_file(file_node, export_path, target_language):
 
             if trans_unit_id is not None: ### and len(targets) == 1 and targets[0].text is not None:
                 notes = trans_unit_node.xpath("x:note", namespaces=NS)
+                target_text = None
                 if len(notes) == 1:
                     line = u"/* %s */\n" % notes[0].text
                     fp.write(line.encode("utf8"))
                 source_text = trans_unit_id.replace('"', '\\"')
                 if len(targets) == 1 and targets[0].text is not None:
                     target_text = targets[0].text.replace('"', '\\"')
-                else:
+                elif target_language == 'en':
                     target_text = source_text
 
-                line = u"\"%s\" = \"%s\";\n\n" % (source_text, target_text)
-                fp.write(line.encode("utf8"))
+                if target_text is not None:
+                    line = u"\"%s\" = \"%s\";\n\n" % (source_text, target_text)
+                    fp.write(line.encode("utf8"))
 
     # Export fails if the strings file is empty. Xcode probably checks
     # on file length vs read error.
@@ -92,17 +95,17 @@ if __name__ == "__main__":
             # the target-language set.
             target_language = file_nodes[0].get('target-language')
             if not target_language:
-                print "  ERROR: Missing target-language. Skipping."
-                continue
+                print " Missing target-language. assume english."
+                target_language = 'en'
 
             # Export each <file> node as a separate strings file under the
             # export root.
             for file_node in file_nodes:
                 original = file_node.get('original')
-               export_paths = [original_path(export_root, target_language, original)]
-               for export_path in export_paths:
+                export_paths = [original_path(export_root, target_language, original)]
+                for export_path in export_paths:
                     print "  Writing %s to %s" % (original, export_path)
                     export_xliff_file(file_node, export_path, target_language)
- 
+
     os.system("ls -d brave/*.lproj | xargs -I{} sh -c 'cd {} && cat *.strings >> tmp ; rm -f *.strings ; mv tmp Localizable.strings'")
 
