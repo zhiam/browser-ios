@@ -150,6 +150,27 @@ extension BraveSettingsView : UIAlertViewDelegate {
     }
 }
 
+class VersionSetting : Setting {
+    let settings: SettingsTableViewController
+
+    init(settings: SettingsTableViewController) {
+        self.settings = settings
+        super.init(title: nil)
+    }
+
+    override var title: NSAttributedString? {
+        let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        let buildNumber = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        return NSAttributedString(string: String(format: NSLocalizedString("Version %@ (%@)", comment: "Version number of Brave shown in settings"), appVersion, buildNumber), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+    }
+
+    override func onConfigureCell(cell: UITableViewCell) {
+        super.onConfigureCell(cell)
+        cell.selectionStyle = .None
+    }
+}
+
+
 // Opens the search settings pane
 class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
