@@ -24,50 +24,6 @@ from lxml import etree
 
 NS = {'x':'urn:oasis:names:tc:xliff:document:1.2'}
 
-# Files we are interested in. It would be nice to not hardcode this but I'm not totally sure how yet.
-FILES_unused = [
-    "brave/3DTouchActions.strings",
-    "brave/AuthenticationManager.strings",
-    "brave/BookmarkPanel.strings",
-    "brave/ClearHistoryConfirm.strings",
-    "brave/ClearPrivateData.strings",
-    "brave/ErrorPages.strings",
-    "brave/FindInPage.strings",
-    "brave/HistoryPanel.strings",
-    "brave/Info.plist",
-    "brave/Intro.strings",
-    "brave/LightweightThemes.strings",
-    "brave/Localizable.strings",
-    "brave/LoginManager.strings",
-    "brave/OnePasswordExtension.strings",
-    "brave/PrivateBrowsing.strings",
-    "brave/Search.strings",
-    "brave/SendAnonymousUsageData.strings",
-    "brave/Shared.strings",
-    "brave/Storage.strings",
-    "brave/SendTo.strings",
-    "Extensions/SendTo/Info.plist",
-    "Extensions/ShareTo/ShareTo.strings",
-    "Extensions/ViewLater/Info.plist",
-    "Shared/Localizable.strings",
-]
-
-# Because Xcode is unpredictable. See bug 1162510 - Sync.strings are not imported
-FILENAME_OVERRIDES_unused = {
-    "Shared/Supporting Files/Info.plist": "Shared/Localizable.strings",
-    "Shared/Supporting Files/Shared.strings": "brave/Shared.strings",
-    "Storage.strings": "brave/Storage.strings",
-}
-
-# Because Xcode can't handle strings that need to live in two
-# different bundles, we also duplicate some files.(For example
-# SendTo.strings is needed both in the main app and in the SendTo
-# extension.) See bug 1234322
-
-FILES_TO_DUPLICATE_unused = {
-    "brave/SendTo.strings": ["Extensions/SendTo/SendTo.strings"],
-}
-
 def export_xliff_file(file_node, export_path, target_language):
     directory = os.path.dirname(export_path)
     if not os.path.exists(directory):
@@ -143,15 +99,8 @@ if __name__ == "__main__":
             # export root.
             for file_node in file_nodes:
                 original = file_node.get('original')
-                ### original = FILENAME_OVERRIDES.get(original, original)
-                ### if original in FILES:
-                # Because we have strings files that need to live in multiple bundles
-                # we build a list of export_paths. Start with the default.
-                export_paths = [original_path(export_root, target_language, original)]
-                # for extra_copy in FILES_TO_DUPLICATE.get(original, []):
-                #     export_path = original_path(export_root, target_language, extra_copy)
-                #     export_paths.append(export_path)
-                for export_path in export_paths:
+               export_paths = [original_path(export_root, target_language, original)]
+               for export_path in export_paths:
                     print "  Writing %s to %s" % (original, export_path)
                     export_xliff_file(file_node, export_path, target_language)
  
