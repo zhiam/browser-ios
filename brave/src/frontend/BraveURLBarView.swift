@@ -1,5 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Shared
+
 let TabsBarHeight = CGFloat(29)
 
 // To hide the curve effect
@@ -92,14 +94,14 @@ class BraveURLBarView : URLBarView {
         leftSidePanelButton.addTarget(self, action: #selector(onClickLeftSlideOut), forControlEvents: UIControlEvents.TouchUpInside)
         leftSidePanelButton.setImage(UIImage(named: "listpanel")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftSidePanelButton.setImage(UIImage(named: "listpanel_down")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Selected)
-        leftSidePanelButton.accessibilityLabel = NSLocalizedString("Bookmarks and History Panel", comment: "Button to show the bookmarks and history panel")
+        leftSidePanelButton.accessibilityLabel = Strings.Bookmarks_and_History_Panel
         leftSidePanelButton.tintColor = BraveUX.ActionButtonTintColor
         leftSidePanelButton.setStarImageBookmarked(false)
 
         braveButton.addTarget(self, action: #selector(onClickBraveButton) , forControlEvents: UIControlEvents.TouchUpInside)
         braveButton.setImage(UIImage(named: "bravePanelButton"), forState: .Normal)
         braveButton.setImage(UIImage(named: "bravePanelButtonOff"), forState: .Selected)
-        braveButton.accessibilityLabel = NSLocalizedString("Brave Panel", comment: "Button to show the brave panel")
+        braveButton.accessibilityLabel = Strings.Brave_Panel
         braveButton.tintColor = BraveUX.ActionButtonTintColor
 
         //ToolbarTextField.appearance().clearButtonTintColor = nil
@@ -459,7 +461,6 @@ class BraveURLBarView : URLBarView {
             self.updateIsScheduled = false
             performUpdate()
         }
-
     }
 
     override func updateBookmarkStatus(isBookmarked: Bool) {
@@ -481,7 +482,7 @@ class BraveURLBarView : URLBarView {
 
         let v = InsetLabel(frame: CGRectMake(0, 0, locationContainer.frame.width, locationContainer.frame.height))
         v.rightInset = CGFloat(40)
-        v.text = braveButton.selected ? BraveUX.TitleForBraveProtectionOff : BraveUX.TitleForBraveProtectionOn
+        v.text = braveButton.selected ? Strings.Off : Strings.On
         if var range = v.text!.rangeOfString(" ", options:NSStringCompareOptions.BackwardsSearch) {
             range.endIndex = v.text!.characters.endIndex
             v.boldRange(range)

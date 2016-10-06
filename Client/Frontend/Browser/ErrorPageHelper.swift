@@ -159,7 +159,7 @@ class ErrorPageHelper {
                 "short_description": errDomain,
             ]
 
-            let tryAgain = NSLocalizedString("Try again", tableName: "ErrorPages", comment: "Shown in error pages on a button that will try to load the page again")
+            let tryAgain = Strings.Try_again
             var actions = "<button onclick='window.location.reload()'>\(tryAgain)</button>"
 
             if errDomain == kCFErrorDomainCFNetwork as String {
@@ -168,7 +168,7 @@ class ErrorPageHelper {
                 }
             } else if errDomain == ErrorPageHelper.MozDomain {
                 if errCode == ErrorPageHelper.MozErrorDownloadsNotEnabled {
-                    let downloadInSafari = NSLocalizedString("Open in Safari", tableName: "ErrorPages", comment: "Shown in error pages for files that can't be shown and need to be downloaded.")
+                    let downloadInSafari = Strings.Open_in_Safari
 
                     // Overwrite the normal try-again action.
                     actions = "<button onclick='__bravejs___errorPageHelperMessageManager({type: \"\(MessageOpenInSafari)\"})'>\(downloadInSafari)</button>"

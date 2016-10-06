@@ -36,7 +36,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         if let url = elements.link, let currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString?.regexReplacePattern("^mailto:", with: "")
             let isPrivate = currentTab.isPrivate
-            let newTabTitle = NSLocalizedString("Open In Background", comment: "Context menu item for opening a link in a new tab")
+            let newTabTitle = Strings.Open_In_Background
             let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
                 actionSheetController.view.tag = 0 // BRAVE: clear this to allow navigation
                 self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in
@@ -47,7 +47,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             actionSheetController.addAction(openNewTabAction)
 
             if !isPrivate {
-                let openNewPrivateTabTitle = NSLocalizedString("Open In New Private Tab", tableName: "PrivateBrowsing", comment: "Context menu option for opening a link in a new private tab")
+                let openNewPrivateTabTitle = Strings.Open_In_New_Private_Tab
                 let openNewPrivateTabAction =  UIAlertAction(title: openNewPrivateTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
                     self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in
                         self.tabManager.addTabAndSelect(NSURLRequest(URL: url), isPrivate: true)
@@ -57,7 +57,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 actionSheetController.addAction(openNewPrivateTabAction)
             }
 
-            let copyTitle = NSLocalizedString("Copy Link", comment: "Context menu item for copying a link URL to the clipboard")
+            let copyTitle = Strings.Copy_Link
             let copyAction = UIAlertAction(title: copyTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
                 let pasteBoard = UIPasteboard.generalPasteboard()
                 if let dialogTitle = dialogTitle, url = NSURL(string: dialogTitle) {
@@ -67,7 +67,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             }
             actionSheetController.addAction(copyAction)
 
-            let shareTitle = NSLocalizedString("Share Link", comment: "Context menu item for sharing a link URL")
+            let shareTitle = Strings.Share_Link
             let shareAction = UIAlertAction(title: shareTitle, style: UIAlertActionStyle.Default) { _ in
                 self.presentActivityViewController(url, sourceView: self.view, sourceRect: CGRect(origin: touchPoint, size: touchSize), arrowDirection: .Any)
                 telemetry(action: "share link", props: ["source" : "context menu"])
@@ -81,15 +81,15 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             }
 
             let photoAuthorizeStatus = PHPhotoLibrary.authorizationStatus()
-            let saveImageTitle = NSLocalizedString("Save Image", comment: "Context menu item for saving an image")
+            let saveImageTitle = Strings.Save_Image
             let saveImageAction = UIAlertAction(title: saveImageTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
                 if photoAuthorizeStatus == PHAuthorizationStatus.Authorized || photoAuthorizeStatus == PHAuthorizationStatus.NotDetermined {
                     self.getImage(url) { UIImageWriteToSavedPhotosAlbum($0, nil, nil, nil) }
                 } else {
-                    let accessDenied = UIAlertController(title: NSLocalizedString("Brave would like to access your Photos", comment: "See http://mzl.la/1G7uHo7"), message: NSLocalizedString("This allows you to save the image to your Camera Roll.", comment: "See http://mzl.la/1G7uHo7"), preferredStyle: UIAlertControllerStyle.Alert)
-                    let dismissAction = UIAlertAction(title: UIConstants.CancelString, style: UIAlertActionStyle.Default, handler: nil)
+                    let accessDenied = UIAlertController(title: Strings.Brave_would_like_to_access_your_photos, message: Strings.This_allows_you_to_save_the_image_to_your_CameraRoll, preferredStyle: UIAlertControllerStyle.Alert)
+                    let dismissAction = UIAlertAction(title: Strings.Cancel, style: UIAlertActionStyle.Default, handler: nil)
                     accessDenied.addAction(dismissAction)
-                    let settingsAction = UIAlertAction(title: NSLocalizedString("Open Settings", comment: "See http://mzl.la/1G7uHo7"), style: UIAlertActionStyle.Default ) { (action: UIAlertAction!) -> Void in
+                    let settingsAction = UIAlertAction(title: Strings.Open_Settings, style: UIAlertActionStyle.Default ) { (action: UIAlertAction!) -> Void in
                         UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
                     }
                     accessDenied.addAction(settingsAction)
@@ -99,7 +99,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             }
             actionSheetController.addAction(saveImageAction)
 
-            let copyImageTitle = NSLocalizedString("Copy Image", comment: "Context menu item for copying an image to the clipboard")
+            let copyImageTitle = Strings.Copy_Image
             let copyAction = UIAlertAction(title: copyImageTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) -> Void in
                 // put the actual image on the clipboard
                 // do this asynchronously just in case we're in a low bandwidth situation
@@ -137,7 +137,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         }
 
         actionSheetController.title = dialogTitle?.ellipsize(maxLength: ActionSheetTitleMaxLength)
-        let cancelAction = UIAlertAction(title: UIConstants.CancelString, style: UIAlertActionStyle.Cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: Strings.Cancel, style: UIAlertActionStyle.Cancel, handler: nil)
         actionSheetController.addAction(cancelAction)
         self.presentViewController(actionSheetController, animated: true, completion: nil)
     }

@@ -146,10 +146,10 @@ class LoginsHelper: BrowserHelper {
 
         let promptMessage: NSAttributedString
         if let username = login.username {
-            let promptStringFormat = NSLocalizedString("LoginsHelper.PromptSaveLogin.Title", value: "Save login %@ for %@?", comment: "Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site.")
+            let promptStringFormat = Strings.Save_login_for_template
             promptMessage = NSAttributedString(string: String(format: promptStringFormat, username, login.hostname))
         } else {
-            let promptStringFormat = NSLocalizedString("LoginsHelper.PromptSavePassword.Title", value: "Save password for %@?", comment: "Prompt for saving a password with no username. The parameter is the hostname of the site.")
+            let promptStringFormat = Strings.Save_password_for_template
             promptMessage = NSAttributedString(string: String(format: promptStringFormat, login.hostname))
         }
 
@@ -160,13 +160,13 @@ class LoginsHelper: BrowserHelper {
         snackBar = TimerSnackBar(attrText: promptMessage,
             img: UIImage(named: "key"),
             buttons: [
-                SnackButton(title: Strings.LoginsHelperDontSaveButtonTitle, accessibilityIdentifier: "SaveLoginPrompt.dontSaveButton", callback: { (bar: SnackBar) -> Void in
+                SnackButton(title: Strings.DontSave, accessibilityIdentifier: "", callback: { (bar: SnackBar) -> Void in
                     self.browser?.removeSnackbar(bar)
                     self.snackBar = nil
                     return
                 }),
 
-                SnackButton(title: Strings.LoginsHelperSaveLoginButtonTitle, accessibilityIdentifier: "SaveLoginPrompt.saveLoginButton", callback: { (bar: SnackBar) -> Void in
+                SnackButton(title: Strings.SaveLogin, accessibilityIdentifier: "", callback: { (bar: SnackBar) -> Void in
                     self.browser?.removeSnackbar(bar)
                     self.snackBar = nil
                     succeed().upon { _ in // move off main thread
@@ -186,10 +186,10 @@ class LoginsHelper: BrowserHelper {
 
         let formatted: String
         if let username = new.username {
-            let promptStringFormat = NSLocalizedString("LoginsHelper.PromptUpdateLogin.Title", value: "Update login %@ for %@?", comment: "Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site.")
+            let promptStringFormat = Strings.Update_login_for_template
             formatted = String(format: promptStringFormat, username, new.hostname)
         } else {
-            let promptStringFormat = NSLocalizedString("LoginsHelper.PromptUpdatePassword.Title", value: "Update password for %@?", comment: "Prompt for updating a password with no username. The parameter is the hostname of the site.")
+            let promptStringFormat = Strings.Update_password_for_template
             formatted = String(format: promptStringFormat, new.hostname)
         }
         let promptMessage = NSAttributedString(string: formatted)
@@ -201,13 +201,13 @@ class LoginsHelper: BrowserHelper {
         snackBar = TimerSnackBar(attrText: promptMessage,
             img: UIImage(named: "key"),
             buttons: [
-                SnackButton(title: Strings.LoginsHelperDontSaveButtonTitle, accessibilityIdentifier: "UpdateLoginPrompt.dontSaveButton", callback: { (bar: SnackBar) -> Void in
+                SnackButton(title: Strings.DontSave, accessibilityIdentifier: "", callback: { (bar: SnackBar) -> Void in
                     self.browser?.removeSnackbar(bar)
                     self.snackBar = nil
                     return
                 }),
 
-                SnackButton(title: Strings.LoginsHelperUpdateButtonTitle, accessibilityIdentifier: "UpdateLoginPrompt.updateButton", callback: { (bar: SnackBar) -> Void in
+                SnackButton(title: Strings.Update, accessibilityIdentifier: "", callback: { (bar: SnackBar) -> Void in
                     self.browser?.removeSnackbar(bar)
                     self.snackBar = nil
                     self.profile.logins.updateLoginByGUID(guid, new: new,

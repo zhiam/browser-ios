@@ -208,7 +208,7 @@ class ThumbnailCell: UICollectionViewCell {
         let removeButtonImage = UIImage(named: "TileCloseButton")
         removeButton.setImage(removeButtonImage, forState: UIControlState.Normal)
         removeButton.addTarget(self, action: #selector(ThumbnailCell.SELdidRemove), forControlEvents: UIControlEvents.TouchUpInside)
-        removeButton.accessibilityLabel = NSLocalizedString("Remove page", comment: "Button shown in editing mode to remove this site from the top sites panel.")
+        removeButton.accessibilityLabel = Strings.Remove_page
         removeButton.hidden = true
         removeButton.sizeToFit()
         let buttonCenterX = floor(removeButton.bounds.width/2)

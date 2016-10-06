@@ -54,7 +54,7 @@ extension BrowserViewController: TabManagerDelegate {
 
             scrollController.browser = selected
 
-            webView.accessibilityLabel = NSLocalizedString("Web content", comment: "Accessibility label for the main web content view")
+            webView.accessibilityLabel = Strings.Web_content
             webView.accessibilityIdentifier = "contentView"
             webView.accessibilityElementsHidden = false
 

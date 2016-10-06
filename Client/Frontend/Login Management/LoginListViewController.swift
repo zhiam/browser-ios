@@ -47,9 +47,9 @@ class LoginListViewController: UIViewController {
     private let loadingStateView = LoadingLoginsView()
 
     // Titles for selection/deselect/delete buttons
-    private let deselectAllTitle = NSLocalizedString("Deselect All", tableName: "LoginManager", comment: "Title for deselecting all selected logins")
-    private let selectAllTitle = NSLocalizedString("Select All", tableName: "LoginManager", comment: "Title for selecting all logins")
-    private let deleteLoginTitle = NSLocalizedString("Delete", tableName: "LoginManager", comment: "Button in login detail screen that deletes the current login")
+    private let deselectAllTitle = Strings.DeselectAll
+    private let selectAllTitle = Strings.SelectAll
+    private let deleteLoginTitle = Strings.Delete
 
     private lazy var selectionButton: UIButton = {
         let button = UIButton()
@@ -87,7 +87,7 @@ class LoginListViewController: UIViewController {
         self.view.backgroundColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: #selector(LoginListViewController.SELedit))
 
-        self.title = NSLocalizedString("Logins", tableName: "LoginManager", comment: "Title for Logins List View screen")
+        self.title = Strings.Logins
 
         searchView.delegate = self
         tableView.registerClass(LoginTableViewCell.self, forCellReuseIdentifier: LoginCellIdentifier)
@@ -530,7 +530,7 @@ private class NoLoginsView: UIView {
         let label = UILabel()
         label.font = LoginListUX.NoResultsFont
         label.textColor = LoginListUX.NoResultsTextColor
-        label.text = NSLocalizedString("No logins found", tableName: "LoginManager", comment: "Title displayed when no logins are found after searching")
+        label.text = Strings.NoLoginsFound
         return label
     }()
 

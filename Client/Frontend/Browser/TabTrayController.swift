@@ -120,7 +120,7 @@ class TabCell: UICollectionViewCell {
         applyStyle(style)
 
         self.accessibilityCustomActions = [
-            UIAccessibilityCustomAction(name: NSLocalizedString("Close", comment: "Accessibility label for action denoting closing a tab in tab list (tray)"), target: self.animator, selector: #selector(SELclose))
+            UIAccessibilityCustomAction(name: Strings.Close, target: self.animator, selector: #selector(SELclose))
         ]
     }
 
@@ -229,10 +229,10 @@ class TabCell: UICollectionViewCell {
 }
 
 struct PrivateModeStrings {
-    static let toggleAccessibilityLabel = NSLocalizedString("Private Mode", tableName: "PrivateBrowsing", comment: "Accessibility label for toggling on/off private mode")
-    static let toggleAccessibilityHint = NSLocalizedString("Turns private mode on or off", tableName: "PrivateBrowsing", comment: "Accessiblity hint for toggling on/off private mode")
-    static let toggleAccessibilityValueOn = NSLocalizedString("On", tableName: "PrivateBrowsing", comment: "Toggled ON accessibility value")
-    static let toggleAccessibilityValueOff = NSLocalizedString("Off", tableName: "PrivateBrowsing", comment: "Toggled OFF accessibility value")
+    static let toggleAccessibilityLabel = Strings.Private_Mode
+    static let toggleAccessibilityHint = Strings.Turns_private_mode_on_or_off
+    static let toggleAccessibilityValueOn = Strings.On
+    static let toggleAccessibilityValueOff = Strings.Off
 }
 
 protocol TabTrayDelegate: class {
@@ -270,7 +270,7 @@ class TabTrayController: UIViewController {
 #if !BRAVE_NO_PRIVATE_MODE
     lazy var togglePrivateMode: UIButton = {
         let button = UIButton()
-        button.setTitle(NSLocalizedString("Private", comment: "Private button title"), forState: .Normal)
+        button.setTitle(Strings.Private, forState: .Normal)
         button.setTitleColor(UIColor.blackColor(), forState: .Selected)
         button.setTitleColor(UIColor(white: 255/255.0, alpha: 1.0), forState: .Normal)
         button.titleLabel!.font = UIFont.systemFontOfSize(button.titleLabel!.font.pointSize + 2)
@@ -359,7 +359,7 @@ class TabTrayController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.accessibilityLabel = NSLocalizedString("Tabs Tray", comment: "Accessibility label for the Tabs Tray view.")
+        view.accessibilityLabel = Strings.Tabs_Tray
 
         navBar = UIView()
         navBar.backgroundColor = TabTrayControllerUX.BackgroundColor
@@ -367,7 +367,7 @@ class TabTrayController: UIViewController {
         addTabButton = UIButton()
         addTabButton.setImage(UIImage(named: "add")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         addTabButton.addTarget(self, action: #selector(TabTrayController.SELdidClickAddTab), forControlEvents: .TouchUpInside)
-        addTabButton.accessibilityLabel = NSLocalizedString("Add Tab", comment: "Accessibility label for the Add Tab button in the Tab Tray.")
+        addTabButton.accessibilityLabel = Strings.Add_Tab
         addTabButton.accessibilityIdentifier = "TabTrayController.addTabButton"
         addTabButton.tintColor = UIColor.whiteColor() // makes it stand out more
 
@@ -732,7 +732,7 @@ extension TabTrayController: UIScrollViewAccessibilityDelegate {
         }
 
         if indexPaths.count == 0 {
-            return NSLocalizedString("No tabs", comment: "Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray")
+            return Strings.No_tabs
         }
 
         let firstTab = indexPaths.first!.row + 1
@@ -740,10 +740,10 @@ extension TabTrayController: UIScrollViewAccessibilityDelegate {
         let tabCount = collectionView.numberOfItemsInSection(0)
 
         if (firstTab == lastTab) {
-            let format = NSLocalizedString("Tab %@ of %@", comment: "Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total.")
+            let format = Strings.Tab_xofx_template
             return String(format: format, NSNumber(integer: firstTab), NSNumber(integer: tabCount))
         } else {
-            let format = NSLocalizedString("Tabs %@ to %@ of %@", comment: "Message spoken by VoiceOver saying the range of tabs that are currently visible in Tabs Tray, along with the total number of tabs. E.g. \"Tabs 8 to 10 of 15\" says tabs 8, 9 and 10 are visible, out of 15 tabs total.")
+            let format = Strings.Tabs_xtoxofx_template
             return String(format: format, NSNumber(integer: firstTab), NSNumber(integer: lastTab), NSNumber(integer: tabCount))
         }
     }
@@ -761,7 +761,7 @@ extension TabTrayController: SwipeAnimatorDelegate {
         if let indexPath = collectionView.indexPathForCell(tabCell) {
             let tab = tabsToDisplay[indexPath.item]
             removeTabUtil(tabManager, tab: tab)
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Closing tab", comment: ""))
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, Strings.Closing_tab)
         }
     }
 }
@@ -821,7 +821,7 @@ private class TabManagerDataSource: NSObject, UICollectionViewDataSource {
         }
 
         tabCell.isAccessibilityElement = true
-        tabCell.accessibilityHint = NSLocalizedString("Swipe right or left with three fingers to close the tab.", comment: "Accessibility hint for tab tray's displayed tab.")
+        tabCell.accessibilityHint = Strings.Swipe_right_or_left_with_three_fingers_to_close_the_tab
 
         if let favIcon = tab.displayFavicon {
             tabCell.favicon.sd_setImageWithURL(NSURL(string: favIcon.url)!)
@@ -953,9 +953,7 @@ private class EmptyPrivateTabsView: UIView {
 
     private var learnMoreButton: UIButton = {
         let button = UIButton(type: .System)
-        button.setTitle(
-            NSLocalizedString("Learn More", tableName: "PrivateBrowsing", comment: "Text button displayed when there are no tabs open while in private mode"),
-            forState: .Normal)
+        button.setTitle(Strings.Learn_More, forState: .Normal)
         button.setTitleColor(UIConstants.PrivateModeTextHighlightColor, forState: .Normal)
         button.titleLabel?.font = EmptyPrivateTabsViewUX.LearnMoreFont
         return button
@@ -972,10 +970,8 @@ private class EmptyPrivateTabsView: UIView {
 
         backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
 
-        titleLabel.text =  NSLocalizedString("Private Browsing",
-            tableName: "PrivateBrowsing", comment: "Title displayed for when there are no open tabs while in private mode")
-        descriptionLabel.text = NSLocalizedString("Brave won't remember any of your history or cookies, but new bookmarks will be saved.",
-            tableName: "PrivateBrowsing", comment: "Description text displayed when there are no open tabs while in private mode")
+        titleLabel.text = Strings.Private_Browsing
+        descriptionLabel.text = Strings.Brave_wont_remember_any_of_your_history
 
         addSubview(titleLabel)
         addSubview(descriptionLabel)

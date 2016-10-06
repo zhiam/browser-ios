@@ -3,6 +3,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import UIKit
+import Shared
 
 protocol SearchEnginePickerDelegate {
     func searchEnginePicker(searchEnginePicker: SearchEnginePicker, didSelectSearchEngine engine: OpenSearchEngine?) -> Void
@@ -16,8 +17,8 @@ class SearchEnginePicker: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = NSLocalizedString("Default Search Engine", comment: "Title for default search engine picker.")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Cancel", comment: "Cancel title from search engine picker"), style: .Plain, target: self, action: #selector(SearchEnginePicker.SELcancel))
+        navigationItem.title = Strings.DefaultSearchEngine
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Strings.Cancel, style: .Plain, target: self, action: #selector(SearchEnginePicker.SELcancel))
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

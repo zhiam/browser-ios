@@ -9,6 +9,7 @@ import Shared
 import Storage
 import SnapKit
 import XCGLogger
+import Shared
 
 import ReadingList
 import MobileCoreServices
@@ -310,14 +311,14 @@ class BrowserViewController: UIViewController {
  #endif
 
         // UIAccessibilityCustomAction subclass holding an AccessibleAction instance does not work, thus unable to generate AccessibleActions and UIAccessibilityCustomActions "on-demand" and need to make them "persistent" e.g. by being stored in BVC
-        pasteGoAction = AccessibleAction(name: NSLocalizedString("Paste & Go", comment: "Paste the URL into the location bar and visit"), handler: { () -> Bool in
+        pasteGoAction = AccessibleAction(name: Strings.Paste_and_Go, handler: { () -> Bool in
             if let pasteboardContents = UIPasteboard.generalPasteboard().string {
                 self.urlBar(self.urlBar, didSubmitText: pasteboardContents)
                 return true
             }
             return false
         })
-        pasteAction = AccessibleAction(name: NSLocalizedString("Paste", comment: "Paste the URL into the location bar"), handler: { () -> Bool in
+        pasteAction = AccessibleAction(name: Strings.Paste, handler: { () -> Bool in
             if let pasteboardContents = UIPasteboard.generalPasteboard().string {
                 // Enter overlay mode and fire the text entered callback to make the search controller appear.
                 self.urlBar.enterOverlayMode(pasteboardContents, pasted: true)
@@ -326,7 +327,7 @@ class BrowserViewController: UIViewController {
             }
             return false
         })
-        copyAddressAction = AccessibleAction(name: NSLocalizedString("Copy Address", comment: "Copy the URL from the location bar"), handler: { () -> Bool in
+        copyAddressAction = AccessibleAction(name: Strings.Copy_Address, handler: { () -> Bool in
             if let url = self.urlBar.currentURL {
                 UIPasteboard.generalPasteboard().URL = url
             }

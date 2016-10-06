@@ -9,429 +9,14 @@
       </trans-unit>
       </body>
   </file>
-  <file original="Shared/Supporting Files/Localizable.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Amazon">
-        <source>Amazon</source>
-        <note>Tile title for Amazon</note>
-      </trans-unit>
-      <trans-unit id="DuckDuckGo">
-        <source>DuckDuckGo</source>
-        <note>Tile title for DDG</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.Advanced.Button">
-        <source>Advanced</source>
-        <note>Label for button to perform advanced actions on the error page</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.AdvancedWarning1.Text">
-        <source>Warning: we can't confirm your connection to this website is secure.</source>
-        <note>Warning text when clicking the Advanced button on error pages</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.AdvancedWarning2.Text">
-        <source>It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.</source>
-        <note>Additional warning text when clicking the Advanced button on error pages</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.CertWarning.Description">
-        <source>The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.</source>
-        <note>Warning text on the certificate error page</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.CertWarning.Title">
-        <source>Your connection is not private</source>
-        <note>Title on the certificate error page</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.GoBack.Button">
-        <source>Go Back</source>
-        <note>Label for button to go back from the error page</note>
-      </trans-unit>
-      <trans-unit id="ErrorPages.VisitOnce.Button">
-        <source>Visit site anyway</source>
-        <note>Button label to temporarily continue to the site from the certificate error page</note>
-      </trans-unit>
-      <trans-unit id="Facebook">
-        <source>Facebook</source>
-        <note>Tile title for Facebook</note>
-      </trans-unit>
-      <trans-unit id="Google">
-        <source>Google</source>
-        <note>Tile title for Google</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.Back.DiscoveryTitle">
-        <source>Back</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.CloseTab.DiscoveryTitle">
-        <source>Close Tab</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.Find.DiscoveryTitle">
-        <source>Find</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.Forward.DiscoveryTitle">
-        <source>Forward</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.NewPrivateTab.DiscoveryTitle">
-        <source>New Private Tab</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.NewTab.DiscoveryTitle">
-        <source>New Tab</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.Reload.DiscoveryTitle">
-        <source>Reload Page</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.SelectLocationBar.DiscoveryTitle">
-        <source>Select Location Bar</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.ShowNextTab.DiscoveryTitle">
-        <source>Show Next Tab</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="Hotkeys.ShowPreviousTab.DiscoveryTitle">
-        <source>Show Previous Tab</source>
-        <note>Label to display in the Discoverability overlay for keyboard shortcuts</note>
-      </trans-unit>
-      <trans-unit id="LoginsHelper.DontSave.Button">
-        <source>Don’t Save</source>
-        <note>Button to not save the user's password</note>
-      </trans-unit>
-      <trans-unit id="LoginsHelper.SaveLogin.Button">
-        <source>Save Login</source>
-        <note>Button to save the user's password</note>
-      </trans-unit>
-      <trans-unit id="LoginsHelper.Update.Button">
-        <source>Update</source>
-        <note>Button to update the user's password</note>
-      </trans-unit>
-      <trans-unit id="SendTo.Cancel.Button">
-        <source>Cancel</source>
-        <note>Button title for cancelling SendTo screen</note>
-      </trans-unit>
-      <trans-unit id="Settings.ClearPrivateData.Clear.Button">
-        <source>Clear Private Data</source>
-        <note>Button in settings that clears private data for the selected items.</note>
-      </trans-unit>
-      <trans-unit id="Settings.ClearPrivateData.SectionName">
-        <source>Clear Private Data</source>
-        <note>Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data.</note>
-      </trans-unit>
-      <trans-unit id="Settings.ClearPrivateData.Title">
-        <source>Clear Private Data</source>
-        <note>Title displayed in header of the setting panel.</note>
-      </trans-unit>
-      <trans-unit id="ShareTo.Cancel.Button">
-        <source>Cancel</source>
-        <note>Button title for cancelling Share screen</note>
-      </trans-unit>
-      <trans-unit id="TopSites.EmptyState.Description">
-        <source>Your most visited sites will show up here.</source>
-        <note>Description label for the empty Top Sites state.</note>
-      </trans-unit>
-      <trans-unit id="TopSites.EmptyState.Title">
-        <source>Welcome to Top Sites</source>
-        <note>The title for the empty Top Sites state</note>
-      </trans-unit>
-      <trans-unit id="Twitter">
-        <source>Twitter</source>
-        <note>Tile title for Twitter</note>
-      </trans-unit>
-      <trans-unit id="Wikipedia">
-        <source>Wikipedia</source>
-        <note>Tile title for Wikipedia</note>
-      </trans-unit>
-      <trans-unit id="Yahoo">
-        <source>Yahoo</source>
-        <note>Tile title for Yahoo</note>
-      </trans-unit>
-      <trans-unit id="YouTube">
-        <source>YouTube</source>
-        <note>Tile title for YouTube</note>
-      </trans-unit>
-      <trans-unit id="just now">
-        <source>just now</source>
-        <note>Relative time for a tab that was visited within the last few moments.</note>
-      </trans-unit>
-      <trans-unit id="more than a month ago">
-        <source>more than a month ago</source>
-        <note>Relative date for dates older than a month and less than two months.</note>
-      </trans-unit>
-      <trans-unit id="more than a week ago">
-        <source>more than a week ago</source>
-        <note>Description for a date more than a week ago, but less than a month ago.</note>
-      </trans-unit>
-      <trans-unit id="this week">
-        <source>this week</source>
-        <note>Relative date for date in past week.</note>
-      </trans-unit>
-      <trans-unit id="today at %@">
-        <source>today at %@</source>
-        <note>Relative date for date older than a minute.</note>
-      </trans-unit>
-      <trans-unit id="yesterday">
-        <source>yesterday</source>
-        <note>Relative date for yesterday.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="Shared/Supporting Files/Shared.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="%@ on %@">
-        <source>%1$@ on %2$@</source>
-        <note>A brief descriptive name for this app on this device, used for Send Tab and Synced Tabs. The first argument is the app name. The second argument is the device name.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="Storage/BookmarkPanel.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Desktop Bookmarks">
-        <source>Desktop Bookmarks</source>
-        <note>The folder name for the virtual folder that contains all desktop bookmarks.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="Storage/Storage.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Bookmarks Menu">
-        <source>Bookmarks Menu</source>
-        <note>The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.</note>
-      </trans-unit>
-      <trans-unit id="Bookmarks Toolbar">
-        <source>Bookmarks Toolbar</source>
-        <note>The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.</note>
-      </trans-unit>
-      <trans-unit id="Mobile Bookmarks">
-        <source>Mobile Bookmarks</source>
-        <note>The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.</note>
-      </trans-unit>
-      <trans-unit id="Unsorted Bookmarks">
-        <source>Unsorted Bookmarks</source>
-        <note>The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android.</note>
-      </trans-unit>
-      <trans-unit id="Untitled">
-        <source>Untitled</source>
-        <note>The default name for bookmark folders without titles.
-   The default name for bookmark nodes without titles.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/BookmarkPanelDeleteConfirm.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Are you sure you want to delete it and its contents?">
-        <source>Are you sure you want to delete it and its contents?</source>
-        <note>Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.</note>
-      </trans-unit>
-      <trans-unit id="Cancel">
-        <source>Cancel</source>
-        <note>Button label to cancel deletion when the user tried to delete a non-empty folder.</note>
-      </trans-unit>
-      <trans-unit id="Delete">
-        <source>Delete</source>
-        <note>Button label for the button that deletes a folder and all of its children.</note>
-      </trans-unit>
-      <trans-unit id="This folder isn't empty.">
-        <source>This folder isn't empty.</source>
-        <note>Title of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/BookmarksPanel.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Delete">
-        <source>Delete</source>
-        <note>Action button for deleting bookmarks in the bookmarks panel.</note>
-      </trans-unit>
-      <trans-unit id="Edit">
-        <source>Edit</source>
-        <note>Action button for editing bookmarks in the bookmarks panel.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/BraveInfo.plist" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="CFBundleDisplayName">
-        <source>Open in Brave</source>
-      </trans-unit>
-      </body>
-  </file>
-  <file original="brave/ClearHistoryConfirm.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Cancel">
-        <source>Cancel</source>
-        <note>The cancel button when confirming clear history.</note>
-      </trans-unit>
-      <trans-unit id="OK">
-        <source>OK</source>
-        <note>The confirmation button that clears history even when Sync is connected.</note>
-      </trans-unit>
-      <trans-unit id="This action will clear all of your private data, including history from your synced devices.">
-        <source>This action will clear all of your private data, including history from your synced devices.</source>
-        <note>Description of the confirmation dialog shown when a user tries to clear history that's synced to another device.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/ClearPrivateData.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Are you sure you want to clear all of your data? This will also close all open tabs.">
-        <source>Are you sure you want to clear all of your data? This will also close all open tabs.</source>
-        <note>Message shown in the dialog prompting users if they want to clear everything</note>
-      </trans-unit>
-      <trans-unit id="Browsing History">
-        <source>Browsing History</source>
-        <note>Settings item for clearing browsing history</note>
-      </trans-unit>
-      <trans-unit id="Cache">
-        <source>Cache</source>
-        <note>Settings item for clearing the cache</note>
-      </trans-unit>
-      <trans-unit id="Cancel">
-        <source>Cancel</source>
-        <note>Used as a button label in the dialog to cancel clear private data dialog</note>
-      </trans-unit>
-      <trans-unit id="Clear">
-        <source>Clear</source>
-        <note>Used as a button label in the dialog to Clear private data dialog</note>
-      </trans-unit>
-      <trans-unit id="Clear Everything">
-        <source>Clear Everything</source>
-        <note>Title of the Clear private data dialog.</note>
-      </trans-unit>
-      <trans-unit id="Cookies">
-        <source>Cookies</source>
-        <note>Settings item for clearing cookies</note>
-      </trans-unit>
-      <trans-unit id="Offline Website Data">
-        <source>Offline Website Data</source>
-        <note>Settings item for clearing website data</note>
-      </trans-unit>
-      <trans-unit id="Saved Logins">
-        <source>Saved Logins</source>
-        <note>Settings item for clearing passwords and login data</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/ClearPrivateDataConfirm.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Cancel">
-        <source>Cancel</source>
-        <note>The cancel button when confirming clear private data.</note>
-      </trans-unit>
-      <trans-unit id="OK">
-        <source>OK</source>
-        <note>The button that clears private data.</note>
-      </trans-unit>
-      <trans-unit id="This action will clear all of your private data. It cannot be undone.">
-        <source>This action will clear all of your private data. It cannot be undone.</source>
-        <note>Description of the confirmation dialog shown when a user tries to clear their private data.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/ErrorPages.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Open in Safari">
-        <source>Open in Safari</source>
-        <note>Shown in error pages for files that can't be shown and need to be downloaded.</note>
-      </trans-unit>
-      <trans-unit id="Try again">
-        <source>Try again</source>
-        <note>Shown in error pages on a button that will try to load the page again</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/FindInPage.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Done">
-        <source>Done</source>
-        <note>Done button in Find in Page Toolbar.</note>
-      </trans-unit>
-      <trans-unit id="Find in Page">
-        <source>Find in Page</source>
-        <note>Share action title
-   Text selection menu item</note>
-      </trans-unit>
-      <trans-unit id="Next in-page result">
-        <source>Next in-page result</source>
-        <note>Accessibility label for next result button in Find in Page Toolbar.</note>
-      </trans-unit>
-      <trans-unit id="Previous in-page result">
-        <source>Previous in-page result</source>
-        <note>Accessibility label for previous result button in Find in Page Toolbar.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/HistoryPanel.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Remove">
-        <source>Remove</source>
-        <note>Action button for deleting history entries in the history panel.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/Intro.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Introductory slide %@ of %@">
-        <source>Introductory slide %1$@ of %2$@</source>
-        <note>String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3</note>
-      </trans-unit>
-      <trans-unit id="Start Browsing">
-        <source>Start Browsing</source>
-        <note>No comment provided by engineer.</note>
-      </trans-unit>
-    </body>
-  </file>
   <file original="brave/Localizable.strings" source-language="en" datatype="plaintext">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
     </header>
     <body>
-      <trans-unit id="  Allow (siteName) to open iTunes?">
-        <source>  Allow (siteName) to open iTunes?</source>
-        <note>Ask user if site can open iTunes store URL</note>
+      <trans-unit id="%@ search">
+        <source>%@ search</source>
+        <note>Label for search engine buttons. The argument corresponds to the name of the search engine.</note>
       </trans-unit>
       <trans-unit id="+">
         <source>+</source>
@@ -459,13 +44,11 @@
       </trans-unit>
       <trans-unit id="Add Tab">
         <source>Add Tab</source>
-        <note>Accessibility label for the Add Tab button in the Tab Tray.
-   Accessibility label for the bottom toolbar add tab button</note>
+        <note>Accessibility label for the Add Tab button in the Tab Tray.</note>
       </trans-unit>
       <trans-unit id="Add to Reading List">
         <source>Add to Reading List</source>
-        <note>Accessibility label for action adding current page to reading list.
-   Name for button adding current article to reading list in reader mode</note>
+        <note>Accessibility label for action adding current page to reading list.</note>
       </trans-unit>
       <trans-unit id="Added page to Reading List">
         <source>Added page to Reading List</source>
@@ -475,21 +58,37 @@
         <source>Address and Search</source>
         <note>Accessibility label for address and search field, both words (Address, Search) are therefore nouns.</note>
       </trans-unit>
-      <trans-unit id="Ads and Trackers ">
-        <source>Ads and Trackers </source>
+      <trans-unit id="Ads and Trackers">
+        <source>Ads and Trackers</source>
         <note>individual blocking statistic title</note>
+      </trans-unit>
+      <trans-unit id="Advanced">
+        <source>Advanced</source>
+        <note>Label for button to perform advanced actions on the error page</note>
+      </trans-unit>
+      <trans-unit id="Allow %@ to open iTunes?">
+        <source>Allow %@ to open iTunes?</source>
+        <note>Ask user if site can open iTunes store URL</note>
       </trans-unit>
       <trans-unit id="Allow Brave to send info to improve our app">
         <source>Allow Brave to send info to improve our app</source>
         <note>option in settings screen</note>
       </trans-unit>
-      <trans-unit id="Allow Brave to send info to improve our app?">
-        <source>Allow Brave to send info to improve our app?</source>
-        <note>startup opt-in message</note>
-      </trans-unit>
       <trans-unit id="Always show">
         <source>Always show</source>
         <note>tabs bar show/hide option</note>
+      </trans-unit>
+      <trans-unit id="Are you sure you want to clear all of your data? This will also close all open tabs.">
+        <source>Are you sure you want to clear all of your data? This will also close all open tabs.</source>
+        <note>Message shown in the dialog prompting users if they want to clear everything</note>
+      </trans-unit>
+      <trans-unit id="Are you sure you want to delete it and its contents?">
+        <source>Are you sure you want to delete it and its contents?</source>
+        <note>Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.</note>
+      </trans-unit>
+      <trans-unit id="Are you sure?">
+        <source>Are you sure?</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Back">
         <source>Back</source>
@@ -501,10 +100,6 @@
       </trans-unit>
       <trans-unit id="Block Ads &amp; Tracking">
         <source>Block Ads &amp; Tracking</source>
-        <note>Brave panel individual toggle title</note>
-      </trans-unit>
-      <trans-unit id="Block Ads and Tracking">
-        <source>Block Ads and Tracking</source>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Block Phishing">
@@ -525,7 +120,7 @@
       </trans-unit>
       <trans-unit id="Block Scripts">
         <source>Block Scripts</source>
-        <note>Brave panel individual toggle title</note>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Block all cookies">
         <source>Block all cookies</source>
@@ -549,16 +144,19 @@
       </trans-unit>
       <trans-unit id="Bookmarks">
         <source>Bookmarks</source>
-        <note>Panel accessibility label
-   title for bookmarks panel</note>
+        <note>title for bookmarks panel</note>
+      </trans-unit>
+      <trans-unit id="Bookmarks Menu">
+        <source>Bookmarks Menu</source>
+        <note>The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.</note>
+      </trans-unit>
+      <trans-unit id="Bookmarks Toolbar">
+        <source>Bookmarks Toolbar</source>
+        <note>The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks and History Panel">
         <source>Bookmarks and History Panel</source>
         <note>Button to show the bookmarks and history panel</note>
-      </trans-unit>
-      <trans-unit id="Bookmarks you save will show up here.">
-        <source>Bookmarks you save will show up here.</source>
-        <note>Status label for the empty Bookmarks state.</note>
       </trans-unit>
       <trans-unit id="Brave Panel">
         <source>Brave Panel</source>
@@ -568,17 +166,28 @@
         <source>Brave Shield Defaults</source>
         <note>Section title for adbblock, tracking protection, HTTPS-E, and cookies</note>
       </trans-unit>
+      <trans-unit id="Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency.">
+        <source>Brave blocks ads.
+Brave stops trackers.
+Brave is designed for speed and efficiency.</source>
+        <note>Shown in intro screens</note>
+      </trans-unit>
       <trans-unit id="Brave for iOS Feedback">
         <source>Brave for iOS Feedback</source>
         <note>email subject</note>
       </trans-unit>
-      <trans-unit id="Brave privacy policy">
-        <source>Brave privacy policy</source>
-        <note>opt-in dialog link to privacy policy</note>
+      <trans-unit id="Brave is Faster,\nand here's why...">
+        <source>Brave is Faster,
+and here's why...</source>
+        <note>Shown in intro screens</note>
       </trans-unit>
-      <trans-unit id="Brave version">
-        <source>Brave version</source>
-        <note>brave version</note>
+      <trans-unit id="Brave keeps you safe as you browse.">
+        <source>Brave keeps you safe as you browse.</source>
+        <note>Shown in intro screens</note>
+      </trans-unit>
+      <trans-unit id="Brave won't remember any of your history or cookies, but new bookmarks will be saved.">
+        <source>Brave won't remember any of your history or cookies, but new bookmarks will be saved.</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Brave would like to access your Photos">
         <source>Brave would like to access your Photos</source>
@@ -588,17 +197,25 @@
         <source>Brightness</source>
         <note>Accessibility label for brightness adjustment slider in Reader Mode display settings</note>
       </trans-unit>
+      <trans-unit id="Browse with us and your privacy is protected, with nothing further to install, learn or configure.">
+        <source>Browse with us and your privacy is protected, with nothing further to install, learn or configure.</source>
+        <note>Shown in intro screens</note>
+      </trans-unit>
+      <trans-unit id="Browsing History">
+        <source>Browsing History</source>
+        <note>Settings item for clearing browsing history</note>
+      </trans-unit>
+      <trans-unit id="Cache">
+        <source>Cache</source>
+        <note>Settings item for clearing the cache</note>
+      </trans-unit>
       <trans-unit id="Call">
         <source>Call</source>
         <note>Alert Call Button</note>
       </trans-unit>
       <trans-unit id="Cancel">
         <source>Cancel</source>
-        <note>Alert Cancel Button
-   Button label to cancel entering a URL or search query
-   Cancel alert view
-   Cancel button
-   Cancel title from search engine picker</note>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Changes color theme.">
         <source>Changes color theme.</source>
@@ -608,9 +225,33 @@
         <source>Changes font type.</source>
         <note>Accessibility hint for the font type buttons in reader mode display settings</note>
       </trans-unit>
+      <trans-unit id="Clear">
+        <source>Clear</source>
+        <note>Used as a button label in the dialog to Clear private data dialog</note>
+      </trans-unit>
+      <trans-unit id="Clear Everything">
+        <source>Clear Everything</source>
+        <note>Title of the Clear private data dialog.</note>
+      </trans-unit>
+      <trans-unit id="Clear Private Data">
+        <source>Clear Private Data</source>
+        <note>Button in settings that clears private data for the selected items. Also used as section title in settings panel</note>
+      </trans-unit>
+      <trans-unit id="Clear Search">
+        <source>Clear Search</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
       <trans-unit id="Close">
         <source>Close</source>
         <note>Accessibility label for action denoting closing a tab in tab list (tray)</note>
+      </trans-unit>
+      <trans-unit id="Close Private Tabs">
+        <source>Close Private Tabs</source>
+        <note>Setting for closing private tabs</note>
+      </trans-unit>
+      <trans-unit id="Close Tab">
+        <source>Close Tab</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Closing tab">
         <source>Closing tab</source>
@@ -619,6 +260,14 @@
       <trans-unit id="Cookie Control">
         <source>Cookie Control</source>
         <note>Cookie settings option title</note>
+      </trans-unit>
+      <trans-unit id="Cookies">
+        <source>Cookies</source>
+        <note>Settings item for clearing cookies</note>
+      </trans-unit>
+      <trans-unit id="Copy">
+        <source>Copy</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Copy Address">
         <source>Copy Address</source>
@@ -636,14 +285,6 @@
         <source>Could not add page to Reading List. Maybe it's already there?</source>
         <note>Accessibility message e.g. spoken by VoiceOver after the user wanted to add current page to the Reading List and this was not done, likely because it already was in the Reading List, but perhaps also because of real failures.</note>
       </trans-unit>
-      <trans-unit id="Could not add page to Reading list">
-        <source>Could not add page to Reading list</source>
-        <note>Accessibility message e.g. spoken by VoiceOver after adding current webpage to the Reading List failed.</note>
-      </trans-unit>
-      <trans-unit id="Could not load page.">
-        <source>Could not load page.</source>
-        <note>Error message that is shown in settings when there was a problem loading</note>
-      </trans-unit>
       <trans-unit id="Dark">
         <source>Dark</source>
         <note>Dark theme setting in Reading View settings</note>
@@ -654,18 +295,23 @@
       </trans-unit>
       <trans-unit id="Default Search Engine">
         <source>Default Search Engine</source>
-        <note>Accessibility label for default search engine setting.
-   Open search section of settings
-   Title for default search engine picker.
-   Title for default search engine settings section.</note>
+        <note>Open search section of settings</note>
+      </trans-unit>
+      <trans-unit id="Delete">
+        <source>Delete</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Delete Folder">
         <source>Delete Folder</source>
-        <note>Delete Folder</note>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
-      <trans-unit id="Device">
-        <source>Device</source>
-        <note>Device</note>
+      <trans-unit id="Deselect All">
+        <source>Deselect All</source>
+        <note>Title for deselecting all selected logins</note>
+      </trans-unit>
+      <trans-unit id="Desktop Bookmarks">
+        <source>Desktop Bookmarks</source>
+        <note>The folder name for the virtual folder that contains all desktop bookmarks.</note>
       </trans-unit>
       <trans-unit id="Display Settings">
         <source>Display Settings</source>
@@ -677,15 +323,11 @@
       </trans-unit>
       <trans-unit id="Done">
         <source>Done</source>
-        <note>Done
-   Done button label for search settings table
-   Done button label on back forward list screen
-   Done button on left side of the Settings view controller title bar
-   Done editing button</note>
-      </trans-unit>
-      <trans-unit id="Double tap and hold to open history">
-        <source>Double tap and hold to open history</source>
         <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Don’t Save">
+        <source>Don’t Save</source>
+        <note>Button to not save the user's password</note>
       </trans-unit>
       <trans-unit id="Down">
         <source>Down</source>
@@ -693,7 +335,19 @@
       </trans-unit>
       <trans-unit id="Edit">
         <source>Edit</source>
-        <note>Edit</note>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Enter Search Mode">
+        <source>Enter Search Mode</source>
+        <note>Accessibility label for entering search mode for logins</note>
+      </trans-unit>
+      <trans-unit id="Find">
+        <source>Find</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Find in Page">
+        <source>Find in Page</source>
+        <note>Share action title</note>
       </trans-unit>
       <trans-unit id="Fingerprinting Methods">
         <source>Fingerprinting Methods</source>
@@ -706,7 +360,7 @@
       <trans-unit id="Fingerprinting\nProtection">
         <source>Fingerprinting
 Protection</source>
-        <note>Brave panel individual toggle title</note>
+        <note>blocking stat title</note>
       </trans-unit>
       <trans-unit id="Folder">
         <source>Folder</source>
@@ -720,17 +374,33 @@ Protection</source>
         <source>General</source>
         <note>General settings section title</note>
       </trans-unit>
+      <trans-unit id="Get ready to experience a Faster, Safer, Better Web.">
+        <source>Get ready to experience a Faster, Safer, Better Web.</source>
+        <note>Shown in intro screens</note>
+      </trans-unit>
+      <trans-unit id="Go Back">
+        <source>Go Back</source>
+        <note>Label for button to go back from the error page</note>
+      </trans-unit>
       <trans-unit id="HTTPS Everywhere">
         <source>HTTPS Everywhere</source>
-        <note>Brave panel individual toggle title</note>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="HTTPS Upgrades">
         <source>HTTPS Upgrades</source>
         <note>individual blocking statistic title</note>
       </trans-unit>
+      <trans-unit id="Hide">
+        <source>Hide</source>
+        <note>Hide password text selection menu item</note>
+      </trans-unit>
       <trans-unit id="History">
         <source>History</source>
         <note>Panel accessibility label</note>
+      </trans-unit>
+      <trans-unit id="In case you hit a speed bump">
+        <source>In case you hit a speed bump</source>
+        <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Increase text size">
         <source>Increase text size</source>
@@ -744,6 +414,18 @@ Protection</source>
         <source>Intro Tour Carousel</source>
         <note>Accessibility label for the introduction tour carousel</note>
       </trans-unit>
+      <trans-unit id="Introductory slide %@ of %@">
+        <source>Introductory slide %1$@ of %2$@</source>
+        <note>String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3</note>
+      </trans-unit>
+      <trans-unit id="It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.">
+        <source>It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.</source>
+        <note>Additional warning text when clicking the Advanced button on error pages</note>
+      </trans-unit>
+      <trans-unit id="Last modified %@">
+        <source>Last modified %@</source>
+        <note>Footer label describing when the login was last modified with the timestamp as the parameter</note>
+      </trans-unit>
       <trans-unit id="Last month">
         <source>Last month</source>
         <note>History tableview section header</note>
@@ -752,9 +434,9 @@ Protection</source>
         <source>Last week</source>
         <note>History tableview section header</note>
       </trans-unit>
-      <trans-unit id="Learn more: (link)">
-        <source>Learn more: (link)</source>
-        <note>opt-in dialog message</note>
+      <trans-unit id="Learn More">
+        <source>Learn More</source>
+        <note>Text button displayed when there are no tabs open while in private mode</note>
       </trans-unit>
       <trans-unit id="Light">
         <source>Light</source>
@@ -776,31 +458,25 @@ Protection</source>
         <source>Logins</source>
         <note>Label used as an item in Settings. When touched, the user will be navigated to the Logins/Password manager.</note>
       </trans-unit>
-      <trans-unit id="LoginsHelper.PromptSaveLogin.Title">
-        <source>Save login %1$@ for %2$@?</source>
-        <note>Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site.</note>
+      <trans-unit id="Logins will be permanently removed.">
+        <source>Logins will be permanently removed.</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
-      <trans-unit id="LoginsHelper.PromptSavePassword.Title">
-        <source>Save password for %@?</source>
-        <note>Prompt for saving a password with no username. The parameter is the hostname of the site.</note>
-      </trans-unit>
-      <trans-unit id="LoginsHelper.PromptUpdateLogin.Title">
-        <source>Update login %1$@ for %2$@?</source>
-        <note>Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site.</note>
-      </trans-unit>
-      <trans-unit id="LoginsHelper.PromptUpdatePassword.Title">
-        <source>Update password for %@?</source>
-        <note>Prompt for updating a password with no username. The parameter is the hostname of the site.</note>
+      <trans-unit id="Logins will be removed from all connected devices.">
+        <source>Logins will be removed from all connected devices.</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Mark as Read">
         <source>Mark as Read</source>
-        <note>Name for Mark as read button in reader mode
-   Title for the button that marks a reading list item as read</note>
+        <note>Name for Mark as read button in reader mode</note>
       </trans-unit>
       <trans-unit id="Mark as Unread">
         <source>Mark as Unread</source>
-        <note>Name for Mark as unread button in reader mode
-   Title for the button that marks a reading list item as unread</note>
+        <note>Name for Mark as unread button in reader mode</note>
+      </trans-unit>
+      <trans-unit id="Mobile Bookmarks">
+        <source>Mobile Bookmarks</source>
+        <note>The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.</note>
       </trans-unit>
       <trans-unit id="Name">
         <source>Name</source>
@@ -816,11 +492,27 @@ Protection</source>
       </trans-unit>
       <trans-unit id="New Folder">
         <source>New Folder</source>
-        <note>New Folder</note>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="New Private Tab">
+        <source>New Private Tab</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="New Tab">
+        <source>New Tab</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Next in-page result">
+        <source>Next in-page result</source>
+        <note>Accessibility label for next result button in Find in Page Toolbar.</note>
       </trans-unit>
       <trans-unit id="No">
         <source>No</source>
-        <note>no, do not allow brave to send info</note>
+        <note>For search suggestions prompt. This string should be short so it fits nicely on the prompt row.</note>
+      </trans-unit>
+      <trans-unit id="No logins found">
+        <source>No logins found</source>
+        <note>Title displayed when no logins are found after searching</note>
       </trans-unit>
       <trans-unit id="No tabs">
         <source>No tabs</source>
@@ -830,6 +522,22 @@ Protection</source>
         <source>OK</source>
         <note>OK button</note>
       </trans-unit>
+      <trans-unit id="Off">
+        <source>Off</source>
+        <note>Toggled OFF accessibility value</note>
+      </trans-unit>
+      <trans-unit id="Offline Website Data">
+        <source>Offline Website Data</source>
+        <note>Settings item for clearing website data</note>
+      </trans-unit>
+      <trans-unit id="On">
+        <source>On</source>
+        <note>Toggled ON accessibility value</note>
+      </trans-unit>
+      <trans-unit id="Open &amp; Fill">
+        <source>Open &amp; Fill</source>
+        <note>Open and Fill website text selection menu item</note>
+      </trans-unit>
       <trans-unit id="Open Desktop Site tab">
         <source>Open Desktop Site tab</source>
         <note>Share action title</note>
@@ -838,6 +546,10 @@ Protection</source>
         <source>Open In Background</source>
         <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
+      <trans-unit id="Open In New Private Tab">
+        <source>Open In New Private Tab</source>
+        <note>Context menu option for opening a link in a new private tab</note>
+      </trans-unit>
       <trans-unit id="Open Settings">
         <source>Open Settings</source>
         <note>See http://mzl.la/1G7uHo7</note>
@@ -845,6 +557,10 @@ Protection</source>
       <trans-unit id="Open articles in Reader View by tapping the book icon when it appears in the title bar.">
         <source>Open articles in Reader View by tapping the book icon when it appears in the title bar.</source>
         <note>See http://mzl.la/1LXbDOL</note>
+      </trans-unit>
+      <trans-unit id="Open in Safari">
+        <source>Open in Safari</source>
+        <note>Shown in error pages for files that can't be shown and need to be downloaded.</note>
       </trans-unit>
       <trans-unit id="Open in…">
         <source>Open in…</source>
@@ -862,23 +578,33 @@ Protection</source>
         <source>Paste &amp; Go</source>
         <note>Paste the URL into the location bar and visit</note>
       </trans-unit>
+      <trans-unit id="Previous in-page result">
+        <source>Previous in-page result</source>
+        <note>Accessibility label for previous result button in Find in Page Toolbar.</note>
+      </trans-unit>
       <trans-unit id="Privacy">
         <source>Privacy</source>
-        <note>Privacy section title
-   Privacy settings section title</note>
+        <note>Settings privacy section title</note>
       </trans-unit>
       <trans-unit id="Privacy Policy">
         <source>Privacy Policy</source>
-        <note>Show Brave Browser Privacy Policy page from the Privacy section in the settings.
-   Show Brave Browser Privacy Policy page from the Privacy section in the settings. See https://www.brave.com/privacy</note>
+        <note>Show Brave Browser Privacy Policy page from the Privacy section in the settings.</note>
       </trans-unit>
       <trans-unit id="Private">
         <source>Private</source>
         <note>Private button title</note>
       </trans-unit>
+      <trans-unit id="Private Browsing">
+        <source>Private Browsing</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
       <trans-unit id="Private Browsing Only">
         <source>Private Browsing Only</source>
         <note>Setting to keep app in private mode</note>
+      </trans-unit>
+      <trans-unit id="Private Mode">
+        <source>Private Mode</source>
+        <note>Accessibility label for toggling on/off private mode</note>
       </trans-unit>
       <trans-unit id="Private mode icon">
         <source>Private mode icon</source>
@@ -900,9 +626,13 @@ Protection</source>
         <source>Reload</source>
         <note>Accessibility Label for the browser toolbar Reload button</note>
       </trans-unit>
+      <trans-unit id="Reload Page">
+        <source>Reload Page</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
       <trans-unit id="Remove">
         <source>Remove</source>
-        <note>Title for the button that removes a reading list item</note>
+        <note>Action button for deleting_history_entries_in_the_history_panel.</note>
       </trans-unit>
       <trans-unit id="Remove from Reading List">
         <source>Remove from Reading List</source>
@@ -916,6 +646,10 @@ Protection</source>
         <source>Report a bug</source>
         <note>Show mail composer to report a bug.</note>
       </trans-unit>
+      <trans-unit id="Reveal">
+        <source>Reveal</source>
+        <note>Reveal password text selection menu item</note>
+      </trans-unit>
       <trans-unit id="Sans-serif">
         <source>Sans-serif</source>
         <note>Font type setting in the reading view settings</note>
@@ -924,13 +658,29 @@ Protection</source>
         <source>Save Image</source>
         <note>Context menu item for saving an image</note>
       </trans-unit>
+      <trans-unit id="Save Login">
+        <source>Save Login</source>
+        <note>Button to save the user's password</note>
+      </trans-unit>
       <trans-unit id="Save Logins">
         <source>Save Logins</source>
         <note>Setting to enable the built-in password manager</note>
       </trans-unit>
+      <trans-unit id="Save login %@ for %@?">
+        <source>Save login %1$@ for %2$@?</source>
+        <note>Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site.</note>
+      </trans-unit>
       <trans-unit id="Save pages to your Reading List by tapping the book plus icon in the Reader View controls.">
         <source>Save pages to your Reading List by tapping the book plus icon in the Reader View controls.</source>
         <note>See http://mzl.la/1LXbDOL</note>
+      </trans-unit>
+      <trans-unit id="Save password for %@?">
+        <source>Save password for %@?</source>
+        <note>Prompt for saving a password with no username. The parameter is the hostname of the site.</note>
+      </trans-unit>
+      <trans-unit id="Saved Logins">
+        <source>Saved Logins</source>
+        <note>Settings item for clearing passwords and login data</note>
       </trans-unit>
       <trans-unit id="Scripts Blocked">
         <source>Scripts Blocked</source>
@@ -938,11 +688,23 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Search">
         <source>Search</source>
-        <note>Navigation title for search settings.</note>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Search Input Field">
+        <source>Search Input Field</source>
+        <note>Accessibility label for the search input field in the Logins list</note>
+      </trans-unit>
+      <trans-unit id="Search Settings">
+        <source>Search Settings</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Search or enter address">
         <source>Search or enter address</source>
         <note>The text shown in the URL bar on about:home</note>
+      </trans-unit>
+      <trans-unit id="Search suggestions from %@">
+        <source>Search suggestions from %@</source>
+        <note>Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google</note>
       </trans-unit>
       <trans-unit id="Searches for the suggestion">
         <source>Searches for the suggestion</source>
@@ -951,6 +713,14 @@ Protection</source>
       <trans-unit id="Secure connection">
         <source>Secure connection</source>
         <note>Accessibility label for the lock icon, which is only present if the connection is secure</note>
+      </trans-unit>
+      <trans-unit id="Select All">
+        <source>Select All</source>
+        <note>Title for selecting all logins</note>
+      </trans-unit>
+      <trans-unit id="Select Location Bar">
+        <source>Select Location Bar</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Sepia">
         <source>Sepia</source>
@@ -962,8 +732,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Settings">
         <source>Settings</source>
-        <note>Accessibility label for the Settings button.
-   Settings</note>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Share">
         <source>Share</source>
@@ -989,19 +758,25 @@ Protection</source>
         <source>Show History</source>
         <note>Button to show the history list</note>
       </trans-unit>
+      <trans-unit id="Show Next Tab">
+        <source>Show Next Tab</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Show Previous Tab">
+        <source>Show Previous Tab</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
       <trans-unit id="Show Search Suggestions">
         <source>Show Search Suggestions</source>
         <note>Label for show search suggestions setting.</note>
       </trans-unit>
       <trans-unit id="Show Tabs">
         <source>Show Tabs</source>
-        <note>Accessibility label for the tabs button in the (top) browser toolbar
-   Accessibility Label for the tabs button in the browser toolbar</note>
+        <note>Accessibility Label for the tabs button in the browser toolbar</note>
       </trans-unit>
       <trans-unit id="Show Tabs Bar">
         <source>Show Tabs Bar</source>
-        <note>Setting to show/hide the tabs bar
-   tabs bar show/hide setting title</note>
+        <note>Setting to show/hide the tabs bar</note>
       </trans-unit>
       <trans-unit id="Show Tour">
         <source>Show Tour</source>
@@ -1018,6 +793,10 @@ Protection</source>
       <trans-unit id="Site shield settings">
         <source>Site shield settings</source>
         <note>Brave panel topmost title</note>
+      </trans-unit>
+      <trans-unit id="Start Browsing">
+        <source>Start Browsing</source>
+        <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Stop">
         <source>Stop</source>
@@ -1043,9 +822,17 @@ Protection</source>
         <source>Tabs Tray</source>
         <note>Accessibility label for the Tabs Tray view.</note>
       </trans-unit>
+      <trans-unit id="Tap the Brave button to temporarily disable ad blocking and privacy features.">
+        <source>Tap the Brave button to temporarily disable ad blocking and privacy features.</source>
+        <note>Shown in intro screens</note>
+      </trans-unit>
       <trans-unit id="Terms of Use">
         <source>Terms of Use</source>
         <note>Show Brave Browser TOS page from the Privacy section in the settings.</note>
+      </trans-unit>
+      <trans-unit id="The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.">
+        <source>The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.</source>
+        <note>Warning text on the certificate error page</note>
       </trans-unit>
       <trans-unit id="The page could not be displayed in Reader View.">
         <source>The page could not be displayed in Reader View.</source>
@@ -1055,9 +842,17 @@ Protection</source>
         <source>There was an error converting the page</source>
         <note>Error displayed when reader mode cannot be enabled</note>
       </trans-unit>
+      <trans-unit id="This action will clear all of your private data. It cannot be undone.">
+        <source>This action will clear all of your private data. It cannot be undone.</source>
+        <note>Description of the confirmation dialog shown when a user tries to clear their private data.</note>
+      </trans-unit>
       <trans-unit id="This allows you to save the image to your Camera Roll.">
         <source>This allows you to save the image to your Camera Roll.</source>
         <note>See http://mzl.la/1G7uHo7</note>
+      </trans-unit>
+      <trans-unit id="This folder isn't empty.">
+        <source>This folder isn't empty.</source>
+        <note>Title of the confirmation alert when the user tries to delete_a_folder_that_still_contains_bookmarks_and/or folders.</note>
       </trans-unit>
       <trans-unit id="Today">
         <source>Today</source>
@@ -1067,136 +862,125 @@ Protection</source>
         <source>Top sites</source>
         <note>Panel accessibility label</note>
       </trans-unit>
+      <trans-unit id="Try again">
+        <source>Try again</source>
+        <note>Shown in error pages on a button that will try to load the page again</note>
+      </trans-unit>
+      <trans-unit id="Turn on search suggestions?">
+        <source>Turn on search suggestions?</source>
+        <note>Prompt shown before enabling provider search queries</note>
+      </trans-unit>
+      <trans-unit id="Turns private mode on or off">
+        <source>Turns private mode on or off</source>
+        <note>Accessiblity hint for toggling on/off private mode</note>
+      </trans-unit>
       <trans-unit id="URL">
         <source>URL</source>
         <note>Bookmark URL</note>
+      </trans-unit>
+      <trans-unit id="Unsorted Bookmarks">
+        <source>Unsorted Bookmarks</source>
+        <note>The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android.</note>
+      </trans-unit>
+      <trans-unit id="Untitled">
+        <source>Untitled</source>
+        <note>The default name for bookmark item without titles.</note>
       </trans-unit>
       <trans-unit id="Up">
         <source>Up</source>
         <note>brave shield on/off toggle on state</note>
       </trans-unit>
+      <trans-unit id="Update">
+        <source>Update</source>
+        <note>Button to update the user's password</note>
+      </trans-unit>
+      <trans-unit id="Update login %@ for %@?">
+        <source>Update login %1$@ for %2$@?</source>
+        <note>Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site.</note>
+      </trans-unit>
+      <trans-unit id="Update password for %@?">
+        <source>Update password for %@?</source>
+        <note>Prompt for updating a password with no username. The parameter is the hostname of the site.</note>
+      </trans-unit>
       <trans-unit id="Version %@ (%@)">
         <source>Version %1$@ (%2$@)</source>
         <note>Version number of Brave shown in settings</note>
+      </trans-unit>
+      <trans-unit id="Visit site anyway">
+        <source>Visit site anyway</source>
+        <note>Button label to temporarily continue to the site from the certificate error page</note>
+      </trans-unit>
+      <trans-unit id="Warning: we can't confirm your connection to this website is secure.">
+        <source>Warning: we can't confirm your connection to this website is secure.</source>
+        <note>Warning text when clicking the Advanced button on error pages</note>
       </trans-unit>
       <trans-unit id="Web content">
         <source>Web content</source>
         <note>Accessibility label for the main web content view</note>
       </trans-unit>
+      <trans-unit id="Welcome to Brave.">
+        <source>Welcome to Brave.</source>
+        <note>Shown in intro screens</note>
+      </trans-unit>
+      <trans-unit id="Welcome to Top Sites">
+        <source>Welcome to Top Sites</source>
+        <note>The title for the empty Top Sites state</note>
+      </trans-unit>
       <trans-unit id="Welcome to your Reading List">
         <source>Welcome to your Reading List</source>
         <note>See http://mzl.la/1LXbDOL</note>
       </trans-unit>
+      <trans-unit id="When Leaving Private Browsing">
+        <source>When Leaving Private Browsing</source>
+        <note>Will be displayed in Settings under 'Close Private Tabs'</note>
+      </trans-unit>
       <trans-unit id="Yes">
         <source>Yes</source>
-        <note>yes, allow brave to send info</note>
+        <note>For search suggestions prompt. This string should be short so it fits nicely on the prompt row.</note>
       </trans-unit>
       <trans-unit id="Yesterday">
         <source>Yesterday</source>
         <note>History tableview section header</note>
       </trans-unit>
-      <trans-unit id="\n\n---\nApp &amp; Device Version Information:\n">
-        <source>
-
----
-App &amp; Device Version Information:
-</source>
-        <note>body</note>
+      <trans-unit id="Your connection is not private">
+        <source>Your connection is not private</source>
+        <note>Title on the certificate error page</note>
       </trans-unit>
-      <trans-unit id="iOS version">
-        <source>iOS version</source>
-        <note>iOS version</note>
+      <trans-unit id="Your most visited sites will show up here.">
+        <source>Your most visited sites will show up here.</source>
+        <note>Description label for the empty Top Sites state.</note>
+      </trans-unit>
+      <trans-unit id="just now">
+        <source>just now</source>
+        <note>Relative time for a tab that was visited within the last few moments.</note>
+      </trans-unit>
+      <trans-unit id="more than a month ago">
+        <source>more than a month ago</source>
+        <note>Relative date for dates older than a month and less than two months.</note>
+      </trans-unit>
+      <trans-unit id="more than a week ago">
+        <source>more than a week ago</source>
+        <note>Description for a date more than a week ago, but less than a month ago.</note>
+      </trans-unit>
+      <trans-unit id="password">
+        <source>password</source>
+        <note>Title for password row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="read">
         <source>read</source>
         <note>Accessibility label for read article in reading list. It's a past participle - functions as an adjective.</note>
       </trans-unit>
+      <trans-unit id="this week">
+        <source>this week</source>
+        <note>Relative date for date in past week.</note>
+      </trans-unit>
+      <trans-unit id="today at %@">
+        <source>today at %@</source>
+        <note>Relative date for date older than a minute.</note>
+      </trans-unit>
       <trans-unit id="unread">
         <source>unread</source>
         <note>Accessibility label for unread article in reading list. It's a past participle - functions as an adjective.</note>
-      </trans-unit>
-    </body>
-  </file>
-  <file original="brave/LoginManager.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="Are you sure?">
-        <source>Are you sure?</source>
-        <note>Prompt title when deleting logins</note>
-      </trans-unit>
-      <trans-unit id="Cancel">
-        <source>Cancel</source>
-        <note>Prompt option for cancelling out of deletion</note>
-      </trans-unit>
-      <trans-unit id="Clear Search">
-        <source>Clear Search</source>
-        <note>Accessibility message e.g. spoken by VoiceOver after the user taps the close button in the search field to clear the search and exit search mode</note>
-      </trans-unit>
-      <trans-unit id="Copy">
-        <source>Copy</source>
-        <note>Copy password text selection menu item</note>
-      </trans-unit>
-      <trans-unit id="Delete">
-        <source>Delete</source>
-        <note>Button in login detail screen that deletes the current login</note>
-      </trans-unit>
-      <trans-unit id="Deselect All">
-        <source>Deselect All</source>
-        <note>Title for deselecting all selected logins</note>
-      </trans-unit>
-      <trans-unit id="Enter Search Mode">
-        <source>Enter Search Mode</source>
-        <note>Accessibility label for entering search mode for logins</note>
-      </trans-unit>
-      <trans-unit id="Hide">
-        <source>Hide</source>
-        <note>Hide password text selection menu item</note>
-      </trans-unit>
-      <trans-unit id="Last modified %@">
-        <source>Last modified %@</source>
-        <note>Footer label describing when the login was last modified with the timestamp as the parameter</note>
-      </trans-unit>
-      <trans-unit id="Logins">
-        <source>Logins</source>
-        <note>Title for Logins List View screen</note>
-      </trans-unit>
-      <trans-unit id="Logins will be permanently removed.">
-        <source>Logins will be permanently removed.</source>
-        <note>Prompt message warning the user that deleting non-synced logins will permanently remove them</note>
-      </trans-unit>
-      <trans-unit id="Logins will be removed from all connected devices.">
-        <source>Logins will be removed from all connected devices.</source>
-        <note>Prompt message warning the user that deleted logins will remove logins from all connected devices</note>
-      </trans-unit>
-      <trans-unit id="No logins found">
-        <source>No logins found</source>
-        <note>Title displayed when no logins are found after searching</note>
-      </trans-unit>
-      <trans-unit id="Open &amp; Fill">
-        <source>Open &amp; Fill</source>
-        <note>Open and Fill website text selection menu item</note>
-      </trans-unit>
-      <trans-unit id="Reveal">
-        <source>Reveal</source>
-        <note>Reveal password text selection menu item</note>
-      </trans-unit>
-      <trans-unit id="Search">
-        <source>Search</source>
-        <note>Title for the search field at the top of the Logins list screen</note>
-      </trans-unit>
-      <trans-unit id="Search Input Field">
-        <source>Search Input Field</source>
-        <note>Accessibility label for the search input field in the Logins list</note>
-      </trans-unit>
-      <trans-unit id="Select All">
-        <source>Select All</source>
-        <note>Title for selecting all logins</note>
-      </trans-unit>
-      <trans-unit id="password">
-        <source>password</source>
-        <note>Title for password row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="username">
         <source>username</source>
@@ -1208,82 +992,14 @@ App &amp; Device Version Information:
       </trans-unit>
     </body>
   </file>
-  <file original="brave/PrivateBrowsing.strings" source-language="en" datatype="plaintext">
+  <file original="brave/BraveInfo.plist" source-language="en" datatype="plaintext">
     <header>
       <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
     </header>
     <body>
-      <trans-unit id="Brave won't remember any of your history or cookies, but new bookmarks will be saved.">
-        <source>Brave won't remember any of your history or cookies, but new bookmarks will be saved.</source>
-        <note>Description text displayed when there are no open tabs while in private mode</note>
+      <trans-unit id="CFBundleDisplayName">
+        <source>Open in Brave</source>
       </trans-unit>
-      <trans-unit id="Close Private Tabs">
-        <source>Close Private Tabs</source>
-        <note>Setting for closing private tabs</note>
-      </trans-unit>
-      <trans-unit id="Learn More">
-        <source>Learn More</source>
-        <note>Text button displayed when there are no tabs open while in private mode</note>
-      </trans-unit>
-      <trans-unit id="Off">
-        <source>Off</source>
-        <note>Toggled OFF accessibility value</note>
-      </trans-unit>
-      <trans-unit id="On">
-        <source>On</source>
-        <note>Toggled ON accessibility value</note>
-      </trans-unit>
-      <trans-unit id="Open In New Private Tab">
-        <source>Open In New Private Tab</source>
-        <note>Context menu option for opening a link in a new private tab</note>
-      </trans-unit>
-      <trans-unit id="Private Browsing">
-        <source>Private Browsing</source>
-        <note>Title displayed for when there are no open tabs while in private mode</note>
-      </trans-unit>
-      <trans-unit id="Private Mode">
-        <source>Private Mode</source>
-        <note>Accessibility label for toggling on/off private mode</note>
-      </trans-unit>
-      <trans-unit id="Turns private mode on or off">
-        <source>Turns private mode on or off</source>
-        <note>Accessiblity hint for toggling on/off private mode</note>
-      </trans-unit>
-      <trans-unit id="When Leaving Private Browsing">
-        <source>When Leaving Private Browsing</source>
-        <note>Will be displayed in Settings under 'Close Private Tabs'</note>
-      </trans-unit>
-    </body>
+      </body>
   </file>
-  <file original="brave/Search.strings" source-language="en" datatype="plaintext">
-    <header>
-      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0" build-num="8A218a"/>
-    </header>
-    <body>
-      <trans-unit id="%@ search">
-        <source>%@ search</source>
-        <note>Label for search engine buttons. The argument corresponds to the name of the search engine.</note>
-      </trans-unit>
-      <trans-unit id="No">
-        <source>No</source>
-        <note>For search suggestions prompt. This string should be short so it fits nicely on the prompt row.</note>
-      </trans-unit>
-      <trans-unit id="Search Settings">
-        <source>Search Settings</source>
-        <note>Label for search settings button.</note>
-      </trans-unit>
-      <trans-unit id="Search suggestions from %@">
-        <source>Search suggestions from %@</source>
-        <note>Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google</note>
-      </trans-unit>
-      <trans-unit id="Turn on search suggestions?">
-        <source>Turn on search suggestions?</source>
-        <note>Prompt shown before enabling provider search queries</note>
-      </trans-unit>
-      <trans-unit id="Yes">
-        <source>Yes</source>
-        <note>For search suggestions prompt. This string should be short so it fits nicely on the prompt row.</note>
-      </trans-unit>
-    </body>
-  </file>
-</xliff>
+  </xliff>

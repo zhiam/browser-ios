@@ -95,7 +95,7 @@ class BrowserLocationView: UIView {
     }
 
     lazy var placeholder: NSAttributedString = {
-        let placeholderText = NSLocalizedString("Search or enter address", comment: "The text shown in the URL bar on about:home")
+        let placeholderText = Strings.Search_or_enter_address
         return NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
     }()
 
@@ -119,7 +119,7 @@ class BrowserLocationView: UIView {
         lockImageView.hidden = true
         lockImageView.isAccessibilityElement = true
         lockImageView.contentMode = UIViewContentMode.Center
-        lockImageView.accessibilityLabel = NSLocalizedString("Secure connection", comment: "Accessibility label for the lock icon, which is only present if the connection is secure")
+        lockImageView.accessibilityLabel = Strings.Secure_connection
         return lockImageView
     }()
 
@@ -129,7 +129,7 @@ class BrowserLocationView: UIView {
         icon.alpha = 0
         icon.isAccessibilityElement = true
         icon.contentMode = UIViewContentMode.ScaleAspectFit
-        icon.accessibilityLabel = NSLocalizedString("Private mode icon", comment: "Private mode icon next to location string")
+        icon.accessibilityLabel = Strings.Private_mode_icon
         return icon
     }()
 
@@ -139,8 +139,8 @@ class BrowserLocationView: UIView {
         readerModeButton.addTarget(self, action: #selector(BrowserLocationView.SELtapReaderModeButton), forControlEvents: .TouchUpInside)
         readerModeButton.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(BrowserLocationView.SELlongPressReaderModeButton(_:))))
         readerModeButton.isAccessibilityElement = true
-        readerModeButton.accessibilityLabel = NSLocalizedString("Reader View", comment: "Accessibility label for the Reader View button")
-        readerModeButton.accessibilityCustomActions = [UIAccessibilityCustomAction(name: NSLocalizedString("Add to Reading List", comment: "Accessibility label for action adding current page to reading list."), target: self, selector: #selector(BrowserLocationView.SELreaderModeCustomAction))]
+        readerModeButton.accessibilityLabel = Strings.Reader_View
+        readerModeButton.accessibilityCustomActions = [UIAccessibilityCustomAction(name: Strings.Add_to_Reading_List, target: self, selector: #selector(BrowserLocationView.SELreaderModeCustomAction))]
         return readerModeButton
     }()
 

@@ -14,9 +14,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = NSLocalizedString("Settings", comment: "Settings")
+        navigationItem.title = Strings.Settings
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: NSLocalizedString("Done", comment: "Done button on left side of the Settings view controller title bar"),
+            title: Strings.Done,
             style: UIBarButtonItemStyle.Done,
             target: navigationController, action: #selector(SettingsNavigationController.SELdone))
         navigationItem.leftBarButtonItem?.accessibilityIdentifier = "AppSettingsTableViewController.navigationItem.leftBarButtonItem"
@@ -27,26 +27,16 @@ class AppSettingsTableViewController: SettingsTableViewController {
     override func generateSettings() -> [SettingSection] {
         var settings = [SettingSection]()
 
-        let privacyTitle = NSLocalizedString("Privacy", comment: "Privacy section title")
         let accountDebugSettings: [Setting]
-        if AppConstants.BuildChannel != .Aurora {
-            accountDebugSettings = [
-                // Debug settings:
-//                RequirePasswordDebugSetting(settings: self),
-//                RequireUpgradeDebugSetting(settings: self),
-//                ForgetSyncAuthStateDebugSetting(settings: self),
-            ]
-        } else {
-            accountDebugSettings = []
-        }
+        accountDebugSettings = []
 
         let prefs = profile.prefs
         var generalSettings = [
             SearchSetting(settings: self),
             BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
-                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
+                titleText: Strings.BlockPopupWindows),
             BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
-                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
+                titleText: Strings.Save_Logins),
         ]
 
         let accountChinaSyncSetting: [Setting]
@@ -69,7 +59,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
 //                SyncNowSetting(settings: self)
             ] + accountChinaSyncSetting + accountDebugSettings)]
 
-        settings += [ SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings)]
+        settings += [ SettingSection(title: NSAttributedString(string: Strings.General), children: generalSettings)]
 
         var privacySettings = [Setting]()
 
@@ -79,8 +69,8 @@ class AppSettingsTableViewController: SettingsTableViewController {
             BoolSetting(prefs: prefs,
                 prefKey: "settings.closePrivateTabs",
                 defaultValue: false,
-                titleText: NSLocalizedString("Close Private Tabs", tableName: "PrivateBrowsing", comment: "Setting for closing private tabs"),
-                statusText: NSLocalizedString("When Leaving Private Browsing", tableName: "PrivateBrowsing", comment: "Will be displayed in Settings under 'Close Private Tabs'"))
+                titleText: Strings.Close_Private_Tabs,
+                statusText:Strings.When_Leaving_Private_Browsing)
         ]
 
         privacySettings += [

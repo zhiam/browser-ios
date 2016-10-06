@@ -444,8 +444,6 @@
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
 		EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
-		EB2896BD1DA4917100792677 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB2896B61DA4917100792677 /* Localizable.strings */; };
-		EB2896ED1DA495A000792677 /* BraveShareToInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB2896E61DA495A000792677 /* BraveShareToInfoPlist.strings */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
@@ -453,6 +451,8 @@
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
 		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
+		EBFB04FC1DA71EB8002C50FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBFB04F41DA71EB8002C50FA /* Localizable.strings */; };
+		EBFB05061DA71EDB002C50FA /* BraveShareToInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBFB04FE1DA71EDB002C50FA /* BraveShareToInfoPlist.strings */; };
 		ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */ = {isa = PBXBuildFile; fileRef = C33D93B9B0CD0D4AD9E461AE /* ODRefreshControl.h */; };
 		ED86C167052A9F70FAF747C4 /* log_reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FEEC5779DCE986A2ADCC758 /* log_reader.h */; };
 		EE1BFCBBE63887C050C3658B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F3EC59F5985F716F89D46B /* ArrayExtensions.swift */; };
@@ -1221,18 +1221,6 @@
 		EA9AEBF65F0394D67D7135DC /* CertStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CertStore.swift; path = ./Storage/CertStore.swift; sourceTree = "<group>"; };
 		EAF179D957607D89D4BDC9A3 /* crc32c.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc32c.h; path = ./brave/ThirdParty/leveldb/util/crc32c.h; sourceTree = "<group>"; };
 		EB0F42511C9A46D800676650 /* BraveShareTo.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BraveShareTo.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB2896B71DA4917100792677 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EB2896B81DA4917100792677 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EB2896B91DA4917100792677 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EB2896BA1DA4917100792677 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EB2896BB1DA4917100792677 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EB2896BC1DA4917100792677 /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/Localizable.strings; sourceTree = "<group>"; };
-		EB2896E71DA495A000792677 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
-		EB2896E81DA495A000792677 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
-		EB2896E91DA495A000792677 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
-		EB2896EA1DA495A000792677 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
-		EB2896EB1DA495A000792677 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
-		EB2896EC1DA495A000792677 /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
 		EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSURLProtectionSpaceExtensions.swift; path = ./Utils/Extensions/NSURLProtectionSpaceExtensions.swift; sourceTree = "<group>"; };
 		EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroScreenTest.swift; sourceTree = "<group>"; };
 		EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpsEverywhereTest.swift; sourceTree = "<group>"; };
@@ -1245,6 +1233,20 @@
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
+		EBFB04F51DA71EB8002C50FA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EBFB04F61DA71EB8002C50FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EBFB04F71DA71EB8002C50FA /* id-ID */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "id-ID"; path = "id-ID.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		EBFB04F81DA71EB8002C50FA /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EBFB04F91DA71EB8002C50FA /* ko-KR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ko-KR"; path = "ko-KR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		EBFB04FA1DA71EB8002C50FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EBFB04FB1DA71EB8002C50FA /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/Localizable.strings; sourceTree = "<group>"; };
+		EBFB04FF1DA71EDB002C50FA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
+		EBFB05001DA71EDB002C50FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
+		EBFB05011DA71EDB002C50FA /* id-ID */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "id-ID"; path = "id-ID.lproj/BraveShareToInfoPlist.strings"; sourceTree = "<group>"; };
+		EBFB05021DA71EDB002C50FA /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
+		EBFB05031DA71EDB002C50FA /* ko-KR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ko-KR"; path = "ko-KR.lproj/BraveShareToInfoPlist.strings"; sourceTree = "<group>"; };
+		EBFB05041DA71EDB002C50FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
+		EBFB05051DA71EDB002C50FA /* zh */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh; path = zh.lproj/BraveShareToInfoPlist.strings; sourceTree = "<group>"; };
 		ECDCB9A9BE94C1AA75F29565 /* ReadingListServerMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListServerMetadata.swift; path = ./ReadingList/ReadingListServerMetadata.swift; sourceTree = "<group>"; };
 		ED441214938259EBE2ACD8DF /* BraveRightSidePanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveRightSidePanel.swift; path = ./brave/src/frontend/sidepanels/BraveRightSidePanel.swift; sourceTree = "<group>"; };
 		EE6184965624CC221A1AEEDE /* FindInPageHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FindInPageHelper.swift; path = ./Client/Frontend/Browser/FindInPageHelper.swift; sourceTree = "<group>"; };
@@ -1575,7 +1577,7 @@
 		1C8FD3566C50CE373834F8B4 /* BraveShareTo */ = {
 			isa = PBXGroup;
 			children = (
-				EB2896E51DA495A000792677 /* BraveShareTo */,
+				EBFB04FD1DA71EDB002C50FA /* BraveShareTo */,
 				3D896344B52D542A2D6AF48F /* BraveShareToInfo.plist */,
 				920E53BE1E3B81364A9985D3 /* ShareToBraveViewController.swift */,
 			);
@@ -2051,7 +2053,7 @@
 		8C6D919BD7E164B0A94BA52B /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				EB2896B51DA4917100792677 /* brave */,
+				EBFB04F31DA71EB8002C50FA /* brave */,
 				538F30C28035E418BB50BF1C /* en.lproj */,
 			);
 			name = resources;
@@ -2601,24 +2603,6 @@
 			name = Utils;
 			sourceTree = "<group>";
 		};
-		EB2896B51DA4917100792677 /* brave */ = {
-			isa = PBXGroup;
-			children = (
-				EB2896B61DA4917100792677 /* Localizable.strings */,
-			);
-			name = brave;
-			path = brave/l10n/brave;
-			sourceTree = "<group>";
-		};
-		EB2896E51DA495A000792677 /* BraveShareTo */ = {
-			isa = PBXGroup;
-			children = (
-				EB2896E61DA495A000792677 /* BraveShareToInfoPlist.strings */,
-			);
-			name = BraveShareTo;
-			path = brave/l10n/BraveShareTo;
-			sourceTree = "<group>";
-		};
 		EB36616B1D9C3CEC00445C92 /* ui */ = {
 			isa = PBXGroup;
 			children = (
@@ -2649,6 +2633,24 @@
 			);
 			name = xcconfig;
 			path = brave/xcconfig;
+			sourceTree = "<group>";
+		};
+		EBFB04F31DA71EB8002C50FA /* brave */ = {
+			isa = PBXGroup;
+			children = (
+				EBFB04F41DA71EB8002C50FA /* Localizable.strings */,
+			);
+			name = brave;
+			path = brave/l10n/brave;
+			sourceTree = "<group>";
+		};
+		EBFB04FD1DA71EDB002C50FA /* BraveShareTo */ = {
+			isa = PBXGroup;
+			children = (
+				EBFB04FE1DA71EDB002C50FA /* BraveShareToInfoPlist.strings */,
+			);
+			name = BraveShareTo;
+			path = brave/l10n/BraveShareTo;
 			sourceTree = "<group>";
 		};
 		F1D471871D777C7C007B443D /* OnePassword */ = {
@@ -3185,6 +3187,8 @@
 				de,
 				id,
 				zh,
+				"id-ID",
+				"ko-KR",
 			);
 			mainGroup = F84B21B51A090F8100AAB793;
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
@@ -3333,7 +3337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F3A7ACB3815515E64F34F35 /* Brave.entitlements in Resources */,
-				EB2896ED1DA495A000792677 /* BraveShareToInfoPlist.strings in Resources */,
+				EBFB05061DA71EDB002C50FA /* BraveShareToInfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3360,7 +3364,7 @@
 				886E3B0001BC705ACFC4AD45 /* adInfo-wrapper.js in Resources */,
 				507ACE2A12D675DAF9C79198 /* adInfo.js in Resources */,
 				E4309BC56F1431FEA791E157 /* BlankTargetDetector.js in Resources */,
-				EB2896BD1DA4917100792677 /* Localizable.strings in Resources */,
+				EBFB04FC1DA71EB8002C50FA /* Localizable.strings in Resources */,
 				6EA5759D8C8DB32D81620895 /* ElementAtPoint.js in Resources */,
 				A0A20F790B43EED1614DC822 /* FingerprintingProtection.js in Resources */,
 				4C8CFF069B42CD78C72CC4F4 /* HideEmptyImages.js in Resources */,
@@ -3943,28 +3947,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		EB2896B61DA4917100792677 /* Localizable.strings */ = {
+		EBFB04F41DA71EB8002C50FA /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EB2896B71DA4917100792677 /* de */,
-				EB2896B81DA4917100792677 /* en */,
-				EB2896B91DA4917100792677 /* id */,
-				EB2896BA1DA4917100792677 /* ja */,
-				EB2896BB1DA4917100792677 /* ru */,
-				EB2896BC1DA4917100792677 /* zh */,
+				EBFB04F51DA71EB8002C50FA /* de */,
+				EBFB04F61DA71EB8002C50FA /* en */,
+				EBFB04F71DA71EB8002C50FA /* id-ID */,
+				EBFB04F81DA71EB8002C50FA /* ja */,
+				EBFB04F91DA71EB8002C50FA /* ko-KR */,
+				EBFB04FA1DA71EB8002C50FA /* ru */,
+				EBFB04FB1DA71EB8002C50FA /* zh */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		EB2896E61DA495A000792677 /* BraveShareToInfoPlist.strings */ = {
+		EBFB04FE1DA71EDB002C50FA /* BraveShareToInfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EB2896E71DA495A000792677 /* de */,
-				EB2896E81DA495A000792677 /* en */,
-				EB2896E91DA495A000792677 /* id */,
-				EB2896EA1DA495A000792677 /* ja */,
-				EB2896EB1DA495A000792677 /* ru */,
-				EB2896EC1DA495A000792677 /* zh */,
+				EBFB04FF1DA71EDB002C50FA /* de */,
+				EBFB05001DA71EDB002C50FA /* en */,
+				EBFB05011DA71EDB002C50FA /* id-ID */,
+				EBFB05021DA71EDB002C50FA /* ja */,
+				EBFB05031DA71EDB002C50FA /* ko-KR */,
+				EBFB05041DA71EDB002C50FA /* ru */,
+				EBFB05051DA71EDB002C50FA /* zh */,
 			);
 			name = BraveShareToInfoPlist.strings;
 			sourceTree = "<group>";

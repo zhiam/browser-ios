@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import UIKit
+import Shared
 
 class SearchSettingsTableViewController: UITableViewController {
     private let SectionDefault = 0
@@ -19,7 +20,7 @@ class SearchSettingsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = NSLocalizedString("Search", comment: "Navigation title for search settings.")
+        navigationItem.title = Strings.Search
 
         // To allow re-ordering the list of search engines at all times.
         tableView.editing = true
@@ -30,7 +31,7 @@ class SearchSettingsTableViewController: UITableViewController {
 
         // Insert Done button if being presented outside of the Settings Nav stack
         if !(self.navigationController is SettingsNavigationController) {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Done", comment: "Done button label for search settings table"), style: .Done, target: self, action: #selector(SearchSettingsTableViewController.SELDismiss))
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Strings.Done, style: .Done, target: self, action: #selector(SearchSettingsTableViewController.SELDismiss))
         }
 
         let footer = SettingsTableSectionHeaderFooterView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 44))
@@ -51,14 +52,14 @@ class SearchSettingsTableViewController: UITableViewController {
                 engine = model.defaultEngine
                 cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
                 cell.editingAccessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-                cell.accessibilityLabel = NSLocalizedString("Default Search Engine", comment: "Accessibility label for default search engine setting.")
+                cell.accessibilityLabel = Strings.DefaultSearchEngine
                 cell.accessibilityValue = engine.shortName
                 cell.textLabel?.text = engine.shortName
                 cell.imageView?.image = engine.image?.createScaled(IconSize)
 
             case ItemDefaultSuggestions:
                 cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
-                cell.textLabel?.text = NSLocalizedString("Show Search Suggestions", comment: "Label for show search suggestions setting.")
+                cell.textLabel?.text = Strings.Show_Search_Suggestions
                 let toggle = UISwitch()
                 toggle.onTintColor = UIConstants.ControlTintColor
                 toggle.addTarget(self, action: #selector(SearchSettingsTableViewController.SELdidToggleSearchSuggestions(_:)), forControlEvents: UIControlEvents.ValueChanged)
@@ -154,9 +155,9 @@ class SearchSettingsTableViewController: UITableViewController {
         let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier(SectionHeaderIdentifier) as! SettingsTableSectionHeaderFooterView
         var sectionTitle: String
         if section == SectionDefault {
-            sectionTitle = NSLocalizedString("Default Search Engine", comment: "Title for default search engine settings section.")
+            sectionTitle = Strings.DefaultSearchEngine
         } else {
-            sectionTitle = NSLocalizedString("Quick-search Engines", comment: "Title for quick-search engines settings section.")
+            sectionTitle = Strings.Quicksearch_Engines
         }
         headerView.titleLabel.text = sectionTitle
 

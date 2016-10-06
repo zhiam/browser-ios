@@ -10,13 +10,13 @@ public func titleForSpecialGUID(guid: GUID) -> String? {
     case BookmarkRoots.RootGUID:
         return "<Root>"
     case BookmarkRoots.MobileFolderGUID:
-        return BookmarksFolderTitleMobile
+        return Strings.BookmarksFolderTitleMobile
     case BookmarkRoots.ToolbarFolderGUID:
-        return BookmarksFolderTitleToolbar
+        return Strings.BookmarksFolderTitleToolbar
     case BookmarkRoots.MenuFolderGUID:
-        return BookmarksFolderTitleMenu
+        return Strings.BookmarksFolderTitleMenu
     case BookmarkRoots.UnfiledFolderGUID:
-        return BookmarksFolderTitleUnsorted
+        return Strings.BookmarksFolderTitleUnsorted
     default:
         return nil
     }
@@ -26,7 +26,7 @@ extension SQLiteBookmarks: ShareToDestination {
     public func addToMobileBookmarks(url: NSURL, title: String, favicon: Favicon?) -> Success {
         return self.insertBookmark(url, title: title, favicon: favicon,
                                    intoFolder: BookmarkRoots.MobileFolderGUID,
-                                   withTitle: BookmarksFolderTitleMobile)
+                                   withTitle: Strings.BookmarksFolderTitleMobile)
     }
 
     public func shareItem(item: ShareItem) {

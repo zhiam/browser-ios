@@ -78,7 +78,7 @@ if __name__ == "__main__":
         print "export path does not exist or is not a directory"
         sys.exit(1)
 
-    for xliff_path in glob.glob(import_root + "/*.xliff"):
+    for xliff_path in glob.glob(import_root + "/*.xlf"):
         print "Exporting", xliff_path
         with open(xliff_path) as fp:
             tree = etree.parse(fp)

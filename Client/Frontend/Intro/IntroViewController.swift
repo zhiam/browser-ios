@@ -4,6 +4,7 @@
 
 import UIKit
 import SnapKit
+import Shared
 
 struct IntroViewControllerUX {
     static let Width = 375
@@ -14,25 +15,23 @@ struct IntroViewControllerUX {
 
     static let PagerCenterOffsetFromScrollViewBottom = 20
 
-    static let StartBrowsingButtonTitle = NSLocalizedString("Start Browsing", tableName: "Intro", comment: "")
+    static let StartBrowsingButtonTitle = Strings.Start_Browsing
     static let StartBrowsingButtonColor = UIColor(rgb: 0x363B40)
     static let StartBrowsingButtonHeight = 120
 
-
     static let CardTextLineHeight = CGFloat(6)
 
-    static let l10n_note = "intro screen message"
-    static let CardTitlePage1 = NSLocalizedString("Welcome to Brave.", tableName: "Intro", comment: l10n_note)
-    static let CardTextPage1 = NSLocalizedString("Get ready to experience a Faster, Safer, Better Web.", tableName: "Intro", comment: l10n_note)
+    static let CardTitlePage1 = Strings.Welcome_to_Brave
+    static let CardTextPage1 = Strings.Get_ready_to_experience_a_Faster
 
-    static let CardTitlePage2 = NSLocalizedString("Brave is Faster,\nand here's why...", tableName: "Intro", comment: l10n_note)
-    static let CardTextPage2 = NSLocalizedString("Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency.", tableName: "Intro", comment: l10n_note)
+    static let CardTitlePage2 = Strings.Brave_is_Faster
+    static let CardTextPage2 = Strings.Brave_blocks_ads_and_trackers
 
-    static let CardTitlePage3 = NSLocalizedString("Brave keeps you safe as you browse.", tableName: "Intro", comment: l10n_note)
-    static let CardTextPage3 = NSLocalizedString("Browse with us and your privacy is protected, with nothing further to install, learn or configure.", tableName: "Intro", comment: l10n_note)
+    static let CardTitlePage3 = Strings.Brave_keeps_you_safe_as_you_browse
+    static let CardTextPage3 = Strings.Browsewithusandyourprivacyisprotected
 
-    static let CardTitlePage4 = NSLocalizedString("In case you hit a speed bump", tableName: "Intro", comment: l10n_note)
-    static let CardTextPage4 = NSLocalizedString("Tap the Brave button to temporarily disable ad blocking and privacy features.", tableName: "Intro", comment: l10n_note)
+    static let CardTitlePage4 = Strings.Incaseyouhitaspeedbump
+    static let CardTextPage4 = Strings.TapTheBraveButtonToTemporarilyDisable
 
     static let CardTextSyncOffsetFromCenter = 25
     static let Card3ButtonOffsetFromCenter = -10
@@ -114,7 +113,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
 
         scrollView = IntroOverlayScrollView()
         scrollView.backgroundColor = UIColor.clearColor()
-        scrollView.accessibilityLabel = NSLocalizedString("Intro Tour Carousel", comment: "Accessibility label for the introduction tour carousel")
+        scrollView.accessibilityLabel = Strings.IntroTourCarousel
         scrollView.delegate = self
         scrollView.bounces = false
         scrollView.pagingEnabled = true
@@ -280,7 +279,7 @@ class IntroViewController: UIViewController, UIScrollViewDelegate {
     }
 
     private var accessibilityScrollStatus: String {
-        return String(format: NSLocalizedString("Introductory slide %@ of %@", tableName: "Intro", comment: "String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3"), NSNumberFormatter.localizedStringFromNumber(pageControl.currentPage+1, numberStyle: .DecimalStyle), NSNumberFormatter.localizedStringFromNumber(IntroViewControllerUX.NumberOfCards, numberStyle: .DecimalStyle))
+        return String(format: Strings.IntroductorySlideXofX_template, NSNumberFormatter.localizedStringFromNumber(pageControl.currentPage+1, numberStyle: .DecimalStyle), NSNumberFormatter.localizedStringFromNumber(IntroViewControllerUX.NumberOfCards, numberStyle: .DecimalStyle))
     }
 
     func changePage() {

@@ -7,7 +7,6 @@ import Foundation
 import Shared
 
 private let log = Logger.syncLogger
-private let desktopBookmarksLabel = NSLocalizedString("Desktop Bookmarks", tableName: "BookmarkPanel", comment: "The folder name for the virtual folder that contains all desktop bookmarks.")
 
 public enum Direction {
     case Buffer
@@ -118,7 +117,7 @@ public class SQLiteBookmarksModelFactory: BookmarksModelFactory {
 
     public func modelForRoot() -> Deferred<Maybe<BookmarksModel>> {
         log.debug("Getting model for root.")
-        let getFolder = self.folderForGUID(BookmarkRoots.MobileFolderGUID, title: BookmarksFolderTitleMobile)
+        let getFolder = self.folderForGUID(BookmarkRoots.MobileFolderGUID, title: Strings.BookmarksFolderTitleMobile)
         if self.direction == .Buffer {
             return getFolder >>== self.modelWithRoot
         }
@@ -251,7 +250,7 @@ public class SQLiteBookmarksModelFactory: BookmarksModelFactory {
     }
 
     private func folderForDesktopBookmarksCursor(cursor: Cursor<BookmarkNode>) -> SQLiteBookmarkFolder {
-        return SQLiteBookmarkFolder(guid: BookmarkRoots.FakeDesktopFolderGUID, title: desktopBookmarksLabel, children: cursor)
+        return SQLiteBookmarkFolder(guid: BookmarkRoots.FakeDesktopFolderGUID, title: Strings.desktopBookmarksLabel, children: cursor)
     }
 }
 
@@ -593,7 +592,7 @@ class BookmarkFactory {
         log.warning("Creating a BookmarkItem from a query. This is almost certainly unexpected.")
         let id = row["id"] as! Int
         let guid = row["guid"] as! String
-        let title = row["title"] as? String ?? SQLiteBookmarks.defaultItemTitle
+        let title = row["title"] as? String ?? Strings.DefaultTitleUntitled
         let isEditable = row.getBoolean("isEditable")           // Defaults to false.
         let bookmark = BookmarkItem(guid: guid, title: title, url: "about:blank", isEditable: isEditable)
         bookmark.id = id
@@ -627,7 +626,7 @@ class BookmarkFactory {
         let isEditable = row.getBoolean("isEditable")           // Defaults to false.
         let title = titleForSpecialGUID(guid) ??
             row["title"] as? String ??
-            SQLiteBookmarks.defaultFolderTitle
+            Strings.DefaultTitleUntitled
 
         let folder = BookmarkFolder(guid: guid, title: title, isEditable: isEditable)
         folder.id = id
@@ -809,7 +808,7 @@ public class UnsyncedBookmarksFallbackModelFactory: BookmarksModelFactory {
     public func modelForRoot() -> Deferred<Maybe<BookmarksModel>> {
         log.debug("Getting model for fallback root.")
         // Return a virtual model containing "Desktop bookmarks" prepended to the local mobile bookmarks.
-        return self.localFactory.folderForGUID(BookmarkRoots.MobileFolderGUID, title: BookmarksFolderTitleMobile)
+        return self.localFactory.folderForGUID(BookmarkRoots.MobileFolderGUID, title: Strings.BookmarksFolderTitleMobile)
             >>== { folder in
                 return self.bufferFactory.getDesktopRoots() >>== { cursor in
                     let desktop = self.bufferFactory.folderForDesktopBookmarksCursor(cursor)

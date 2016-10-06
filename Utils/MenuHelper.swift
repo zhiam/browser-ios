@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import Shared
 
 @objc public protocol MenuHelperInterface {
     optional func menuHelperCopy(sender: NSNotification)
@@ -27,19 +28,19 @@ public class MenuHelper: NSObject {
     }
 
     public func setItems() {
-        let revealPasswordTitle = NSLocalizedString("Reveal", tableName: "LoginManager", comment: "Reveal password text selection menu item")
+        let revealPasswordTitle = Strings.RevealPassword
         let revealPasswordItem = UIMenuItem(title: revealPasswordTitle, action: MenuHelper.SelectorReveal)
 
-        let hidePasswordTitle = NSLocalizedString("Hide", tableName: "LoginManager", comment: "Hide password text selection menu item")
+        let hidePasswordTitle = Strings.HidePassword
         let hidePasswordItem = UIMenuItem(title: hidePasswordTitle, action: MenuHelper.SelectorHide)
 
-        let copyTitle = NSLocalizedString("Copy", tableName: "LoginManager", comment: "Copy password text selection menu item")
+        let copyTitle = Strings.Copy
         let copyItem = UIMenuItem(title: copyTitle, action: MenuHelper.SelectorCopy)
 
-        let openAndFillTitle = NSLocalizedString("Open & Fill", tableName: "LoginManager", comment: "Open and Fill website text selection menu item")
+        let openAndFillTitle = Strings.Open_and_Fill
         let openAndFillItem = UIMenuItem(title: openAndFillTitle, action: MenuHelper.SelectorOpenAndFill)
 
-        let findInPageTitle = NSLocalizedString("Find in Page", tableName: "FindInPage", comment: "Text selection menu item")
+        let findInPageTitle = Strings.Find_in_Page
         let findInPageItem = UIMenuItem(title: findInPageTitle, action: MenuHelper.SelectorFindInPage)
 
         UIMenuController.sharedMenuController().menuItems = [copyItem, revealPasswordItem, hidePasswordItem, openAndFillItem, findInPageItem]

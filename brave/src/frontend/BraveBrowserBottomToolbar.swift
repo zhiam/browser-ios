@@ -3,6 +3,7 @@
 // This is bottom toolbar
 
 import SnapKit
+import Shared
 
 extension UIImage{
 
@@ -33,15 +34,14 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         let tabsButton = TabsButton()
         tabsButton.titleLabel.text = "\(tabsCount)"
         tabsButton.addTarget(self, action: #selector(BraveBrowserBottomToolbar.onClickShowTabs), forControlEvents: UIControlEvents.TouchUpInside)
-        tabsButton.accessibilityLabel = NSLocalizedString("Show Tabs",
-                                                          comment: "Accessibility Label for the tabs button in the browser toolbar")
+        tabsButton.accessibilityLabel = Strings.Show_Tabs
         return tabsButton
     }()
 
     lazy var addTabButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "add")
-        button.accessibilityLabel = NSLocalizedString("Add Tab", comment: "Accessibility label for the bottom toolbar add tab button")
+        button.accessibilityLabel = Strings.Add_Tab
         button.addTarget(self, action: #selector(BraveBrowserBottomToolbar.onClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
 
         // Button is grey without upping the brightness

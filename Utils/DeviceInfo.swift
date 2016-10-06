@@ -37,18 +37,6 @@ public class DeviceInfo {
                "Firefox"
     }
 
-    // I'd land a test for this, but it turns out it's hardly worthwhile -- both the
-    // app name and the device name are variable, and the format string itself varies
-    // by locale!
-    public class func defaultClientName() -> String {
-        // E.g., "Sarah's iPhone".
-        let device = UIDevice.currentDevice().name
-
-        let f = NSLocalizedString("%@ on %@", tableName: "Shared", comment: "A brief descriptive name for this app on this device, used for Send Tab and Synced Tabs. The first argument is the app name. The second argument is the device name.")
-
-        return String(format: f, appName(), device)
-    }
-
     public class func clientIdentifier(prefs: Prefs) -> String {
         if let id = prefs.stringForKey("clientIdentifier") {
             return id

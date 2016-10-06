@@ -2,6 +2,7 @@
 
 import Storage
 import SnapKit
+import Shared
 
 class MainSidePanelViewController : SidePanelBaseViewController {
 
@@ -51,21 +52,21 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         settingsButton.setImage(UIImage(named: "settings")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         settingsButton.addTarget(self, action: #selector(onClickSettingsButton), forControlEvents: .TouchUpInside)
-        settingsButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
+        settingsButton.accessibilityLabel = Strings.Settings
 
         bookmarksButton.setImage(UIImage(named: "bookmarklist"), forState: .Normal)
         bookmarksButton.addTarget(self, action: #selector(MainSidePanelViewController.showBookmarks), forControlEvents: .TouchUpInside)
-        bookmarksButton.accessibilityLabel = NSLocalizedString("Show Bookmarks", comment: "Button to show the bookmarks list")
-
+        bookmarksButton.accessibilityLabel = Strings.Show_Bookmarks
+        
         historyButton.setImage(UIImage(named: "history"), forState: .Normal)
         historyButton.addTarget(self, action: #selector(MainSidePanelViewController.showHistory), forControlEvents: .TouchUpInside)
-        historyButton.accessibilityLabel = NSLocalizedString("Show History", comment: "Button to show the history list")
+        historyButton.accessibilityLabel = Strings.Show_History
 
         addBookmarkButton.addTarget(self, action: #selector(onClickBookmarksButton), forControlEvents: .TouchUpInside)
         addBookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
         addBookmarkButton.setImage(UIImage(named: "bookmarkMarked"), forState: .Selected)
-        addBookmarkButton.accessibilityLabel = NSLocalizedString("Add Bookmark", comment: "Button to add a bookmark")
-
+        addBookmarkButton.accessibilityLabel = Strings.Add_Bookmark
+        
         settingsButton.tintColor = BraveUX.ActionButtonTintColor
         bookmarksButton.tintColor = BraveUX.ActionButtonTintColor
         historyButton.tintColor = BraveUX.ActionButtonTintColor

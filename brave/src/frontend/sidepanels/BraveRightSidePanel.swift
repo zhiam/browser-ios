@@ -2,6 +2,7 @@
 
 import Storage
 import SnapKit
+import Shared
 
 struct ShieldBlockedStats {
     var abAndTp = 0
@@ -111,10 +112,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         var togglesSectionTitle: UIView? = nil
         let titleSectionHeight = isTinyScreen() ? ui_sectionTitleHeight - 6 : ui_sectionTitleHeight
         if screenHeightRequiredForSectionHeader < max(UIScreen.mainScreen().bounds.height, UIScreen.mainScreen().bounds.width) {
-            togglesSectionTitle = makeSectionHeaderTitle(NSLocalizedString("Individual Controls", comment: "title for per-site shield toggles"), sectionHeight: titleSectionHeight)
+            togglesSectionTitle = makeSectionHeaderTitle(Strings.Individual_Controls, sectionHeight: titleSectionHeight)
         }
 
-        let statsSectionTitle = makeSectionHeaderTitle(NSLocalizedString("Blocking Monitor", comment: "title for section showing page blocking statistics"), sectionHeight: titleSectionHeight)
+        let statsSectionTitle = makeSectionHeaderTitle(Strings.Blocking_Monitor, sectionHeight: titleSectionHeight)
 
         let spacerLine = UIView()
         var sections = [headerContainer, siteNameContainer, spacerLine, statsSectionTitle, statsContainer]
@@ -165,7 +166,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         func setupHeaderSection() {
             headerContainer.addSubview(heading)
 
-            heading.text = NSLocalizedString("Site shield settings", comment: "Brave panel topmost title")
+            heading.text = Strings.Site_shield_settings
             heading.textColor = UIColor.whiteColor()
             heading.font = UIFont.boldSystemFontOfSize(18)
 
@@ -183,9 +184,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             siteName.minimumScaleFactor = 0.75
 
             let down = UILabel()
-            down.text = NSLocalizedString("Down", comment: "brave shield on/off toggle off state")
+            down.text = Strings.Down
             let up = UILabel()
-            up.text = NSLocalizedString("Up", comment: "brave shield on/off toggle on state")
+            up.text = Strings.Up
 
             [siteName, up, down, shieldToggle].forEach { siteNameContainer.addSubview($0) }
 
@@ -227,11 +228,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
         func setupSwitchesSection() {
             let views_labels = [toggleBlockAdsTitle, toggleHttpseTitle, toggleBlockMalwareTitle, toggleBlockScriptsTitle, toggleBlockFingerprintingTitle]
-            let labelTitles = [NSLocalizedString("Block Ads & Tracking", comment: "Brave panel individual toggle title"),
-                               NSLocalizedString("HTTPS Everywhere", comment: "Brave panel individual toggle title"),
-                               NSLocalizedString("Block Phishing", comment: "Brave panel individual toggle title"),
-                               NSLocalizedString("Block Scripts", comment: "Brave panel individual toggle title"),
-                               NSLocalizedString("Fingerprinting\nProtection", comment: "Brave panel individual toggle title")]
+            let labelTitles = [Strings.Block_Ads_and_Tracking, Strings.HTTPS_Everywhere, Strings.Block_Phishing, Strings.Block_Scripts, Strings.Fingerprinting_Protection_wrapped]
 
             func layoutSwitch(switchItem: UISwitch, label: UILabel) -> UIView {
                 let row = UIView()
@@ -291,10 +288,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         setupSwitchesSection()
 
         func setupStatsSection() {
-            let statTitles = [NSLocalizedString("Ads and Trackers ", comment: "individual blocking statistic title"),
-                              NSLocalizedString("HTTPS Upgrades", comment: "individual blocking statistic title"),
-                              NSLocalizedString("Scripts Blocked", comment: "individual blocking statistic title"),
-                              NSLocalizedString("Fingerprinting Methods", comment: "individual blocking statistic title")]
+            let statTitles = [Strings.Ads_and_Trackers, Strings.HTTPS_Upgrades, Strings.Scripts_Blocked, Strings.Fingerprinting_Methods]
             let statViews = [statAdsBlocked, statHttpsUpgrades, statScriptsBlocked, statFPBlocked]
             let statColors = [UIColor(red:234/255.0, green:90/255.0, blue:45/255.0, alpha:1),
                               UIColor(red:242/255.0, green:142/255.0, blue:45/255.0, alpha:1),

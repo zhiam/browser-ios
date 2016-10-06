@@ -33,16 +33,6 @@ private let log = Logger.browserLogger
 
 let BookmarkStatusChangedNotification = "BookmarkStatusChangedNotification"
 
-// MARK: - Placeholder strings for Bug 1232810.
-
-let deleteWarningTitle = NSLocalizedString("This folder isn't empty.", tableName: "BookmarkPanelDeleteConfirm", comment: "Title of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.")
-let deleteWarningDescription = NSLocalizedString("Are you sure you want to delete it and its contents?", tableName: "BookmarkPanelDeleteConfirm", comment: "Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.")
-let deleteCancelButtonLabel = NSLocalizedString("Cancel", tableName: "BookmarkPanelDeleteConfirm", comment: "Button label to cancel deletion when the user tried to delete a non-empty folder.")
-let deleteDeleteButtonLabel = NSLocalizedString("Delete", tableName: "BookmarkPanelDeleteConfirm", comment: "Button label for the button that deletes a folder and all of its children.")
-
-// Placeholder strings for Bug 1248034
-let emptyBookmarksText = NSLocalizedString("Bookmarks you save will show up here.", comment: "Status label for the empty Bookmarks state.")
-
 // MARK: - UX constants.
 
 struct BookmarksPanelUX {
@@ -210,13 +200,13 @@ class BookmarkEditingViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let firstSectionName = isEditingBookmarkItem ?  NSLocalizedString("Bookmark Info", comment: "Bookmark Info Section Title") : NSLocalizedString("Bookmark Folder", comment: "Bookmark Folder Section Title")
-        
+        let firstSectionName = isEditingBookmarkItem ?  Strings.Bookmark_Info : Strings.Bookmark_Folder
+
         let nameSection = Section(firstSectionName)
             
         nameSection <<< TextRow() { row in
                 row.tag = BOOKMARK_TITLE_ROW_TAG
-                row.title = NSLocalizedString("Name", comment: "Bookmark name/title")
+                row.title = Strings.Name
                 row.value = bookmark.title
                 self.titleRow = row
             }
@@ -227,16 +217,16 @@ class BookmarkEditingViewController: FormViewController {
 
             nameSection <<< LabelRow() { row in
                 row.tag = BOOKMARK_URL_ROW_TAG
-                row.title = NSLocalizedString("URL", comment: "Bookmark URL")
+                row.title = Strings.URL
                 row.value = (bookmark as! BookmarkItem).url
                 self.urlRow = row
             }
             
         
-            form +++ Section(NSLocalizedString("Location", comment: "Bookmark folder location"))
+            form +++ Section(Strings.Location)
             <<< PickerInlineRow<BookmarkFolder>() { (row : PickerInlineRow<BookmarkFolder>) -> Void in
                 row.tag = BOOKMARK_FOLDER_ROW_TAG
-                row.title = NSLocalizedString("Folder", comment: "Folder")
+                row.title = Strings.Folder
                 row.displayValueFor = { (rowValue: BookmarkFolder?) in
                     return (rowValue?.title) ?? ""
                 }
@@ -305,7 +295,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
 
     init() {
         super.init(nibName: nil, bundle: nil)
-        self.title = NSLocalizedString("Bookmarks", comment: "title for bookmarks panel")
+        self.title = Strings.Bookmarks
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BookmarksPanel.notificationReceived(_:)), name: NotificationFirefoxAccountChanged, object: nil)
 
         self.tableView.registerClass(SeparatorTableCell.self, forCellReuseIdentifier: BookmarkSeparatorCellIdentifier)
@@ -393,7 +383,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func updateEditBookmarksButton(tableIsEditing:Bool) {
-        self.editBookmarksButton.title = tableIsEditing ? NSLocalizedString("Done", comment: "Done") : NSLocalizedString("Edit", comment: "Edit")
+        self.editBookmarksButton.title = tableIsEditing ? Strings.Done : Strings.Edit
         self.editBookmarksButton.style = tableIsEditing ? .Done : .Plain
 
     }
@@ -436,9 +426,9 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
 
         //these two buttons are created as placeholders for the data/actions in each case. see #updateAddRemoveFolderButton and
         //#switchTableEditingMode
-        addFolderButton = UIBarButtonItem(title: NSLocalizedString("New Folder", comment: "New Folder"),
+        addFolderButton = UIBarButtonItem(title: Strings.NewFolder,
                                           style: .Plain, target: self, action: #selector(onAddBookmarksFolderButton))
-        removeFolderButton = UIBarButtonItem(title: NSLocalizedString("Delete Folder", comment: "Delete Folder"),
+        removeFolderButton = UIBarButtonItem(title: Strings.DeleteFolder,
                                              style: .Plain, target: self, action: #selector(onDeleteBookmarksFolderButton))
         
         //this is the button that actually lives in the toolbar
@@ -449,7 +439,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         
         items.append(UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: self, action: nil))
 
-        editBookmarksButton = UIBarButtonItem(title: NSLocalizedString("Edit", comment: "Edit"),
+        editBookmarksButton = UIBarButtonItem(title: Strings.Edit,
                                               style: .Plain, target: self, action: #selector(onEditBookmarksButton))
         items.append(editBookmarksButton)
         items.append(UIBarButtonItem.createFixedSpaceItem(5))
@@ -847,10 +837,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
             return [AnyObject]()
         }
 
-        let deleteTitle = NSLocalizedString("Delete", tableName: "BookmarksPanel", comment: "Action button for deleting bookmarks in the bookmarks panel.")
-        let editTitle = NSLocalizedString("Edit", tableName: "BookmarksPanel", comment: "Action button for editing bookmarks in the bookmarks panel.")
-
-        let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: deleteTitle, handler: { (action, indexPath) in
+        let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Destructive, title: Strings.Delete, handler: { (action, indexPath) in
             guard let bookmark = source.current[indexPath.row] else {
                 return
             }
@@ -893,7 +880,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         })
         
         
-        let edit = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: editTitle, handler: { (action, indexPath) in
+        let edit = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: Strings.Edit, handler: { (action, indexPath) in
             guard let bookmark = source.current[indexPath.row] else {
                 return
             }
