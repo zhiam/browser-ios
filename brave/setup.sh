@@ -7,7 +7,7 @@ echo Using APPID of $app_id, you can customize using ./setup.sh org.foo.myapp
 
 echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/.bundle-id.xcconfig
 # Custom IDs get the BETA property set automatically
-[[  -z $1 ]] || echo BETA=Beta >> xcconfig/.bundle-id.xcconfig
+[[ $app_id != com.brave.ios.browser ]] && echo BETA=Beta >> xcconfig/.bundle-id.xcconfig
 # if a brave build, setup fabric and mixpanel
 if [[ $app_id == com.brave.ios.browser* ]]; then
     echo adding fabric
