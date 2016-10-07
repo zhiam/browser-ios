@@ -163,7 +163,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
             let webView = BraveWebView(frame: CGRectZero, useDesktopUserAgent: useDesktopUserAgent)
             configuration = nil
 
-            webView.accessibilityLabel = NSLocalizedString("Web content", comment: "Accessibility label for the main web content view")
+            webView.accessibilityLabel = Strings.Web_content
 #if !BRAVE
             webView.allowsBackForwardNavigationGestures = true
 #endif

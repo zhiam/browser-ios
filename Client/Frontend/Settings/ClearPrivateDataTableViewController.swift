@@ -51,7 +51,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = Strings.SettingsClearPrivateDataTitle
+        title = Strings.ClearPrivateData
 
         tableView.registerClass(SettingsTableSectionHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderFooterIdentifier)
 
@@ -76,7 +76,7 @@ class ClearPrivateDataTableViewController: UITableViewController {
             control.tag = indexPath.item
         } else {
             assert(indexPath.section == SectionButton)
-            cell.textLabel?.text = Strings.SettingsClearPrivateDataClearButton
+            cell.textLabel?.text = Strings.ClearPrivateData
             cell.textLabel?.textAlignment = NSTextAlignment.Center
             cell.textLabel?.textColor = UIConstants.DestructiveRed
             cell.accessibilityTraits = UIAccessibilityTraitButton

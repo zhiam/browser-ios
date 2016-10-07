@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import Shared
 
 class RequestDesktopSiteActivity: UIActivity {
     private let callback: () -> ()
@@ -12,7 +13,7 @@ class RequestDesktopSiteActivity: UIActivity {
     }
 
     override func activityTitle() -> String? {
-        return NSLocalizedString("Open Desktop Site tab", comment: "Share action title")
+        return Strings.Open_Desktop_Site_tab
     }
 
     override func activityImage() -> UIImage? {

@@ -6,9 +6,9 @@ import UIKit
 import Shared
 import Storage
 
-private let PromptMessage = NSLocalizedString("Turn on search suggestions?", tableName: "Search", comment: "Prompt shown before enabling provider search queries")
-private let PromptYes = NSLocalizedString("Yes", tableName: "Search", comment: "For search suggestions prompt. This string should be short so it fits nicely on the prompt row.")
-private let PromptNo = NSLocalizedString("No", tableName: "Search", comment: "For search suggestions prompt. This string should be short so it fits nicely on the prompt row.")
+private let PromptMessage = Strings.Turn_on_search_suggestions
+private let PromptYes = Strings.Yes
+private let PromptNo = Strings.No
 
 private enum SearchListSection: Int {
     case SearchSuggestions
@@ -326,7 +326,7 @@ class SearchViewController: SiteTableViewController, KeyboardHelperDelegate, Loa
         searchButton.imageView?.contentMode = UIViewContentMode.Center
         searchButton.layer.backgroundColor = SearchViewControllerUX.EngineButtonBackgroundColor
         searchButton.addTarget(self, action: #selector(SearchViewController.SELdidClickSearchButton), forControlEvents: UIControlEvents.TouchUpInside)
-        searchButton.accessibilityLabel = String(format: NSLocalizedString("Search Settings", tableName: "Search", comment: "Label for search settings button."))
+        searchButton.accessibilityLabel = Strings.Search_Settings
 
         searchButton.imageView?.snp_makeConstraints { make in
             make.width.height.equalTo(SearchViewControllerUX.SearchImageWidth)
@@ -351,7 +351,7 @@ class SearchViewController: SiteTableViewController, KeyboardHelperDelegate, Loa
             engineButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
             engineButton.layer.backgroundColor = SearchViewControllerUX.EngineButtonBackgroundColor
             engineButton.addTarget(self, action: #selector(SearchViewController.SELdidSelectEngine(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-            engineButton.accessibilityLabel = String(format: NSLocalizedString("%@ search", tableName: "Search", comment: "Label for search engine buttons. The argument corresponds to the name of the search engine."), engine.shortName)
+            engineButton.accessibilityLabel = String(format: Strings.Search_arg_site_template, engine.shortName)
 
             engineButton.imageView?.snp_makeConstraints { make in
                 make.width.height.equalTo(OpenSearchEngine.PreferredIconSize)
@@ -512,7 +512,7 @@ extension SearchViewController {
         case .SearchSuggestions:
             suggestionCell.imageView?.image = searchEngines.defaultEngine.image
             suggestionCell.imageView?.isAccessibilityElement = true
-            suggestionCell.imageView?.accessibilityLabel = String(format: NSLocalizedString("Search suggestions from %@", tableName: "Search", comment: "Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google"), searchEngines.defaultEngine.shortName)
+            suggestionCell.imageView?.accessibilityLabel = String(format: Strings.Search_suggestions_from_template, searchEngines.defaultEngine.shortName)
             return suggestionCell
 
         case .BookmarksAndHistory:
@@ -721,7 +721,7 @@ private class SuggestionButton: InsetButton {
         layer.cornerRadius = SearchViewControllerUX.SuggestionCornerRadius
         contentEdgeInsets = SearchViewControllerUX.SuggestionInsets
 
-        accessibilityHint = NSLocalizedString("Searches for the suggestion", comment: "Accessibility hint describing the action performed when a search suggestion is clicked")
+        accessibilityHint = Strings.Searches_for_the_suggestion
     }
 
     required init?(coder aDecoder: NSCoder) {

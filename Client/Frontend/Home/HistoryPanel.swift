@@ -222,10 +222,10 @@ class HistoryPanel: SiteTableViewController, HomePanel {
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         var title = String()
         switch sectionLookup[section]! {
-        case 0: title = NSLocalizedString("Today", comment: "History tableview section header")
-        case 1: title = NSLocalizedString("Yesterday", comment: "History tableview section header")
-        case 2: title = NSLocalizedString("Last week", comment: "History tableview section header")
-        case 3: title = NSLocalizedString("Last month", comment: "History tableview section header")
+        case 0: title = Strings.Today
+        case 1: title = Strings.Yesterday
+        case 2: title = Strings.Last_week
+        case 3: title = Strings.Last_month
         default:
             assertionFailure("Invalid history section \(section)")
         }
@@ -301,7 +301,7 @@ class HistoryPanel: SiteTableViewController, HomePanel {
     }
 
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-        let title = NSLocalizedString("Remove", tableName: "HistoryPanel", comment: "Action button for deleting history entries in the history panel.")
+        let title = Strings.Remove
 
         let delete = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: title, handler: { (action, indexPath) in
             if let site = self.siteForIndexPath(indexPath) {

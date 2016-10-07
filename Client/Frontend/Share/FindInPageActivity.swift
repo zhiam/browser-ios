@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import Shared
 
 class FindInPageActivity: UIActivity {
     private let callback: () -> ()
@@ -12,7 +13,7 @@ class FindInPageActivity: UIActivity {
     }
 
     override func activityTitle() -> String? {
-        return NSLocalizedString("Find in Page", tableName: "FindInPage", comment: "Share action title")
+        return Strings.Find_in_Page
     }
 
     override func activityImage() -> UIImage? {

@@ -93,16 +93,16 @@ extension BrowserViewController: URLBarDelegate {
             url = tab.displayURL,
             result = profile.readingList?.createRecordWithURL(url.absoluteString ?? "", title: tab.title ?? "", addedBy: UIDevice.currentDevice().name)
             else {
-                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Could not add page to Reading list", comment: "Accessibility message e.g. spoken by VoiceOver after adding current webpage to the Reading List failed."))
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, Strings.Could_not_add_page_to_Reading_List)
                 return false
         }
 
         switch result {
         case .Success:
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Added page to Reading List", comment: "Accessibility message e.g. spoken by VoiceOver after the current page gets added to the Reading List using the Reader View button, e.g. by long-pressing it or by its accessibility custom action."))
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, Strings.Added_page_to_reading_list)
         // TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=1158503 provide some form of 'this has been added' visual feedback?
         case .Failure(let error):
-            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString("Could not add page to Reading List. Maybe it's already there?", comment: "Accessibility message e.g. spoken by VoiceOver after the user wanted to add current page to the Reading List and this was not done, likely because it already was in the Reading List, but perhaps also because of real failures."))
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, Strings.Could_not_add_page_to_Reading_List)
             log.error("readingList.createRecordWithURL(url: \"\(url.absoluteString)\", ...) failed with error: \(error)")
         }
         return true
@@ -132,7 +132,7 @@ extension BrowserViewController: URLBarDelegate {
             longPressAlertController.addAction(action.alertAction(style: .Default))
         }
 
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel alert view"), style: .Cancel, handler: { (alert: UIAlertAction) -> Void in
+        let cancelAction = UIAlertAction(title: Strings.Cancel, style: .Cancel, handler: { (alert: UIAlertAction) -> Void in
         })
         longPressAlertController.addAction(cancelAction)
 

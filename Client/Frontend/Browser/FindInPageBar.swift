@@ -4,6 +4,7 @@
 
 import Foundation
 import UIKit
+import Shared
 
 protocol FindInPageBarDelegate: class {
     func findInPage(findInPage: FindInPageBar, didTextChange text: String)
@@ -76,20 +77,20 @@ class FindInPageBar: UIView {
 
         previousButton.setImage(UIImage(named: "find_previous"), forState: UIControlState.Normal)
         previousButton.setTitleColor(FindInPageUX.ButtonColor, forState: UIControlState.Normal)
-        previousButton.accessibilityLabel = NSLocalizedString("Previous in-page result", tableName: "FindInPage", comment: "Accessibility label for previous result button in Find in Page Toolbar.")
+        previousButton.accessibilityLabel = Strings.Previous_inpage_result
         previousButton.addTarget(self, action: #selector(FindInPageBar.SELdidFindPrevious(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         addSubview(previousButton)
 
         nextButton.setImage(UIImage(named: "find_next"), forState: UIControlState.Normal)
         nextButton.setTitleColor(FindInPageUX.ButtonColor, forState: UIControlState.Normal)
-        nextButton.accessibilityLabel = NSLocalizedString("Next in-page result", tableName: "FindInPage", comment: "Accessibility label for next result button in Find in Page Toolbar.")
+        nextButton.accessibilityLabel = Strings.Next_inpage_result
         nextButton.addTarget(self, action: #selector(FindInPageBar.SELdidFindNext(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         addSubview(nextButton)
 
         let closeButton = UIButton()
         closeButton.setImage(UIImage(named: "find_close"), forState: UIControlState.Normal)
         closeButton.setTitleColor(FindInPageUX.ButtonColor, forState: UIControlState.Normal)
-        closeButton.accessibilityLabel = NSLocalizedString("Done", tableName: "FindInPage", comment: "Done button in Find in Page Toolbar.")
+        closeButton.accessibilityLabel = Strings.Done
         closeButton.addTarget(self, action: #selector(FindInPageBar.SELdidPressClose(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         addSubview(closeButton)
 

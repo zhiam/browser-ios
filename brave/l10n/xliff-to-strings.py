@@ -24,49 +24,6 @@ from lxml import etree
 
 NS = {'x':'urn:oasis:names:tc:xliff:document:1.2'}
 
-# Files we are interested in. It would be nice to not hardcode this but I'm not totally sure how yet.
-FILES_unused = [
-    "brave/3DTouchActions.strings",
-    "brave/AuthenticationManager.strings",
-    "brave/BookmarkPanel.strings",
-    "brave/ClearHistoryConfirm.strings",
-    "brave/ClearPrivateData.strings",
-    "brave/ErrorPages.strings",
-    "brave/FindInPage.strings",
-    "brave/HistoryPanel.strings",
-    "brave/Info.plist",
-    "brave/Intro.strings",
-    "brave/LightweightThemes.strings",
-    "brave/Localizable.strings",
-    "brave/LoginManager.strings",
-    "brave/OnePasswordExtension.strings",
-    "brave/PrivateBrowsing.strings",
-    "brave/Search.strings",
-    "brave/SendAnonymousUsageData.strings",
-    "brave/Shared.strings",
-    "brave/Storage.strings",
-    "brave/SendTo.strings",
-    "Extensions/SendTo/Info.plist",
-    "Extensions/ShareTo/ShareTo.strings",
-    "Extensions/ViewLater/Info.plist",
-    "Shared/Localizable.strings",
-]
-
-# Because Xcode is unpredictable. See bug 1162510 - Sync.strings are not imported
-FILENAME_OVERRIDES_unused = {
-    "Shared/Supporting Files/Info.plist": "Shared/Localizable.strings",
-    "Shared/Supporting Files/Shared.strings": "brave/Shared.strings",
-    "Storage.strings": "brave/Storage.strings",
-}
-
-# Because Xcode can't handle strings that need to live in two
-# different bundles, we also duplicate some files.(For example
-# SendTo.strings is needed both in the main app and in the SendTo
-# extension.) See bug 1234322
-
-FILES_TO_DUPLICATE_unused = {
-    "brave/SendTo.strings": ["Extensions/SendTo/SendTo.strings"],
-}
 
 def export_xliff_file(file_node, export_path, target_language):
     directory = os.path.dirname(export_path)
@@ -79,17 +36,19 @@ def export_xliff_file(file_node, export_path, target_language):
 
             if trans_unit_id is not None: ### and len(targets) == 1 and targets[0].text is not None:
                 notes = trans_unit_node.xpath("x:note", namespaces=NS)
+                target_text = None
                 if len(notes) == 1:
                     line = u"/* %s */\n" % notes[0].text
                     fp.write(line.encode("utf8"))
                 source_text = trans_unit_id.replace('"', '\\"')
                 if len(targets) == 1 and targets[0].text is not None:
                     target_text = targets[0].text.replace('"', '\\"')
-                else:
+                elif target_language == 'en':
                     target_text = source_text
 
-                line = u"\"%s\" = \"%s\";\n\n" % (source_text, target_text)
-                fp.write(line.encode("utf8"))
+                if target_text is not None:
+                    line = u"\"%s\" = \"%s\";\n\n" % (source_text, target_text)
+                    fp.write(line.encode("utf8"))
 
     # Export fails if the strings file is empty. Xcode probably checks
     # on file length vs read error.
@@ -119,7 +78,7 @@ if __name__ == "__main__":
         print "export path does not exist or is not a directory"
         sys.exit(1)
 
-    for xliff_path in glob.glob(import_root + "/*.xliff"):
+    for xliff_path in glob.glob(import_root + "/*.xlf"):
         print "Exporting", xliff_path
         with open(xliff_path) as fp:
             tree = etree.parse(fp)
@@ -136,24 +95,17 @@ if __name__ == "__main__":
             # the target-language set.
             target_language = file_nodes[0].get('target-language')
             if not target_language:
-                print "  ERROR: Missing target-language. Skipping."
-                continue
+                print " Missing target-language. assume english."
+                target_language = 'en'
 
             # Export each <file> node as a separate strings file under the
             # export root.
             for file_node in file_nodes:
                 original = file_node.get('original')
-                ### original = FILENAME_OVERRIDES.get(original, original)
-                ### if original in FILES:
-                # Because we have strings files that need to live in multiple bundles
-                # we build a list of export_paths. Start with the default.
                 export_paths = [original_path(export_root, target_language, original)]
-                # for extra_copy in FILES_TO_DUPLICATE.get(original, []):
-                #     export_path = original_path(export_root, target_language, extra_copy)
-                #     export_paths.append(export_path)
                 for export_path in export_paths:
                     print "  Writing %s to %s" % (original, export_path)
                     export_xliff_file(file_node, export_path, target_language)
- 
+
     os.system("ls -d brave/*.lproj | xargs -I{} sh -c 'cd {} && cat *.strings >> tmp ; rm -f *.strings ; mv tmp Localizable.strings'")
 

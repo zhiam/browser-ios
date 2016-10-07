@@ -48,7 +48,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         let prefs = profile.prefs
         var generalSettings = [
             SearchSetting(settings: self),
-            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true, titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager"), statusText: nil, settingDidChange:  { value in
+            BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true, titleText: Strings.Save_Logins, statusText: nil, settingDidChange:  { value in
                                 // Hidden way to trigger a crash for testing
                 if (self.debugToggleItemToTriggerCrashCount > 4) {
                     UIAlertView(title: "Trigger a crash for testing", message: "Force a crash?", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "OK").show()
@@ -58,12 +58,12 @@ class BraveSettingsView : AppSettingsTableViewController {
                 }
             })
             ,BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
-                titleText: NSLocalizedString("Block Popups", comment: "Setting to enable popup blocking"))
+                titleText: Strings.Block_Popups)
         ]
 
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             generalSettings.append(BoolSetting(prefs: prefs, prefKey: kPrefKeyTabsBarShowPolicy, defaultValue: true,
-                titleText: NSLocalizedString("Show Tabs Bar", comment: "Setting to show/hide the tabs bar"), statusText: nil,
+                titleText: Strings.Show_Tabs_Bar, statusText: nil,
                 settingDidChange: { value in
                     getApp().browserViewController.urlBar.updateTabsBarShowing()
                 }
@@ -89,7 +89,7 @@ class BraveSettingsView : AppSettingsTableViewController {
                 if result {
                     postAsyncToMain(0) { // move from db thread back to main
                         generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
-                        self.settings[0] = SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings)
+                        self.settings[0] = SettingSection(title: NSAttributedString(string: Strings.General), children: generalSettings)
                         let range = NSMakeRange(0, 1)
                         let section = NSIndexSet(indexesInRange: range)
                         self.tableView.reloadSections(section, withRowAnimation: .Automatic)
@@ -100,10 +100,10 @@ class BraveSettingsView : AppSettingsTableViewController {
 
 
         settings += [
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Privacy", comment: "Privacy settings section title")), children:
+            SettingSection(title: NSAttributedString(string: Strings.General), children: generalSettings),
+            SettingSection(title: NSAttributedString(string: Strings.Privacy), children:
                 [ClearPrivateDataSetting(settings: self), CookieSetting(profile: self.profile),
-                    BoolSetting(prefs: prefs, prefKey: kPrefKeyPrivateBrowsingAlwaysOn, defaultValue: false, titleText: NSLocalizedString("Private Browsing Only", comment: "Setting to keep app in private mode"), statusText: nil, settingDidChange: { isOn in
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyPrivateBrowsingAlwaysOn, defaultValue: false, titleText: Strings.Private_Browsing_Only, statusText: nil, settingDidChange: { isOn in
                         if !isOn {
                             return
                         }
@@ -113,25 +113,25 @@ class BraveSettingsView : AppSettingsTableViewController {
                         }
                     })]
             ),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Brave Shield Defaults", comment: "Section title for adbblock, tracking protection, HTTPS-E, and cookies")), children:
-                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKey, defaultValue: true, titleText: NSLocalizedString("Block Ads and Tracking", comment: "")),
-                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKey, defaultValue: true, titleText: NSLocalizedString("HTTPS Everywhere", comment: "")),
-                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: NSLocalizedString("Block Phishing and Malware", comment: "")),
-                    BoolSetting(prefs: prefs, prefKey: kPrefKeyNoScriptOn, defaultValue: false, titleText: NSLocalizedString("Block Scripts", comment: "")),
-                    BoolSetting(prefs: prefs, prefKey: kPrefKeyFingerprintProtection, defaultValue: false, titleText: NSLocalizedString("Fingerprinting Protection", comment: ""))
+            SettingSection(title: NSAttributedString(string: Strings.Brave_Shield_Defaults), children:
+                [BoolSetting(prefs: prefs, prefKey: AdBlocker.prefKey, defaultValue: true, titleText: Strings.Block_Ads_and_Tracking),
+                    BoolSetting(prefs: prefs, prefKey: HttpsEverywhere.prefKey, defaultValue: true, titleText: Strings.HTTPS_Everywhere),
+                    BoolSetting(prefs: prefs, prefKey: SafeBrowsing.prefKey, defaultValue: true, titleText: Strings.Block_Phishing_and_Malware),
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyNoScriptOn, defaultValue: false, titleText: Strings.Block_Scripts),
+                    BoolSetting(prefs: prefs, prefKey: kPrefKeyFingerprintProtection, defaultValue: false, titleText: Strings.Fingerprinting_Protection)
                 ])]
 
         //#if !DISABLE_INTRO_SCREEN
         settings += [
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
-                // TODO: GROWTH: BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyUserAllowsTelemetry, defaultValue: true, titleText: NSLocalizedString("Allow Brave to send info to improve our app", comment: "option in settings screen")),
+            SettingSection(title: NSAttributedString(string: Strings.Support), children: [
+                // TODO: GROWTH: BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyUserAllowsTelemetry, defaultValue: true, titleText: Strings.Allow_Brave_to_send_info_to_improve_our_app, comment: "option in settings screen")),
                 ShowIntroductionSetting(settings: self),
                 BraveSupportLinkSetting(parentVC: self),
                 BravePrivacyPolicySetting(), BraveTermsOfUseSetting(),
                 ])]
         //#endif
         settings += [
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
+            SettingSection(title: NSAttributedString(string: Strings.About), children: [
                 VersionSetting(settings: self),
                 ])
         ]
@@ -149,6 +149,27 @@ extension BraveSettingsView : UIAlertViewDelegate {
         #endif
     }
 }
+
+class VersionSetting : Setting {
+    let settings: SettingsTableViewController
+
+    init(settings: SettingsTableViewController) {
+        self.settings = settings
+        super.init(title: nil)
+    }
+
+    override var title: NSAttributedString? {
+        let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        let buildNumber = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
+        return NSAttributedString(string: String(format: Strings.Version_template, appVersion, buildNumber), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+    }
+
+    override func onConfigureCell(cell: UITableViewCell) {
+        super.onConfigureCell(cell)
+        cell.selectionStyle = .None
+    }
+}
+
 
 // Opens the search settings pane
 class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
@@ -176,7 +197,7 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
     init(profile: Profile) {
         super.init(profile: profile, displayName: "", prefName: ThirdPartyPasswordManagerSetting._prefName, options: ThirdPartyPasswordManagerSetting._options)
-        picklistFooterMessage = NSLocalizedString("Show a prompt to open your password manager when the current page has a login form.", comment: "Footer message on picker for 3rd party password manager setting")
+        picklistFooterMessage = Strings.Show_a_prompt_to_open_your_password_manager_when_the_current_page_has_a_login_form
     }
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
@@ -185,7 +206,7 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
     }
 
     override var title: NSAttributedString? {
-        return NSAttributedString(string: NSLocalizedString("3rd-party password manager", comment: "Setting to enable the built-in password manager"), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor, NSFontAttributeName: UIFont.systemFontOfSize(14)])
+        return NSAttributedString(string: Strings.Thirdparty_password_manager, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor, NSFontAttributeName: UIFont.systemFontOfSize(14)])
     }
 }
 
@@ -194,9 +215,9 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 class CookieSetting: PicklistSettingMainItem<UInt> {
     private static let _prefName = "braveAcceptCookiesPref"
     private static let _options =  [
-        Choice<UInt> { (displayName: NSLocalizedString("Block 3rd party cookies", comment: "cookie settings option"), object: UInt(NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain.rawValue), optionId: 0) },
-        Choice<UInt> { (displayName: NSLocalizedString("Block all cookies", comment: "cookie settings option"), object: UInt(NSHTTPCookieAcceptPolicy.Never.rawValue), optionId: 1) },
-        Choice<UInt> { (displayName: NSLocalizedString("Don't block cookies", comment: "cookie settings option"), object: UInt( NSHTTPCookieAcceptPolicy.Always.rawValue), optionId: 2) }
+        Choice<UInt> { (displayName: Strings.Block_3rd_party_cookies, object: UInt(NSHTTPCookieAcceptPolicy.OnlyFromMainDocumentDomain.rawValue), optionId: 0) },
+        Choice<UInt> { (displayName: Strings.Block_all_cookies, object: UInt(NSHTTPCookieAcceptPolicy.Never.rawValue), optionId: 1) },
+        Choice<UInt> { (displayName: Strings.Dont_block_cookies, object: UInt( NSHTTPCookieAcceptPolicy.Always.rawValue), optionId: 2) }
     ]
 
     static func setPolicyFromOptionId(optionId: Int) {
@@ -213,7 +234,7 @@ class CookieSetting: PicklistSettingMainItem<UInt> {
     }
 
     init(profile: Profile) {
-        super.init(profile: profile, displayName: NSLocalizedString("Cookie Control", comment: "Cookie settings option title"), prefName: CookieSetting._prefName, options: CookieSetting._options)
+        super.init(profile: profile, displayName: Strings.Cookie_Control, prefName: CookieSetting._prefName, options: CookieSetting._options)
     }
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
@@ -226,16 +247,16 @@ class CookieSetting: PicklistSettingMainItem<UInt> {
 class TabsBarIPhoneSetting: PicklistSettingMainItem<Int> {
     private static func getOptions() -> [Choice<Int>] {
         let opt = [
-            Choice<Int> { (displayName: NSLocalizedString("Never show", comment: "tabs bar show/hide option"), object: TabsBarShowPolicy.Never.rawValue, optionId: 0) },
-            Choice<Int> { (displayName: NSLocalizedString("Always show", comment: "tabs bar show/hide option"), object: TabsBarShowPolicy.Always.rawValue, optionId: 1) },
-            Choice<Int> { (displayName: NSLocalizedString("Show in landscape only", comment: "tabs bar show/hide option"), object: TabsBarShowPolicy.LandscapeOnly.rawValue, optionId: 2) }
+            Choice<Int> { (displayName: Strings.Never_show, object: TabsBarShowPolicy.Never.rawValue, optionId: 0) },
+            Choice<Int> { (displayName: Strings.Always_show, object: TabsBarShowPolicy.Always.rawValue, optionId: 1) },
+            Choice<Int> { (displayName: Strings.Show_in_landscape_only, object: TabsBarShowPolicy.LandscapeOnly.rawValue, optionId: 2) }
         ]
         return opt
 
     }
 
     init(profile: Profile) {
-        super.init(profile: profile, displayName: NSLocalizedString("Show Tabs Bar", comment:"tabs bar show/hide setting title"), prefName: kPrefKeyTabsBarShowPolicy, options: TabsBarIPhoneSetting.getOptions())
+        super.init(profile: profile, displayName: Strings.Show_Tabs_Bar, prefName: kPrefKeyTabsBarShowPolicy, options: TabsBarIPhoneSetting.getOptions())
     }
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
@@ -259,7 +280,7 @@ class PasswordsClearable: Clearable {
     }
 
     var label: String {
-        return NSLocalizedString("Saved Logins", tableName: "ClearPrivateData", comment: "Settings item for clearing passwords and login data")
+        return Strings.Saved_Logins
     }
 
     func clear() -> Success {
@@ -285,7 +306,7 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
     }
 
     override var title: NSAttributedString? {
-        return NSAttributedString(string: NSLocalizedString("Report a bug", comment: "Show mail composer to report a bug."), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+        return NSAttributedString(string: Strings.Report_a_bug, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
     }
     
     func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
@@ -309,8 +330,8 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
         if MFMailComposeViewController.canSendMail() && isDevice {
             
             let reportBugMailAddress = "support+ios@brave.com"
-            let reportBugMailSubject = NSLocalizedString("Brave for iOS Feedback", comment: "email subject")
-            let reportBugMailBody = NSLocalizedString("\n\n---\nApp & Device Version Information:\n", comment: "body");
+            let reportBugMailSubject = Strings.Brave_for_iOS_Feedback
+            let reportBugMailBody = Strings.Email_Body
 
             
             let mailComposerVC = MFMailComposeViewController()
@@ -318,9 +339,9 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
             mailComposerVC.setToRecipients([reportBugMailAddress])
             mailComposerVC.setSubject(reportBugMailSubject)
             
-            let iOSVersionLabel = NSLocalizedString("iOS version", comment: "iOS version")
-            let deviceLabel = NSLocalizedString("Device", comment: "Device")
-            let braveVersionLabel = NSLocalizedString("Brave version", comment: "brave version")
+            let iOSVersionLabel = "iOS version"
+            let deviceLabel = "Device"
+            let braveVersionLabel = "Brave version"
             
             let appVersionString: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
             let buildNumber: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
@@ -366,7 +387,7 @@ class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
 
 class BravePrivacyPolicySetting: Setting {
     override var title: NSAttributedString? {
-        return NSAttributedString(string: NSLocalizedString("Privacy Policy", comment: "Show Brave Browser Privacy Policy page from the Privacy section in the settings."), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+        return NSAttributedString(string: Strings.Privacy_Policy, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
     }
 
     override var url: NSURL? {
@@ -380,7 +401,7 @@ class BravePrivacyPolicySetting: Setting {
 
 class BraveTermsOfUseSetting: Setting {
     override var title: NSAttributedString? {
-        return NSAttributedString(string: NSLocalizedString("Terms of Use", comment: "Show Brave Browser TOS page from the Privacy section in the settings."), attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
+        return NSAttributedString(string: Strings.Terms_of_Use, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
     }
 
     override var url: NSURL? {

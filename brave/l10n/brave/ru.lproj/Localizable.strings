@@ -1,121 +1,7 @@
-/* Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
-"Are you sure you want to delete it and its contents?" = "Вы уверены что хотите удалить это вместе со всем содержимым?";
+"CFBundleDisplayName" = "Открыть в Brave";
 
-/* Button label to cancel deletion when the user tried to delete a non-empty folder. */
-"Cancel" = "Отмена";
-
-/* Button label for the button that deletes a folder and all of its children. */
-"Delete" = "Удалить";
-
-/* Title of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
-"This folder isn't empty." = "Эта папка не пустая.";
-
-/* Action button for deleting bookmarks in the bookmarks panel. */
-"Delete" = "Удалить";
-
-/* Action button for editing bookmarks in the bookmarks panel. */
-"Edit" = "Редактировать";
-
-/* Message shown in the dialog prompting users if they want to clear everything */
-"Are you sure you want to clear all of your data? This will also close all open tabs." = "Вы уверены что хотите удалить все данные? Это так же закроет все вкладки.";
-
-/* Settings item for clearing browsing history */
-"Browsing History" = "История";
-
-/* Settings item for clearing the cache */
-"Cache" = "Кэш";
-
-/* Used as a button label in the dialog to cancel clear private data dialog */
-"Cancel" = "Отмена";
-
-/* Used as a button label in the dialog to Clear private data dialog */
-"Clear" = "Очистить";
-
-/* Title of the Clear private data dialog. */
-"Clear Everything" = "Очистить все";
-
-/* Button in settings that clears private data for the selected items.
-   Navigation title in settings. */
-"Clear Private Data" = "Удалить личные данные";
-
-/* Settings item for clearing cookies */
-"Cookies" = "Cookies";
-
-/* Settings item for clearing website data */
-"Offline Website Data" = "Офлайн-контент";
-
-/* Settings item for clearing passwords and login data */
-"Saved Logins" = "Сохраненные логины";
-
-/* The cancel button when confirming clear private data. */
-"Cancel" = "Отмена";
-
-/* The button that clears private data. */
-"OK" = "Готово";
-
-/* Description of the confirmation dialog shown when a user tries to clear their private data. */
-"This action will clear all of your private data. It cannot be undone." = "Это действие удалит все ваши личные данные. Оно не может быть отменено.";
-
-/* Shown in error pages for files that can't be shown and need to be downloaded. */
-"Open in Safari" = "Открыть в Safari";
-
-/* Shown in error pages on a button that will try to load the page again */
-"Try again" = "Попробуйте снова";
-
-/* Done button in Find in Page Toolbar. */
-"Done" = "Сделано";
-
-/* Share action title
-   Text selection menu item */
-"Find in Page" = "Найти на странице";
-
-/* Accessibility label for next result button in Find in Page Toolbar. */
-"Next in-page result" = "Следующий результат";
-
-/* Accessibility label for previous result button in Find in Page Toolbar. */
-"Previous in-page result" = "Предыдущий результат";
-
-/* Action button for deleting history entries in the history panel. */
-"Remove" = "Удалить";
-
-/* Intro screen message */
-"Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency." = "Brave блокирует рекламу.
-Brave блокирует трекинг.
-Brave создан для скорости и эффективности.";
-
-/* intro screen message */
-"Brave is Faster,\nand here's why..." = "Brave быстрее,
-и вот почему...";
-
-/* intro screen message */
-"Brave keeps you safe as you browse." = "Brave сохраняет Вас в безопасности во время просмотра.";
-
-/* intro screen message */
-"Browse multiple Web pages at the same time with tabs." = "Открывайте несколько Web страниц одновременно с помощью вкладок.";
-
-/* intro screen */
-"Browse with us and your privacy is protected, with nothing further to install, learn or configure." = "Исследуйте интернет с нами и Ваша конфиденциальность защищена без дополнительной установки, изучения или настройки.";
-
-/* No comment provided by engineer. */
-"Get ready to experience a Faster, Safer, Better Web." = "Приготовьтесь открыть для себя Быстрый, Безопасный, Лучший Интернет.";
-
-/* No comment provided by engineer. */
-"In case you hit a speed bump" = "В случае проблемы с загрузкой страницы";
-
-/* String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3 */
-"Introductory slide %@ of %@" = "Вводный слайд %1$@ из %2$@";
-
-/* No comment provided by engineer. */
-"Start Browsing" = "Начать Просмотр";
-
-/* No comment provided by engineer. */
-"Tap the Brave button to temporarily disable ad blocking and privacy features." = "Нажмите кнопку Brave, чтобы временно отключить блокирование рекламы и личных данных.";
-
-/* No comment provided by engineer. */
-"Welcome to Brave." = "Добро пожаловать в Brave.";
-
-/* Ask user if site can open iTunes store URL */
-"  Allow (siteName) to open iTunes?" = "Разрешить (siteName) открыть iTunes?";
+/* Label for search engine buttons. The argument corresponds to the name of the search engine. */
+"%@ search" = "%@ поиск";
 
 /* Button for larger reader font size. Keep this extremely short! This is shown in the reader mode toolbar. */
 "+" = "+";
@@ -126,12 +12,6 @@ Brave создан для скорости и эффективности.";
 /* Setting to enable the built-in password manager */
 "3rd-party password manager" = "Сторонний менеджер паролей";
 
-/* Authentication prompt message with no realm. Parameter is the hostname of the site */
-"A username and password are being requested by %@." = "Имя пользователя и пароль были запрошены %@.";
-
-/* Authentication prompt message with a realm. First parameter is the hostname. Second is the realm string */
-"A username and password are being requested by %@. The site says: %@" = "Имя пользователя и пароль были запрошены %1$@. Web страница ответила: %2$@";
-
 /* Button for reader mode font size. Keep this extremely short! This is shown in the reader mode toolbar. */
 "Aa" = "Aa";
 
@@ -141,13 +21,10 @@ Brave создан для скорости и эффективности.";
 /* Button to add a bookmark */
 "Add Bookmark" = "Добавить закладку";
 
-/* Accessibility label for the Add Tab button in the Tab Tray.
-   Accessibility label for the bottom toolbar add tab button */
+/* Accessibility label for the Add Tab button in the Tab Tray. */
 "Add Tab" = "Добавить вкладку";
 
-/* Accessibility label for action adding current page to reading list.
-   Add URL to the reading list - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440
-   Name for button adding current article to reading list in reader mode */
+/* Accessibility label for action adding current page to reading list. */
 "Add to Reading List" = "Добавить в список для чтения";
 
 /* Accessibility message e.g. spoken by VoiceOver after the current page gets added to the Reading List using the Reader View button, e.g. by long-pressing it or by its accessibility custom action. */
@@ -157,34 +34,29 @@ Brave создан для скорости и эффективности.";
 "Address and Search" = "Адрес и поиск";
 
 /* individual blocking statistic title */
-"Ads and Trackers " = "Реклама и трекинг";
+/* Label for button to perform advanced actions on the error page */
+"Advanced" = "Расширенные";
 
-/* Setting to enable third-party keyboards */
-"Allow Third-Party Keyboards" = "Позволять сторонние клавиатуры";
-
-/* Used as a button label for crash dialog prompt */
-"Always Send" = "Всегда отправлять";
-
+/* Ask user if site can open iTunes store URL */
+/* option in settings screen */
 /* tabs bar show/hide option */
 "Always show" = "Всегда показывать";
 
-/* Authentication prompt title */
-"Authentication required" = "Необходима аутентификация";
+/* Message shown in the dialog prompting users if they want to clear everything */
+"Are you sure you want to clear all of your data? This will also close all open tabs." = "Вы уверены что хотите удалить все данные? Это так же закроет все вкладки.";
 
+/* Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
+"Are you sure you want to delete it and its contents?" = "Вы уверены что хотите удалить это вместе со всем содержимым?";
+
+/* No comment provided by engineer. */
 /* Accessibility Label for the browser toolbar Back button */
 "Back" = "Назад";
-
-/* Tile title for Bing */
-"Bing" = "Bing";
 
 /* cookie settings option */
 "Block 3rd party cookies" = "Блокировать сторонние cookies";
 
-/* Brave panel individual toggle title */
-"Block Ads & Tracking" = "Блокировать рекламу и трекинг";
-
 /* No comment provided by engineer. */
-"Block Ads and Tracking" = "Блокировать рекламу и трекинг";
+"Block Ads & Tracking" = "Блокировать рекламу и трекинг";
 
 /* Brave panel individual toggle title */
 "Block Phishing" = "Блокировать фишинг";
@@ -198,7 +70,7 @@ Brave создан для скорости и эффективности.";
 /* Setting to enable popup blocking */
 "Block Popups" = "Блокировать всплывающие окна";
 
-/* Brave panel individual toggle title */
+/* No comment provided by engineer. */
 "Block Scripts" = "Блокировать скрипты";
 
 /* cookie settings option */
@@ -207,18 +79,18 @@ Brave создан для скорости и эффективности.";
 /* title for section showing page blocking statistics */
 "Blocking Monitor" = "Монитор блокираторов";
 
-/* Accessibility Label for the browser toolbar Bookmark button
-   Bookmark a URL - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440 */
+/* Accessibility Label for the browser toolbar Bookmark button */
 "Bookmark" = "Закладка";
 
-/* Panel accessibility label */
+/* Bookmark Folder Section Title */
+/* Bookmark Info Section Title */
+/* title for bookmarks panel */
 "Bookmarks" = "Закладки";
 
+/* The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android. */
+/* The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android. */
 /* Button to show the bookmarks and history panel */
 "Bookmarks and History Panel" = "Закладки и История";
-
-/* Status label for the empty Bookmarks state. */
-"Bookmarks you save will show up here." = "Здесь будут закладки которые Вы сохранили.";
 
 /* Button to show the brave panel */
 "Brave Panel" = "Панель Brave";
@@ -226,21 +98,41 @@ Brave создан для скорости и эффективности.";
 /* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
 "Brave Shield Defaults" = "Настройки по умолчанию защиты Brave";
 
+/* Shown in intro screens */
+"Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency." = "Brave блокирует рекламу.
+Brave блокирует трекинг.
+Brave создан для скорости и эффективности.";
+
+/* email subject */
+/* Shown in intro screens */
+"Brave is Faster,\nand here's why..." = "Brave быстрее,
+и вот почему...";
+
+/* Shown in intro screens */
+"Brave keeps you safe as you browse." = "Brave сохраняет Вас в безопасности во время просмотра.";
+
+/* No comment provided by engineer. */
+"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave не будет запоминать историю и cookies, но закладки будут сохранены.";
+
 /* See http://mzl.la/1G7uHo7 */
 "Brave would like to access your Photos" = "Brave нужен доступ к Вашим Фотографиям";
 
 /* Accessibility label for brightness adjustment slider in Reader Mode display settings */
 "Brightness" = "Яркость";
 
+/* Shown in intro screens */
+"Browse with us and your privacy is protected, with nothing further to install, learn or configure." = "Исследуйте интернет с нами и Ваша конфиденциальность защищена без дополнительной установки, изучения или настройки.";
+
+/* Settings item for clearing browsing history */
+"Browsing History" = "История";
+
+/* Settings item for clearing the cache */
+"Cache" = "Кэш";
+
 /* Alert Call Button */
 "Call" = "Звонок";
 
-/* Alert Cancel Button
-   Authentication prompt cancel button
-   Button label to cancel entering a URL or search query
-   Cancel alert view
-   Cancel button
-   Cancel title from search engine picker */
+/* No comment provided by engineer. */
 "Cancel" = "Отмена";
 
 /* Accessibility hint for the color theme setting buttons in reader mode display settings */
@@ -249,11 +141,24 @@ Brave создан для скорости и эффективности.";
 /* Accessibility hint for the font type buttons in reader mode display settings */
 "Changes font type." = "Изменяет шрифт.";
 
-/* Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data. */
-"Clear Private Data" = "Очистить личные данные";
+/* Used as a button label in the dialog to Clear private data dialog */
+"Clear" = "Очистить";
 
+/* Title of the Clear private data dialog. */
+"Clear Everything" = "Очистить все";
+
+/* Button in settings that clears private data for the selected items. Also used as section title in settings panel */
+"Clear Private Data" = "Удалить личные данные";
+
+/* No comment provided by engineer. */
 /* Accessibility label for action denoting closing a tab in tab list (tray) */
 "Close" = "Закрыть";
+
+/* Setting for closing private tabs */
+"Close Private Tabs" = "Закрыть приватные вкладки";
+
+/* No comment provided by engineer. */
+"Close Tab" = "Закрыть вкладку";
 
 /* No comment provided by engineer. */
 "Closing tab" = "Вкладка закрывается";
@@ -261,6 +166,10 @@ Brave создан для скорости и эффективности.";
 /* Cookie settings option title */
 "Cookie Control" = "Настройка cookie";
 
+/* Settings item for clearing cookies */
+"Cookies" = "Cookies";
+
+/* No comment provided by engineer. */
 /* Copy the URL from the location bar */
 "Copy Address" = "Скопировать адрес";
 
@@ -273,87 +182,47 @@ Brave создан для скорости и эффективности.";
 /* Accessibility message e.g. spoken by VoiceOver after the user wanted to add current page to the Reading List and this was not done, likely because it already was in the Reading List, but perhaps also because of real failures. */
 "Could not add page to Reading List. Maybe it's already there?" = "Ошибка добавления страницы в список для чтения. Возможно она уже там?";
 
-/* Accessibility message e.g. spoken by VoiceOver after adding current webpage to the Reading List failed. */
-"Could not add page to Reading list" = "Ошибка добавления страницы в список для чтения";
-
-/* Error message that is shown in settings when there was a problem loading */
-"Could not load page." = "Ошибка загрузки страницы.";
-
 /* Dark theme setting in Reading View settings */
 "Dark" = "Темный";
 
 /* Accessibility label for button decreasing font size in display settings of reader mode */
 "Decrease text size" = "Уменьшить размер шрифта";
 
-/* Accessibility label for default search engine setting.
-   Open search section of settings
-   Title for default search engine picker.
-   Title for default search engine settings section. */
+/* Open search section of settings */
 "Default Search Engine" = "Поисковый сервер по умолчанию";
 
-/* Delete Folder */
+/* No comment provided by engineer. */
+"Delete" = "Удалить";
+
+/* No comment provided by engineer. */
 "Delete Folder" = "Удалить папку";
 
-/* Pending feature; currently unused string! Checkbox label shown after multiple alerts are shown */
-"Disable additional page dialogs" = "Отключить дополнительные диалоги страницы";
-
+/* Title for deselecting all selected logins */
+/* The folder name for the virtual folder that contains all desktop bookmarks. */
 /* Name for display settings button in reader mode. Display in the meaning of presentation, not monitor. */
 "Display Settings" = "Настройки экрана";
-
-/* Prompt for saving a password. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"Do you want to save the password for %@ on %@?" = "Сохранить пароль %2$@ для %1$@?";
-
-/* Prompt for saving a password with no username. The parameter is the hostname of the site. */
-"Do you want to save the password on %@?" = "Сохранить пароль %@?";
-
-/* Prompt for updating a password. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"Do you want to update the password for %@ on %@?" = "Изменить пароль для %1$@ на %2$@?";
-
-/* Prompt for updating a password with on username. The parameter is the hostname of the site. */
-"Do you want to update the password on %@?" = "Изменить пароль на %@?";
-
-/* Used as a button label for crash dialog prompt */
-"Don't Send" = "Не отсылать";
 
 /* cookie settings option */
 "Don't block cookies" = "Не блокировать cookies";
 
-/* Done
-   Done button label for search settings table
-   Done button label on back forward list screen
-   Done button on left side of the Settings view controller title bar
-   Done editing button */
+/* No comment provided by engineer. */
 "Done" = "Сделано";
 
-/* No comment provided by engineer. */
-"Double tap and hold to open history" = "Дважды нажмите и удерживайте, чтобы открыть историю";
+/* Button to not save the user's password */
+"Don’t Save" = "Не сохранять";
 
 /* brave shield on/off toggle off state */
 "Down" = "Выкл";
 
-/* Tile title for DDG */
-"DuckDuckGo" = "DuckDuckGo";
-
-/* Edit */
+/* No comment provided by engineer. */
 "Edit" = "Редактировать";
 
-/* Label for button to perform advanced actions on the error page */
-"ErrorPages.Advanced.Button" = "Расширенные";
+/* Accessibility label for entering search mode for logins */
+/* No comment provided by engineer. */
+"Find" = "Найти";
 
-/* Warning text when clicking the Advanced button on error pages */
-"ErrorPages.AdvancedWarning1.Text" = "Предупреждение: мы не можем гарантировать безопасность соединения с этой страницей.";
-
-/* Additional warning text when clicking the Advanced button on error pages */
-"ErrorPages.AdvancedWarning2.Text" = "Возможна некорректная конфигурация или атака злоумышленника. Продолжайте на свой страх и риск.";
-
-/* Title on the certificate error page */
-"ErrorPages.CertWarning.Title" = "Ваше соединение не приватное";
-
-/* Label for button to go back from the error page */
-"ErrorPages.GoBack.Button" = "Назад";
-
-/* Button label to temporarily continue to the site from the certificate error page */
-"ErrorPages.VisitOnce.Button" = "Открыть сайт";
+/* Share action title */
+"Find in Page" = "Найти на странице";
 
 /* individual blocking statistic title */
 "Fingerprinting Methods" = "Методы цифрового отпечатка";
@@ -361,57 +230,35 @@ Brave создан для скорости и эффективности.";
 /* No comment provided by engineer. */
 "Fingerprinting Protection" = "Защита цифрового отпечатка";
 
-/* Brave panel individual toggle title */
+/* blocking stat title */
 "Fingerprinting\nProtection" = "Защита
 цифрового отпечатка";
 
+/* Folder */
 /* Accessibility Label for the browser toolbar Forward button */
 "Forward" = "Вперед";
 
 /* General settings section title */
 "General" = "Общие";
 
-/* Tile title for Google */
-"Google" = "Google";
+/* Shown in intro screens */
+"Get ready to experience a Faster, Safer, Better Web." = "Приготовьтесь открыть для себя Быстрый, Безопасный, Лучший Интернет.";
 
-/* Brave panel individual toggle title */
+/* Label for button to go back from the error page */
+"Go Back" = "Назад";
+
+/* No comment provided by engineer. */
 "HTTPS Everywhere" = "HTTPS везде";
 
 /* individual blocking statistic title */
 "HTTPS Upgrades" = "HTTPS перенаправлений";
 
+/* Hide password text selection menu item */
 /* Panel accessibility label */
 "History" = "История";
 
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Back.DiscoveryTitle" = "Назад";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.CloseTab.DiscoveryTitle" = "Закрыть вкладку";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Find.DiscoveryTitle" = "Найти";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Forward.DiscoveryTitle" = "Вперед";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.NewPrivateTab.DiscoveryTitle" = "Новая приватная вкладка";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.NewTab.DiscoveryTitle" = "Новая вкладка";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Reload.DiscoveryTitle" = "Обновить страницу";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.SelectLocationBar.DiscoveryTitle" = "Выбрать панель адреса";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.ShowNextTab.DiscoveryTitle" = "Показать следующую вкладку";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.ShowPreviousTab.DiscoveryTitle" = "Показать предыдущую вкладку";
+/* Shown in intro screens */
+"In case you hit a speed bump" = "В случае проблемы с загрузкой страницы";
 
 /* Accessibility label for button increasing font size in display settings of reader mode */
 "Increase text size" = "Увеличить размер текста";
@@ -422,99 +269,102 @@ Brave создан для скорости и эффективности.";
 /* Accessibility label for the introduction tour carousel */
 "Intro Tour Carousel" = "Введение";
 
+/* String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3 */
+"Introductory slide %@ of %@" = "Вводный слайд %1$@ из %2$@";
+
+/* Additional warning text when clicking the Advanced button on error pages */
+"It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk." = "Возможна некорректная конфигурация или атака злоумышленника. Продолжайте на свой страх и риск.";
+
+/* Footer label describing when the login was last modified with the timestamp as the parameter */
 /* History tableview section header */
 "Last month" = "Последний месяц";
 
 /* History tableview section header */
 "Last week" = "Последняя неделя";
 
+/* Text button displayed when there are no tabs open while in private mode */
+"Learn More" = "Узнать больше";
+
 /* Light theme setting in Reading View settings */
 "Light" = "Светлый";
 
-/* Authentication prompt log in button */
-"Log in" = "Авторизоваться";
-
+/* Link for going to the non-reader page when the reader view could not be loaded. This message will appear only when sharing to Firefox reader mode from another app. */
+/* Message displayed when the reader mode page is loading. This message will appear only when sharing to Firefox reader mode from another app. */
+/* Bookmark folder location */
 /* Label used as an item in Settings. When touched, the user will be navigated to the Logins/Password manager. */
 "Logins" = "Логины";
 
-/* Button to not save the user's password */
-"LoginsHelper.DontSave.Button" = "Не сохранять";
-
-/* Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"LoginsHelper.PromptSaveLogin.Title" = "Сохранить логин %1$@ для %2$@?";
-
-/* Prompt for saving a password with no username. The parameter is the hostname of the site. */
-"LoginsHelper.PromptSavePassword.Title" = "Сохранить пароль для %@?";
-
-/* Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site. */
-"LoginsHelper.PromptUpdateLogin.Title" = "Обновить логин %1$@ для %2$@?";
-
-/* Prompt for updating a password with no username. The parameter is the hostname of the site. */
-"LoginsHelper.PromptUpdatePassword.Title" = "Обновить пароль для %@?";
-
-/* Button to save the user's password */
-"LoginsHelper.SaveLogin.Button" = "Сохранить логин";
-
-/* Button to update the user's password */
-"LoginsHelper.Update.Button" = "Обновить";
-
-/* Name for Mark as read button in reader mode
-   Title for the button that marks a reading list item as read */
+/* No comment provided by engineer. */
+/* No comment provided by engineer. */
+/* Name for Mark as read button in reader mode */
 "Mark as Read" = "Пометить как прочитанное";
 
-/* Name for Mark as unread button in reader mode
-   Title for the button that marks a reading list item as unread */
+/* Name for Mark as unread button in reader mode */
 "Mark as Unread" = "Пометить как непрочитанное";
 
+/* The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android. */
+/* Bookmark name/title */
 /* Accessibility label for the navigation toolbar displayed at the bottom of the screen. */
 "Navigation Toolbar" = "Панель навигации";
 
 /* tabs bar show/hide option */
 "Never show" = "Никогда не показывать";
 
-/* New Folder */
+/* No comment provided by engineer. */
 "New Folder" = "Новая папка";
 
-/* Restore Tabs Negative Action */
+/* No comment provided by engineer. */
+"New Private Tab" = "Новая приватная вкладка";
+
+/* No comment provided by engineer. */
+"New Tab" = "Новая вкладка";
+
+/* Accessibility label for next result button in Find in Page Toolbar. */
+"Next in-page result" = "Следующий результат";
+
+/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
 "No" = "Нет";
 
+/* Title displayed when no logins are found after searching */
 /* Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray */
 "No tabs" = "Нет вкладок";
 
-/* Label for button to cancel application update prompt */
-"Not Now" = "Не сейчас";
-
-/* Button to not save the user's password */
-"Not now" = "Не сейчас";
-
-/* Label for OK button in the application update prompt
-   OK button */
+/* OK button */
 "OK" = "OK";
 
-/* Restore Tabs Affirmative Action */
-"Okay" = "OK";
+/* Toggled OFF accessibility value */
+"Off" = "Выкл";
 
+/* Settings item for clearing website data */
+"Offline Website Data" = "Офлайн-контент";
+
+/* Toggled ON accessibility value */
+"On" = "Вкл";
+
+/* Open and Fill website text selection menu item */
 /* Share action title */
 "Open Desktop Site tab" = "Открыть полную версию сайта";
 
 /* Context menu item for opening a link in a new tab */
 "Open In Background" = "Открыть в фоновом режиме";
 
+/* Context menu option for opening a link in a new private tab */
+"Open In New Private Tab" = "Открыть в новой приватной вкладке";
+
+/* See http://mzl.la/1G7uHo7 */
 "Open Settings" = "Открыть настройки";
 
+/* See http://mzl.la/1LXbDOL */
 "Open articles in Reader View by tapping the book icon when it appears in the title bar." = "Открывать статьи в режиме для чтения после нажатия иконки книги, когда она появляется на панели заголовка. ";
+
+/* Shown in error pages for files that can't be shown and need to be downloaded. */
+"Open in Safari" = "Открыть в Safari";
 
 /* String indicating that the file can be opened in another application on the device */
 "Open in…" = "Открыть в...";
 
-/* Opening an external URL */
-"Opening %@" = "Открывается %@";
-
 /* Accessibility label for the Home panel's top toolbar containing list of the home panels (top sites, bookmarsk, history, remote tabs, reading list). */
 "Panel Chooser" = "Выбор панелей";
-
-/* Password textbox in Authentication prompt */
-"Password" = "Пароль";
 
 /* Paste the URL into the location bar */
 "Paste" = "Вставить";
@@ -522,19 +372,26 @@ Brave создан для скорости и эффективности.";
 /* Paste the URL into the location bar and visit */
 "Paste & Go" = "Вставить и применить";
 
-/* Privacy section title
-   Privacy settings section title */
+/* Accessibility label for previous result button in Find in Page Toolbar. */
+"Previous in-page result" = "Предыдущий результат";
+
+/* Settings privacy section title */
 "Privacy" = "Конфиденциальность";
 
-/* Show Brave Browser Privacy Policy page from the Privacy section in the settings.
-   Show Brave Browser Privacy Policy page from the Privacy section in the settings. See https://www.brave.com/privacy */
+/* Show Brave Browser Privacy Policy page from the Privacy section in the settings. */
 "Privacy Policy" = "Политика конфиденциальности";
 
 /* Private button title */
 "Private" = "Приватный";
 
+/* No comment provided by engineer. */
+"Private Browsing" = "Приватный просмотр";
+
 /* Setting to keep app in private mode */
 "Private Browsing Only" = "Приватное использование";
+
+/* Accessibility label for toggling on/off private mode */
+"Private Mode" = "Приватный режим";
 
 /* Private mode icon next to location string */
 "Private mode icon" = "Иконка приватного режима";
@@ -551,7 +408,10 @@ Brave создан для скорости и эффективности.";
 /* Accessibility Label for the browser toolbar Reload button */
 "Reload" = "Перезагрузить";
 
-/* Title for the button that removes a reading list item */
+/* No comment provided by engineer. */
+"Reload Page" = "Обновить страницу";
+
+/* Action button for deleting_history_entries_in_the_history_panel. */
 "Remove" = "Удалить";
 
 /* Name for button removing current article from reading list in reader mode */
@@ -563,25 +423,46 @@ Brave создан для скорости и эффективности.";
 /* Show mail composer to report a bug. */
 "Report a bug" = "Сообщить об ошибке";
 
+/* Reveal password text selection menu item */
 /* Font type setting in the reading view settings */
 "Sans-serif" = "Sans-serif";
 
 /* Context menu item for saving an image */
 "Save Image" = "Сохранить изображение";
 
+/* Button to save the user's password */
+"Save Login" = "Сохранить логин";
+
 /* Setting to enable the built-in password manager */
 "Save Logins" = "Сохранить логины";
 
+/* Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site. */
+"Save login %@ for %@?" = "Сохранить логин %1$@ для %2$@?";
+
+/* See http://mzl.la/1LXbDOL */
 "Save pages to your Reading List by tapping the book plus icon in the Reader View controls." = "Сохранить страницы в список для чтения, путем нажатия книги-плюс иконки в диалоге управления чтением. ";
+
+/* Prompt for saving a password with no username. The parameter is the hostname of the site. */
+"Save password for %@?" = "Сохранить пароль для %@?";
+
+/* Settings item for clearing passwords and login data */
+"Saved Logins" = "Сохраненные логины";
 
 /* individual blocking statistic title */
 "Scripts Blocked" = "Блокировано скриптов";
 
-/* Navigation title for search settings. */
+/* No comment provided by engineer. */
 "Search" = "Поиск";
+
+/* Accessibility label for the search input field in the Logins list */
+/* No comment provided by engineer. */
+"Search Settings" = "Настройки поиска";
 
 /* The text shown in the URL bar on about:home */
 "Search or enter address" = "Поиск или ввод адреса";
+
+/* Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google */
+"Search suggestions from %@" = "Предложения поиска от %@";
 
 /* Accessibility hint describing the action performed when a search suggestion is clicked */
 "Searches for the suggestion" = "Поиски по предложению";
@@ -589,24 +470,18 @@ Brave создан для скорости и эффективности.";
 /* Accessibility label for the lock icon, which is only present if the connection is secure */
 "Secure connection" = "Безопасное соединение";
 
+/* Title for selecting all logins */
+/* No comment provided by engineer. */
+"Select Location Bar" = "Выбрать панель адреса";
+
 /* Sepia theme setting in Reading View settings */
 "Sepia" = "Sepia";
 
 /* Font type setting in the reading view settings */
 "Serif" = "Serif";
 
-/* Accessibility label for the Settings button.
-   Settings */
+/* No comment provided by engineer. */
 "Settings" = "Настройки";
-
-/* Button in settings that clears private data for the selected items. */
-"Settings.ClearPrivateData.Clear.Button" = "Удалить личные данные";
-
-/* Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data. */
-"Settings.ClearPrivateData.SectionName" = "Удалить личные данные";
-
-/* Title displayed in header of the setting panel. */
-"Settings.ClearPrivateData.Title" = "Удалить личные данные";
 
 /* Accessibility Label for the browser toolbar Share button */
 "Share" = "Поделиться";
@@ -614,24 +489,27 @@ Brave создан для скорости и эффективности.";
 /* Context menu item for sharing a link URL */
 "Share Link" = "Поделиться ссылкой";
 
-/* Button title for cancelling Share screen */
-"ShareTo.Cancel.Button" = "Отмена";
-
+/* message shown briefly in URL bar */
+/* message shown briefly in URL bar */
 /* Button to show the bookmarks list */
 "Show Bookmarks" = "Показать закладки";
 
 /* Button to show the history list */
 "Show History" = "Показать историю";
 
+/* No comment provided by engineer. */
+"Show Next Tab" = "Показать следующую вкладку";
+
+/* No comment provided by engineer. */
+"Show Previous Tab" = "Показать предыдущую вкладку";
+
 /* Label for show search suggestions setting. */
 "Show Search Suggestions" = "Показать предложения по поиску";
 
-/* Accessibility label for the tabs button in the (top) browser toolbar
-   Accessibility Label for the tabs button in the browser toolbar */
+/* Accessibility Label for the tabs button in the browser toolbar */
 "Show Tabs" = "Показать вкладки";
 
-/* Setting to show/hide the tabs bar
-   tabs bar show/hide setting title */
+/* Setting to show/hide the tabs bar */
 "Show Tabs Bar" = "Показать панель вкладок";
 
 /* Show the on-boarding screen again from the settings */
@@ -643,11 +521,11 @@ Brave создан для скорости и эффективности.";
 /* tabs bar show/hide option */
 "Show in landscape only" = "Показывать только в горизонтальном режиме";
 
-/* Label for show search suggestions setting. */
-"Show search suggestions" = "Показать предложения по поиску";
-
 /* Brave panel topmost title */
 "Site shield settings" = "Настройки защиты сайта";
+
+/* No comment provided by engineer. */
+"Start Browsing" = "Начать Просмотр";
 
 /* Accessibility Label for the browser toolbar Stop button */
 "Stop" = "Стоп";
@@ -655,6 +533,7 @@ Brave создан для скорости и эффективности.";
 /* Support section title */
 "Support" = "Поддержка";
 
+/* Accessibility hint for tab tray's displayed tab. */
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
 "Tab %@ of %@" = "Вкладка %1$@ из %2$@";
 
@@ -664,16 +543,25 @@ Brave создан для скорости и эффективности.";
 /* Accessibility label for the Tabs Tray view. */
 "Tabs Tray" = "Область уведомления вкладок";
 
+/* Shown in intro screens */
+"Tap the Brave button to temporarily disable ad blocking and privacy features." = "Нажмите кнопку Brave, чтобы временно отключить блокирование рекламы и личных данных.";
+
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
 "Terms of Use" = "Условия использования";
 
+/* Warning text on the certificate error page */
+/* Message displayed when the reader mode page could not be loaded. This message will appear only when sharing to Firefox reader mode from another app. */
 /* Error displayed when reader mode cannot be enabled */
 "There was an error converting the page" = "Произошла ошибка во время конвертирования страницы";
 
+/* Description of the confirmation dialog shown when a user tries to clear their private data. */
+"This action will clear all of your private data. It cannot be undone." = "Это действие удалит все ваши личные данные. Оно не может быть отменено.";
+
+/* See http://mzl.la/1G7uHo7 */
 "This allows you to save the image to your Camera Roll." = "Это позволяет сохранить изображение на камеру";
 
-/* Opening an external app */
-"This will open in another application" = "Это откроется в другом приложении";
+/* Title of the confirmation alert when the user tries to delete_a_folder_that_still_contains_bookmarks_and/or folders. */
+"This folder isn't empty." = "Эта папка не пустая.";
 
 /* History tableview section header */
 "Today" = "Сегодня";
@@ -681,44 +569,65 @@ Brave создан для скорости и эффективности.";
 /* Panel accessibility label */
 "Top sites" = "Лучшие сайты";
 
-/* Description label for the empty Top Sites state. */
-"TopSites.EmptyState.Description" = "Здесь будут показываться самые посещаемые сайты.";
+/* Shown in error pages on a button that will try to load the page again */
+"Try again" = "Попробуйте снова";
 
-/* The title for the empty Top Sites state */
-"TopSites.EmptyState.Title" = "Добро пожаловать в лучшие сайты";
+/* Prompt shown before enabling provider search queries */
+"Turn on search suggestions?" = "Включить предложения поиска?";
 
+/* Accessiblity hint for toggling on/off private mode */
+"Turns private mode on or off" = "Включает/Выключает приватный режим";
+
+/* Bookmark URL */
+/* The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android. */
+/* The default name for bookmark item without titles. */
 /* brave shield on/off toggle on state */
 "Up" = "Вкл";
 
 /* Button to update the user's password */
 "Update" = "Обновить";
 
-/* Setting to enable compact tabs in the tab overview */
-"Use Compact Tabs" = "Использовать компактные вкладки";
+/* Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site. */
+"Update login %@ for %@?" = "Обновить логин %1$@ для %2$@?";
 
-/* Version number of app shown in settings */
+/* Prompt for updating a password with no username. The parameter is the hostname of the site. */
+"Update password for %@?" = "Обновить пароль для %@?";
+
+/* Version number of Brave shown in settings */
 "Version %@ (%@)" = "Версия %1$@ (%2$@)";
+
+/* Button label to temporarily continue to the site from the certificate error page */
+"Visit site anyway" = "Открыть сайт";
+
+/* Warning text when clicking the Advanced button on error pages */
+"Warning: we can't confirm your connection to this website is secure." = "Предупреждение: мы не можем гарантировать безопасность соединения с этой страницей.";
 
 /* Accessibility label for the main web content view */
 "Web content" = "Содержимое Web страницы";
 
+/* Shown in intro screens */
+"Welcome to Brave." = "Добро пожаловать в Brave.";
+
+/* The title for the empty Top Sites state */
+"Welcome to Top Sites" = "Добро пожаловать в лучшие сайты";
+
 /* See http://mzl.la/1LXbDOL */
 "Welcome to your Reading List" = "Добро пожаловать в список для чтения";
 
-/* Restore Tabs Prompt Title */
-"Well, this is embarrassing." = "Что ж, это затруднительно.";
+/* Will be displayed in Settings under 'Close Private Tabs' */
+"When Leaving Private Browsing" = "Когда покидаешь приватный просмотр";
 
-/* Tile title for wikipedia */
-"Wikipedia" = "Википедия";
-
-/* Tile title for Yahoo */
-"Yahoo" = "Yahoo";
-
-/* Button to save the user's password */
+/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
 "Yes" = "Да";
 
 /* History tableview section header */
 "Yesterday" = "Вчера";
+
+/* Title on the certificate error page */
+"Your connection is not private" = "Ваше соединение не приватное";
+
+/* Description label for the empty Top Sites state. */
+"Your most visited sites will show up here." = "Здесь будут показываться самые посещаемые сайты.";
 
 /* Relative time for a tab that was visited within the last few moments. */
 "just now" = "только что";
@@ -729,6 +638,7 @@ Brave создан для скорости и эффективности.";
 /* Description for a date more than a week ago, but less than a month ago. */
 "more than a week ago" = "больше недели назад";
 
+/* Title for password row in Login Detail View */
 /* Accessibility label for read article in reading list. It's a past participle - functions as an adjective. */
 "read" = "прочитано";
 
@@ -741,54 +651,5 @@ Brave создан для скорости и эффективности.";
 /* Accessibility label for unread article in reading list. It's a past participle - functions as an adjective. */
 "unread" = "непрочитано";
 
-/* Relative date for yesterday. */
-"yesterday" = "вчера";
-
-/* Description text displayed when there are no open tabs while in private mode */
-"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave не будет запоминать историю и cookies, но закладки будут сохранены.";
-
-/* Setting for closing private tabs */
-"Close Private Tabs" = "Закрыть приватные вкладки";
-
-/* Text button displayed when there are no tabs open while in private mode */
-"Learn More" = "Узнать больше";
-
-/* Toggled OFF accessibility value */
-"Off" = "Выкл";
-
-/* Toggled ON accessibility value */
-"On" = "Вкл";
-
-/* Context menu option for opening a link in a new private tab */
-"Open In New Private Tab" = "Открыть в новой приватной вкладке";
-
-/* Title displayed for when there are no open tabs while in private mode */
-"Private Browsing" = "Приватный просмотр";
-
-/* Accessibility label for toggling on/off private mode */
-"Private Mode" = "Приватный режим";
-
-/* Accessiblity hint for toggling on/off private mode */
-"Turns private mode on or off" = "Включает/Выключает приватный режим";
-
-/* Will be displayed in Settings under 'Close Private Tabs' */
-"When Leaving Private Browsing" = "Когда покидаешь приватный просмотр";
-
-/* Label for search engine buttons. The argument corresponds to the name of the search engine. */
-"%@ search" = "%@ поиск";
-
-/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
-"No" = "Нет";
-
-/* Label for search settings button. */
-"Search Settings" = "Настройки поиска";
-
-/* Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google */
-"Search suggestions from %@" = "Предложения поиска от %@";
-
-/* Prompt shown before enabling provider search queries */
-"Turn on search suggestions?" = "Включить предложения поиска?";
-
-/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
-"Yes" = "Да";
-
+/* Title for username row in Login Detail View */
+/* Title for website row in Login Detail View */

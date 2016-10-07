@@ -59,11 +59,11 @@ public class BrowserToolbarHelper: NSObject {
             if loading {
                 toolbar.stopReloadButton.setImage(ImageStop, forState: .Normal)
                 toolbar.stopReloadButton.setImage(ImageStopPressed, forState: .Highlighted)
-                toolbar.stopReloadButton.accessibilityLabel = NSLocalizedString("Stop", comment: "Accessibility Label for the browser toolbar Stop button")
+                toolbar.stopReloadButton.accessibilityLabel = Strings.Stop
             } else {
                 toolbar.stopReloadButton.setImage(ImageReload, forState: .Normal)
                 toolbar.stopReloadButton.setImage(ImageReloadPressed, forState: .Highlighted)
-                toolbar.stopReloadButton.accessibilityLabel = NSLocalizedString("Reload", comment: "Accessibility Label for the browser toolbar Reload button")
+                toolbar.stopReloadButton.accessibilityLabel = Strings.Reload
             }
         }
     }
@@ -79,23 +79,21 @@ public class BrowserToolbarHelper: NSObject {
 
         toolbar.backButton.setImage(UIImage(named: "back"), forState: .Normal)
         //toolbar.backButton.setImage(UIImage(named: "backPressed"), forState: .Highlighted)
-        toolbar.backButton.accessibilityLabel = NSLocalizedString("Back", comment: "Accessibility Label for the browser toolbar Back button")
-        //toolbar.backButton.accessibilityHint = NSLocalizedString("Double tap and hold to open history", comment: "")
+        toolbar.backButton.accessibilityLabel = Strings.Back
         let longPressGestureBackButton = UILongPressGestureRecognizer(target: self, action: #selector(BrowserToolbarHelper.SELdidLongPressBack(_:)))
         toolbar.backButton.addGestureRecognizer(longPressGestureBackButton)
         toolbar.backButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickBack), forControlEvents: UIControlEvents.TouchUpInside)
 
         toolbar.forwardButton.setImage(UIImage(named: "forward"), forState: .Normal)
         //toolbar.forwardButton.setImage(UIImage(named: "forwardPressed"), forState: .Highlighted)
-        toolbar.forwardButton.accessibilityLabel = NSLocalizedString("Forward", comment: "Accessibility Label for the browser toolbar Forward button")
-        //toolbar.forwardButton.accessibilityHint = NSLocalizedString("Double tap and hold to open history", comment: "")
+        toolbar.forwardButton.accessibilityLabel = Strings.Forward
         let longPressGestureForwardButton = UILongPressGestureRecognizer(target: self, action: #selector(BrowserToolbarHelper.SELdidLongPressForward(_:)))
         toolbar.forwardButton.addGestureRecognizer(longPressGestureForwardButton)
         toolbar.forwardButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickForward), forControlEvents: UIControlEvents.TouchUpInside)
 
         toolbar.stopReloadButton.setImage(UIImage(named: "reload"), forState: .Normal)
         toolbar.stopReloadButton.setImage(UIImage(named: "reloadPressed"), forState: .Highlighted)
-        toolbar.stopReloadButton.accessibilityLabel = NSLocalizedString("Reload", comment: "Accessibility Label for the browser toolbar Reload button")
+        toolbar.stopReloadButton.accessibilityLabel = Strings.Reload
         let longPressGestureStopReloadButton = UILongPressGestureRecognizer(target: self, action: #selector(BrowserToolbarHelper.SELdidLongPressStopReload(_:)))
         toolbar.stopReloadButton.addGestureRecognizer(longPressGestureStopReloadButton)
         toolbar.stopReloadButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickStopReload), forControlEvents: UIControlEvents.TouchUpInside)
@@ -104,14 +102,14 @@ public class BrowserToolbarHelper: NSObject {
 #if !BRAVE // we use the default press state for now. 
         toolbar.shareButton.setImage(UIImage(named: "sendPressed"), forState: .Highlighted)
 #endif
-        toolbar.shareButton.accessibilityLabel = NSLocalizedString("Share", comment: "Accessibility Label for the browser toolbar Share button")
+        toolbar.shareButton.accessibilityLabel = Strings.Share
         toolbar.shareButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickShare), forControlEvents: UIControlEvents.TouchUpInside)
         toolbar.bookmarkButton.contentMode = UIViewContentMode.Center
 
         toolbar.bookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
         toolbar.bookmarkButton.setImage(UIImage(named: "bookmarked"), forState: UIControlState.Selected)
         toolbar.bookmarkButton.setImage(UIImage(named: "bookmarkHighlighted"), forState: UIControlState.Highlighted)
-        toolbar.bookmarkButton.accessibilityLabel = NSLocalizedString("Bookmark", comment: "Accessibility Label for the browser toolbar Bookmark button")
+        toolbar.bookmarkButton.accessibilityLabel = Strings.Bookmark
         let longPressGestureBookmarkButton = UILongPressGestureRecognizer(target: self, action: #selector(BrowserToolbarHelper.SELdidLongPressBookmark(_:)))
         toolbar.bookmarkButton.addGestureRecognizer(longPressGestureBookmarkButton)
         toolbar.bookmarkButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickBookmark), forControlEvents: UIControlEvents.TouchUpInside)
@@ -221,7 +219,7 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
         addButtons(backButton, forwardButton, stopReloadButton, shareButton, bookmarkButton)
 
         accessibilityNavigationStyle = .Combined
-        accessibilityLabel = NSLocalizedString("Navigation Toolbar", comment: "Accessibility label for the navigation toolbar displayed at the bottom of the screen.")
+        accessibilityLabel = Strings.Navigation_Toolbar
     }
 
     required init?(coder aDecoder: NSCoder) {

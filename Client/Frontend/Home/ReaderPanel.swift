@@ -37,9 +37,9 @@ private struct ReadingListTableViewCellUX {
     static let MarkAsReadButtonTitleEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
 
     // Localizable strings
-    static let DeleteButtonTitleText = NSLocalizedString("Remove", comment: "Title for the button that removes a reading list item")
-    static let MarkAsReadButtonTitleText = NSLocalizedString("Mark as Read", comment: "Title for the button that marks a reading list item as read")
-    static let MarkAsUnreadButtonTitleText = NSLocalizedString("Mark as Unread", comment: "Title for the button that marks a reading list item as unread")
+    static let DeleteButtonTitleText = Strings.Remove
+    static let MarkAsReadButtonTitleText = Strings.Mark_as_Read
+    static let MarkAsUnreadButtonTitleText = Strings.Mark_as_Unread
 }
 
 private struct ReadingListPanelUX {
@@ -159,7 +159,7 @@ class ReadingListTableViewCell: UITableViewCell {
     private func updateAccessibilityLabel() {
         if let hostname = hostnameLabel.text,
             title = titleLabel.text {
-            let unreadStatus = unread ? NSLocalizedString("unread", comment: "Accessibility label for unread article in reading list. It's a past participle - functions as an adjective.") : NSLocalizedString("read", comment: "Accessibility label for read article in reading list. It's a past participle - functions as an adjective.")
+            let unreadStatus = unread ? Strings.Unread : Strings.Read
             let string = "\(title), \(unreadStatus), \(hostname)"
             var label: AnyObject
             if !unread {
@@ -293,7 +293,7 @@ class ReadingListPanel: UITableViewController, HomePanel {
 
         let welcomeLabel = UILabel()
         containerView.addSubview(welcomeLabel)
-        welcomeLabel.text = NSLocalizedString("Welcome to your Reading List", comment: "See http://mzl.la/1LXbDOL")
+        welcomeLabel.text = Strings.Welcome_to_your_Reading_List
         welcomeLabel.textAlignment = NSTextAlignment.Center
         welcomeLabel.font = DynamicFontHelper.defaultHelper.DeviceFontSmallBold
         welcomeLabel.textColor = ReadingListPanelUX.WelcomeScreenHeaderTextColor
@@ -309,7 +309,7 @@ class ReadingListPanel: UITableViewController, HomePanel {
 
         let readerModeLabel = UILabel()
         containerView.addSubview(readerModeLabel)
-        readerModeLabel.text = NSLocalizedString("Open articles in Reader View by tapping the book icon when it appears in the title bar.", comment: "See http://mzl.la/1LXbDOL")
+        readerModeLabel.text = Strings.Open_articles_in_Reader_View_by_tapping_the_book_icon
         readerModeLabel.font = DynamicFontHelper.defaultHelper.DeviceFontSmallLight
         readerModeLabel.textColor = ReadingListPanelUX.WelcomeScreenItemTextColor
         readerModeLabel.numberOfLines = 0
@@ -328,7 +328,7 @@ class ReadingListPanel: UITableViewController, HomePanel {
 
         let readingListLabel = UILabel()
         containerView.addSubview(readingListLabel)
-        readingListLabel.text = NSLocalizedString("Save pages to your Reading List by tapping the book plus icon in the Reader View controls.", comment: "See http://mzl.la/1LXbDOL")
+        readingListLabel.text = Strings.Save_pages_to_your_Reading_List_by_tapping_the_book
         readingListLabel.font = DynamicFontHelper.defaultHelper.DeviceFontSmallLight
         readingListLabel.textColor = ReadingListPanelUX.WelcomeScreenItemTextColor
         readingListLabel.numberOfLines = 0

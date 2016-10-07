@@ -139,14 +139,14 @@ class URLBarView: UIView {
         tabsButton.titleLabel.text = "0"
         tabsButton.addTarget(self, action: #selector(URLBarView.SELdidClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
         tabsButton.accessibilityIdentifier = "URLBarView.tabsButton"
-        tabsButton.accessibilityLabel = NSLocalizedString("Show Tabs", comment: "Accessibility Label for the tabs button in the browser toolbar")
+        tabsButton.accessibilityLabel = Strings.Show_Tabs
         return tabsButton
     }()
 
     lazy var cancelButton: UIButton = {
         let cancelButton = InsetButton()
         cancelButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        let cancelTitle = NSLocalizedString("Cancel", comment: "Button label to cancel entering a URL or search query")
+        let cancelTitle = Strings.Cancel
         cancelButton.setTitle(cancelTitle, forState: UIControlState.Normal)
         cancelButton.titleLabel?.font = UIConstants.DefaultChromeFont
         cancelButton.addTarget(self, action: #selector(URLBarView.SELdidClickCancel), forControlEvents: UIControlEvents.TouchUpInside)
@@ -254,8 +254,7 @@ class URLBarView: UIView {
         locationTextField.clearButtonMode = UITextFieldViewMode.WhileEditing
         locationTextField.font = UIConstants.DefaultChromeFont
         locationTextField.accessibilityIdentifier = "address"
-        locationTextField.accessibilityLabel = NSLocalizedString("Address and Search", comment: "Accessibility label for address and search field, both words (Address, Search) are therefore nouns.")
-
+        locationTextField.accessibilityLabel = Strings.Address_and_Search
         locationTextField.attributedPlaceholder = NSAttributedString(string: self.locationView.placeholder.string, attributes: [NSForegroundColorAttributeName: UIColor.grayColor()])
 
         locationContainer.addSubview(locationTextField)
@@ -350,8 +349,8 @@ class URLBarView: UIView {
 
             tabsButton.insideButton.layer.opacity = 1
             tabsButton.insideButton.layer.transform = CATransform3DIdentity
-            tabsButton.accessibilityLabel = NSLocalizedString("Show Tabs", comment: "Accessibility label for the tabs button in the (top) browser toolbar")
-
+            tabsButton.accessibilityLabel = Strings.Show_Tabs
+            
             // By this time, the 'count' func argument may be out of date, use the correct current count
             let currentCount = getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.count
             tabsButton.titleLabel.text = "\(currentCount)"

@@ -4,6 +4,7 @@
 
 import Foundation
 import GCDWebServers
+import Shared
 
 struct ReaderModeHandlers {
     static var readerModeCache: ReaderModeCache = DiskReaderModeCache.sharedInstance
@@ -60,11 +61,11 @@ struct ReaderModeHandlers {
                                 let readerViewLoading = try NSMutableString(contentsOfFile: readerViewLoadingPath, encoding: NSUTF8StringEncoding)
                                 readerViewLoading.replaceOccurrencesOfString("%ORIGINAL-URL%", withString: url.absoluteString ?? "",
                                     options: NSStringCompareOptions.LiteralSearch, range: NSMakeRange(0, readerViewLoading.length))
-                                readerViewLoading.replaceOccurrencesOfString("%LOADING-TEXT%", withString: NSLocalizedString("Loading content…", comment: "Message displayed when the reader mode page is loading. This message will appear only when sharing to Firefox reader mode from another app."),
+                                readerViewLoading.replaceOccurrencesOfString("%LOADING-TEXT%", withString: Strings.LoadingContent,
                                     options: NSStringCompareOptions.LiteralSearch, range: NSMakeRange(0, readerViewLoading.length))
-                                readerViewLoading.replaceOccurrencesOfString("%LOADING-FAILED-TEXT%", withString: NSLocalizedString("The page could not be displayed in Reader View.", comment: "Message displayed when the reader mode page could not be loaded. This message will appear only when sharing to Firefox reader mode from another app."),
+                                readerViewLoading.replaceOccurrencesOfString("%LOADING-FAILED-TEXT%", withString: Strings.CantDisplayInReaderView,
                                     options: NSStringCompareOptions.LiteralSearch, range: NSMakeRange(0, readerViewLoading.length))
-                                readerViewLoading.replaceOccurrencesOfString("%LOAD-ORIGINAL-TEXT%", withString: NSLocalizedString("Load original page", comment: "Link for going to the non-reader page when the reader view could not be loaded. This message will appear only when sharing to Firefox reader mode from another app."),
+                                readerViewLoading.replaceOccurrencesOfString("%LOAD-ORIGINAL-TEXT%", withString: Strings.LoadOriginalPage,
                                     options: NSStringCompareOptions.LiteralSearch, range: NSMakeRange(0, readerViewLoading.length))
                                 return GCDWebServerDataResponse(HTML: readerViewLoading as String)
                             } catch _ {
@@ -74,7 +75,7 @@ struct ReaderModeHandlers {
                 }
             }
 
-            let errorString = NSLocalizedString("There was an error converting the page", comment: "Error displayed when reader mode cannot be enabled")
+            let errorString = Strings.There_was_an_error_converting_the_page
             return GCDWebServerDataResponse(HTML: errorString) // TODO Needs a proper error page
         }
     }

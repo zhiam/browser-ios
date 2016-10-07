@@ -329,37 +329,4 @@ public class BrowserProfile: Profile {
     func removeExistingAuthenticationInfo() {
         KeychainWrapper.setAuthenticationInfo(nil)
     }
-
-
-    func registerForNotifications() {
-        let viewAction = UIMutableUserNotificationAction()
-        viewAction.identifier = SentTabAction.View.rawValue
-        viewAction.title = NSLocalizedString("View", comment: "View a URL - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440")
-        viewAction.activationMode = UIUserNotificationActivationMode.Foreground
-        viewAction.destructive = false
-        viewAction.authenticationRequired = false
-
-        let bookmarkAction = UIMutableUserNotificationAction()
-        bookmarkAction.identifier = SentTabAction.Bookmark.rawValue
-        bookmarkAction.title = NSLocalizedString("Bookmark", comment: "Bookmark a URL - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440")
-        bookmarkAction.activationMode = UIUserNotificationActivationMode.Foreground
-        bookmarkAction.destructive = false
-        bookmarkAction.authenticationRequired = false
-
-        let readingListAction = UIMutableUserNotificationAction()
-        readingListAction.identifier = SentTabAction.ReadingList.rawValue
-        readingListAction.title = NSLocalizedString("Add to Reading List", comment: "Add URL to the reading list - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440")
-        readingListAction.activationMode = UIUserNotificationActivationMode.Foreground
-        readingListAction.destructive = false
-        readingListAction.authenticationRequired = false
-
-        let sentTabsCategory = UIMutableUserNotificationCategory()
-        sentTabsCategory.identifier = TabSendCategory
-        sentTabsCategory.setActions([readingListAction, bookmarkAction, viewAction], forContext: UIUserNotificationActionContext.Default)
-
-        sentTabsCategory.setActions([bookmarkAction, viewAction], forContext: UIUserNotificationActionContext.Minimal)
-        
-        app?.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Alert, categories: [sentTabsCategory]))
-        app?.registerForRemoteNotifications()
-    }
 }

@@ -69,8 +69,8 @@ extension BrowserViewController: WKCompatNavigationDelegate {
         if url.scheme == "tel" || url.scheme == "facetime" || url.scheme == "facetime-audio" {
             if let phoneNumber = url.resourceSpecifier!.stringByRemovingPercentEncoding {
                 let alert = UIAlertController(title: phoneNumber, message: nil, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment:"Alert Cancel Button"), style: UIAlertActionStyle.Cancel, handler: nil))
-                alert.addAction(UIAlertAction(title: NSLocalizedString("Call", comment:"Alert Call Button"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+                alert.addAction(UIAlertAction(title: Strings.Cancel, style: UIAlertActionStyle.Cancel, handler: nil))
+                alert.addAction(UIAlertAction(title: Strings.Call, style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
                     UIApplication.sharedApplication().openURL(url)
                 }))
                 presentViewController(alert, animated: true, completion: nil)
@@ -100,7 +100,10 @@ extension BrowserViewController: WKCompatNavigationDelegate {
             }
 
             let siteName = tab.displayURL?.hostWithGenericSubdomainPrefixRemoved() ?? "this site"
-            let snackBar = TimerSnackBar(attrText: NSAttributedString(string: NSLocalizedString("  Allow \(siteName) to open iTunes?", comment: "Ask user if site can open iTunes store URL")),
+            // TODO: not sure why snack bar fully left-aligns, looks better with a bit of space from left
+            let msg = NSAttributedString(string: "  " + String(format: Strings.AllowOpenITunes_template, siteName))
+
+            let snackBar = TimerSnackBar(attrText: msg,
                                          img: nil,
                                          buttons: [
                                             SnackButton(title: "Open", accessibilityIdentifier: "", callback: { bar in

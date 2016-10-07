@@ -70,7 +70,7 @@ class HomePanelViewController: UIViewController, UITextFieldDelegate, HomePanelD
         buttonContainerView.backgroundColor = HomePanelViewControllerUX.BackgroundColor
         buttonContainerView.clipsToBounds = true
         buttonContainerView.accessibilityNavigationStyle = .Combined
-        buttonContainerView.accessibilityLabel = NSLocalizedString("Panel Chooser", comment: "Accessibility label for the Home panel's top toolbar containing list of the home panels (top sites, bookmarsk, history, remote tabs, reading list).")
+        buttonContainerView.accessibilityLabel = Strings.Panel_Chooser
         view.addSubview(buttonContainerView)
 
         self.buttonContainerBottomBorderView = UIView()
@@ -267,7 +267,7 @@ class HomePanelViewController: UIViewController, UITextFieldDelegate, HomePanelD
 
         if editing {
             let button = UIButton(type: UIButtonType.System)
-            button.setTitle(NSLocalizedString("Done", comment: "Done editing button"), forState: UIControlState.Normal)
+            button.setTitle(Strings.Done, forState: UIControlState.Normal)
             button.addTarget(self, action: #selector(HomePanelViewController.endEditing(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             button.transform = translateDown
             button.titleLabel?.textAlignment = .Right

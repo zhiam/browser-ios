@@ -14,9 +14,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = NSLocalizedString("Settings", comment: "Settings")
+        navigationItem.title = Strings.Settings
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: NSLocalizedString("Done", comment: "Done button on left side of the Settings view controller title bar"),
+            title: Strings.Done,
             style: UIBarButtonItemStyle.Done,
             target: navigationController, action: #selector(SettingsNavigationController.SELdone))
         navigationItem.leftBarButtonItem?.accessibilityIdentifier = "AppSettingsTableViewController.navigationItem.leftBarButtonItem"
@@ -27,28 +27,16 @@ class AppSettingsTableViewController: SettingsTableViewController {
     override func generateSettings() -> [SettingSection] {
         var settings = [SettingSection]()
 
-        let privacyTitle = NSLocalizedString("Privacy", comment: "Privacy section title")
         let accountDebugSettings: [Setting]
-        if AppConstants.BuildChannel != .Aurora {
-            accountDebugSettings = [
-                // Debug settings:
-//                RequirePasswordDebugSetting(settings: self),
-//                RequireUpgradeDebugSetting(settings: self),
-//                ForgetSyncAuthStateDebugSetting(settings: self),
-            ]
-        } else {
-            accountDebugSettings = []
-        }
+        accountDebugSettings = []
 
         let prefs = profile.prefs
         var generalSettings = [
             SearchSetting(settings: self),
             BoolSetting(prefs: prefs, prefKey: "blockPopups", defaultValue: true,
-                titleText: NSLocalizedString("Block Pop-up Windows", comment: "Block pop-up windows setting")),
+                titleText: Strings.BlockPopupWindows),
             BoolSetting(prefs: prefs, prefKey: "saveLogins", defaultValue: true,
-                titleText: NSLocalizedString("Save Logins", comment: "Setting to enable the built-in password manager")),
-            BoolSetting(prefs: prefs, prefKey: AllowThirdPartyKeyboardsKey, defaultValue: false,
-                titleText: NSLocalizedString("Allow Third-Party Keyboards", comment: "Setting to enable third-party keyboards"), statusText: NSLocalizedString("Firefox needs to reopen for this change to take effect.", comment: "Setting value prop to enable third-party keyboards")),
+                titleText: Strings.Save_Logins),
         ]
 
         let accountChinaSyncSetting: [Setting]
@@ -61,16 +49,7 @@ class AppSettingsTableViewController: SettingsTableViewController {
 //                ChinaSyncServiceSetting(settings: self)
             ]
         }
-        // There is nothing to show in the Customize section if we don't include the compact tab layout
-        // setting on iPad. When more options are added that work on both device types, this logic can
-        // be changed.
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            generalSettings +=  [
-                BoolSetting(prefs: prefs, prefKey: "CompactTabLayout", defaultValue: true,
-                    titleText: NSLocalizedString("Use Compact Tabs", comment: "Setting to enable compact tabs in the tab overview"))
-            ]
-        }
-
+        
         settings += [
             SettingSection(title: nil, children: [
 //                // Without a Firefox Account:
@@ -80,16 +59,9 @@ class AppSettingsTableViewController: SettingsTableViewController {
 //                SyncNowSetting(settings: self)
             ] + accountChinaSyncSetting + accountDebugSettings)]
 
-        settings += [ SettingSection(title: NSAttributedString(string: NSLocalizedString("General", comment: "General settings section title")), children: generalSettings)]
+        settings += [ SettingSection(title: NSAttributedString(string: Strings.General), children: generalSettings)]
 
         var privacySettings = [Setting]()
-        if AppConstants.MOZ_LOGIN_MANAGER {
-            privacySettings.append(LoginsSetting(settings: self, delegate: settingsDelegate))
-        }
-
-        if AppConstants.MOZ_AUTHENTICATION_MANAGER {
-            privacySettings.append(TouchIDPasscodeSetting(settings: self))
-        }
 
         privacySettings.append(ClearPrivateDataSetting(settings: self))
 
@@ -97,33 +69,14 @@ class AppSettingsTableViewController: SettingsTableViewController {
             BoolSetting(prefs: prefs,
                 prefKey: "settings.closePrivateTabs",
                 defaultValue: false,
-                titleText: NSLocalizedString("Close Private Tabs", tableName: "PrivateBrowsing", comment: "Setting for closing private tabs"),
-                statusText: NSLocalizedString("When Leaving Private Browsing", tableName: "PrivateBrowsing", comment: "Will be displayed in Settings under 'Close Private Tabs'"))
+                titleText: Strings.Close_Private_Tabs,
+                statusText:Strings.When_Leaving_Private_Browsing)
         ]
 
         privacySettings += [
-//            BoolSetting(prefs: prefs, prefKey: "crashreports.send.always", defaultValue: false,
-//                titleText: NSLocalizedString("Send Crash Reports", comment: "Setting to enable the sending of crash reports"),
-//                settingDidChange: { configureActiveCrashReporter($0) }),
             PrivacyPolicySetting()
         ]
 
-
-        settings += [
-            SettingSection(title: NSAttributedString(string: privacyTitle), children: privacySettings),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("Support", comment: "Support section title")), children: [
-                ShowIntroductionSetting(settings: self),
-                SendFeedbackSetting(),
-                OpenSupportPageSetting(delegate: settingsDelegate),
-            ]),
-            SettingSection(title: NSAttributedString(string: NSLocalizedString("About", comment: "About settings section title")), children: [
-                VersionSetting(settings: self),
-                LicenseAndAcknowledgementsSetting(),
-                YourRightsSetting(),
-                ExportBrowserDataSetting(settings: self),
-                DeleteExportedDataSetting(settings: self),
-            ])]
-            
         return settings
     }
 

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
+import Shared
 
 public typealias Timestamp = UInt64
 public typealias MicrosecondTimestamp = UInt64
@@ -52,7 +53,7 @@ extension NSDate {
         }
 
         if components.month == 1 {
-            return String(format: NSLocalizedString("more than a month ago", comment: "Relative date for dates older than a month and less than two months."))
+            return Strings.More_than_a_month
         }
 
         if components.month > 1 {
@@ -60,24 +61,23 @@ extension NSDate {
         }
 
         if components.weekOfYear > 0 {
-            return String(format: NSLocalizedString("more than a week ago", comment: "Description for a date more than a week ago, but less than a month ago."))
+            return Strings.More_than_a_week
         }
 
         if components.day == 1 {
-            return String(format: NSLocalizedString("yesterday", comment: "Relative date for yesterday."))
+            return Strings.Yesterday
         }
 
         if components.day > 1 {
-            return String(format: NSLocalizedString("this week", comment: "Relative date for date in past week."), String(components.day))
+            return String(format: Strings.This_week, String(components.day))
         }
 
         if components.hour > 0 || components.minute > 0 {
             let absoluteTime = NSDateFormatter.localizedStringFromDate(self, dateStyle: NSDateFormatterStyle.NoStyle, timeStyle: NSDateFormatterStyle.ShortStyle)
-            let format = NSLocalizedString("today at %@", comment: "Relative date for date older than a minute.")
-            return String(format: format, absoluteTime)
+            return String(format: Strings.Today_at_template, absoluteTime)
         }
 
-        return String(format: NSLocalizedString("just now", comment: "Relative time for a tab that was visited within the last few moments."))
+        return Strings.Just_now
     }
 }
 

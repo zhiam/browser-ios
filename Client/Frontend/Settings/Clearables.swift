@@ -10,9 +10,6 @@ import WebImage
 
 private let log = Logger.browserLogger
 
-// Removed Clearables as part of Bug 1226654, but keeping the string around.
-private let removedSavedLoginsLabel = NSLocalizedString("Saved Logins", tableName: "ClearPrivateData", comment: "Settings item for clearing passwords and login data")
-
 // A base protocol for something that can be cleared.
 protocol Clearable {
     func clear() -> Success
@@ -36,7 +33,7 @@ class HistoryClearable: Clearable {
     }
 
     var label: String {
-        return NSLocalizedString("Browsing History", tableName: "ClearPrivateData", comment: "Settings item for clearing browsing history")
+        return Strings.Browsing_History
     }
 
     func clear() -> Success {
@@ -72,7 +69,7 @@ struct ClearableErrorType: MaybeErrorType {
 class CacheClearable: Clearable {
 
     var label: String {
-        return NSLocalizedString("Cache", tableName: "ClearPrivateData", comment: "Settings item for clearing the cache")
+        return Strings.Cache
     }
 
     func clear() -> Success {
@@ -146,7 +143,7 @@ private func deleteLibraryFolder(folder: String) throws {
 // Removes all app cache storage.
 class SiteDataClearable: Clearable {
     var label: String {
-        return NSLocalizedString("Offline Website Data", tableName: "ClearPrivateData", comment: "Settings item for clearing website data")
+        return Strings.Offline_Website_Data
     }
 
     func clear() -> Success {
@@ -161,7 +158,7 @@ class SiteDataClearable: Clearable {
 class CookiesClearable: Clearable {
 
     var label: String {
-        return NSLocalizedString("Cookies", tableName: "ClearPrivateData", comment: "Settings item for clearing cookies")
+        return Strings.Cookies
     }
 
     func clear() -> Success {

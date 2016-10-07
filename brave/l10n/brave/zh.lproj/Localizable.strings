@@ -1,121 +1,7 @@
-/* Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
-"Are you sure you want to delete it and its contents?" = "确定要删除以及其中内容吗？";
+"CFBundleDisplayName" = "在Brave里打开";
 
-/* Button label to cancel deletion when the user tried to delete a non-empty folder. */
-"Cancel" = "取消";
-
-/* Button label for the button that deletes a folder and all of its children. */
-"Delete" = "删除";
-
-/* Title of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
-"This folder isn't empty." = "该文件夹不是空的";
-
-/* Action button for deleting bookmarks in the bookmarks panel. */
-"Delete" = "删除";
-
-/* Action button for editing bookmarks in the bookmarks panel. */
-"Edit" = "编辑";
-
-/* Message shown in the dialog prompting users if they want to clear everything */
-"Are you sure you want to clear all of your data? This will also close all open tabs." = "确定要删除你的所有数据？该操作会关闭所有的标签页。";
-
-/* Settings item for clearing browsing history */
-"Browsing History" = "浏览历史";
-
-/* Settings item for clearing the cache */
-"Cache" = "高速缓存";
-
-/* Used as a button label in the dialog to cancel clear private data dialog */
-"Cancel" = "取消";
-
-/* Used as a button label in the dialog to Clear private data dialog */
-"Clear" = "清除";
-
-/* Title of the Clear private data dialog. */
-"Clear Everything" = "全部清除";
-
-/* Button in settings that clears private data for the selected items.
-   Navigation title in settings. */
-"Clear Private Data" = "清除隐私数据";
-
-/* Settings item for clearing cookies */
-"Cookies" = "Cookies";
-
-/* Settings item for clearing website data */
-"Offline Website Data" = "脱机网站数据";
-
-/* Settings item for clearing passwords and login data */
-"Saved Logins" = "保存登陆";
-
-/* The cancel button when confirming clear private data. */
-"Cancel" = "取消";
-
-/* The button that clears private data. */
-"OK" = "好";
-
-/* Description of the confirmation dialog shown when a user tries to clear their private data. */
-"This action will clear all of your private data. It cannot be undone." = "该操作会清除你所有隐私数据，并且该操作不能被撤回。";
-
-/* Shown in error pages for files that can't be shown and need to be downloaded. */
-"Open in Safari" = "在Safari中打开";
-
-/* Shown in error pages on a button that will try to load the page again */
-"Try again" = "重试";
-
-/* Done button in Find in Page Toolbar. */
-"Done" = "完成";
-
-/* Share action title
-   Text selection menu item */
-"Find in Page" = "查找页面";
-
-/* Accessibility label for next result button in Find in Page Toolbar. */
-"Next in-page result" = "下一篇结果页";
-
-/* Accessibility label for previous result button in Find in Page Toolbar. */
-"Previous in-page result" = "上一篇结果页";
-
-/* Action button for deleting history entries in the history panel. */
-"Remove" = "移除";
-
-/* Intro screen message */
-"Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency." = "Brave屏蔽广告。
-Brave阻止跟踪器。
-Brave专为更快的速度，更高的效率而设计";
-
-/* intro screen message */
-"Brave is Faster,\nand here's why..." = "Brave速度更快，
-是因为...";
-
-/* intro screen message */
-"Brave keeps you safe as you browse." = "Brave让你的浏览体验更安全";
-
-/* intro screen message */
-"Browse multiple Web pages at the same time with tabs." = "同时浏览多个网页";
-
-/* intro screen */
-"Browse with us and your privacy is protected, with nothing further to install, learn or configure." = "无需其他的安装，学习和配置，Brave浏览器会保护您的隐私，";
-
-/* No comment provided by engineer. */
-"Get ready to experience a Faster, Safer, Better Web." = "准备好跟我们一起享受更快，更安全，更优秀的浏览体验";
-
-/* No comment provided by engineer. */
-"In case you hit a speed bump" = "以防您遇到减速带";
-
-/* String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3 */
-"Introductory slide %@ of %@" = "简介幻灯片 %1$@ of %2$@";
-
-/* No comment provided by engineer. */
-"Start Browsing" = "开始浏览";
-
-/* No comment provided by engineer. */
-"Tap the Brave button to temporarily disable ad blocking and privacy features." = "点击Brave按钮暂时关闭广告屏蔽和隐私功能";
-
-/* No comment provided by engineer. */
-"Welcome to Brave." = "欢迎使用Brave";
-
-/* Ask user if site can open iTunes store URL */
-"  Allow (siteName) to open iTunes?" = "允许(网站名)打开iTunes？";
+/* Label for search engine buttons. The argument corresponds to the name of the search engine. */
+"%@ search" = "%@搜索";
 
 /* Button for larger reader font size. Keep this extremely short! This is shown in the reader mode toolbar. */
 "+" = "+";
@@ -126,12 +12,6 @@ Brave专为更快的速度，更高的效率而设计";
 /* Setting to enable the built-in password manager */
 "3rd-party password manager" = "第3方密码管理";
 
-/* Authentication prompt message with no realm. Parameter is the hostname of the site */
-"A username and password are being requested by %@." = "%@需要用户名和密码";
-
-/* Authentication prompt message with a realm. First parameter is the hostname. Second is the realm string */
-"A username and password are being requested by %@. The site says: %@" = " %1$@需要用户名和密码。网站显示：%2$@";
-
 /* Button for reader mode font size. Keep this extremely short! This is shown in the reader mode toolbar. */
 "Aa" = "Aa";
 
@@ -141,13 +21,10 @@ Brave专为更快的速度，更高的效率而设计";
 /* Button to add a bookmark */
 "Add Bookmark" = "添加书签";
 
-/* Accessibility label for the Add Tab button in the Tab Tray.
-   Accessibility label for the bottom toolbar add tab button */
+/* Accessibility label for the Add Tab button in the Tab Tray. */
 "Add Tab" = "添加标签页";
 
-/* Accessibility label for action adding current page to reading list.
-   Add URL to the reading list - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440
-   Name for button adding current article to reading list in reader mode */
+/* Accessibility label for action adding current page to reading list. */
 "Add to Reading List" = "添加阅读列表";
 
 /* Accessibility message e.g. spoken by VoiceOver after the current page gets added to the Reading List using the Reader View button, e.g. by long-pressing it or by its accessibility custom action. */
@@ -157,34 +34,29 @@ Brave专为更快的速度，更高的效率而设计";
 "Address and Search" = "地址和搜索";
 
 /* individual blocking statistic title */
-"Ads and Trackers " = "广告和跟踪";
+/* Label for button to perform advanced actions on the error page */
+"Advanced" = "详情";
 
-/* Setting to enable third-party keyboards */
-"Allow Third-Party Keyboards" = "允许第三方键盘";
-
-/* Used as a button label for crash dialog prompt */
-"Always Send" = "总是发送";
-
+/* Ask user if site can open iTunes store URL */
+/* option in settings screen */
 /* tabs bar show/hide option */
 "Always show" = "总是显示";
 
-/* Authentication prompt title */
-"Authentication required" = "需要验证";
+/* Message shown in the dialog prompting users if they want to clear everything */
+"Are you sure you want to clear all of your data? This will also close all open tabs." = "确定要删除你的所有数据？该操作会关闭所有的标签页。";
 
+/* Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders. */
+"Are you sure you want to delete it and its contents?" = "确定要删除以及其中内容吗？";
+
+/* No comment provided by engineer. */
 /* Accessibility Label for the browser toolbar Back button */
 "Back" = "后退";
-
-/* Tile title for Bing */
-"Bing" = "Bing";
 
 /* cookie settings option */
 "Block 3rd party cookies" = "屏蔽第3方cookies";
 
-/* Brave panel individual toggle title */
-"Block Ads & Tracking" = "屏蔽广告和跟踪";
-
 /* No comment provided by engineer. */
-"Block Ads and Tracking" = "屏蔽广告和跟踪";
+"Block Ads & Tracking" = "屏蔽广告和跟踪";
 
 /* Brave panel individual toggle title */
 "Block Phishing" = "屏蔽钓鱼网站";
@@ -198,7 +70,7 @@ Brave专为更快的速度，更高的效率而设计";
 /* Setting to enable popup blocking */
 "Block Popups" = "屏蔽弹出窗口";
 
-/* Brave panel individual toggle title */
+/* No comment provided by engineer. */
 "Block Scripts" = "屏蔽脚本";
 
 /* cookie settings option */
@@ -207,18 +79,18 @@ Brave专为更快的速度，更高的效率而设计";
 /* title for section showing page blocking statistics */
 "Blocking Monitor" = "屏蔽监视器";
 
-/* Accessibility Label for the browser toolbar Bookmark button
-   Bookmark a URL - https://bugzilla.mozilla.org/attachment.cgi?id=8624438, https://bug1157303.bugzilla.mozilla.org/attachment.cgi?id=8624440 */
+/* Accessibility Label for the browser toolbar Bookmark button */
 "Bookmark" = "书签";
 
-/* Panel accessibility label */
+/* Bookmark Folder Section Title */
+/* Bookmark Info Section Title */
+/* title for bookmarks panel */
 "Bookmarks" = "书签";
 
+/* The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android. */
+/* The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android. */
 /* Button to show the bookmarks and history panel */
 "Bookmarks and History Panel" = "书签和历史记录面板";
-
-/* Status label for the empty Bookmarks state. */
-"Bookmarks you save will show up here." = "您保存的书签将出现在这里";
 
 /* Button to show the brave panel */
 "Brave Panel" = "Brave面板";
@@ -226,21 +98,41 @@ Brave专为更快的速度，更高的效率而设计";
 /* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
 "Brave Shield Defaults" = "Brave默认保护";
 
+/* Shown in intro screens */
+"Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency." = "Brave屏蔽广告。
+Brave阻止跟踪器。
+Brave专为更快的速度，更高的效率而设计";
+
+/* email subject */
+/* Shown in intro screens */
+"Brave is Faster,\nand here's why..." = "Brave速度更快，
+是因为...";
+
+/* Shown in intro screens */
+"Brave keeps you safe as you browse." = "Brave让你的浏览体验更安全";
+
+/* No comment provided by engineer. */
+"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave不会保存您的任何历史或cookies，但新的书签会被保存";
+
 /* See http://mzl.la/1G7uHo7 */
 "Brave would like to access your Photos" = "Brave想拥有您手机的访问权";
 
 /* Accessibility label for brightness adjustment slider in Reader Mode display settings */
 "Brightness" = "亮度";
 
+/* Shown in intro screens */
+"Browse with us and your privacy is protected, with nothing further to install, learn or configure." = "无需其他的安装，学习和配置，Brave浏览器会保护您的隐私，";
+
+/* Settings item for clearing browsing history */
+"Browsing History" = "浏览历史";
+
+/* Settings item for clearing the cache */
+"Cache" = "高速缓存";
+
 /* Alert Call Button */
 "Call" = "呼叫";
 
-/* Alert Cancel Button
-   Authentication prompt cancel button
-   Button label to cancel entering a URL or search query
-   Cancel alert view
-   Cancel button
-   Cancel title from search engine picker */
+/* No comment provided by engineer. */
 "Cancel" = "取消";
 
 /* Accessibility hint for the color theme setting buttons in reader mode display settings */
@@ -249,11 +141,24 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility hint for the font type buttons in reader mode display settings */
 "Changes font type." = "改变字体";
 
-/* Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data. */
+/* Used as a button label in the dialog to Clear private data dialog */
+"Clear" = "清除";
+
+/* Title of the Clear private data dialog. */
+"Clear Everything" = "全部清除";
+
+/* Button in settings that clears private data for the selected items. Also used as section title in settings panel */
 "Clear Private Data" = "清除隐私数据";
 
+/* No comment provided by engineer. */
 /* Accessibility label for action denoting closing a tab in tab list (tray) */
 "Close" = "关闭";
+
+/* Setting for closing private tabs */
+"Close Private Tabs" = "关闭私人标签页";
+
+/* No comment provided by engineer. */
+"Close Tab" = "关闭标签页";
 
 /* No comment provided by engineer. */
 "Closing tab" = "关闭标签页";
@@ -261,6 +166,10 @@ Brave专为更快的速度，更高的效率而设计";
 /* Cookie settings option title */
 "Cookie Control" = "cookie控制";
 
+/* Settings item for clearing cookies */
+"Cookies" = "Cookies";
+
+/* No comment provided by engineer. */
 /* Copy the URL from the location bar */
 "Copy Address" = "拷贝地址";
 
@@ -273,87 +182,47 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility message e.g. spoken by VoiceOver after the user wanted to add current page to the Reading List and this was not done, likely because it already was in the Reading List, but perhaps also because of real failures. */
 "Could not add page to Reading List. Maybe it's already there?" = "无法向阅读列表中添加页面。也许该页面已经存在于列表中？";
 
-/* Accessibility message e.g. spoken by VoiceOver after adding current webpage to the Reading List failed. */
-"Could not add page to Reading list" = "无法向阅读列表添加页面";
-
-/* Error message that is shown in settings when there was a problem loading */
-"Could not load page." = "无法加载页面";
-
 /* Dark theme setting in Reading View settings */
 "Dark" = "暗";
 
 /* Accessibility label for button decreasing font size in display settings of reader mode */
 "Decrease text size" = "缩小字体";
 
-/* Accessibility label for default search engine setting.
-   Open search section of settings
-   Title for default search engine picker.
-   Title for default search engine settings section. */
+/* Open search section of settings */
 "Default Search Engine" = "默认搜索引擎";
 
-/* Delete Folder */
+/* No comment provided by engineer. */
+"Delete" = "删除";
+
+/* No comment provided by engineer. */
 "Delete Folder" = "删除文件夹";
 
-/* Pending feature; currently unused string! Checkbox label shown after multiple alerts are shown */
-"Disable additional page dialogs" = "禁用其他页面的对话框";
-
+/* Title for deselecting all selected logins */
+/* The folder name for the virtual folder that contains all desktop bookmarks. */
 /* Name for display settings button in reader mode. Display in the meaning of presentation, not monitor. */
 "Display Settings" = "显示设置";
-
-/* Prompt for saving a password. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"Do you want to save the password for %@ on %@?" = "你想为 %1$@在%2$@上的密码进行保存吗？";
-
-/* Prompt for saving a password with no username. The parameter is the hostname of the site. */
-"Do you want to save the password on %@?" = "你想保存在 %@上的密码吗？";
-
-/* Prompt for updating a password. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"Do you want to update the password for %@ on %@?" = "您想在%2$@上给%1$@更新密码吗？";
-
-/* Prompt for updating a password with on username. The parameter is the hostname of the site. */
-"Do you want to update the password on %@?" = "你想更新在%@上的密码吗？";
-
-/* Used as a button label for crash dialog prompt */
-"Don't Send" = "不要发送";
 
 /* cookie settings option */
 "Don't block cookies" = "不要拦截cookies";
 
-/* Done
-   Done button label for search settings table
-   Done button label on back forward list screen
-   Done button on left side of the Settings view controller title bar
-   Done editing button */
+/* No comment provided by engineer. */
 "Done" = "完成";
 
-/* No comment provided by engineer. */
-"Double tap and hold to open history" = "双击并保持可以打开历史记录";
+/* Button to not save the user's password */
+"Don’t Save" = "不保存";
 
 /* brave shield on/off toggle off state */
 "Down" = "下";
 
-/* Tile title for DDG */
-"DuckDuckGo" = "DuckDuckGo";
-
-/* Edit */
+/* No comment provided by engineer. */
 "Edit" = "编辑";
 
-/* Label for button to perform advanced actions on the error page */
-"ErrorPages.Advanced.Button" = "详情";
+/* Accessibility label for entering search mode for logins */
+/* No comment provided by engineer. */
+"Find" = "查找";
 
-/* Warning text when clicking the Advanced button on error pages */
-"ErrorPages.AdvancedWarning1.Text" = "警告：我们不能确认您连接到该网站是安全的";
-
-/* Additional warning text when clicking the Advanced button on error pages */
-"ErrorPages.AdvancedWarning2.Text" = "这可能是由攻击者造成的配置错误或篡改。如果您接受它带来的潜在风险，可以继续";
-
-/* Title on the certificate error page */
-"ErrorPages.CertWarning.Title" = "您的连接不是私人连接";
-
-/* Label for button to go back from the error page */
-"ErrorPages.GoBack.Button" = "后退";
-
-/* Button label to temporarily continue to the site from the certificate error page */
-"ErrorPages.VisitOnce.Button" = "执意访问网站";
+/* Share action title */
+"Find in Page" = "查找页面";
 
 /* individual blocking statistic title */
 "Fingerprinting Methods" = "指纹识别方法";
@@ -361,57 +230,35 @@ Brave专为更快的速度，更高的效率而设计";
 /* No comment provided by engineer. */
 "Fingerprinting Protection" = "指纹保护";
 
-/* Brave panel individual toggle title */
+/* blocking stat title */
 "Fingerprinting\nProtection" = "指纹识别
 保护";
 
+/* Folder */
 /* Accessibility Label for the browser toolbar Forward button */
 "Forward" = "向前";
 
 /* General settings section title */
 "General" = "通用";
 
-/* Tile title for Google */
-"Google" = "Google";
+/* Shown in intro screens */
+"Get ready to experience a Faster, Safer, Better Web." = "准备好跟我们一起享受更快，更安全，更优秀的浏览体验";
 
-/* Brave panel individual toggle title */
+/* Label for button to go back from the error page */
+"Go Back" = "后退";
+
+/* No comment provided by engineer. */
 "HTTPS Everywhere" = "HTTPS Everywhere";
 
 /* individual blocking statistic title */
 "HTTPS Upgrades" = "HTTPS更新";
 
+/* Hide password text selection menu item */
 /* Panel accessibility label */
 "History" = "历史";
 
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Back.DiscoveryTitle" = "后退";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.CloseTab.DiscoveryTitle" = "关闭标签页";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Find.DiscoveryTitle" = "查找";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Forward.DiscoveryTitle" = "向前";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.NewPrivateTab.DiscoveryTitle" = "新私人标签页";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.NewTab.DiscoveryTitle" = "新的标签页";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.Reload.DiscoveryTitle" = "重新加载页面";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.SelectLocationBar.DiscoveryTitle" = "选择地点栏";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.ShowNextTab.DiscoveryTitle" = "显示下个标签页";
-
-/* Label to display in the Discoverability overlay for keyboard shortcuts */
-"Hotkeys.ShowPreviousTab.DiscoveryTitle" = "显示之前标签页";
+/* Shown in intro screens */
+"In case you hit a speed bump" = "以防您遇到减速带";
 
 /* Accessibility label for button increasing font size in display settings of reader mode */
 "Increase text size" = "增大字体";
@@ -422,99 +269,102 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility label for the introduction tour carousel */
 "Intro Tour Carousel" = "简介演示";
 
+/* String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3 */
+"Introductory slide %@ of %@" = "简介幻灯片 %1$@ of %2$@";
+
+/* Additional warning text when clicking the Advanced button on error pages */
+"It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk." = "这可能是由攻击者造成的配置错误或篡改。如果您接受它带来的潜在风险，可以继续";
+
+/* Footer label describing when the login was last modified with the timestamp as the parameter */
 /* History tableview section header */
 "Last month" = "上个月";
 
 /* History tableview section header */
 "Last week" = "上星期";
 
+/* Text button displayed when there are no tabs open while in private mode */
+"Learn More" = "详情";
+
 /* Light theme setting in Reading View settings */
 "Light" = "亮";
 
-/* Authentication prompt log in button */
-"Log in" = "登陆";
-
+/* Link for going to the non-reader page when the reader view could not be loaded. This message will appear only when sharing to Firefox reader mode from another app. */
+/* Message displayed when the reader mode page is loading. This message will appear only when sharing to Firefox reader mode from another app. */
+/* Bookmark folder location */
 /* Label used as an item in Settings. When touched, the user will be navigated to the Logins/Password manager. */
 "Logins" = "登陆";
 
-/* Button to not save the user's password */
-"LoginsHelper.DontSave.Button" = "不保存";
-
-/* Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site. */
-"LoginsHelper.PromptSaveLogin.Title" = "保存登陆%1$@ for %2$@？";
-
-/* Prompt for saving a password with no username. The parameter is the hostname of the site. */
-"LoginsHelper.PromptSavePassword.Title" = "保存密码%@？";
-
-/* Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site. */
-"LoginsHelper.PromptUpdateLogin.Title" = "为%2$@更新登陆%1$@ ";
-
-/* Prompt for updating a password with no username. The parameter is the hostname of the site. */
-"LoginsHelper.PromptUpdatePassword.Title" = "为 %@更新密码";
-
-/* Button to save the user's password */
-"LoginsHelper.SaveLogin.Button" = "保存登陆";
-
-/* Button to update the user's password */
-"LoginsHelper.Update.Button" = "更新";
-
-/* Name for Mark as read button in reader mode
-   Title for the button that marks a reading list item as read */
+/* No comment provided by engineer. */
+/* No comment provided by engineer. */
+/* Name for Mark as read button in reader mode */
 "Mark as Read" = "标为已读";
 
-/* Name for Mark as unread button in reader mode
-   Title for the button that marks a reading list item as unread */
+/* Name for Mark as unread button in reader mode */
 "Mark as Unread" = "标为未读";
 
+/* The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android. */
+/* Bookmark name/title */
 /* Accessibility label for the navigation toolbar displayed at the bottom of the screen. */
 "Navigation Toolbar" = "导航工具栏";
 
 /* tabs bar show/hide option */
 "Never show" = "从不显示";
 
-/* New Folder */
+/* No comment provided by engineer. */
 "New Folder" = "新文件夹";
 
-/* Restore Tabs Negative Action */
+/* No comment provided by engineer. */
+"New Private Tab" = "新私人标签页";
+
+/* No comment provided by engineer. */
+"New Tab" = "新的标签页";
+
+/* Accessibility label for next result button in Find in Page Toolbar. */
+"Next in-page result" = "下一篇结果页";
+
+/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
 "No" = "否";
 
+/* Title displayed when no logins are found after searching */
 /* Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray */
 "No tabs" = "没有标签页";
 
-/* Label for button to cancel application update prompt */
-"Not Now" = "现在不";
-
-/* Button to not save the user's password */
-"Not now" = "现在不";
-
-/* Label for OK button in the application update prompt
-   OK button */
+/* OK button */
 "OK" = "好";
 
-/* Restore Tabs Affirmative Action */
-"Okay" = "好";
+/* Toggled OFF accessibility value */
+"Off" = "关闭";
 
+/* Settings item for clearing website data */
+"Offline Website Data" = "脱机网站数据";
+
+/* Toggled ON accessibility value */
+"On" = "开启";
+
+/* Open and Fill website text selection menu item */
 /* Share action title */
 "Open Desktop Site tab" = "打开桌面站点选项卡";
 
 /* Context menu item for opening a link in a new tab */
 "Open In Background" = "在后台打开";
 
+/* Context menu option for opening a link in a new private tab */
+"Open In New Private Tab" = "打开新的私人标签";
+
+/* See http://mzl.la/1G7uHo7 */
 "Open Settings" = "打开设置";
 
+/* See http://mzl.la/1LXbDOL */
 "Open articles in Reader View by tapping the book icon when it appears in the title bar." = "当图书图标出现在标题栏时点击该图标打开读者阅览中的文章";
+
+/* Shown in error pages for files that can't be shown and need to be downloaded. */
+"Open in Safari" = "在Safari中打开";
 
 /* String indicating that the file can be opened in another application on the device */
 "Open in…" = "其他方式打开...";
 
-/* Opening an external URL */
-"Opening %@" = "打开%@";
-
 /* Accessibility label for the Home panel's top toolbar containing list of the home panels (top sites, bookmarsk, history, remote tabs, reading list). */
 "Panel Chooser" = "面板选择器";
-
-/* Password textbox in Authentication prompt */
-"Password" = "密码";
 
 /* Paste the URL into the location bar */
 "Paste" = "粘贴";
@@ -522,19 +372,26 @@ Brave专为更快的速度，更高的效率而设计";
 /* Paste the URL into the location bar and visit */
 "Paste & Go" = "粘贴并继续";
 
-/* Privacy section title
-   Privacy settings section title */
+/* Accessibility label for previous result button in Find in Page Toolbar. */
+"Previous in-page result" = "上一篇结果页";
+
+/* Settings privacy section title */
 "Privacy" = "隐私";
 
-/* Show Brave Browser Privacy Policy page from the Privacy section in the settings.
-   Show Brave Browser Privacy Policy page from the Privacy section in the settings. See https://www.brave.com/privacy */
+/* Show Brave Browser Privacy Policy page from the Privacy section in the settings. */
 "Privacy Policy" = "隐私条例";
 
 /* Private button title */
 "Private" = "隐私";
 
+/* No comment provided by engineer. */
+"Private Browsing" = "私人浏览";
+
 /* Setting to keep app in private mode */
 "Private Browsing Only" = "仅限私人浏览";
+
+/* Accessibility label for toggling on/off private mode */
+"Private Mode" = "隐私模式";
 
 /* Private mode icon next to location string */
 "Private mode icon" = "隐私状态图标";
@@ -551,7 +408,10 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility Label for the browser toolbar Reload button */
 "Reload" = "重新加载";
 
-/* Title for the button that removes a reading list item */
+/* No comment provided by engineer. */
+"Reload Page" = "重新加载页面";
+
+/* Action button for deleting_history_entries_in_the_history_panel. */
 "Remove" = "移除";
 
 /* Name for button removing current article from reading list in reader mode */
@@ -563,25 +423,46 @@ Brave专为更快的速度，更高的效率而设计";
 /* Show mail composer to report a bug. */
 "Report a bug" = "报告一个错误";
 
+/* Reveal password text selection menu item */
 /* Font type setting in the reading view settings */
 "Sans-serif" = "无衬线字体";
 
 /* Context menu item for saving an image */
 "Save Image" = "保存图片";
 
+/* Button to save the user's password */
+"Save Login" = "保存登陆";
+
 /* Setting to enable the built-in password manager */
 "Save Logins" = "保存登陆";
 
+/* Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site. */
+"Save login %@ for %@?" = "保存登陆%1$@ for %2$@？";
+
+/* See http://mzl.la/1LXbDOL */
 "Save pages to your Reading List by tapping the book plus icon in the Reader View controls." = "在读者阅览控制中点击图书加号图标可以保存页面到你的阅读列表中";
+
+/* Prompt for saving a password with no username. The parameter is the hostname of the site. */
+"Save password for %@?" = "保存密码%@？";
+
+/* Settings item for clearing passwords and login data */
+"Saved Logins" = "保存登陆";
 
 /* individual blocking statistic title */
 "Scripts Blocked" = "脚本已被屏蔽";
 
-/* Navigation title for search settings. */
+/* No comment provided by engineer. */
 "Search" = "搜索";
+
+/* Accessibility label for the search input field in the Logins list */
+/* No comment provided by engineer. */
+"Search Settings" = "搜索设置";
 
 /* The text shown in the URL bar on about:home */
 "Search or enter address" = "搜索或输入地址";
+
+/* Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google */
+"Search suggestions from %@" = "从%@上搜索建议";
 
 /* Accessibility hint describing the action performed when a search suggestion is clicked */
 "Searches for the suggestion" = "寻找建议";
@@ -589,24 +470,18 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility label for the lock icon, which is only present if the connection is secure */
 "Secure connection" = "安全连接";
 
+/* Title for selecting all logins */
+/* No comment provided by engineer. */
+"Select Location Bar" = "选择地点栏";
+
 /* Sepia theme setting in Reading View settings */
 "Sepia" = "墨色";
 
 /* Font type setting in the reading view settings */
 "Serif" = "衬线体";
 
-/* Accessibility label for the Settings button.
-   Settings */
+/* No comment provided by engineer. */
 "Settings" = "设置";
-
-/* Button in settings that clears private data for the selected items. */
-"Settings.ClearPrivateData.Clear.Button" = "清除隐私数据";
-
-/* Label used as an item in Settings. When touched it will open a dialog prompting the user to make sure they want to clear all of their private data. */
-"Settings.ClearPrivateData.SectionName" = "清除隐私数据";
-
-/* Title displayed in header of the setting panel. */
-"Settings.ClearPrivateData.Title" = "清除隐私数据";
 
 /* Accessibility Label for the browser toolbar Share button */
 "Share" = "分享";
@@ -614,40 +489,41 @@ Brave专为更快的速度，更高的效率而设计";
 /* Context menu item for sharing a link URL */
 "Share Link" = "分享链接";
 
-/* Button title for cancelling Share screen */
-"ShareTo.Cancel.Button" = "取消";
-
+/* message shown briefly in URL bar */
+/* message shown briefly in URL bar */
 /* Button to show the bookmarks list */
 "Show Bookmarks" = "显示书签";
 
 /* Button to show the history list */
 "Show History" = "显示历史";
 
+/* No comment provided by engineer. */
+"Show Next Tab" = "显示下个标签页";
+
+/* No comment provided by engineer. */
+"Show Previous Tab" = "显示之前标签页";
+
 /* Label for show search suggestions setting. */
 "Show Search Suggestions" = "显示搜索建议";
 
-/* Accessibility label for the tabs button in the (top) browser toolbar
-   Accessibility Label for the tabs button in the browser toolbar */
+/* Accessibility Label for the tabs button in the browser toolbar */
 "Show Tabs" = "显示标签页";
 
-/* Setting to show/hide the tabs bar
-   tabs bar show/hide setting title */
+/* Setting to show/hide the tabs bar */
 "Show Tabs Bar" = "显示标签页工具栏";
 
 /* Show the on-boarding screen again from the settings */
 "Show Tour" = "演示";
 
 /* Footer message on picker for 3rd party password manager setting */
-"Show a prompt to open your password manager when the current page has a login form." = "Show a prompt to open your password manager when the current page has a login form.";
-
 /* tabs bar show/hide option */
 "Show in landscape only" = "仅显示景观";
 
-/* Label for show search suggestions setting. */
-"Show search suggestions" = "显示搜索建议";
-
 /* Brave panel topmost title */
 "Site shield settings" = "网站保护设置";
+
+/* No comment provided by engineer. */
+"Start Browsing" = "开始浏览";
 
 /* Accessibility Label for the browser toolbar Stop button */
 "Stop" = "停止";
@@ -655,6 +531,7 @@ Brave专为更快的速度，更高的效率而设计";
 /* Support section title */
 "Support" = "支持";
 
+/* Accessibility hint for tab tray's displayed tab. */
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
 "Tab %@ of %@" = "标签页%1$@ of %2$@";
 
@@ -664,16 +541,25 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility label for the Tabs Tray view. */
 "Tabs Tray" = "标签托盘";
 
+/* Shown in intro screens */
+"Tap the Brave button to temporarily disable ad blocking and privacy features." = "点击Brave按钮暂时关闭广告屏蔽和隐私功能";
+
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
 "Terms of Use" = "使用条款";
 
+/* Warning text on the certificate error page */
+/* Message displayed when the reader mode page could not be loaded. This message will appear only when sharing to Firefox reader mode from another app. */
 /* Error displayed when reader mode cannot be enabled */
 "There was an error converting the page" = "转化页面时出现错误";
 
+/* Description of the confirmation dialog shown when a user tries to clear their private data. */
+"This action will clear all of your private data. It cannot be undone." = "该操作会清除你所有隐私数据，并且该操作不能被撤回。";
+
+/* See http://mzl.la/1G7uHo7 */
 "This allows you to save the image to your Camera Roll." = "这将允许您保存图像到您的手机相册中";
 
-/* Opening an external app */
-"This will open in another application" = "这个将会在其他的应用软件中打开";
+/* Title of the confirmation alert when the user tries to delete_a_folder_that_still_contains_bookmarks_and/or folders. */
+"This folder isn't empty." = "该文件夹不是空的";
 
 /* History tableview section header */
 "Today" = "今天";
@@ -681,44 +567,65 @@ Brave专为更快的速度，更高的效率而设计";
 /* Panel accessibility label */
 "Top sites" = "热门网站";
 
-/* Description label for the empty Top Sites state. */
-"TopSites.EmptyState.Description" = "您访问最频繁的网站将会出现在这里";
+/* Shown in error pages on a button that will try to load the page again */
+"Try again" = "重试";
 
-/* The title for the empty Top Sites state */
-"TopSites.EmptyState.Title" = "欢迎到热门网站";
+/* Prompt shown before enabling provider search queries */
+"Turn on search suggestions?" = "开启搜索建议功能";
 
+/* Accessiblity hint for toggling on/off private mode */
+"Turns private mode on or off" = "开启/关闭隐私模式";
+
+/* Bookmark URL */
+/* The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android. */
+/* The default name for bookmark item without titles. */
 /* brave shield on/off toggle on state */
 "Up" = "上";
 
 /* Button to update the user's password */
 "Update" = "更新";
 
-/* Setting to enable compact tabs in the tab overview */
-"Use Compact Tabs" = "使用紧凑型标签";
+/* Prompt for updating a login. The first parameter is the username for which the password will be updated for. The second parameter is the hostname of the site. */
+"Update login %@ for %@?" = "为%2$@更新登陆%1$@ ";
 
-/* Version number of app shown in settings */
+/* Prompt for updating a password with no username. The parameter is the hostname of the site. */
+"Update password for %@?" = "为 %@更新密码";
+
+/* Version number of Brave shown in settings */
 "Version %@ (%@)" = "版%1$@ (%2$@)";
+
+/* Button label to temporarily continue to the site from the certificate error page */
+"Visit site anyway" = "执意访问网站";
+
+/* Warning text when clicking the Advanced button on error pages */
+"Warning: we can't confirm your connection to this website is secure." = "警告：我们不能确认您连接到该网站是安全的";
 
 /* Accessibility label for the main web content view */
 "Web content" = "网站内容";
 
+/* Shown in intro screens */
+"Welcome to Brave." = "欢迎使用Brave";
+
+/* The title for the empty Top Sites state */
+"Welcome to Top Sites" = "欢迎到热门网站";
+
 /* See http://mzl.la/1LXbDOL */
 "Welcome to your Reading List" = "欢迎来到您的阅读列表";
 
-/* Restore Tabs Prompt Title */
-"Well, this is embarrassing." = "这很尴尬...";
+/* Will be displayed in Settings under 'Close Private Tabs' */
+"When Leaving Private Browsing" = "当离开隐私浏览时";
 
-/* Tile title for wikipedia */
-"Wikipedia" = "维基";
-
-/* Tile title for Yahoo */
-"Yahoo" = "雅虎";
-
-/* Button to save the user's password */
+/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
 "Yes" = "是";
 
 /* History tableview section header */
 "Yesterday" = "昨天";
+
+/* Title on the certificate error page */
+"Your connection is not private" = "您的连接不是私人连接";
+
+/* Description label for the empty Top Sites state. */
+"Your most visited sites will show up here." = "您访问最频繁的网站将会出现在这里";
 
 /* Relative time for a tab that was visited within the last few moments. */
 "just now" = "刚刚";
@@ -729,6 +636,7 @@ Brave专为更快的速度，更高的效率而设计";
 /* Description for a date more than a week ago, but less than a month ago. */
 "more than a week ago" = "超过一周之前";
 
+/* Title for password row in Login Detail View */
 /* Accessibility label for read article in reading list. It's a past participle - functions as an adjective. */
 "read" = "已读";
 
@@ -741,54 +649,5 @@ Brave专为更快的速度，更高的效率而设计";
 /* Accessibility label for unread article in reading list. It's a past participle - functions as an adjective. */
 "unread" = "未读";
 
-/* Relative date for yesterday. */
-"yesterday" = "昨天";
-
-/* Description text displayed when there are no open tabs while in private mode */
-"Brave won't remember any of your history or cookies, but new bookmarks will be saved." = "Brave不会保存您的任何历史或cookies，但新的书签会被保存";
-
-/* Setting for closing private tabs */
-"Close Private Tabs" = "关闭私人标签页";
-
-/* Text button displayed when there are no tabs open while in private mode */
-"Learn More" = "详情";
-
-/* Toggled OFF accessibility value */
-"Off" = "关闭";
-
-/* Toggled ON accessibility value */
-"On" = "开启";
-
-/* Context menu option for opening a link in a new private tab */
-"Open In New Private Tab" = "打开新的私人标签";
-
-/* Title displayed for when there are no open tabs while in private mode */
-"Private Browsing" = "私人浏览";
-
-/* Accessibility label for toggling on/off private mode */
-"Private Mode" = "隐私模式";
-
-/* Accessiblity hint for toggling on/off private mode */
-"Turns private mode on or off" = "开启/关闭隐私模式";
-
-/* Will be displayed in Settings under 'Close Private Tabs' */
-"When Leaving Private Browsing" = "当离开隐私浏览时";
-
-/* Label for search engine buttons. The argument corresponds to the name of the search engine. */
-"%@ search" = "%@搜索";
-
-/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
-"No" = "否";
-
-/* Label for search settings button. */
-"Search Settings" = "搜索设置";
-
-/* Accessibility label for image of default search engine displayed left to the actual search suggestions from the engine. The parameter substituted for \"%@\" is the name of the search engine. E.g.: Search suggestions from Google */
-"Search suggestions from %@" = "从%@上搜索建议";
-
-/* Prompt shown before enabling provider search queries */
-"Turn on search suggestions?" = "开启搜索建议功能";
-
-/* For search suggestions prompt. This string should be short so it fits nicely on the prompt row. */
-"Yes" = "是";
-
+/* Title for username row in Login Detail View */
+/* Title for website row in Login Detail View */

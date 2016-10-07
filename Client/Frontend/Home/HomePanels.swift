@@ -4,7 +4,7 @@
 
 import Foundation
 import UIKit
-
+import Shared
 /**
  * Data for identifying and constructing a HomePanel.
  */
@@ -22,7 +22,7 @@ class HomePanels {
                 TopSitesPanel(profile: profile)
             },
             imageName: "TopSites",
-            accessibilityLabel: NSLocalizedString("Top sites", comment: "Panel accessibility label"),
+            accessibilityLabel: Strings.Top_sites,
             accessibilityIdentifier: "HomePanels.TopSites"),
 
         HomePanelDescriptor(
@@ -39,7 +39,7 @@ class HomePanels {
                 return controller
             },
             imageName: "Bookmarks",
-            accessibilityLabel: NSLocalizedString("Bookmarks", comment: "Panel accessibility label"),
+            accessibilityLabel: Strings.Bookmarks,
             accessibilityIdentifier: "HomePanels.Bookmarks"),
 
         HomePanelDescriptor(
@@ -49,18 +49,8 @@ class HomePanels {
                 return controller
             },
             imageName: "History",
-            accessibilityLabel: NSLocalizedString("History", comment: "Panel accessibility label"),
+            accessibilityLabel: Strings.History,
             accessibilityIdentifier: "HomePanels.History"),
-
-        HomePanelDescriptor(
-            makeViewController: { profile in
-                let controller = RemoteTabsPanel()
-                controller.profile = profile
-                return controller
-            },
-            imageName: "SyncedTabs",
-            accessibilityLabel: NSLocalizedString("Synced tabs", comment: "Panel accessibility label"),
-            accessibilityIdentifier: "HomePanels.SyncedTabs"),
 
         HomePanelDescriptor(
             makeViewController: { profile in
@@ -69,7 +59,7 @@ class HomePanels {
                 return controller
             },
             imageName: "ReadingList",
-            accessibilityLabel: NSLocalizedString("Reading list", comment: "Panel accessibility label"),
+            accessibilityLabel: Strings.Reading_list,
             accessibilityIdentifier: "HomePanels.ReadingList"),
     ]
 }

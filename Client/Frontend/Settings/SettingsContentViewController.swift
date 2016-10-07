@@ -9,7 +9,6 @@ import UIKit
 import WebKit
 
 let DefaultTimeoutTimeInterval = 10.0 // Seconds.  We'll want some telemetry on load times in the wild.
-private var TODOPageLoadErrorString = NSLocalizedString("Could not load page.", comment: "Error message that is shown in settings when there was a problem loading")
 
 /**
  * A controller that manages a single web view and provides a way for
@@ -128,7 +127,7 @@ class SettingsContentViewController: UIViewController, WKNavigationDelegate {
 
         let error = UILabel()
         if let _ = settingsTitle {
-            error.text = TODOPageLoadErrorString
+            error.text = "Page load error"
             error.textColor = UIColor.redColor() // Firefox Orange!
             error.textAlignment = NSTextAlignment.Center
         }
