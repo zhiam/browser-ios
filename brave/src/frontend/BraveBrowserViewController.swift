@@ -37,15 +37,15 @@ class BraveBrowserViewController : BrowserViewController {
         }
 
         RunOnceAtStartup.ran = true
-
-        let showingIntroScreen = profile.prefs.intForKey(IntroViewControllerSeenProfileKey) == nil
-        if !showingIntroScreen && profile.prefs.intForKey(BraveUX.PrefKeyOptInDialogWasSeen) == nil {
-            presentOptInDialog()
-        }
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        let showingIntroScreen = profile.prefs.intForKey(IntroViewControllerSeenProfileKey) == nil
+        if !showingIntroScreen && profile.prefs.intForKey(BraveUX.PrefKeyOptInDialogWasSeen) == nil {
+            presentOptInDialog()
+        }
 
         self.updateToolbarStateForTraitCollection(self.traitCollection)
         setupConstraints()
@@ -190,19 +190,21 @@ class BraveBrowserViewController : BrowserViewController {
     }
 
     func presentOptInDialog() {
-/* TODO: GROWTH:
-        if profile.prefs.intForKey(BraveUX.PrefKeyOptInDialogWasSeen) != nil {
-            return // double-check as presentOptInDialog is called from IntroViewController as well as this class
-        }
+        let view = BraveTermsViewController()
+        view.delegate = self
+        presentViewController(view, animated: false, completion: nil)
+    }
+}
 
-        func answered(canSend: Bool) {
-            self.profile.prefs.setInt(canSend ? 1 : 0, forKey: BraveUX.PrefKeyUserAllowsTelemetry)
-            profile.prefs.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
-        }
-        getApp().braveTopViewController.presentViewController(alert, animated: true) {
-            findAndReplaceWithLink(alert.view, placeholderToFind:placeholder)
-        }
- */
+extension BraveBrowserViewController: BraveTermsViewControllerDelegate {
+    func braveTermsAcceptedTermsAndOptIn() {
+        profile.prefs.setInt(1, forKey: BraveUX.PrefKeyUserAllowsTelemetry)
+        profile.prefs.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
+    }
+    
+    func braveTermsAcceptedTermsAndOptOut() {
+        profile.prefs.setInt(0, forKey: BraveUX.PrefKeyUserAllowsTelemetry)
+        profile.prefs.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
     }
 }
 
