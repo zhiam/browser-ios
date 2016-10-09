@@ -565,7 +565,7 @@ private class TopSitesDataSource: NSObject, UICollectionViewDataSource {
         let red = CGFloat(rgba[0]) / 255.0
         let green = CGFloat(rgba[1]) / 255.0
         let blue = CGFloat(rgba[2]) / 255.0
-        let alpha: CGFloat = 1.0
+        let alpha = CGFloat(1)
         let colorFill: UIColor = UIColor(red: red, green: green, blue: blue, alpha: alpha)
         
         let rect = CGRectMake(0, 0, contextSize.width, contextSize.height)
