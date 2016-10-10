@@ -41,13 +41,13 @@ class IntroScreenTest: XCTestCase {
         restart(["BRAVE-TEST-CLEAR-PREFS"])
         let app = XCUIApplication()
         app.buttons["Start Browsing"].tap()
-        app.buttons["Yes"].tap()
+        app.buttons["Accept & Continue"].tap()
     }
 
     func testOptInDialogWithoutIntroScreen() {
         restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
         let app = XCUIApplication()
-        app.buttons["Yes"].tap()
+        app.buttons["Accept & Continue"].tap()
 
         restart()
         // Ensure UI isn't blocked with modal dialog
