@@ -145,23 +145,22 @@ class ThumbnailCell: UICollectionViewCell {
             }
 
             if var image = image {
-                if image.size.width < 24 && ContainerSize.size != CGSizeZero {
-                    var maxScale = CGFloat(4.0)
+                if image.size.width <= 32 && ContainerSize.size != CGSizeZero {
+                    var maxScale = CGFloat(image.size.width < 24 ? 3.0 : 1.5)
                     if ContainerSize.size.width > 170 {
                         // we are on iPad pro. Fragile, but no other way to detect this on simulator.
                         maxScale *= 2.0
                     }
-
                     image = ThumbnailCell.imageWithSize(image, size: ContainerSize.scaledDown(), maxScale: maxScale)
                     imageView.contentMode = .Center
-                } else {
-                    imageView.contentMode = UIViewContentMode.ScaleAspectFit
+                }
+                else if image.size.width > 32 {
+                    imageView.contentMode = .ScaleAspectFit
                 }
                 imageView.image = image
-
             } else {
                 imageView.image = ThumbnailCellUX.PlaceholderImage
-                imageView.contentMode = UIViewContentMode.Center
+                imageView.contentMode = .Center
             }
         }
     }
@@ -187,10 +186,12 @@ class ThumbnailCell: UICollectionViewCell {
 
     lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = UIViewContentMode.ScaleAspectFit
+        imageView.contentMode = .ScaleAspectFit
 
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = ThumbnailCellUX.CornerRadius
+        imageView.layer.minificationFilter = kCAFilterTrilinear
+        imageView.layer.magnificationFilter = kCAFilterNearest
         return imageView
     }()
 
