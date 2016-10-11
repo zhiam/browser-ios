@@ -452,6 +452,7 @@
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
 		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
+		EBB345801DAD465C00EE24F0 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B9A62DB1C4002B1005C83DC /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EBFB04FC1DA71EB8002C50FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBFB04F41DA71EB8002C50FA /* Localizable.strings */; };
 		EBFB05061DA71EDB002C50FA /* BraveShareToInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBFB04FE1DA71EDB002C50FA /* BraveShareToInfoPlist.strings */; };
 		ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */ = {isa = PBXBuildFile; fileRef = C33D93B9B0CD0D4AD9E461AE /* ODRefreshControl.h */; };
@@ -673,6 +674,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				EBB345801DAD465C00EE24F0 /* SQLite.framework in Copy Frameworks */,
 				E4D567301ADECE2800F1EFE7 /* ReadingList.framework in Copy Frameworks */,
 				2FCAE2321ABB51F800877008 /* Storage.framework in Copy Frameworks */,
 				288A2D9E1AB8B3260023ABC3 /* Shared.framework in Copy Frameworks */,
