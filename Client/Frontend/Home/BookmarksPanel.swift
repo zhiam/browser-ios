@@ -489,7 +489,9 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         let alert = UIAlertController(title: "New Folder", message: "Enter folder name", preferredStyle: UIAlertControllerStyle.Alert)
 
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (alertA: UIAlertAction!) in
-            self.addFolder(alertA, alertController:alert)
+            postAsyncToMain {
+                self.addFolder(alertA, alertController:alert)
+            }
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
         
@@ -505,7 +507,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
 
     func addFolder(alert: UIAlertAction!, alertController: UIAlertController) {
-        postAsyncToBackground {
+        //postAsyncToBackground {
             if let folderName = alertController.textFields?[0].text  {
                 if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
                     sqllitbk.createFolder(folderName) {
@@ -515,7 +517,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                     }
                 }
             }
-        }
+        //}
     }
     
     func onEditBookmarksButton() {
