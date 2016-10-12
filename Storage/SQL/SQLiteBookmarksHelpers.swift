@@ -29,11 +29,12 @@ extension SQLiteBookmarks: ShareToDestination {
                                    withTitle: Strings.BookmarksFolderTitleMobile)
     }
 
-    public func shareItem(item: ShareItem) {
+    public func shareItem(item: ShareItem) -> Success {
         // We parse here in anticipation of getting real URLs at some point.
         if let url = item.url.asURL {
             let title = item.title ?? url.absoluteString
-            self.addToMobileBookmarks(url, title: title!, favicon: item.favicon)
+            return self.addToMobileBookmarks(url, title: title!, favicon: item.favicon)
         }
+        return Success(value: Maybe(failure: DatabaseError(err: nil)))
     }
 }

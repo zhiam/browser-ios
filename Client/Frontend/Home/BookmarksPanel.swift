@@ -11,20 +11,20 @@ import Eureka
 
 // Brave extension
 extension MergedSQLiteBookmarks {
-    public func editBookmarkFolder(bookmark:BookmarkFolder, title:String, completion:dispatch_block_t)  {
-        self.buffer.editBookmarkFolder(bookmark, title:title, completion:completion)
+    public func editBookmarkFolder(bookmark:BookmarkFolder, title:String) -> Success {
+        return self.buffer.editBookmarkFolder(bookmark, title:title)
     }
 
-    public func editBookmarkItem(bookmark:BookmarkItem, title:String, parentGUID: String, completion:dispatch_block_t)  {
-        self.buffer.editBookmarkItem(bookmark, title:title, parentGUID:parentGUID, completion:completion)
+    public func editBookmarkItem(bookmark:BookmarkItem, title:String, parentGUID: String) -> Success {
+        return self.buffer.editBookmarkItem(bookmark, title:title, parentGUID:parentGUID)
     }
 
-    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
-        self.buffer.reorderBookmarks(folderGUID, bookmarksOrder:bookmarksOrder, completion:completion)
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String]) -> Success  {
+        return self.buffer.reorderBookmarks(folderGUID, bookmarksOrder:bookmarksOrder)
     }
 
-    public func createFolder(folderName:String, completion:dispatch_block_t)  {
-        self.buffer.createFolder(folderName, completion:completion)
+    public func createFolder(folderName:String) -> Success  {
+        return self.buffer.createFolder(folderName)
     }
 }
 
@@ -507,17 +507,15 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
 
     func addFolder(alert: UIAlertAction!, alertController: UIAlertController) {
-        //postAsyncToBackground {
-            if let folderName = alertController.textFields?[0].text  {
-                if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
-                    sqllitbk.createFolder(folderName) {
-                        postAsyncToMain {
-                            self.reloadData()
-                        }
+        if let folderName = alertController.textFields?[0].text  {
+            if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
+                sqllitbk.createFolder(folderName).upon { _ in
+                    postAsyncToMain {
+                        self.reloadData()
                     }
                 }
             }
-        //}
+        }
     }
     
     func onEditBookmarksButton() {
@@ -531,18 +529,14 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         //check if the table has been reordered, if so make the changes persistent
         if self.tableView.editing && bookmarksOrderChanged {
             orderedBookmarkGUIDs = orderUpdatedBookmarkGUIDs
-            postAsyncToBackground {
-                if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
-                    let folderGUID = self.bookmarkFolder?.guid ?? BookmarkRoots.MobileFolderGUID
-
-                    sqllitbk.reorderBookmarks(folderGUID, bookmarksOrder: self.orderedBookmarkGUIDs) {
-                        postAsyncToMain {
-                            self.reloadData()
-                        }
+            if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
+                let folderGUID = self.bookmarkFolder?.guid ?? BookmarkRoots.MobileFolderGUID
+                sqllitbk.reorderBookmarks(folderGUID, bookmarksOrder: self.orderedBookmarkGUIDs).upon { _ in
+                    postAsyncToMain {
+                        self.reloadData()
                     }
                 }
             }
-
         }
     }
 
@@ -924,19 +918,19 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
 
     func updateBookmarkData(bookmark:BookmarkNode, newTitle:String, newFolderGUID: String?, atIndexPath indexPath: NSIndexPath) {
-        postAsyncToBackground {
-            
-            let refreshBlock:dispatch_block_t = { postAsyncToMain { self.reloadData() }}
-            
-            if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
-                //we split up the update into class-specific functions so we get more compile time & runtime checks before writing into the DB
-                if let bookmarkItem = bookmark as? BookmarkItem, guid = newFolderGUID {
-                    //bookmark items ALWAYS pass along the folderGUID even if not changed hence we can force newFolderGUID!
-                    sqllitbk.editBookmarkItem(bookmarkItem, title:newTitle, parentGUID: guid, completion: refreshBlock)
-                    
+
+        let refreshBlock:dispatch_block_t = { postAsyncToMain { self.reloadData() }}
+
+        if let sqllitbk = self.profile.bookmarks as? MergedSQLiteBookmarks {
+            //we split up the update into class-specific functions so we get more compile time & runtime checks before writing into the DB
+            if let bookmarkItem = bookmark as? BookmarkItem, guid = newFolderGUID {
+                //bookmark items ALWAYS pass along the folderGUID even if not changed hence we can force newFolderGUID!
+                sqllitbk.editBookmarkItem(bookmarkItem, title:newTitle, parentGUID: guid).upon { _ in
+                    refreshBlock()
                 }
-                else if let bookmarkFolder = bookmark as? BookmarkFolder {
-                    sqllitbk.editBookmarkFolder(bookmarkFolder, title:newTitle, completion: refreshBlock)
+            } else if let bookmarkFolder = bookmark as? BookmarkFolder {
+                sqllitbk.editBookmarkFolder(bookmarkFolder, title:newTitle).upon { _ in
+                    refreshBlock()
                 }
             }
         }

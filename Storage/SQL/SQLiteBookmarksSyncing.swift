@@ -649,8 +649,8 @@ extension MergedSQLiteBookmarks: LocalItemSource {
 }
 
 extension MergedSQLiteBookmarks: ShareToDestination {
-    public func shareItem(item: ShareItem) {
-        self.local.shareItem(item)
+    public func shareItem(item: ShareItem) -> Success {
+        return self.local.shareItem(item)
     }
 }
 
@@ -1183,7 +1183,7 @@ extension MergedSQLiteBookmarks {
 
 public class SQLiteBookmarkBufferStorage_Brave : SQLiteBookmarkBufferStorage {
 
-    public func renameBookmark(bookmark:BookmarkNode, newTitle:String, completion:dispatch_block_t)  {
+    public func renameBookmark(bookmark:BookmarkNode, newTitle:String, completion:dispatch_block_t) -> Success {
         let updateQuery =
             "UPDATE \(TableBookmarksLocal) " +
                 "set title='\(newTitle)'" +
@@ -1191,18 +1191,21 @@ public class SQLiteBookmarkBufferStorage_Brave : SQLiteBookmarkBufferStorage {
         let structureArgs = Args()
         var err: NSError?
 
+        let result = Success()
+
         self.db.transaction(&err) { (conn, err) -> Bool in
             if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to new title \(newTitle).") {
-                return false
+                result.fill(Maybe(failure: DatabaseError(err: nil)))
+            } else {
+                result.fill(Maybe(success: ()))
             }
 
-            completion()
             return true
         }
+        return result
     }
 
-    public func editBookmarkFolder(folder:BookmarkFolder, title:String, completion:dispatch_block_t)  {
-
+    public func editBookmarkFolder(folder:BookmarkFolder, title:String) -> Success {
         let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
             + "set title='\(title)' "
             +  "where guid='\(folder.guid)'"
@@ -1210,18 +1213,22 @@ public class SQLiteBookmarkBufferStorage_Brave : SQLiteBookmarkBufferStorage {
         let structureArgs = Args()
         var err: NSError?
 
+        let result = Success()
+
         self.db.transaction(&err) { (conn, err) -> Bool in
-
-            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(folder.guid) to title=[\(title)].") {
-                return false
+            succeed().upon() { _ in
+                if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(folder.guid) to title=[\(title)].") {
+                    return result.fill(Maybe(failure: DatabaseError(err: nil)))
+                } else {
+                    result.fill(Maybe(success: ()))
+                }
             }
-
-            completion()
             return true
         }
+        return result
     }
 
-    public func editBookmarkItem(bookmark:BookmarkNode, title:String, parentGUID:String, completion:dispatch_block_t)  {
+    public func editBookmarkItem(bookmark:BookmarkNode, title:String, parentGUID:String) -> Success {
 
         let updateQuery = "UPDATE '\(TableBookmarksLocal)' "
             + "set title='\(title)', parentid='\(parentGUID)' "
@@ -1236,23 +1243,25 @@ public class SQLiteBookmarkBufferStorage_Brave : SQLiteBookmarkBufferStorage {
         let structureArgs = Args()
         var err: NSError?
 
+        let result = Success()
+
         self.db.transaction(&err) { (conn, err) -> Bool in
-
-            if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
-                return false
+            succeed().upon() { _ in
+                if !self.change(conn, sql: updateQuery, args: structureArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") ||
+                    !self.change(conn, sql: structSQL, args: structArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
+                    return result.fill(Maybe(failure: DatabaseError(err: nil)))
+                } else {
+                    return result.fill(Maybe(success: ()))
+                }
             }
-
-            if !self.change(conn, sql: structSQL, args: structArgs, desc: "Error updating item \(bookmark.guid) to title=[\(title)] parentGUID=[\(parentGUID)].") {
-                return false
-            }
-
-
-            completion()
             return true
         }
+        return result
     }
 
-    public func createFolder(folderName:String, completion:dispatch_block_t) {
+    public func createFolder(folderName:String) -> Success {
+        let result = Success()
+
         let type = BookmarkNodeType.Folder.rawValue
         let now = NSDate.nowNumber()
         let status = SyncStatus.New.rawValue
@@ -1273,24 +1282,26 @@ public class SQLiteBookmarkBufferStorage_Brave : SQLiteBookmarkBufferStorage {
         var err: NSError?
 
         self.db.transaction(&err) { (conn, err) -> Bool in
-            let result = self.db.run(local, withArgs: localArgs)
+            succeed().upon() { _ in // move onto the deferred queue, code crashes without this
+                self.db.run(local, withArgs: localArgs).upon { success in
+                    let newIndex = "(SELECT (COALESCE(MAX(idx), -1) + 1) AS newIndex FROM \(TableBookmarksLocalStructure) WHERE parent = ?)"
+                    let structureSQL = "INSERT INTO \(TableBookmarksLocalStructure) (parent, child, idx) " +
+                        "VALUES (?, ?, \(newIndex))"
+                    let structureArgs: Args = [parentGUID, guid, parentGUID]
 
-            let newIndex = "(SELECT (COALESCE(MAX(idx), -1) + 1) AS newIndex FROM \(TableBookmarksLocalStructure) WHERE parent = ?)"
-            let structureSQL = "INSERT INTO \(TableBookmarksLocalStructure) (parent, child, idx) " +
-                "VALUES (?, ?, \(newIndex))"
-            let structureArgs: Args = [parentGUID, guid, parentGUID]
+                    if !self.change(conn, sql: structureSQL, args: structureArgs, desc: "Error adding new item \(guid) to local structure.") {
+                        return result.fill(Maybe(failure: DatabaseError(err: nil)))
+                    }
 
-            if !self.change(conn, sql: structureSQL, args: structureArgs, desc: "Error adding new item \(guid) to local structure.") {
-                return false
+                    return result.fill(Maybe(success: ()))
+                }
             }
-
-            completion()
-
-            return result.value.isSuccess
+            return true
         }
+        return result
     }
 
-    func change(conn: SQLiteDBConnection, sql: String, args: Args?, desc: String) -> Bool {
+    private func change(conn: SQLiteDBConnection, sql: String, args: Args?, desc: String) -> Bool {
         let err = conn.executeChange(sql, withArgs: args)
         if let err = err {
             log.error(desc)
@@ -1300,30 +1311,30 @@ public class SQLiteBookmarkBufferStorage_Brave : SQLiteBookmarkBufferStorage {
         return true
     }
 
-    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String], completion:dispatch_block_t)  {
+    public func reorderBookmarks(folderGUID:String, bookmarksOrder:[String]) -> Success  {
         var err: NSError?
+        let result = Success()
 
         self.db.transaction(&err) { (conn, err) -> Bool in
-            var success:Bool = true
-            var position:Int = 0
-            let structureArgs = Args()
-            for bookmarkGUID in bookmarksOrder {
-                let updateQuery = "UPDATE \(TableBookmarksLocalStructure) set idx='\(position)' where parent='\(folderGUID)' and child='\(bookmarkGUID)'"
-                let errorDesc = "Error updating item \(bookmarkGUID) in \(folderGUID) to new index \(position)."
+            succeed().upon() { _ in
+                var position:Int = 0
+                let structureArgs = Args()
+                for bookmarkGUID in bookmarksOrder {
+                    let updateQuery = "UPDATE \(TableBookmarksLocalStructure) set idx='\(position)' where parent='\(folderGUID)' and child='\(bookmarkGUID)'"
+                    let errorDesc = "Error updating item \(bookmarkGUID) in \(folderGUID) to new index \(position)."
 
-                if !self.change(conn, sql: updateQuery, args: structureArgs, desc: errorDesc) {
-                    success = false
-                    break
+                    if !self.change(conn, sql: updateQuery, args: structureArgs, desc: errorDesc) {
+                        return result.fill(Maybe(failure: DatabaseError(err: nil)))
+                    }
+
+                    position += 1
                 }
-
-                position += 1
+                result.fill(Maybe(success: ()))
             }
-
-            if success {
-                completion()
-            }
-            return success
+            return true
         }
+
+        return result
     }
 
 

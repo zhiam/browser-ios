@@ -709,23 +709,16 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func addBookmark(url: String, title: String?, folderId:String? = nil, folderTitle:String? = nil, completion: dispatch_block_t? = nil) {
-
-        let shareItem = ShareItem(url: url, title: title, favicon: nil, folderId: folderId, folderTitle: folderTitle) {
-            self.urlBar.updateBookmarkStatus(true)
-            if let completionBlock = completion {
-                completionBlock()
+    func addBookmark(url: String, title: String?, folderId:String? = nil, folderTitle:String? = nil) -> Success {
+        let shareItem = ShareItem(url: url, title: title, favicon: nil, folderId: folderId, folderTitle: folderTitle)
+        let deferred = Success()
+        profile.bookmarks.shareItem(shareItem).upon { result in
+            postAsyncToMain {
+                self.urlBar.updateBookmarkStatus(true)
             }
+            deferred.fill(result)
         }
-        profile.bookmarks.shareItem(shareItem)
-        var userData = [QuickActions.TabURLKey: shareItem.url]
-        if let title = shareItem.title {
-            userData[QuickActions.TabTitleKey] = title
-        }
-//            QuickActions.sharedInstance.addDynamicApplicationShortcutItemOfType(.OpenLastBookmark,
-//                withUserData: userData,
-//                toApplication: UIApplication.sharedApplication())
-
+        return deferred
     }
 
     func removeBookmark(url: String, completion: dispatch_block_t? = nil) {

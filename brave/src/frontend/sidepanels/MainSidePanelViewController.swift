@@ -121,9 +121,8 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     //since we disable the button when there's no URL
     //see MainSidePanelViewController#updateBookmarkStatus(isBookmarked,url)
     func onClickBookmarksButton() {
-
-        let tab = browserViewController!.tabManager.selectedTab!
-        let url = tab.displayURL!.absoluteString
+        guard let tab = browserViewController?.tabManager.selectedTab else { return }
+        guard let url = tab.displayURL?.absoluteString else { return }
         
         //switch to bookmarks 'tab' in case we're looking at history and tapped the add/remove bookmark button
         self.showBookmarks()
@@ -131,7 +130,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         //TODO -- need to separate the knowledge of whether current site is bookmarked or not from this UI button
         //tracked in https://github.com/brave/browser-ios/issues/375
         if addBookmarkButton.selected {
-            browserViewController?.removeBookmark(url!) {
+            browserViewController?.removeBookmark(url) {
                 self.bookmarksPanel.currentBookmarksPanel().reloadData()
             }
         } else {
@@ -142,8 +141,10 @@ class MainSidePanelViewController : SidePanelBaseViewController {
                 folderTitle = currentFolder.title
             }
 
-            browserViewController?.addBookmark(url!, title: tab.title, folderId: folderId, folderTitle: folderTitle) {
-                self.bookmarksPanel.currentBookmarksPanel().reloadData()
+            browserViewController?.addBookmark(url, title: tab.title, folderId: folderId, folderTitle: folderTitle).upon { _ in
+                postAsyncToMain {
+                    self.bookmarksPanel.currentBookmarksPanel().reloadData()
+                }
             }
         }
     }
