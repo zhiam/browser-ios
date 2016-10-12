@@ -9,7 +9,7 @@ import Storage
 class BookmarksTest: XCTestCase {
     func testNewFolder() {
         if let sqllitbk = getApp().profile!.bookmarks as? MergedSQLiteBookmarks {
-            sqllitbk.createFolder("FOOFOO") {
+            sqllitbk.createFolder("FOOFOO").upon { _ in
                 postAsyncToMain {
                     NSNotificationCenter.defaultCenter().postNotificationName("folder-added", object: nil)
                 }

@@ -43,8 +43,13 @@ class BookmarksTest: XCTestCase {
         // load google from bookmarks
         let googleStaticText = app.scrollViews.otherElements.tables["SiteTable"].staticTexts["Google"]
         googleStaticText.tap()
-        XCTAssert(app.links["IMAGES"].exists, "google web page main image showing")
-        XCTAssert(app.links["Use precise location"].exists, "google web page main image showing")
+
+        // TODO: find a better way to see if google is loaded, other than looking for links on the page
+        [app.links["IMAGES"], app.links["Advertising"]].forEach {
+            let predicate = NSPredicate(format: "exists == 1")
+            expectationForPredicate(predicate, evaluatedWithObject: $0, handler: nil)
+            waitForExpectationsWithTimeout(3, handler: nil)
+        }
 
         // delete the bookmark
         bookmarksAndHistoryPanelButton.tap()
@@ -75,10 +80,11 @@ class BookmarksTest: XCTestCase {
 
         let collectionViewsQuery = app.alerts["New Folder"].collectionViews
         collectionViewsQuery.textFields["<folder name>"].typeText("Foo")
-        collectionViewsQuery.buttons["OK"].tap()
+        app.buttons["OK"].tap()
         app.scrollViews.otherElements.tables["SiteTable"].staticTexts["Google"].tap()
 
-        app.tables.elementBoundByIndex(1).cells.elementBoundByIndex(2).tap()
+
+        app.scrollViews.otherElements.tables.staticTexts["Root Folder"].tap()
         app.pickerWheels.elementBoundByIndex(0).adjustToPickerWheelValue("Foo")
         let elementsQuery = app.scrollViews.otherElements
         elementsQuery.navigationBars["Bookmarks"].buttons["Bookmarks"].tap()
