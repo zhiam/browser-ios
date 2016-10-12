@@ -22,7 +22,7 @@ class BookmarksTest: XCTestCase {
     }
 
     func testAddDeleteBookmark() {
-        restart(["BRAVE-DELETE-BOOKMARKS"])
+        UITestUtils.restart(["BRAVE-DELETE-BOOKMARKS"])
         let app = XCUIApplication()
 
         addGoogleAsFirstBookmark()
@@ -44,13 +44,8 @@ class BookmarksTest: XCTestCase {
         let googleStaticText = app.scrollViews.otherElements.tables["SiteTable"].staticTexts["Google"]
         googleStaticText.tap()
 
-        // TODO: find a better way to see if google is loaded, other than looking for links on the page
-        [app.links["IMAGES"], app.links["Advertising"]].forEach {
-            let predicate = NSPredicate(format: "exists == 1")
-            expectationForPredicate(predicate, evaluatedWithObject: $0, handler: nil)
-            waitForExpectationsWithTimeout(3, handler: nil)
-        }
-
+        UITestUtils.waitForGooglePageLoad(self)
+        
         // delete the bookmark
         bookmarksAndHistoryPanelButton.tap()
         let toolbarsQuery = elementsQuery.toolbars
@@ -69,7 +64,7 @@ class BookmarksTest: XCTestCase {
 
 
     func testFolderNav() {
-        restart(["BRAVE-DELETE-BOOKMARKS"])
+        UITestUtils.restart(["BRAVE-DELETE-BOOKMARKS"])
         let app = XCUIApplication()
 
         addGoogleAsFirstBookmark()

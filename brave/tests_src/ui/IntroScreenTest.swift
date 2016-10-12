@@ -3,30 +3,6 @@
 import Foundation
 import XCTest
 
-extension XCUIElement {
-    func forceTapElement() {
-        if self.hittable {
-            self.tap()
-        }
-        else {
-            let coordinate: XCUICoordinate = self.coordinateWithNormalizedOffset(CGVectorMake(0.0, 0.0))
-            coordinate.tap()
-        }
-    }
-}
-
-func restart(bootArgs: [String] = []) {
-    let app = XCUIApplication()
-
-    app.terminate()
-    app.launchArguments.append("BRAVE-UI-TEST")
-    bootArgs.forEach {
-        app.launchArguments.append($0)
-    }
-    app.launch()
-    sleep(1)
-}
-
 class IntroScreenTest: XCTestCase {
 
     override func setUp() {
@@ -38,18 +14,21 @@ class IntroScreenTest: XCTestCase {
     }
 
     func testIntroScreenAndOptInDialog() {
-        restart(["BRAVE-TEST-CLEAR-PREFS"])
+        // when run from command line needs to be restarted twice to work, not sure why
+        UITestUtils.restart(["BRAVE-TEST-CLEAR-PREFS"])
+        UITestUtils.restart(["BRAVE-TEST-CLEAR-PREFS"])
         let app = XCUIApplication()
         app.buttons["Start Browsing"].tap()
         app.buttons["Accept & Continue"].tap()
     }
 
     func testOptInDialogWithoutIntroScreen() {
-        restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
+        UITestUtils.restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
+        UITestUtils.restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
         let app = XCUIApplication()
         app.buttons["Accept & Continue"].tap()
 
-        restart()
+        UITestUtils.restart()
         // Ensure UI isn't blocked with modal dialog
         sleep(1)
         app.buttons["Bookmarks and History Panel"].tap()
