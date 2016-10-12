@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Foundation
-import Shared
 
 public typealias Timestamp = UInt64
 public typealias MicrosecondTimestamp = UInt64
