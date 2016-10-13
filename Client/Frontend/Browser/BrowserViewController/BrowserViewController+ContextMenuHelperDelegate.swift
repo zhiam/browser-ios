@@ -36,7 +36,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         if let url = elements.link, let currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString?.regexReplacePattern("^mailto:", with: "")
             let isPrivate = currentTab.isPrivate
-            let newTabTitle = Strings.Open_In_Background
+            let newTabTitle = Strings.Open_In_Background_Tab
             let openNewTabAction =  UIAlertAction(title: newTabTitle, style: UIAlertActionStyle.Default) { (action: UIAlertAction) in
                 actionSheetController.view.tag = 0 // BRAVE: clear this to allow navigation
                 self.scrollController.showToolbars(animated: !self.scrollController.toolbarsShowing, completion: { _ in

@@ -399,7 +399,7 @@
 "Open Desktop Site tab" = "Open Desktop Site tab";
 
 /* Context menu item for opening a link in a new tab */
-"Open In Background" = "Open In Background";
+"Open In New Tab" = "Open In New Tab";
 
 /* See http://mzl.la/1G7uHo7 */
 "Open Settings" = "Open Settings";

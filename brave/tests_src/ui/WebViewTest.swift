@@ -6,14 +6,15 @@ import XCTest
 class WebViewTest: XCTestCase {
 
     func testLongPress() {
+        UITestUtils.restart()
         let app = XCUIApplication()
-        app.launch()
+
         app.textFields["url"].tap()
         let topSitesViewCollectionView = app.collectionViews["Top Sites View"]
         topSitesViewCollectionView.cells["google"].tap()
 
         app.staticTexts["IMAGES"].pressForDuration(1.5);
-        app.sheets.elementBoundByIndex(0).buttons["Open In Background"].tap()
+        app.sheets.elementBoundByIndex(0).buttons["Open In New Tab"].tap()
         app.buttons["2"].tap()
         app.collectionViews.childrenMatchingType(.Cell).matchingIdentifier("Google").elementBoundByIndex(1).tap()
     }
