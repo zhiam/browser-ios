@@ -133,6 +133,11 @@ class BraveApp {
         if args.contains("BRAVE-UI-TEST") {
             // Maybe we will need a specific flag to keep tabs for restoration testing
             BraveApp.isSafeToRestoreTabs = false
+
+            if args.count == 2 { // only contains exe name and 1 arg
+                BraveApp.getPrefs()!.setInt(1, forKey: IntroViewControllerSeenProfileKey)
+                BraveApp.getPrefs()!.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
+            }
         }
 
 

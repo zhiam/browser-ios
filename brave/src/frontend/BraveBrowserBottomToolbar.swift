@@ -35,6 +35,7 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         tabsButton.titleLabel.text = "\(tabsCount)"
         tabsButton.addTarget(self, action: #selector(BraveBrowserBottomToolbar.onClickShowTabs), forControlEvents: UIControlEvents.TouchUpInside)
         tabsButton.accessibilityLabel = Strings.Show_Tabs
+        tabsButton.accessibilityIdentifier = "Toolbar.ShowTabs"
         return tabsButton
     }()
 

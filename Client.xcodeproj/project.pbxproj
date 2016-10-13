@@ -456,6 +456,7 @@
 		EBE50B831DAE8D77000BC0A1 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */; };
 		EBE50B871DAEC689000BC0A1 /* Deferred.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE50B861DAEC689000BC0A1 /* Deferred.framework */; };
 		EBE50B8A1DAEC8DD000BC0A1 /* UITestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */; };
+		EBE50B8D1DB02386000BC0A1 /* PrivateBrowsingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE50B8C1DB02386000BC0A1 /* PrivateBrowsingTest.swift */; };
 		EBFB04FC1DA71EB8002C50FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBFB04F41DA71EB8002C50FA /* Localizable.strings */; };
 		EBFB05061DA71EDB002C50FA /* BraveShareToInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EBFB04FE1DA71EDB002C50FA /* BraveShareToInfoPlist.strings */; };
 		ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */ = {isa = PBXBuildFile; fileRef = C33D93B9B0CD0D4AD9E461AE /* ODRefreshControl.h */; };
@@ -1222,6 +1223,7 @@
 		EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EBE50B861DAEC689000BC0A1 /* Deferred.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Deferred.framework; path = Carthage/Build/iOS/Deferred.framework; sourceTree = "<group>"; };
 		EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITestUtils.swift; sourceTree = "<group>"; };
+		EBE50B8C1DB02386000BC0A1 /* PrivateBrowsingTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateBrowsingTest.swift; sourceTree = "<group>"; };
 		EBFB04F51DA71EB8002C50FA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EBFB04F61DA71EB8002C50FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		EBFB04F71DA71EB8002C50FA /* id-ID */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "id-ID"; path = "id-ID.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -2596,6 +2598,7 @@
 			isa = PBXGroup;
 			children = (
 				EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */,
+				EBE50B8C1DB02386000BC0A1 /* PrivateBrowsingTest.swift */,
 				EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */,
 				EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */,
 				EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */,
