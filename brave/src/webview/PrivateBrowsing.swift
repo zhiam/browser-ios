@@ -116,14 +116,24 @@ class PrivateBrowsing {
         NSNotificationCenter.defaultCenter().removeObserver(self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
 
-        getApp().tabManager.removeAllPrivateTabsAndNotify(false)
-        postAsyncToMain(2) {
-            #if !NO_FABRIC
+        if getApp().tabManager.tabs.privateTabs.count < 1 {
+            postAsyncToMain {
+                self.allWebViewsKilled()
+            }
+        } else {
+            getApp().tabManager.removeAllPrivateTabsAndNotify(false)
+
+            postAsyncToMain(2) {
                 if !self.exitDeferred.isFilled {
-                    Answers.logCustomEventWithName("PrivateBrowsing exit failed", customAttributes: nil)
+                    #if !NO_FABRIC
+                        Answers.logCustomEventWithName("PrivateBrowsing exit failed", customAttributes: nil)
+                    #endif
+                    #if DEBUG
+                        BraveApp.showErrorAlert(title: "PrivateBrowsing", error: "exit failed")
+                    #endif
                     self.allWebViewsKilled()
                 }
-            #endif
+            }
         }
         
         NSNotificationCenter.defaultCenter().postNotificationName(NotificationPrivacyModeChanged, object: nil)
