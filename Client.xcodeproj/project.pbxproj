@@ -3608,6 +3608,7 @@
 				EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */,
 				EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */,
 				EBE50B8A1DAEC8DD000BC0A1 /* UITestUtils.swift in Sources */,
+				EBE50B8D1DB02386000BC0A1 /* PrivateBrowsingTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

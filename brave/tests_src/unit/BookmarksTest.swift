@@ -8,15 +8,16 @@ import Storage
 
 class BookmarksTest: XCTestCase {
     func testNewFolder() {
+        let expect = expectationWithDescription("folder-added")
+
         if let sqllitbk = getApp().profile!.bookmarks as? MergedSQLiteBookmarks {
             sqllitbk.createFolder("FOOFOO").upon { _ in
                 postAsyncToMain {
-                    NSNotificationCenter.defaultCenter().postNotificationName("folder-added", object: nil)
+                    expect.fulfill()
                 }
             }
         }
 
-        expectationForNotification("folder-added", object: nil, handler:nil)
         waitForExpectationsWithTimeout(20) { (error:NSError?) -> Void in
             if let _ = error {
                 XCTAssert(false, "failed")
