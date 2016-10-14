@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     self_path = os.path.dirname(os.path.realpath(__file__))
 
-    import_root = self_path # sys.argv[1]
+    import_root = self_path + '/translated-xliffs' # sys.argv[1]
     if not os.path.isdir(import_root):
         print "import path does not exist or is not a directory"
         sys.exit(1)
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         print "export path does not exist or is not a directory"
         sys.exit(1)
 
-    for xliff_path in glob.glob(import_root + "/*.xlf"):
+    for xliff_path in glob.glob(import_root + "/*.xliff"):
         print "Exporting", xliff_path
         with open(xliff_path) as fp:
             tree = etree.parse(fp)
