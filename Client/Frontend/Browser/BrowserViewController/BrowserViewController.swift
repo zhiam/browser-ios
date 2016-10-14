@@ -1193,6 +1193,12 @@ extension BrowserViewController: KeyboardHelperDelegate {
             self.findInPageContainer.layoutIfNeeded()
             self.snackBars.layoutIfNeeded()
         }
+        
+        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+        if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
+            loginsHelper.show()
+        }
+        #endif
     }
 
     func keyboardHelper(keyboardHelper: KeyboardHelper, keyboardDidShowWithState state: KeyboardState) {
@@ -1207,6 +1213,12 @@ extension BrowserViewController: KeyboardHelperDelegate {
             self.findInPageContainer.layoutIfNeeded()
             self.snackBars.layoutIfNeeded()
         }
+        
+        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+        if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
+            loginsHelper.hide()
+        }
+        #endif
     }
 }
 
