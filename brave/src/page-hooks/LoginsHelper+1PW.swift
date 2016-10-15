@@ -5,7 +5,7 @@ import Storage
 import Deferred
 
 var iPadOffscreenView = UIView(frame: CGRectMake(3000,0,1,1))
-let tagFor1PwSnackbar = 8675309
+let tagForManagerButton = 64682
 var noPopupOnSites: [String] = []
 
 let kPrefName3rdPartyPasswordShortcutEnabled = "thirdPartyPasswordShortcutEnabled"
@@ -18,101 +18,101 @@ struct ThirdPartyPasswordManagers {
 }
 
 extension LoginsHelper {
-    func thirdPartyPasswordRegisterPageListeners() {
-        guard let wv = browser?.webView else { return }
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginsHelper.hideOnPageChange(_:)), name: kNotificationPageUnload, object: wv)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginsHelper.checkOnPageLoaded(_:)), name: BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: wv)
-    }
-
-    func thirdPartyPasswordSnackbar() {
-        let isEnabled = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 > 0
-        if !isEnabled {
-            return
-        }
-
-        guard let url = browser?.webView?.URL else { return }
-
+    func thirdPartyHelper(enabled: (Bool)->Void) {
         BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: false).upon {
-            [weak self]
             result in
             if !result {
+                enabled(false)
+            }
+            enabled(true)
+        }
+    }
+    
+    // MARK: Form Accessory
+    
+    func show() {
+        thirdPartyHelper { (enabled) in
+            if enabled == true {
+                postAsyncToMain(0.1) {
+                    [weak self] in
+                    let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
+                    if let ok = result where ok == "true" {
+                        self?.addPasswordManagerButton()
+                    }
+                }
+            }
+        }
+    }
+    
+    func hide() {
+        let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
+        let accessoryView: UIView = findFormAccessory(keyboardWindow)
+        if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
+            if let manager = accessoryView.viewWithTag(tagForManagerButton) {
+                manager.removeFromSuperview()
+            }
+        }
+    }
+    
+    func findFormAccessory(vw: UIView) -> UIView {
+        if vw.description.hasPrefix("<UIWebFormAccessory") {
+            return vw
+        }
+        for i in (0  ..< vw.subviews.count) {
+            let subview = vw.subviews[i] as UIView;
+            if subview.subviews.count > 0 {
+                let subvw = self.findFormAccessory(subview)
+                if subvw.description.hasPrefix("<UIWebFormAccessory") {
+                    return subvw
+                }
+            }
+        }
+        return UIView()
+    }
+    
+    func addPasswordManagerButton() {
+        let windows = UIApplication.sharedApplication().windows.count
+        if windows < 2 {
+            return;
+        }
+        
+        let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
+        let accessoryView: UIView = findFormAccessory(keyboardWindow)
+        if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
+            if let old = accessoryView.viewWithTag(tagForManagerButton) {
+                old.removeFromSuperview()
+            }
+            
+            let image: UIImage?
+            switch ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 {
+            case 1:
+                image = UIImage(named: "passhelper_1pwd")
+            case 2:
+                image = UIImage(named: "passhelper_lastpass")
+            default:
                 return
             }
-
-            self?.isInNoShowList(url).upon {
-                [weak self]
-                result in
-                if result {
-                    return
-                }
-
-                postAsyncToMain(0) {
-                    [weak self] in
-                    guard let safeSelf = self else { return }
-                    if let snackBar = safeSelf.snackBar {
-                        if safeSelf.browser?.bars.map({ $0.tag }).indexOf(tagFor1PwSnackbar) != nil {
-                            return // already have a 1PW snackbar active for this tab
-                        }
-
-                        safeSelf.browser?.removeSnackbar(snackBar)
-                    }
-
-                    let managerName = ThirdPartyPasswordManagerSetting.currentSetting?.displayName ?? "your password manager"
-
-                    safeSelf.snackBar = SnackBar(attrText: NSAttributedString(string: "Sign in with \(managerName)"), img: UIImage(named: "key"), buttons: [])
-                    safeSelf.snackBar!.tag = tagFor1PwSnackbar
-                    let button = UIButton()
-                    button.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-                    safeSelf.snackBar!.addSubview(button)
-                    button.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
-
-                    let close = UIButton(frame: CGRectMake(safeSelf.snackBar!.frame.width - 40, 0, 40, 40))
-                    close.setImage(UIImage(named: "stop")!, forState: .Normal)
-                    close.addTarget(self, action: #selector(LoginsHelper.onCloseTapped), forControlEvents: .TouchUpInside)
-                    close.tintColor = UIColor.blackColor()
-                    close.autoresizingMask = [.FlexibleLeftMargin]
-                    safeSelf.snackBar!.addSubview(close)
-
-                    safeSelf.browser?.addSnackbar(safeSelf.snackBar!)
-                }
-            }
+            
+            let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
+            managerButton.tag = tagForManagerButton
+            managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
+            managerButton.setImage(image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+            managerButton.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
+            managerButton.sizeToFit()
+            accessoryView.addSubview(managerButton)
+            
+            var managerButtonFrame = managerButton.frame
+            managerButtonFrame.origin.x = rint((CGRectGetWidth(UIScreen.mainScreen().bounds) - CGRectGetWidth(managerButtonFrame)) / 2.0)
+            managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
+            managerButton.frame = managerButtonFrame
         }
     }
-
-    @objc func onCloseTapped() {
-        if let s = snackBar {
-            self.browser?.removeSnackbar(s)
-
-            guard let host = browser?.webView?.URL?.hostWithGenericSubdomainPrefixRemoved() else { return }
-            noPopupOnSites.append(host)
-            #if PW_DB
-                getApp().profile!.db.write("INSERT INTO \(TableOnePasswordNoPopup) (domain) VALUES (?)", withArgs: [host])
-            #endif
-        }
-    }
-
-    @objc func checkOnPageLoaded(notification: NSNotification) {
-        if notification.object !== browser?.webView {
-            return
-        }
-        postAsyncToMain(0.1) {
-            [weak self] in
-            let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
-            if let ok = result where ok == "true" {
-                self?.thirdPartyPasswordSnackbar()
-            }
-        }
-    }
-
-    @objc func hideOnPageChange(notification: NSNotification) {
-        if let snackBar = snackBar where snackBar.tag == tagFor1PwSnackbar {
-            browser?.removeSnackbar(snackBar)
-        }
-    }
-
-    @objc func onExecuteTapped() {
+    
+    // MARK: Tap
+    
+    @objc func onExecuteTapped(sender: UIButton) {
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
-
+        
         if !isIPad {
             UIView.animateWithDuration(0.2) {
                 // Hiding shows user feedback to the tap, don't remove, as snackbar should not show again until page change
@@ -122,39 +122,36 @@ extension LoginsHelper {
             }
             UIAlertController.hackyHideOn(true)
         }
-
-        let sender:UIView =  snackBar!
-
+        
         if isIPad && iPadOffscreenView.superview == nil {
             getApp().browserViewController.view.addSubview(iPadOffscreenView)
         }
-
+        
         OnePasswordExtension.sharedExtension().fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
             if isIPad {
                 iPadOffscreenView.removeFromSuperview()
-                self.browser?.removeSnackbar(self.snackBar!)
             } else {
                 UIAlertController.hackyHideOn(false)
             }
-
+            
             if success == false {
                 print("Failed to fill into webview: <\(error)>")
             }
         }
-
+        
         var found = false
-
+        
         // recurse through items until the 1pw share item is found
         func selectShareItem(view: UIView, shareItemName: String) {
             if found {
                 return
             }
-
+            
             for subview in view.subviews {
                 if subview.description.contains("UICollectionViewControllerWrapperView") && subview.subviews.first?.subviews.count > 1 {
                     let wrapperCell = subview.subviews.first?.subviews[1] as? UICollectionViewCell
                     if let collectionView = wrapperCell?.subviews.first?.subviews.first?.subviews.first as? UICollectionView {
-
+                        
                         // As a safe upper bound, just look at 10 items max
                         for i in 0..<10 {
                             let indexPath = NSIndexPath(forItem: i, inSection: 0)
@@ -167,19 +164,19 @@ extension LoginsHelper {
                                 found = true
                             }
                         }
-
+                        
                         return
                     }
                 }
                 selectShareItem(subview, shareItemName: shareItemName)
             }
         }
-
+        
         // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
         postAsyncToMain(0.2) {
             guard let itemToLookFor = ThirdPartyPasswordManagerSetting.currentSetting?.cellLabel else { return }
             selectShareItem(getApp().window!, shareItemName: itemToLookFor)
-
+            
             if !found {
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                     UIActivityViewController.hackyDismissal()
@@ -192,17 +189,5 @@ extension LoginsHelper {
                 }
             }
         }
-    }
-
-    // Using a DB-backed storage for this is under consideration.
-    // Use a similar Deferred-style so switching to the DB method is seamless
-    func isInNoShowList(url: NSURL)  -> Deferred<Bool> {
-        let deferred = Deferred<Bool>()
-        var result = false
-        if let host = url.hostWithGenericSubdomainPrefixRemoved() {
-            result = noPopupOnSites.contains(host)
-        }
-        deferred.fill(result)
-        return deferred
     }
 }

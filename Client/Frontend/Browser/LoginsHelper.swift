@@ -29,9 +29,6 @@ class LoginsHelper: BrowserHelper {
             let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
             browser.webView!.configuration.userContentController.addUserScript(userScript)
         }
-        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
-        thirdPartyPasswordRegisterPageListeners()
-        #endif
     }
 
     deinit {
@@ -58,9 +55,6 @@ class LoginsHelper: BrowserHelper {
                    let requestId = res["requestId"] as? String {
                     requestLogins(login, requestId: requestId)
                 }
-                #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
-                thirdPartyPasswordSnackbar()
-                #endif
             } else if type == "submit" {
                 if self.profile.prefs.boolForKey("saveLogins") ?? true {
                     if let login = Login.fromScript(url, script: res) {
