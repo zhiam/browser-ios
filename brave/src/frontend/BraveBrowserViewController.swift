@@ -2,6 +2,7 @@
 
 import Shared
 import SnapKit
+import SafariServices
 
 class BraveBrowserViewController : BrowserViewController {
     var historySwiper = HistorySwiper()
@@ -192,7 +193,34 @@ class BraveBrowserViewController : BrowserViewController {
     func presentOptInDialog() {
         let view = BraveTermsViewController()
         view.delegate = self
-        presentViewController(view, animated: false, completion: nil)
+        presentViewController(view, animated: false) {
+            let optedIn = self.profile.prefs.intForKey(BraveUX.PrefKeyUserAllowsTelemetry) ?? 1
+            if optedIn != 1 {
+                return
+            }
+
+            func showHiddenSafariViewController(controller:SFSafariViewController) {
+                controller.view.userInteractionEnabled = false
+                controller.view.alpha = 0.0
+                controller.view.frame = CGRectZero
+                self.addChildViewController(controller)
+                self.view.addSubview(controller.view)
+                controller.didMoveToParentViewController(self)
+            }
+
+            func removeHiddenSafariViewController(controller:SFSafariViewController) {
+                controller.willMoveToParentViewController(nil)
+                controller.view.removeFromSuperview()
+                controller.removeFromParentViewController()
+            }
+
+            let sf = SFSafariViewController(URL: NSURL(string: "https://www.brave.com")!)
+            showHiddenSafariViewController(sf)
+
+            postAsyncToMain(15) {
+                removeHiddenSafariViewController(sf)
+            }
+        }
     }
 }
 
