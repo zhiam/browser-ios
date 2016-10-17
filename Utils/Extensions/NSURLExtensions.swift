@@ -46,16 +46,6 @@ private func loadEntriesFromDisk() -> TLDEntryMap? {
             entries[key] = entry
         }
         return entries
-    } else {
-        #if DEBUG
-            let alert = UIAlertController(title: "Failed to load TLD", message: "\(bundle)", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Close", style: .Cancel, handler: nil))
-            let alertWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
-            alertWindow.rootViewController = UIViewController()
-            alertWindow.windowLevel = UIWindowLevelAlert + 1;
-            alertWindow.makeKeyAndVisible()
-            alertWindow.rootViewController?.presentViewController(alert, animated: true, completion: nil)
-        #endif
     }
     return nil
 }
@@ -101,6 +91,9 @@ extension NSURL {
     }
 }
 
+// The list of permanent URI schemes has been taken from http://www.iana.org/assignments/uri-schemes/uri-schemes.xhtml
+private let permanentURISchemes = ["aaa", "aaas", "about", "acap", "acct", "cap", "cid", "coap", "coaps", "crid", "data", "dav", "dict", "dns", "example", "file", "ftp", "geo", "go", "gopher", "h323", "http", "https", "iax", "icap", "im", "imap", "info", "ipp", "ipps", "iris", "iris.beep", "iris.lwz", "iris.xpc", "iris.xpcs", "jabber", "ldap", "mailto", "mid", "msrp", "msrps", "mtqp", "mupdate", "news", "nfs", "ni", "nih", "nntp", "opaquelocktoken", "pkcs11", "pop", "pres", "reload", "rtsp", "rtsps", "rtspu", "service", "session", "shttp", "sieve", "sip", "sips", "sms", "snmp", "soap.beep", "soap.beeps", "stun", "stuns", "tag", "tel", "telnet", "tftp", "thismessage", "tip", "tn3270", "turn", "turns", "tv", "urn", "vemmi", "vnc", "ws", "wss", "xcon", "xcon-userid", "xmlrpc.beep", "xmlrpc.beeps", "xmpp", "z39.50r", "z39.50s"]
+
 extension NSURL {
 
     public func withQueryParams(params: [NSURLQueryItem]) -> NSURL {
@@ -145,7 +138,17 @@ extension NSURL {
         }
         return nil
     }
-    
+
+    public var origin: String? {
+        guard isWebPage(includeDataURIs: false),
+            let hostPort = self.hostPort,
+            let scheme = scheme else {
+                return nil
+        }
+
+        return "\(scheme)://\(hostPort)"
+    }
+
     public func normalizedHostAndPath() -> String? {
         if let normalizedHost = self.normalizedHost() {
             return normalizedHost + (self.path ?? "/")
@@ -168,23 +171,21 @@ extension NSURL {
     }
 
     /**
-    Returns the base domain from a given hostname. The base domain name is defined as the public domain suffix
-    with the base private domain attached to the front. For example, for the URL www.bbc.co.uk, the base domain
-    would be bbc.co.uk. The base domain includes the public suffix (co.uk) + one level down (bbc).
+     Returns the base domain from a given hostname. The base domain name is defined as the public domain suffix
+     with the base private domain attached to the front. For example, for the URL www.bbc.co.uk, the base domain
+     would be bbc.co.uk. The base domain includes the public suffix (co.uk) + one level down (bbc).
 
-    :returns: The base domain string for the given host name.
-    */
+     :returns: The base domain string for the given host name.
+     */
     public func baseDomain() -> String? {
-        if let host = self.host {
-            // If this is just a hostname and not a FQDN, use the entire hostname.
-            if !host.contains(".") {
-                return host
-            }
+        guard !isIPv6, let host = host else { return nil }
 
-            return publicSuffixFromHost(host, withAdditionalParts: 1)
-        } else {
-            return nil
+        // If this is just a hostname and not a FQDN, use the entire hostname.
+        if !host.contains(".") {
+            return host
         }
+
+        return publicSuffixFromHost(host, withAdditionalParts: 1)
     }
 
     /**
@@ -196,27 +197,46 @@ extension NSURL {
      */
     public func domainURL() -> NSURL {
         if let normalized = self.normalizedHost() {
-            return NSURL(scheme: self.scheme ?? "http", host: normalized, path: "/") ?? self
+            // Use NSURLComponents instead of NSURL since the former correctly preserves
+            // brackets for IPv6 hosts, whereas the latter escapes them.
+            let components = NSURLComponents()
+            components.scheme = self.scheme
+            components.host = normalized
+            components.path = "/"
+            return components.URL ?? self
         }
         return self
     }
 
-    public func normalizedHost() -> String? {
-        if var host = self.host {
-            if let range = host.rangeOfString("^(www|mobile|m)\\.", options: .RegularExpressionSearch) {
-                host.replaceRange(range, with: "")
-            }
-            return host
+    public func extractDomainName() -> String {
+        let urlString =  self.normalizedHost() ?? self.URLString
+        var arr = urlString.componentsSeparatedByString(".")
+        if (arr.count >= 2) {
+            arr.popLast()
+            return arr.joinWithSeparator(".")
         }
-        return nil
+        return urlString
+    }
+
+    public func normalizedHost() -> String? {
+        // Use components.host instead of self.host since the former correctly preserves
+        // brackets for IPv6 hosts, whereas the latter strips them.
+        guard let components = NSURLComponents(URL: self, resolvingAgainstBaseURL: false),
+            var host = components.host else { return nil }
+
+        if let range = host.rangeOfString("^(www|mobile|m)\\.", options: .RegularExpressionSearch) {
+            host.replaceRange(range, with: "")
+        }
+
+        return host
     }
 
     /**
-    Returns the public portion of the host name determined by the public suffix list found here: https://publicsuffix.org/list/. 
-    For example for the url www.bbc.co.uk, based on the entries in the TLD list, the public suffix would return co.uk.
+     Returns the public portion of the host name determined by the public suffix list found here: https://publicsuffix.org/list/.
+     For example for the url www.bbc.co.uk, based on the entries in the TLD list, the public suffix would return co.uk.
 
-    :returns: The public suffix for within the given hostname.
-    */
+     :returns: The public suffix for within the given hostname.
+     */
     public func publicSuffix() -> String? {
         if let host = self.host {
             return publicSuffixFromHost(host, withAdditionalParts: 0)
@@ -225,14 +245,49 @@ extension NSURL {
         }
     }
 
-    public func isWebPage() -> Bool {
+    public func isWebPage(includeDataURIs includeDataURIs: Bool = true) -> Bool {
         let httpSchemes = ["http", "https"]
+        let dataSchemes = ["data"]
 
-        if let scheme = scheme, let _ = httpSchemes.indexOf(scheme) {
+        if let scheme = scheme where httpSchemes.contains(scheme) || (includeDataURIs && dataSchemes.contains(scheme)) {
             return true
         }
 
         return false
+    }
+
+    public var isLocal: Bool {
+        // iOS forwards hostless URLs (e.g., http://:6571) to localhost.
+        guard let host = host where !host.isEmpty else {
+            return true
+        }
+
+        return host.lowercaseString == "localhost" || host == "127.0.0.1"
+    }
+
+    public var isIPv6: Bool {
+        return host?.containsString(":") ?? false
+    }
+
+    /**
+     Returns whether the URL's scheme is one of those listed on the official list of URI schemes.
+     This only accepts permanent schemes: historical and provisional schemes are not accepted.
+     */
+    public var schemeIsValid: Bool {
+        guard let scheme = scheme else { return false }
+        return permanentURISchemes.contains(scheme)
+    }
+
+    public func havingRemovedAuthorisationComponents() -> NSURL {
+        guard let urlComponents = NSURLComponents(URL: self, resolvingAgainstBaseURL: false) else {
+            return self
+        }
+        urlComponents.user = nil
+        urlComponents.password = nil
+        if let url = urlComponents.URL {
+            return url
+        }
+        return self
     }
 }
 
@@ -249,26 +304,26 @@ private extension NSURL {
         }
 
         /**
-        *  The following algorithm breaks apart the domain and checks each sub domain against the effective TLD
-        *  entries from the effective_tld_names.dat file. It works like this:
-        *
-        *  Example Domain: test.bbc.co.uk
-        *  TLD Entry: bbc
-        *
-        *  1. Start off by checking the current domain (test.bbc.co.uk)
-        *  2. Also store the domain after the next dot (bbc.co.uk)
-        *  3. If we find an entry that matches the current domain (test.bbc.co.uk), perform the following checks:
-        *    i. If the domain is a wildcard AND the previous entry is not nil, then the current domain matches
-        *       since it satisfies the wildcard requirement.
-        *    ii. If the domain is normal (no wildcard) and we don't have anything after the next dot, then
-        *        currentDomain is a valid TLD
-        *    iii. If the entry we matched is an exception case, then the base domain is the part after the next dot
-        *
-        *  On the next run through the loop, we set the new domain to check as the part after the next dot,
-        *  update the next dot reference to be the string after the new next dot, and check the TLD entries again.
-        *  If we reach the end of the host (nextDot = nil) and we haven't found anything, then we've hit the 
-        *  top domain level so we use it by default.
-        */
+         *  The following algorithm breaks apart the domain and checks each sub domain against the effective TLD
+         *  entries from the effective_tld_names.dat file. It works like this:
+         *
+         *  Example Domain: test.bbc.co.uk
+         *  TLD Entry: bbc
+         *
+         *  1. Start off by checking the current domain (test.bbc.co.uk)
+         *  2. Also store the domain after the next dot (bbc.co.uk)
+         *  3. If we find an entry that matches the current domain (test.bbc.co.uk), perform the following checks:
+         *    i. If the domain is a wildcard AND the previous entry is not nil, then the current domain matches
+         *       since it satisfies the wildcard requirement.
+         *    ii. If the domain is normal (no wildcard) and we don't have anything after the next dot, then
+         *        currentDomain is a valid TLD
+         *    iii. If the entry we matched is an exception case, then the base domain is the part after the next dot
+         *
+         *  On the next run through the loop, we set the new domain to check as the part after the next dot,
+         *  update the next dot reference to be the string after the new next dot, and check the TLD entries again.
+         *  If we reach the end of the host (nextDot = nil) and we haven't found anything, then we've hit the
+         *  top domain level so we use it by default.
+         */
 
         let tokens = host.componentsSeparatedByString(".")
         let tokenCount = tokens.count
@@ -283,13 +338,13 @@ private extension NSURL {
             if let entry = etldEntries?[currentDomain] {
                 if entry.isWild && (previousDomain != nil) {
                     suffix = previousDomain
-                    break;
+                    break
                 } else if entry.isNormal || (nextDot == nil) {
                     suffix = currentDomain
-                    break;
+                    break
                 } else if entry.isException {
                     suffix = nextDot
-                    break;
+                    break
                 }
             }
 
@@ -306,8 +361,8 @@ private extension NSURL {
             if let suffix = suffix {
                 // Take out the public suffixed and add in the additional parts we want.
                 let literalFromEnd: NSStringCompareOptions = [NSStringCompareOptions.LiteralSearch,        // Match the string exactly.
-                                     NSStringCompareOptions.BackwardsSearch,      // Search from the end.
-                                     NSStringCompareOptions.AnchoredSearch]         // Stick to the end.
+                    NSStringCompareOptions.BackwardsSearch,      // Search from the end.
+                    NSStringCompareOptions.AnchoredSearch]         // Stick to the end.
                 let suffixlessHost = host.stringByReplacingOccurrencesOfString(suffix, withString: "", options: literalFromEnd, range: nil)
                 let suffixlessTokens = suffixlessHost.componentsSeparatedByString(".").filter { $0 != "" }
                 let maxAdditionalCount = max(0, suffixlessTokens.count - additionalPartCount)
@@ -320,7 +375,7 @@ private extension NSURL {
         } else {
             baseDomain = suffix
         }
-
+        
         return baseDomain
     }
 }

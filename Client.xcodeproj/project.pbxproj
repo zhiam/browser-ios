@@ -407,7 +407,6 @@
 		DF0324E386DF0AAF40CEE51A /* db_iter.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66D18A8C8455B1E777D874DB /* db_iter.cc */; };
 		E04B515A88DAC58FCCF4E991 /* port_posix.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E2DD2C9767F04D79BD241B0 /* port_posix.h */; };
 		E12A5FD09E22642F5AD30719 /* BrowserTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB11AE05F20D82A81CDDB0D0 /* BrowserTable.swift */; };
-		E218BDEDC8B0B54679965D98 /* NSStringPunycodeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FE049FF8EF09BB42EF08231 /* NSStringPunycodeAdditions.m */; };
 		E2B4AF2CA18EBFF4E118049E /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A12D86BF942CEEDD82DF302 /* Browser.swift */; };
 		E2BD0520BB757B42E90BF36F /* DeferredDBOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FCC64BEAD27781355801AA /* DeferredDBOperation.swift */; };
 		E2D33EC35C1599109A588B7E /* UIImageViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1FB09C21B187C3C06E32BC /* UIImageViewExtensions.swift */; };
@@ -447,6 +446,7 @@
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */; };
+		EB62B7FD1DB53F3D006FD479 /* Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB62B7FC1DB53F3D006FD479 /* Punycode.swift */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
@@ -744,7 +744,6 @@
 		1B0A4457AFC855E3DCE6B038 /* BrowserPrompts.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserPrompts.swift; path = ./Client/Frontend/Browser/BrowserPrompts.swift; sourceTree = "<group>"; };
 		1B1A17F5F0EE66790543A151 /* format.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = format.h; path = ./brave/ThirdParty/leveldb/table/format.h; sourceTree = "<group>"; };
 		1B76A990D16A2AE724D9324E /* port_posix.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = port_posix.cc; path = ./brave/ThirdParty/leveldb/port/port_posix.cc; sourceTree = "<group>"; };
-		1D6E8AC0605454BE915D5956 /* NSStringPunycodeAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = NSStringPunycodeAdditions.h; path = ./ThirdParty/NSStringPunycodeAdditions.h; sourceTree = "<group>"; };
 		1D91C891407BB96DEA87E046 /* Result.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Result.swift; path = ./ThirdParty/Result/Result.swift; sourceTree = "<group>"; };
 		1E58C3281FDE6485E48B42D3 /* ReadingListFetchSpec.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListFetchSpec.swift; path = ./ReadingList/ReadingListFetchSpec.swift; sourceTree = "<group>"; };
 		1E8A4C274A1DE42346F4DADA /* AppSettingsOptions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettingsOptions.swift; path = ./Client/Frontend/Settings/AppSettingsOptions.swift; sourceTree = "<group>"; };
@@ -859,7 +858,6 @@
 		4D8604C3CDEB6AEBCAC81B76 /* SiteTableViewControllerHeader.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = SiteTableViewControllerHeader.xib; path = ./Client/Frontend/Widgets/SiteTableViewControllerHeader.xib; sourceTree = "<group>"; };
 		4E1E4CDC0059A25FA8AA8F69 /* melinda_landscape.jpg */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.jpeg; name = melinda_landscape.jpg; path = ./ThirdParty/UIImageViewAligned/Example/ImageAlignment/melinda_landscape.jpg; sourceTree = "<group>"; };
 		4F16AEF9760886DB545D51B6 /* SafeBrowsingError.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = SafeBrowsingError.html; path = ./brave/src/webfilters/SafeBrowsingError.html; sourceTree = "<group>"; };
-		4FE049FF8EF09BB42EF08231 /* NSStringPunycodeAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = NSStringPunycodeAdditions.m; path = ./ThirdParty/NSStringPunycodeAdditions.m; sourceTree = "<group>"; };
 		4FF424D6BA9C9B0ED879E681 /* env.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = env.cc; path = ./brave/ThirdParty/leveldb/util/env.cc; sourceTree = "<group>"; };
 		50438081018B3AA0DE9E3FF9 /* FiraSans-Book.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = "FiraSans-Book.ttf"; path = "./Client/Assets/Fonts/FiraSans-Book.ttf"; sourceTree = "<group>"; };
 		5081C33ED22463B0188E6AFF /* FSUtils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FSUtils.h; path = ./Utils/FSUtils.h; sourceTree = "<group>"; };
@@ -1217,6 +1215,7 @@
 		EB4A77361CC97AC50088E774 /* BaseConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = BaseConfig.xcconfig; sourceTree = "<group>"; };
 		EB4EC7836B7D80B31285DCC6 /* SiteTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiteTableViewController.swift; path = ./Client/Frontend/Widgets/SiteTableViewController.swift; sourceTree = "<group>"; };
 		EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-ui-test.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB62B7FC1DB53F3D006FD479 /* Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Punycode.swift; path = Client/Frontend/Browser/Punycode.swift; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
@@ -1483,6 +1482,7 @@
 		1459DCD80B59041F0E072CE0 /* Browser */ = {
 			isa = PBXGroup;
 			children = (
+				EB62B7FC1DB53F3D006FD479 /* Punycode.swift */,
 				14F9556D30D22BAB0BD0ACAE /* 3rdparty */,
 				DCC754FCC79857891055187B /* AboutHomeHandler.swift */,
 				C922CCB2D8FDB2706B9269E7 /* BackForwardListViewController.swift */,
@@ -2308,8 +2308,6 @@
 				B4CE9F2EEE0EE7956E5613B7 /* Box */,
 				5B45E1B5B986C75814A82BE0 /* FBSnapshotTestCase */,
 				E5AF690DBC7193CD62944636 /* json.swift */,
-				1D6E8AC0605454BE915D5956 /* NSStringPunycodeAdditions.h */,
-				4FE049FF8EF09BB42EF08231 /* NSStringPunycodeAdditions.m */,
 				177C15421863864B671F2A7D /* RaptureXML */,
 				E732DACD689B963946C73D95 /* Reachability.swift */,
 				06DCBF85C09F81C13168EFA0 /* Result */,
@@ -3820,6 +3818,7 @@
 				C1E4256758F62E1CC1D4F84E /* InsetButton.swift in Sources */,
 				BE99AC7563437EAA6F5413CA /* LoginTableViewCell.swift in Sources */,
 				BCE000B5F9FF52DE27BE387B /* SearchInputView.swift in Sources */,
+				EB62B7FD1DB53F3D006FD479 /* Punycode.swift in Sources */,
 				9645840ABD3F26A5C2020472 /* SeparatorTableCell.swift in Sources */,
 				0A7F5B77B9A8F11B77C97932 /* SiteTableViewController.swift in Sources */,
 				7677FD8B0A94937517A4F68C /* SnackBar.swift in Sources */,
@@ -3833,7 +3832,6 @@
 				E7026A766AA17FE4022C8F83 /* NSUserDefaultsPrefs.swift in Sources */,
 				8965A29E31FCD0820A3E9522 /* Profile.swift in Sources */,
 				81EC5F76660605C95BC58868 /* UIImage+ImageEffects.m in Sources */,
-				E218BDEDC8B0B54679965D98 /* NSStringPunycodeAdditions.m in Sources */,
 				3563A3B2A9E9EBECDBAF688C /* RXMLElement.m in Sources */,
 				1610DE47378FA4C024E4F384 /* UIImageViewAligned.m in Sources */,
 				05CB8811A90FFA41ACBFA3E5 /* AboutUtils.swift in Sources */,

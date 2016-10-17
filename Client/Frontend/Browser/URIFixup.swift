@@ -6,36 +6,44 @@ import Foundation
 
 class URIFixup {
     static func getURL(entry: String) -> NSURL? {
-        
         let trimmed = entry.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        
-        //punycoding -- conversion of possible unicode characters in hostname
-        let encoded = (trimmed as NSString).encodedURLString
-        if let urlString = encoded {
-            var url = NSURL(string: urlString)
-            
-            // First check if the URL includes a scheme. This will handle
-            // all valid requests starting with "http://", "about:", etc.
-            if !(url?.scheme?.isEmpty ?? true) {
-                return url
-            }
-            
-            // If there's no scheme, we're going to prepend "http://". First,
-            // make sure there's at least one "." in the host. This means
-            // we'll allow single-word searches (e.g., "foo") at the expense
-            // of breaking single-word hosts without a scheme (e.g., "localhost").
-            if urlString.rangeOfString(".") == nil {
-                return nil
-            }
-            
-            // If there is a ".", prepend "http://" and try again. Since this
-            // is strictly an "http://" URL, we also require a host.
-            url = NSURL(string: "http://\(urlString)")
-            if url?.host != nil {
-                return url
-            }
+        guard let escaped = trimmed.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLAllowedCharacterSet()) else {
+            return nil
         }
-        
+
+        // Then check if the URL includes a scheme. This will handle
+        // all valid requests starting with "http://", "about:", etc.
+        // However, we ensure that the scheme is one that is listed in
+        // the official URI scheme list, so that other such search phrases
+        // like "filetype:" are recognised as searches rather than URLs.
+        if let url = punycodedURL(escaped) where url.schemeIsValid {
+            return url
+        }
+
+        // If there's no scheme, we're going to prepend "http://". First,
+        // make sure there's at least one "." in the host. This means
+        // we'll allow single-word searches (e.g., "foo") at the expense
+        // of breaking single-word hosts without a scheme (e.g., "localhost").
+        if trimmed.rangeOfString(".") == nil {
+            return nil
+        }
+
+        if trimmed.rangeOfString(" ") != nil {
+            return nil
+        }
+
+        // If there is a ".", prepend "http://" and try again. Since this
+        // is strictly an "http://" URL, we also require a host.
+        if let url = punycodedURL("http://\(escaped)") where url.host != nil {
+            return url
+        }
+
         return nil
+    }
+
+    static func punycodedURL(string: String) -> NSURL? {
+        let components = NSURLComponents(string: string)
+        components?.host = components?.host?.utf8HostToAscii()
+        return components?.URL
     }
 }
