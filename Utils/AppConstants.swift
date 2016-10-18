@@ -14,7 +14,7 @@ public enum AppBuildChannel {
 
 public struct AppConstants {
 
-    public static let IsRunningTest = NSClassFromString("XCTestCase") != nil
+    public static let IsRunningTestNonUI = NSClassFromString("XCTestCase") != nil
 
     // True if this process is executed as part of a Fastlane Snapshot test
     public static let IsRunningFastlaneSnapshot = NSProcessInfo.processInfo().arguments.contains("FASTLANE_SNAPSHOT")
