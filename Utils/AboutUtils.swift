@@ -12,7 +12,11 @@ struct AboutUtils {
     }
 
     static func isAboutURL(url: NSURL?) -> Bool {
-        return getAboutComponent(url) != nil 
+        if let scheme = url?.scheme where scheme == "about" {
+            return true
+        }
+
+        return getAboutComponent(url) != nil
     }
 
     /// If the URI is an about: URI, return the path after "about/" in the URI.
