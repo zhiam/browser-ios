@@ -17,6 +17,7 @@
     <body>
       <trans-unit id="%@ search">
         <source>%@ search</source>
+        <target>%@検索</target>
         <note>Label for search engine buttons. The argument corresponds to the name of the search engine.</note>
       </trans-unit>
       <trans-unit id="+">
@@ -36,10 +37,12 @@
       </trans-unit>
       <trans-unit id="Aa">
         <source>Aa</source>
+        <target>Aa</target>
         <note>Button for reader mode font size. Keep this extremely short! This is shown in the reader mode toolbar.</note>
       </trans-unit>
       <trans-unit id="About">
         <source>About</source>
+        <target>アプリについて</target>
         <note>About settings section title</note>
       </trans-unit>
       <trans-unit id="Add Bookmark">
@@ -64,10 +67,12 @@
       </trans-unit>
       <trans-unit id="Address and Search">
         <source>Address and Search</source>
+        <target>アドレスと検索</target>
         <note>Accessibility label for address and search field, both words (Address, Search) are therefore nouns.</note>
       </trans-unit>
       <trans-unit id="Ads and Trackers">
         <source>Ads and Trackers</source>
+        <target>広告とトラッカー</target>
         <note>individual blocking statistic title</note>
       </trans-unit>
       <trans-unit id="Advanced">
@@ -77,10 +82,12 @@
       </trans-unit>
       <trans-unit id="Allow %@ to open iTunes?">
         <source>Allow %@ to open iTunes?</source>
+        <target>%@にiTunesを開くことを許可しますか？</target>
         <note>Ask user if site can open iTunes store URL</note>
       </trans-unit>
       <trans-unit id="Allow Brave to send info to improve our app">
         <source>Allow Brave to send info to improve our app</source>
+        <target>Braveにアプリ改善のための情報送信を許可する</target>
         <note>option in settings screen</note>
       </trans-unit>
       <trans-unit id="Always show">
@@ -90,14 +97,17 @@
       </trans-unit>
       <trans-unit id="Are you sure you want to clear all of your data? This will also close all open tabs.">
         <source>Are you sure you want to clear all of your data? This will also close all open tabs.</source>
+        <target>すべてのデータを消去してよろしいですか？この操作によりすべてのタブも閉じます。</target>
         <note>Message shown in the dialog prompting users if they want to clear everything</note>
       </trans-unit>
       <trans-unit id="Are you sure you want to delete it and its contents?">
         <source>Are you sure you want to delete it and its contents?</source>
+        <target>フォルダーとそのコンテンツを削除してよろしいですか？</target>
         <note>Main body of the confirmation alert when the user tries to delete a folder that still contains bookmarks and/or folders.</note>
       </trans-unit>
       <trans-unit id="Are you sure?">
         <source>Are you sure?</source>
+        <target>実行してよろしいですか？</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Back">
@@ -147,6 +157,7 @@
       </trans-unit>
       <trans-unit id="Blocking Monitor">
         <source>Blocking Monitor</source>
+        <target>ブロックモニター</target>
         <note>title for section showing page blocking statistics</note>
       </trans-unit>
       <trans-unit id="Bookmark">
@@ -156,10 +167,12 @@
       </trans-unit>
       <trans-unit id="Bookmark Folder">
         <source>Bookmark Folder</source>
+        <target>ブックマークフォルダー</target>
         <note>Bookmark Folder Section Title</note>
       </trans-unit>
       <trans-unit id="Bookmark Info">
         <source>Bookmark Info</source>
+        <target>ブックマーク情報</target>
         <note>Bookmark Info Section Title</note>
       </trans-unit>
       <trans-unit id="Bookmarks">
@@ -169,10 +182,12 @@
       </trans-unit>
       <trans-unit id="Bookmarks Menu">
         <source>Bookmarks Menu</source>
+        <target>ブックマークメニュー</target>
         <note>The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks Toolbar">
         <source>Bookmarks Toolbar</source>
+        <target>ブックマークツールバー</target>
         <note>The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks and History Panel">
@@ -187,33 +202,43 @@
       </trans-unit>
       <trans-unit id="Brave Shield Defaults">
         <source>Brave Shield Defaults</source>
+        <target>Brave保護機能の初期設定</target>
         <note>Section title for adbblock, tracking protection, HTTPS-E, and cookies</note>
       </trans-unit>
       <trans-unit id="Brave blocks ads.\nBrave stops trackers.\nBrave is designed for speed and efficiency.">
         <source>Brave blocks ads.
 Brave stops trackers.
 Brave is designed for speed and efficiency.</source>
+        <target>Braveで広告をブロック。
+Braveでトラッカーをストップ。
+Braveでスピードと効率をアップ。</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Brave for iOS Feedback">
         <source>Brave for iOS Feedback</source>
+        <target>Brave for iOSフィードバック</target>
         <note>email subject</note>
       </trans-unit>
       <trans-unit id="Brave is Faster,\nand here's why...">
         <source>Brave is Faster,
 and here's why...</source>
+        <target>Braveが速いのには
+理由があります...</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Brave keeps you safe as you browse.">
         <source>Brave keeps you safe as you browse.</source>
+        <target>Braveを使えば、安心してウェブの閲覧ができます。</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Brave won't remember any of your history or cookies, but new bookmarks will be saved.">
         <source>Brave won't remember any of your history or cookies, but new bookmarks will be saved.</source>
+        <target>Braveには履歴もクッキーも記録されませんが、新しいブックマークはしっかり保存されます。</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Brave would like to access your Photos">
         <source>Brave would like to access your Photos</source>
+        <target>Braveに写真へのアクセス許可が必要です</target>
         <note>See http://mzl.la/1G7uHo7</note>
       </trans-unit>
       <trans-unit id="Brightness">
@@ -223,6 +248,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Browse with us and your privacy is protected, with nothing further to install, learn or configure.">
         <source>Browse with us and your privacy is protected, with nothing further to install, learn or configure.</source>
+        <target>Braveなら、閲覧中のプライバシーが保護されます。インストールや構成など新しいことは一切不要です。</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Browsing History">
@@ -237,6 +263,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Call">
         <source>Call</source>
+        <target>コール</target>
         <note>Alert Call Button</note>
       </trans-unit>
       <trans-unit id="Cancel">
@@ -271,6 +298,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Clear Search">
         <source>Clear Search</source>
+        <target>検索のクリア</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Close">
@@ -290,6 +318,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Closing tab">
         <source>Closing tab</source>
+        <target>タブを閉じています</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Cookie Control">
@@ -304,6 +333,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Copy">
         <source>Copy</source>
+        <target>コピー</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Copy Address">
@@ -328,6 +358,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Dark">
         <source>Dark</source>
+        <target>暗い</target>
         <note>Dark theme setting in Reading View settings</note>
       </trans-unit>
       <trans-unit id="Decrease text size">
@@ -352,10 +383,12 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Deselect All">
         <source>Deselect All</source>
+        <target>すべての選択を解除</target>
         <note>Title for deselecting all selected logins</note>
       </trans-unit>
       <trans-unit id="Desktop Bookmarks">
         <source>Desktop Bookmarks</source>
+        <target>デスクトップブックマーク</target>
         <note>The folder name for the virtual folder that contains all desktop bookmarks.</note>
       </trans-unit>
       <trans-unit id="Display Settings">
@@ -370,6 +403,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Done">
         <source>Done</source>
+        <target>終了</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Don’t Save">
@@ -379,6 +413,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Down">
         <source>Down</source>
+        <target>オフ</target>
         <note>brave shield on/off toggle off state</note>
       </trans-unit>
       <trans-unit id="Edit">
@@ -388,6 +423,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Enter Search Mode">
         <source>Enter Search Mode</source>
+        <target>検索モードの開始</target>
         <note>Accessibility label for entering search mode for logins</note>
       </trans-unit>
       <trans-unit id="Find">
@@ -402,6 +438,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Fingerprinting Methods">
         <source>Fingerprinting Methods</source>
+        <target>フィンガープリンティングの方法</target>
         <note>individual blocking statistic title</note>
       </trans-unit>
       <trans-unit id="Fingerprinting Protection">
@@ -418,6 +455,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Folder">
         <source>Folder</source>
+        <target>フォルダー</target>
         <note>Folder</note>
       </trans-unit>
       <trans-unit id="Forward">
@@ -432,6 +470,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Get ready to experience a Faster, Safer, Better Web.">
         <source>Get ready to experience a Faster, Safer, Better Web.</source>
+        <target>より高速で安全、そして快適なウェブ体験をお楽しみください。</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Go Back">
@@ -451,6 +490,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Hide">
         <source>Hide</source>
+        <target>非表示</target>
         <note>Hide password text selection menu item</note>
       </trans-unit>
       <trans-unit id="History">
@@ -460,6 +500,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="In case you hit a speed bump">
         <source>In case you hit a speed bump</source>
+        <target>ページの読み込みに問題がある場合は</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Increase text size">
@@ -469,22 +510,27 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Individual Controls">
         <source>Individual Controls</source>
+        <target>個別コントロール</target>
         <note>title for per-site shield toggles</note>
       </trans-unit>
       <trans-unit id="Intro Tour Carousel">
         <source>Intro Tour Carousel</source>
+        <target>イントロツアー</target>
         <note>Accessibility label for the introduction tour carousel</note>
       </trans-unit>
       <trans-unit id="Introductory slide %@ of %@">
         <source>Introductory slide %1$@ of %2$@</source>
+        <target>使用方法紹介スライド%1$@/%2$@</target>
         <note>String spoken by assistive technology (like VoiceOver) stating on which page of the intro wizard we currently are. E.g. Introductory slide 1 of 3</note>
       </trans-unit>
       <trans-unit id="It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.">
         <source>It may be a misconfiguration or tampering by an attacker. Proceed if you accept the potential risk.</source>
+        <target>無効な構成またはサイバー攻撃による不正な行為の可能性があります。続行する場合は、潜在的なリスクについてあらかじめご了承ください。</target>
         <note>Additional warning text when clicking the Advanced button on error pages</note>
       </trans-unit>
       <trans-unit id="Last modified %@">
         <source>Last modified %@</source>
+        <target>最終変更: %@</target>
         <note>Footer label describing when the login was last modified with the timestamp as the parameter</note>
       </trans-unit>
       <trans-unit id="Last month">
@@ -499,22 +545,27 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Learn More">
         <source>Learn More</source>
+        <target>詳細</target>
         <note>Text button displayed when there are no tabs open while in private mode</note>
       </trans-unit>
       <trans-unit id="Light">
         <source>Light</source>
+        <target>明るい</target>
         <note>Light theme setting in Reading View settings</note>
       </trans-unit>
       <trans-unit id="Load original page">
         <source>Load original page</source>
+        <target>元のページを読み込む</target>
         <note>Link for going to the non-reader page when the reader view could not be loaded. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="Loading content…">
         <source>Loading content…</source>
+        <target>コンテンツの読み込み中…</target>
         <note>Message displayed when the reader mode page is loading. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="Location">
         <source>Location</source>
+        <target>ロケーション</target>
         <note>Bookmark folder location</note>
       </trans-unit>
       <trans-unit id="Logins">
@@ -524,10 +575,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Logins will be permanently removed.">
         <source>Logins will be permanently removed.</source>
+        <target>ログイン情報は完全に削除されます。</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Logins will be removed from all connected devices.">
         <source>Logins will be removed from all connected devices.</source>
+        <target>ログイン情報はすべての接続デバイスから削除されます。</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Mark as Read">
@@ -542,10 +595,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Mobile Bookmarks">
         <source>Mobile Bookmarks</source>
+        <target>モバイルブックマーク</target>
         <note>The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.</note>
       </trans-unit>
       <trans-unit id="Name">
         <source>Name</source>
+        <target>名前</target>
         <note>Bookmark name/title</note>
       </trans-unit>
       <trans-unit id="Navigation Toolbar">
@@ -575,6 +630,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Next in-page result">
         <source>Next in-page result</source>
+        <target>次のページ内検索結果</target>
         <note>Accessibility label for next result button in Find in Page Toolbar.</note>
       </trans-unit>
       <trans-unit id="No">
@@ -584,14 +640,17 @@ Protection</source>
       </trans-unit>
       <trans-unit id="No logins found">
         <source>No logins found</source>
+        <target>該当するログイン情報が見つかりません</target>
         <note>Title displayed when no logins are found after searching</note>
       </trans-unit>
       <trans-unit id="No tabs">
         <source>No tabs</source>
+        <target>タブがありません</target>
         <note>Message spoken by VoiceOver to indicate that there are no tabs in the Tabs Tray</note>
       </trans-unit>
       <trans-unit id="OK">
         <source>OK</source>
+        <target>OK</target>
         <note>OK button</note>
       </trans-unit>
       <trans-unit id="Off">
@@ -611,21 +670,22 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Open &amp; Fill">
         <source>Open &amp; Fill</source>
+        <target>開いて入力</target>
         <note>Open and Fill website text selection menu item</note>
       </trans-unit>
       <trans-unit id="Open Desktop Site tab">
         <source>Open Desktop Site tab</source>
+        <target>デスクトップサイトタブを開く</target>
         <note>Share action title</note>
-      </trans-unit>
-      <trans-unit id="Open In Background">
-        <source>Open In Background</source>
-        <target>バックグラウンドで開く</target>
-        <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
       <trans-unit id="Open In New Private Tab">
         <source>Open In New Private Tab</source>
         <target>新しいプライベートタブで開く</target>
         <note>Context menu option for opening a link in a new private tab</note>
+      </trans-unit>
+      <trans-unit id="Open In New Tab">
+        <source>Open In New Tab</source>
+        <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
       <trans-unit id="Open Settings">
         <source>Open Settings</source>
@@ -634,6 +694,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Open articles in Reader View by tapping the book icon when it appears in the title bar.">
         <source>Open articles in Reader View by tapping the book icon when it appears in the title bar.</source>
+        <target>本のアイコンがタイトルバーに表示されたら、タップすると記事をリーダービューで開けます。</target>
         <note>See http://mzl.la/1LXbDOL</note>
       </trans-unit>
       <trans-unit id="Open in Safari">
@@ -643,10 +704,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Open in…">
         <source>Open in…</source>
+        <target>次を使用して開く…</target>
         <note>String indicating that the file can be opened in another application on the device</note>
       </trans-unit>
       <trans-unit id="Panel Chooser">
         <source>Panel Chooser</source>
+        <target>パネルの選択</target>
         <note>Accessibility label for the Home panel's top toolbar containing list of the home panels (top sites, bookmarsk, history, remote tabs, reading list).</note>
       </trans-unit>
       <trans-unit id="Paste">
@@ -661,6 +724,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Previous in-page result">
         <source>Previous in-page result</source>
+        <target>前のページ内検索結果</target>
         <note>Accessibility label for previous result button in Find in Page Toolbar.</note>
       </trans-unit>
       <trans-unit id="Privacy">
@@ -705,6 +769,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Reader View">
         <source>Reader View</source>
+        <target>リーダービュー</target>
         <note>Accessibility label for the Reader View button</note>
       </trans-unit>
       <trans-unit id="Reading list">
@@ -744,6 +809,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Reveal">
         <source>Reveal</source>
+        <target>表示</target>
         <note>Reveal password text selection menu item</note>
       </trans-unit>
       <trans-unit id="Sans-serif">
@@ -768,10 +834,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Save login %@ for %@?">
         <source>Save login %1$@ for %2$@?</source>
+        <target>%1$@のログイン情報を%2$@に保存しますか？</target>
         <note>Prompt for saving a login. The first parameter is the username being saved. The second parameter is the hostname of the site.</note>
       </trans-unit>
       <trans-unit id="Save pages to your Reading List by tapping the book plus icon in the Reader View controls.">
         <source>Save pages to your Reading List by tapping the book plus icon in the Reader View controls.</source>
+        <target>リーダービューコントロールの本とプラスサインのアイコンをタップすると、ページをリーディングリストに保存できます。</target>
         <note>See http://mzl.la/1LXbDOL</note>
       </trans-unit>
       <trans-unit id="Save password for %@?">
@@ -796,6 +864,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Search Input Field">
         <source>Search Input Field</source>
+        <target>検索入力フィールド</target>
         <note>Accessibility label for the search input field in the Logins list</note>
       </trans-unit>
       <trans-unit id="Search Settings">
@@ -805,6 +874,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Search or enter address">
         <source>Search or enter address</source>
+        <target>検索またはアドレスを入力</target>
         <note>The text shown in the URL bar on about:home</note>
       </trans-unit>
       <trans-unit id="Search suggestions from %@">
@@ -814,6 +884,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Searches for the suggestion">
         <source>Searches for the suggestion</source>
+        <target>候補の検索</target>
         <note>Accessibility hint describing the action performed when a search suggestion is clicked</note>
       </trans-unit>
       <trans-unit id="Secure connection">
@@ -823,10 +894,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Select All">
         <source>Select All</source>
+        <target>すべて選択</target>
         <note>Title for selecting all logins</note>
       </trans-unit>
       <trans-unit id="Select Location Bar">
         <source>Select Location Bar</source>
+        <target>ロケーションバーの選択</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Sepia">
@@ -856,10 +929,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Shields Down">
         <source>Shields Down</source>
+        <target>保護機能オフ</target>
         <note>message shown briefly in URL bar</note>
       </trans-unit>
       <trans-unit id="Shields Up">
         <source>Shields Up</source>
+        <target>保護機能オン</target>
         <note>message shown briefly in URL bar</note>
       </trans-unit>
       <trans-unit id="Show Bookmarks">
@@ -904,6 +979,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Show a prompt to open your password manager when the current page has a login form.">
         <source>Show a prompt to open your password manager when the current page has a login form.</source>
+        <target>現在のページにログインフォームがある場合に、パスワードマネージャーを開くメッセージを表示します。</target>
         <note>Footer message on picker for 3rd party password manager setting</note>
       </trans-unit>
       <trans-unit id="Show in landscape only">
@@ -918,6 +994,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Start Browsing">
         <source>Start Browsing</source>
+        <target>閲覧開始</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Stop">
@@ -932,6 +1009,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Swipe right or left with three fingers to close the tab.">
         <source>Swipe right or left with three fingers to close the tab.</source>
+        <target>タブを閉じるには3本の指で右または左方向にスワイプします。</target>
         <note>Accessibility hint for tab tray's displayed tab.</note>
       </trans-unit>
       <trans-unit id="Tab %@ of %@">
@@ -941,6 +1019,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Tabs %@ to %@ of %@">
         <source>Tabs %1$@ to %2$@ of %3$@</source>
+        <target>タブ%3$@のうち%1$@～%2$@</target>
         <note>Message spoken by VoiceOver saying the range of tabs that are currently visible in Tabs Tray, along with the total number of tabs. E.g. \&quot;Tabs 8 to 10 of 15\&quot; says tabs 8, 9 and 10 are visible, out of 15 tabs total.</note>
       </trans-unit>
       <trans-unit id="Tabs Tray">
@@ -950,6 +1029,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Tap the Brave button to temporarily disable ad blocking and privacy features.">
         <source>Tap the Brave button to temporarily disable ad blocking and privacy features.</source>
+        <target>一時的に広告ブロックやプライバシー機能を無効にするには、Braveボタンをタップします。</target>
         <note>Shown in intro screens</note>
       </trans-unit>
       <trans-unit id="Terms of Use">
@@ -959,14 +1039,17 @@ Protection</source>
       </trans-unit>
       <trans-unit id="The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.">
         <source>The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.</source>
+        <target>%@の所有者によるウェブサイトの構成が正しくありません。個人情報保護のため、Braveはこのウェブサイトに接続しませんでした。</target>
         <note>Warning text on the certificate error page</note>
       </trans-unit>
       <trans-unit id="The page could not be displayed in Reader View.">
         <source>The page could not be displayed in Reader View.</source>
+        <target>ページをリーダービューで表示できませんでした。</target>
         <note>Message displayed when the reader mode page could not be loaded. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="There was an error converting the page">
         <source>There was an error converting the page</source>
+        <target>ページの変換でエラーが発生しました</target>
         <note>Error displayed when reader mode cannot be enabled</note>
       </trans-unit>
       <trans-unit id="This action will clear all of your private data. It cannot be undone.">
@@ -976,6 +1059,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="This allows you to save the image to your Camera Roll.">
         <source>This allows you to save the image to your Camera Roll.</source>
+        <target>これにより、画像をカメラロールに保存することができます。</target>
         <note>See http://mzl.la/1G7uHo7</note>
       </trans-unit>
       <trans-unit id="This folder isn't empty.">
@@ -1010,18 +1094,22 @@ Protection</source>
       </trans-unit>
       <trans-unit id="URL">
         <source>URL</source>
+        <target>URL</target>
         <note>Bookmark URL</note>
       </trans-unit>
       <trans-unit id="Unsorted Bookmarks">
         <source>Unsorted Bookmarks</source>
+        <target>未ソートのブックマーク</target>
         <note>The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android.</note>
       </trans-unit>
       <trans-unit id="Untitled">
         <source>Untitled</source>
+        <target>タイトルなし</target>
         <note>The default name for bookmark item without titles.</note>
       </trans-unit>
       <trans-unit id="Up">
         <source>Up</source>
+        <target>オン</target>
         <note>brave shield on/off toggle on state</note>
       </trans-unit>
       <trans-unit id="Update">
@@ -1046,6 +1134,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Visit site anyway">
         <source>Visit site anyway</source>
+        <target>サイトを訪問する</target>
         <note>Button label to temporarily continue to the site from the certificate error page</note>
       </trans-unit>
       <trans-unit id="Warning: we can't confirm your connection to this website is secure.">
@@ -1055,6 +1144,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Web content">
         <source>Web content</source>
+        <target>ウェブコンテンツ</target>
         <note>Accessibility label for the main web content view</note>
       </trans-unit>
       <trans-unit id="Welcome to Brave.">
@@ -1074,6 +1164,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="When Leaving Private Browsing">
         <source>When Leaving Private Browsing</source>
+        <target>プライベートブラウズの終了時</target>
         <note>Will be displayed in Settings under 'Close Private Tabs'</note>
       </trans-unit>
       <trans-unit id="Yes">
@@ -1113,10 +1204,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="password">
         <source>password</source>
+        <target>パスワード</target>
         <note>Title for password row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="read">
         <source>read</source>
+        <target>既読</target>
         <note>Accessibility label for read article in reading list. It's a past participle - functions as an adjective.</note>
       </trans-unit>
       <trans-unit id="this week">
@@ -1126,18 +1219,22 @@ Protection</source>
       </trans-unit>
       <trans-unit id="today at %@">
         <source>today at %@</source>
+        <target>今日の%@</target>
         <note>Relative date for date older than a minute.</note>
       </trans-unit>
       <trans-unit id="unread">
         <source>unread</source>
+        <target>未読</target>
         <note>Accessibility label for unread article in reading list. It's a past participle - functions as an adjective.</note>
       </trans-unit>
       <trans-unit id="username">
         <source>username</source>
+        <target>ユーザー名</target>
         <note>Title for username row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="website">
         <source>website</source>
+        <target>ウェブサイト</target>
         <note>Title for website row in Login Detail View</note>
       </trans-unit>
     </body>
@@ -1152,5 +1249,28 @@ Protection</source>
         <target>Braveで開く</target>
       </trans-unit>
       </body>
+  </file>
+  <file datatype="plaintext" original="brave/Localizable.strings" source-language="en" target-language="ja">
+    <header>
+      <tool build-num="8A218a" tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0"/>
+    </header>
+    <body>
+      <trans-unit id="Accept &amp; Continue">
+        <source>Accept &amp; Continue</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="By using this application, you agree to Brave’s Terms of Use.">
+        <source>By using this application, you agree to Brave’s Terms of Use.</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Help make Brave better by sending usage statistics and crash reports to us.">
+        <source>Help make Brave better by sending usage statistics and crash reports to us.</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Terms of Use.">
+        <source>Terms of Use.</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+    </body>
   </file>
   </xliff>

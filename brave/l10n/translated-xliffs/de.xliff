@@ -67,6 +67,7 @@
       </trans-unit>
       <trans-unit id="Address and Search">
         <source>Address and Search</source>
+        <target>Adressen und Suchen</target>
         <note>Accessibility label for address and search field, both words (Address, Search) are therefore nouns.</note>
       </trans-unit>
       <trans-unit id="Ads and Trackers">
@@ -604,6 +605,7 @@ Schutz</target>
       </trans-unit>
       <trans-unit id="Navigation Toolbar">
         <source>Navigation Toolbar</source>
+        <target>Navigationsleiste</target>
         <note>Accessibility label for the navigation toolbar displayed at the bottom of the screen.</note>
       </trans-unit>
       <trans-unit id="Never show">
@@ -672,17 +674,18 @@ Schutz</target>
       </trans-unit>
       <trans-unit id="Open Desktop Site tab">
         <source>Open Desktop Site tab</source>
+        <target>Yes</target>
         <note>Share action title</note>
-      </trans-unit>
-      <trans-unit id="Open In Background">
-        <source>Open In Background</source>
-        <target>Im Hintergrund öffnen</target>
-        <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
       <trans-unit id="Open In New Private Tab">
         <source>Open In New Private Tab</source>
         <target>In einem neuen privaten Tab öffnen</target>
         <note>Context menu option for opening a link in a new private tab</note>
+      </trans-unit>
+      <trans-unit id="Open In New Tab">
+        <source>Open In New Tab</source>
+        <target>In einem neuen Tab öffnen</target>
+        <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
       <trans-unit id="Open Settings">
         <source>Open Settings</source>
@@ -881,6 +884,7 @@ Schutz</target>
       </trans-unit>
       <trans-unit id="Searches for the suggestion">
         <source>Searches for the suggestion</source>
+        <target>Sucht nach diesem Vorschlag</target>
         <note>Accessibility hint describing the action performed when a search suggestion is clicked</note>
       </trans-unit>
       <trans-unit id="Secure connection">
@@ -895,6 +899,7 @@ Schutz</target>
       </trans-unit>
       <trans-unit id="Select Location Bar">
         <source>Select Location Bar</source>
+        <target>Aufenthaltsorts Auswahlleiste</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Sepia">
@@ -1019,6 +1024,7 @@ Schutz</target>
       </trans-unit>
       <trans-unit id="Tabs Tray">
         <source>Tabs Tray</source>
+        <target>Tab-Übersicht</target>
         <note>Accessibility label for the Tabs Tray view.</note>
       </trans-unit>
       <trans-unit id="Tap the Brave button to temporarily disable ad blocking and privacy features.">
@@ -1243,5 +1249,32 @@ Schutz</target>
         <target>In Brave öffnen</target>
       </trans-unit>
       </body>
+  </file>
+  <file datatype="plaintext" original="brave/Localizable.strings" source-language="en" target-language="de">
+    <header>
+      <tool build-num="8A218a" tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0"/>
+    </header>
+    <body>
+      <trans-unit id="Accept &amp; Continue">
+        <source>Accept &amp; Continue</source>
+        <target>Akzeptieren &amp; Fortfahren</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="By using this application, you agree to Brave’s Terms of Use.">
+        <source>By using this application, you agree to Brave’s Terms of Use.</source>
+        <target>Durch die Nutzung dieses Programmes, akzeptieren Sie den Nutzungsbedingungen von Brave.</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Help make Brave better by sending usage statistics and crash reports to us.">
+        <source>Help make Brave better by sending usage statistics and crash reports to us.</source>
+        <target>Helfen Sie uns Brave zu verbessern, indem Sie es erlauben, dass wir Statistiken und Absturzmeldungen an uns senden.</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Terms of Use.">
+        <source>Terms of Use.</source>
+        <target>Nutzungsbedingungen.</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+    </body>
   </file>
   </xliff>

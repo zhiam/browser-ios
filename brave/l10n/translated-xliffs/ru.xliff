@@ -72,6 +72,7 @@
       </trans-unit>
       <trans-unit id="Ads and Trackers">
         <source>Ads and Trackers</source>
+        <target>Реклама и трекеры</target>
         <note>individual blocking statistic title</note>
       </trans-unit>
       <trans-unit id="Advanced">
@@ -81,10 +82,12 @@
       </trans-unit>
       <trans-unit id="Allow %@ to open iTunes?">
         <source>Allow %@ to open iTunes?</source>
+        <target>Разрешить %@ открыть iTunes?</target>
         <note>Ask user if site can open iTunes store URL</note>
       </trans-unit>
       <trans-unit id="Allow Brave to send info to improve our app">
         <source>Allow Brave to send info to improve our app</source>
+        <target>Разрешить Brave посылать данные чтобы улучшить приложение</target>
         <note>option in settings screen</note>
       </trans-unit>
       <trans-unit id="Always show">
@@ -104,6 +107,7 @@
       </trans-unit>
       <trans-unit id="Are you sure?">
         <source>Are you sure?</source>
+        <target>Вы уверены?</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Back">
@@ -163,10 +167,12 @@
       </trans-unit>
       <trans-unit id="Bookmark Folder">
         <source>Bookmark Folder</source>
+        <target>Папка закладок</target>
         <note>Bookmark Folder Section Title</note>
       </trans-unit>
       <trans-unit id="Bookmark Info">
         <source>Bookmark Info</source>
+        <target>Информации о закладки</target>
         <note>Bookmark Info Section Title</note>
       </trans-unit>
       <trans-unit id="Bookmarks">
@@ -176,10 +182,12 @@
       </trans-unit>
       <trans-unit id="Bookmarks Menu">
         <source>Bookmarks Menu</source>
+        <target>Меню закладок</target>
         <note>The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks Toolbar">
         <source>Bookmarks Toolbar</source>
+        <target>Панель закладок</target>
         <note>The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks and History Panel">
@@ -208,6 +216,7 @@ Brave создан для скорости и эффективности.</targe
       </trans-unit>
       <trans-unit id="Brave for iOS Feedback">
         <source>Brave for iOS Feedback</source>
+        <target>Обратная связь Brave для iOS</target>
         <note>email subject</note>
       </trans-unit>
       <trans-unit id="Brave is Faster,\nand here's why...">
@@ -289,6 +298,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Clear Search">
         <source>Clear Search</source>
+        <target>Очистить поиск</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Close">
@@ -323,6 +333,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Copy">
         <source>Copy</source>
+        <target>Копировать</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Copy Address">
@@ -372,10 +383,12 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Deselect All">
         <source>Deselect All</source>
+        <target>Снять все выделение</target>
         <note>Title for deselecting all selected logins</note>
       </trans-unit>
       <trans-unit id="Desktop Bookmarks">
         <source>Desktop Bookmarks</source>
+        <target>Закладки рабочего стола</target>
         <note>The folder name for the virtual folder that contains all desktop bookmarks.</note>
       </trans-unit>
       <trans-unit id="Display Settings">
@@ -410,6 +423,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Enter Search Mode">
         <source>Enter Search Mode</source>
+        <target>Войти в режим поиска</target>
         <note>Accessibility label for entering search mode for logins</note>
       </trans-unit>
       <trans-unit id="Find">
@@ -441,6 +455,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Folder">
         <source>Folder</source>
+        <target>Папка</target>
         <note>Folder</note>
       </trans-unit>
       <trans-unit id="Forward">
@@ -475,6 +490,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Hide">
         <source>Hide</source>
+        <target>Спрятать</target>
         <note>Hide password text selection menu item</note>
       </trans-unit>
       <trans-unit id="History">
@@ -514,6 +530,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Last modified %@">
         <source>Last modified %@</source>
+        <target>Последняя модификация %@</target>
         <note>Footer label describing when the login was last modified with the timestamp as the parameter</note>
       </trans-unit>
       <trans-unit id="Last month">
@@ -538,14 +555,17 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Load original page">
         <source>Load original page</source>
+        <target>Загрузить оригинальную страницу</target>
         <note>Link for going to the non-reader page when the reader view could not be loaded. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="Loading content…">
         <source>Loading content…</source>
+        <target>Загрузка содержимого...</target>
         <note>Message displayed when the reader mode page is loading. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="Location">
         <source>Location</source>
+        <target>Местоположение</target>
         <note>Bookmark folder location</note>
       </trans-unit>
       <trans-unit id="Logins">
@@ -555,10 +575,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Logins will be permanently removed.">
         <source>Logins will be permanently removed.</source>
+        <target>Логины будут удалены навсегда.</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Logins will be removed from all connected devices.">
         <source>Logins will be removed from all connected devices.</source>
+        <target>Логины будут удалены со всех подключенных устройств.</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Mark as Read">
@@ -573,10 +595,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Mobile Bookmarks">
         <source>Mobile Bookmarks</source>
+        <target>Мобильные закладки</target>
         <note>The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.</note>
       </trans-unit>
       <trans-unit id="Name">
         <source>Name</source>
+        <target>Имя</target>
         <note>Bookmark name/title</note>
       </trans-unit>
       <trans-unit id="Navigation Toolbar">
@@ -616,6 +640,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="No logins found">
         <source>No logins found</source>
+        <target>Не найдено логинов</target>
         <note>Title displayed when no logins are found after searching</note>
       </trans-unit>
       <trans-unit id="No tabs">
@@ -645,6 +670,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Open &amp; Fill">
         <source>Open &amp; Fill</source>
+        <target>Открыть и заполнить</target>
         <note>Open and Fill website text selection menu item</note>
       </trans-unit>
       <trans-unit id="Open Desktop Site tab">
@@ -652,15 +678,15 @@ Protection</source>
         <target>Открыть полную версию сайта</target>
         <note>Share action title</note>
       </trans-unit>
-      <trans-unit id="Open In Background">
-        <source>Open In Background</source>
-        <target>Открыть в фоновом режиме</target>
-        <note>Context menu item for opening a link in a new tab</note>
-      </trans-unit>
       <trans-unit id="Open In New Private Tab">
         <source>Open In New Private Tab</source>
         <target>Открыть в новой приватной вкладке</target>
         <note>Context menu option for opening a link in a new private tab</note>
+      </trans-unit>
+      <trans-unit id="Open In New Tab">
+        <source>Open In New Tab</source>
+        <target>Открыть в новой вкладке</target>
+        <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
       <trans-unit id="Open Settings">
         <source>Open Settings</source>
@@ -784,6 +810,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Reveal">
         <source>Reveal</source>
+        <target>Показать</target>
         <note>Reveal password text selection menu item</note>
       </trans-unit>
       <trans-unit id="Sans-serif">
@@ -838,6 +865,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Search Input Field">
         <source>Search Input Field</source>
+        <target>Поле ввода поиска</target>
         <note>Accessibility label for the search input field in the Logins list</note>
       </trans-unit>
       <trans-unit id="Search Settings">
@@ -867,6 +895,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Select All">
         <source>Select All</source>
+        <target>Выделить все</target>
         <note>Title for selecting all logins</note>
       </trans-unit>
       <trans-unit id="Select Location Bar">
@@ -901,10 +930,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Shields Down">
         <source>Shields Down</source>
+        <target>Выкл. защиту</target>
         <note>message shown briefly in URL bar</note>
       </trans-unit>
       <trans-unit id="Shields Up">
         <source>Shields Up</source>
+        <target>Вкл. защиту</target>
         <note>message shown briefly in URL bar</note>
       </trans-unit>
       <trans-unit id="Show Bookmarks">
@@ -979,6 +1010,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Swipe right or left with three fingers to close the tab.">
         <source>Swipe right or left with three fingers to close the tab.</source>
+        <target>Проведите вправо или влево тремя пальцами чтобы закрыть вкладку.</target>
         <note>Accessibility hint for tab tray's displayed tab.</note>
       </trans-unit>
       <trans-unit id="Tab %@ of %@">
@@ -1008,10 +1040,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.">
         <source>The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.</source>
+        <target>Пользователь %@ настроил свой сайт неправильно. Brave не подключился к данному сайту, чтобы защитить Вашу информацию от кражи.</target>
         <note>Warning text on the certificate error page</note>
       </trans-unit>
       <trans-unit id="The page could not be displayed in Reader View.">
         <source>The page could not be displayed in Reader View.</source>
+        <target>Страница не может быть отображена в режиме для чтения.</target>
         <note>Message displayed when the reader mode page could not be loaded. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="There was an error converting the page">
@@ -1061,14 +1095,17 @@ Protection</source>
       </trans-unit>
       <trans-unit id="URL">
         <source>URL</source>
+        <target>URL</target>
         <note>Bookmark URL</note>
       </trans-unit>
       <trans-unit id="Unsorted Bookmarks">
         <source>Unsorted Bookmarks</source>
+        <target>Неотсортированные закладки</target>
         <note>The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android.</note>
       </trans-unit>
       <trans-unit id="Untitled">
         <source>Untitled</source>
+        <target>Без названия</target>
         <note>The default name for bookmark item without titles.</note>
       </trans-unit>
       <trans-unit id="Up">
@@ -1168,6 +1205,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="password">
         <source>password</source>
+        <target>пароль</target>
         <note>Title for password row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="read">
@@ -1192,10 +1230,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="username">
         <source>username</source>
+        <target>логин</target>
         <note>Title for username row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="website">
         <source>website</source>
+        <target>веб сайт</target>
         <note>Title for website row in Login Detail View</note>
       </trans-unit>
     </body>
@@ -1210,5 +1250,32 @@ Protection</source>
         <target>Открыть в Brave</target>
       </trans-unit>
       </body>
+  </file>
+  <file datatype="plaintext" original="brave/Localizable.strings" source-language="en" target-language="ru">
+    <header>
+      <tool build-num="8A218a" tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0"/>
+    </header>
+    <body>
+      <trans-unit id="Accept &amp; Continue">
+        <source>Accept &amp; Continue</source>
+        <target>Принять и продолжить</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="By using this application, you agree to Brave’s Terms of Use.">
+        <source>By using this application, you agree to Brave’s Terms of Use.</source>
+        <target>Используя это приложение, Вы соглашаетесь с Условиями использования.</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Help make Brave better by sending usage statistics and crash reports to us.">
+        <source>Help make Brave better by sending usage statistics and crash reports to us.</source>
+        <target>Помоги сделать Brave лучше, путем отсылки статистики и креш отчетов нам.</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Terms of Use.">
+        <source>Terms of Use.</source>
+        <target>Условия использования.</target>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+    </body>
   </file>
   </xliff>

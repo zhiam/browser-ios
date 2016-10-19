@@ -20,7 +20,7 @@ const fs = require('fs')
 const request = require('request')
 
 // The names of the directories in the locales folder are used as a list of languages to retrieve
-var languages = ['de', 'zh' , 'ru', 'ko_KR', 'es', 'id_ID', 'ja', /*'fr', 'zh_TW'*/]
+var languages = [ "fr", "pl", "ru", "de", "zh", "zh_TW", "id_ID", "it", "ja", "ko_KR", "ms", "pt_BR", "es", "uk", "nb" ]
 // Support retrieving a single language
 if (process.env.LANG_CODE) {
   languages = [process.env.LANG_CODE]

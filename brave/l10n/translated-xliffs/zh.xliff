@@ -32,7 +32,7 @@
       </trans-unit>
       <trans-unit id="3rd-party password manager">
         <source>3rd-party password manager</source>
-        <target>第3方密码管理</target>
+        <target>第三方密码管理</target>
         <note>Setting to enable the built-in password manager</note>
       </trans-unit>
       <trans-unit id="Aa">
@@ -52,12 +52,12 @@
       </trans-unit>
       <trans-unit id="Add Tab">
         <source>Add Tab</source>
-        <target>添加标签页</target>
+        <target>添加标签</target>
         <note>Accessibility label for the Add Tab button in the Tab Tray.</note>
       </trans-unit>
       <trans-unit id="Add to Reading List">
         <source>Add to Reading List</source>
-        <target>添加阅读列表</target>
+        <target>添加到阅读列表</target>
         <note>Accessibility label for action adding current page to reading list.</note>
       </trans-unit>
       <trans-unit id="Added page to Reading List">
@@ -72,19 +72,22 @@
       </trans-unit>
       <trans-unit id="Ads and Trackers">
         <source>Ads and Trackers</source>
+        <target>广告和跟踪器</target>
         <note>individual blocking statistic title</note>
       </trans-unit>
       <trans-unit id="Advanced">
         <source>Advanced</source>
-        <target>详情</target>
+        <target>高级</target>
         <note>Label for button to perform advanced actions on the error page</note>
       </trans-unit>
       <trans-unit id="Allow %@ to open iTunes?">
         <source>Allow %@ to open iTunes?</source>
+        <target>允许%@打开iTunes？</target>
         <note>Ask user if site can open iTunes store URL</note>
       </trans-unit>
       <trans-unit id="Allow Brave to send info to improve our app">
         <source>Allow Brave to send info to improve our app</source>
+        <target>允许Brave发送信息以改进我们的应用</target>
         <note>option in settings screen</note>
       </trans-unit>
       <trans-unit id="Always show">
@@ -94,7 +97,7 @@
       </trans-unit>
       <trans-unit id="Are you sure you want to clear all of your data? This will also close all open tabs.">
         <source>Are you sure you want to clear all of your data? This will also close all open tabs.</source>
-        <target>确定要删除你的所有数据？该操作会关闭所有的标签页。</target>
+        <target>确定要删除你的所有数据？该操作会关闭所有打开的标签。</target>
         <note>Message shown in the dialog prompting users if they want to clear everything</note>
       </trans-unit>
       <trans-unit id="Are you sure you want to delete it and its contents?">
@@ -104,6 +107,7 @@
       </trans-unit>
       <trans-unit id="Are you sure?">
         <source>Are you sure?</source>
+        <target>确定？</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Back">
@@ -163,10 +167,12 @@
       </trans-unit>
       <trans-unit id="Bookmark Folder">
         <source>Bookmark Folder</source>
+        <target>书签文件夹</target>
         <note>Bookmark Folder Section Title</note>
       </trans-unit>
       <trans-unit id="Bookmark Info">
         <source>Bookmark Info</source>
+        <target>书签信息</target>
         <note>Bookmark Info Section Title</note>
       </trans-unit>
       <trans-unit id="Bookmarks">
@@ -176,10 +182,12 @@
       </trans-unit>
       <trans-unit id="Bookmarks Menu">
         <source>Bookmarks Menu</source>
+        <target>书签菜单</target>
         <note>The name of the folder that contains desktop bookmarks in the menu. This should match bookmarks.folder.menu.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks Toolbar">
         <source>Bookmarks Toolbar</source>
+        <target>书签工具栏</target>
         <note>The name of the folder that contains desktop bookmarks in the toolbar. This should match bookmarks.folder.toolbar.label on Android.</note>
       </trans-unit>
       <trans-unit id="Bookmarks and History Panel">
@@ -208,6 +216,7 @@ Brave专为更快的速度，更高的效率而设计</target>
       </trans-unit>
       <trans-unit id="Brave for iOS Feedback">
         <source>Brave for iOS Feedback</source>
+        <target>iOS上关于Brave的反馈</target>
         <note>email subject</note>
       </trans-unit>
       <trans-unit id="Brave is Faster,\nand here's why...">
@@ -289,6 +298,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Clear Search">
         <source>Clear Search</source>
+        <target>清除搜索</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Close">
@@ -323,6 +333,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Copy">
         <source>Copy</source>
+        <target>拷贝</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Copy Address">
@@ -372,10 +383,12 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Deselect All">
         <source>Deselect All</source>
+        <target>取消选择全部</target>
         <note>Title for deselecting all selected logins</note>
       </trans-unit>
       <trans-unit id="Desktop Bookmarks">
         <source>Desktop Bookmarks</source>
+        <target>桌面书签</target>
         <note>The folder name for the virtual folder that contains all desktop bookmarks.</note>
       </trans-unit>
       <trans-unit id="Display Settings">
@@ -410,6 +423,7 @@ and here's why...</source>
       </trans-unit>
       <trans-unit id="Enter Search Mode">
         <source>Enter Search Mode</source>
+        <target>进入搜索模式</target>
         <note>Accessibility label for entering search mode for logins</note>
       </trans-unit>
       <trans-unit id="Find">
@@ -441,6 +455,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Folder">
         <source>Folder</source>
+        <target>文件夹</target>
         <note>Folder</note>
       </trans-unit>
       <trans-unit id="Forward">
@@ -475,6 +490,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Hide">
         <source>Hide</source>
+        <target>隐藏</target>
         <note>Hide password text selection menu item</note>
       </trans-unit>
       <trans-unit id="History">
@@ -514,6 +530,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Last modified %@">
         <source>Last modified %@</source>
+        <target>上次修改%@</target>
         <note>Footer label describing when the login was last modified with the timestamp as the parameter</note>
       </trans-unit>
       <trans-unit id="Last month">
@@ -538,14 +555,17 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Load original page">
         <source>Load original page</source>
+        <target>加载原始页面</target>
         <note>Link for going to the non-reader page when the reader view could not be loaded. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="Loading content…">
         <source>Loading content…</source>
+        <target>正在加载内容…</target>
         <note>Message displayed when the reader mode page is loading. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="Location">
         <source>Location</source>
+        <target>位置</target>
         <note>Bookmark folder location</note>
       </trans-unit>
       <trans-unit id="Logins">
@@ -555,10 +575,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Logins will be permanently removed.">
         <source>Logins will be permanently removed.</source>
+        <target>将永久删除登录。</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Logins will be removed from all connected devices.">
         <source>Logins will be removed from all connected devices.</source>
+        <target>将从所有连接设备删除登录。</target>
         <note>No comment provided by engineer.</note>
       </trans-unit>
       <trans-unit id="Mark as Read">
@@ -573,10 +595,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Mobile Bookmarks">
         <source>Mobile Bookmarks</source>
+        <target>移动书签</target>
         <note>The title of the folder that contains mobile bookmarks. This should match bookmarks.folder.mobile.label on Android.</note>
       </trans-unit>
       <trans-unit id="Name">
         <source>Name</source>
+        <target>名称</target>
         <note>Bookmark name/title</note>
       </trans-unit>
       <trans-unit id="Navigation Toolbar">
@@ -616,6 +640,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="No logins found">
         <source>No logins found</source>
+        <target>找不到登录</target>
         <note>Title displayed when no logins are found after searching</note>
       </trans-unit>
       <trans-unit id="No tabs">
@@ -645,6 +670,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Open &amp; Fill">
         <source>Open &amp; Fill</source>
+        <target>打开并填充</target>
         <note>Open and Fill website text selection menu item</note>
       </trans-unit>
       <trans-unit id="Open Desktop Site tab">
@@ -652,15 +678,14 @@ Protection</source>
         <target>打开桌面站点选项卡</target>
         <note>Share action title</note>
       </trans-unit>
-      <trans-unit id="Open In Background">
-        <source>Open In Background</source>
-        <target>在后台打开</target>
-        <note>Context menu item for opening a link in a new tab</note>
-      </trans-unit>
       <trans-unit id="Open In New Private Tab">
         <source>Open In New Private Tab</source>
         <target>打开新的私人标签</target>
         <note>Context menu option for opening a link in a new private tab</note>
+      </trans-unit>
+      <trans-unit id="Open In New Tab">
+        <source>Open In New Tab</source>
+        <note>Context menu item for opening a link in a new tab</note>
       </trans-unit>
       <trans-unit id="Open Settings">
         <source>Open Settings</source>
@@ -784,6 +809,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Reveal">
         <source>Reveal</source>
+        <target>显示</target>
         <note>Reveal password text selection menu item</note>
       </trans-unit>
       <trans-unit id="Sans-serif">
@@ -838,6 +864,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Search Input Field">
         <source>Search Input Field</source>
+        <target>搜索输入字段</target>
         <note>Accessibility label for the search input field in the Logins list</note>
       </trans-unit>
       <trans-unit id="Search Settings">
@@ -867,6 +894,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Select All">
         <source>Select All</source>
+        <target>全选</target>
         <note>Title for selecting all logins</note>
       </trans-unit>
       <trans-unit id="Select Location Bar">
@@ -901,10 +929,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Shields Down">
         <source>Shields Down</source>
+        <target>屏蔽关闭</target>
         <note>message shown briefly in URL bar</note>
       </trans-unit>
       <trans-unit id="Shields Up">
         <source>Shields Up</source>
+        <target>屏蔽开启</target>
         <note>message shown briefly in URL bar</note>
       </trans-unit>
       <trans-unit id="Show Bookmarks">
@@ -949,6 +979,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Show a prompt to open your password manager when the current page has a login form.">
         <source>Show a prompt to open your password manager when the current page has a login form.</source>
+        <target>如果当前页面包含登录窗体，系统会显示打开密码管理器的提示框。</target>
         <note>Footer message on picker for 3rd party password manager setting</note>
       </trans-unit>
       <trans-unit id="Show in landscape only">
@@ -978,6 +1009,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="Swipe right or left with three fingers to close the tab.">
         <source>Swipe right or left with three fingers to close the tab.</source>
+        <target>用三根手指向右或向左滑动可关闭标签。</target>
         <note>Accessibility hint for tab tray's displayed tab.</note>
       </trans-unit>
       <trans-unit id="Tab %@ of %@">
@@ -1007,10 +1039,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.">
         <source>The owner of %@ has configured their website improperly. To protect your information from being stolen, Brave has not connected to this website.</source>
+        <target>%@的所有者未正确配置其网站。为了防止您的信息被盗，Brave尚未连接到此网站。</target>
         <note>Warning text on the certificate error page</note>
       </trans-unit>
       <trans-unit id="The page could not be displayed in Reader View.">
         <source>The page could not be displayed in Reader View.</source>
+        <target>该页面无法显示在阅读器视图中。</target>
         <note>Message displayed when the reader mode page could not be loaded. This message will appear only when sharing to Firefox reader mode from another app.</note>
       </trans-unit>
       <trans-unit id="There was an error converting the page">
@@ -1060,14 +1094,17 @@ Protection</source>
       </trans-unit>
       <trans-unit id="URL">
         <source>URL</source>
+        <target>URL</target>
         <note>Bookmark URL</note>
       </trans-unit>
       <trans-unit id="Unsorted Bookmarks">
         <source>Unsorted Bookmarks</source>
+        <target>未排序的书签</target>
         <note>The name of the folder that contains unsorted desktop bookmarks. This should match bookmarks.folder.unfiled.label on Android.</note>
       </trans-unit>
       <trans-unit id="Untitled">
         <source>Untitled</source>
+        <target>无标题</target>
         <note>The default name for bookmark item without titles.</note>
       </trans-unit>
       <trans-unit id="Up">
@@ -1167,6 +1204,7 @@ Protection</source>
       </trans-unit>
       <trans-unit id="password">
         <source>password</source>
+        <target>密码</target>
         <note>Title for password row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="read">
@@ -1191,10 +1229,12 @@ Protection</source>
       </trans-unit>
       <trans-unit id="username">
         <source>username</source>
+        <target>用户名</target>
         <note>Title for username row in Login Detail View</note>
       </trans-unit>
       <trans-unit id="website">
         <source>website</source>
+        <target>网站</target>
         <note>Title for website row in Login Detail View</note>
       </trans-unit>
     </body>
@@ -1209,5 +1249,28 @@ Protection</source>
         <target>在Brave里打开</target>
       </trans-unit>
       </body>
+  </file>
+  <file datatype="plaintext" original="brave/Localizable.strings" source-language="en" target-language="zh">
+    <header>
+      <tool build-num="8A218a" tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="8.0"/>
+    </header>
+    <body>
+      <trans-unit id="Accept &amp; Continue">
+        <source>Accept &amp; Continue</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="By using this application, you agree to Brave’s Terms of Use.">
+        <source>By using this application, you agree to Brave’s Terms of Use.</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Help make Brave better by sending usage statistics and crash reports to us.">
+        <source>Help make Brave better by sending usage statistics and crash reports to us.</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Terms of Use.">
+        <source>Terms of Use.</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+    </body>
   </file>
   </xliff>
