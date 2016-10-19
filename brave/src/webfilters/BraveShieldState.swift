@@ -140,6 +140,12 @@ extension BrowserProfile {
             BraveShieldState.perNormalizedDomain.removeAll()
             braveShieldForDomainTable = BraveShieldTable.initialize(self.db)
 
+            if braveShieldForDomainTable == nil {
+                print("🌩 Failed to init BraveShieldTable")
+                deferred.fill()
+                return
+            }
+
             braveShieldForDomainTable?.getRows().upon {
                 result in
                 if let rows = result.successValue {

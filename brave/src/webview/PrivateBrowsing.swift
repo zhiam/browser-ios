@@ -155,6 +155,8 @@ class PrivateBrowsing {
         postAsyncToMain(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
 
             self.webkitDirLocker(lock: false)
+            getApp().profile?.shutdown()
+            getApp().profile?.db.reopenIfClosed()
             BraveApp.setupCacheDefaults()
 
             getApp().profile?.loadBraveShieldsPerBaseDomain().upon() { _ in // clears PB in-memory-only shield data, loads from disk

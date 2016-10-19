@@ -163,7 +163,7 @@ public class SwiftData {
     func transaction(synchronous synchronous: Bool=true, transactionClosure: (db: SQLiteDBConnection) -> Bool) -> NSError? {
         return withConnection(SwiftData.Flags.ReadWriteCreate, synchronous: synchronous) { db in
             if let err = db.executeChange("BEGIN EXCLUSIVE") {
-                log.warning("BEGIN EXCLUSIVE failed.")
+                log.error("BEGIN EXCLUSIVE failed.")
                 return err
             }
 
@@ -175,7 +175,7 @@ public class SwiftData {
                     return err
                 }
             } else {
-                log.debug("Op in transaction failed. Rolling back.")
+                log.error("Op in transaction failed. Rolling back.")
                 if let err = db.executeChange("ROLLBACK") {
                     return err
                 }
