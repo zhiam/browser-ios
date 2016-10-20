@@ -46,11 +46,10 @@ To find changes outside of brave/, look for #if BRAVE / #if !BRAVE (#if/#else/#e
 
 ## Adding Carthage modules
 
-1. Add line into Cartfile
-2. Run `carthage update` (there may be errors on first run, ignore)
-3. Verify that your new module has been added to Cartfile.resolved
-4. Run `checkout.sh`
-5. In the Xcode Project, go to Client target settings, open the `Build Phases` tab and add a line such as
+1. Add line into Cartfile, run `carthage bootstrap` to update Cartfile.resolved
+2. Verify that your new module has been added to Cartfile.resolved
+3. Run `checkout.sh`
+4. In the Xcode Project, go to Client target settings, open the `Build Phases` tab and add a line such as
 ```
 $(SRCROOT)/Carthage/Build/iOS/FRAMEWORKNAME.framework
 ```
