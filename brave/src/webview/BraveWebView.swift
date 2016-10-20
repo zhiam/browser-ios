@@ -698,12 +698,10 @@ extension BraveWebView: UIWebViewDelegate {
     }
 
     func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
-        if (error.code == NSURLErrorCancelled) {
-            if let location = self.stringByEvaluatingJavaScriptFromString("window.location.href") {
-                setUrl(NSURL(string: location), reliableSource: false)
-            }
-            return
+        if let location = self.stringByEvaluatingJavaScriptFromString("window.location.href") {
+            setUrl(NSURL(string: location), reliableSource: false)
         }
+
         print("didFailLoadWithError: \(error)")
 
         if (error.domain == NSURLErrorDomain) {
