@@ -193,34 +193,7 @@ class BraveBrowserViewController : BrowserViewController {
     func presentOptInDialog() {
         let view = BraveTermsViewController()
         view.delegate = self
-        presentViewController(view, animated: false) {
-            let optedIn = self.profile.prefs.intForKey(BraveUX.PrefKeyUserAllowsTelemetry) ?? 1
-            if optedIn != 1 {
-                return
-            }
-
-            func showHiddenSafariViewController(controller:SFSafariViewController) {
-                controller.view.userInteractionEnabled = false
-                controller.view.alpha = 0.0
-                controller.view.frame = CGRectZero
-                self.addChildViewController(controller)
-                self.view.addSubview(controller.view)
-                controller.didMoveToParentViewController(self)
-            }
-
-            func removeHiddenSafariViewController(controller:SFSafariViewController) {
-                controller.willMoveToParentViewController(nil)
-                controller.view.removeFromSuperview()
-                controller.removeFromParentViewController()
-            }
-
-            let sf = SFSafariViewController(URL: NSURL(string: "https://www.brave.com")!)
-            showHiddenSafariViewController(sf)
-
-            postAsyncToMain(15) {
-                removeHiddenSafariViewController(sf)
-            }
-        }
+        presentViewController(view, animated: false) {}
     }
 }
 
@@ -233,6 +206,40 @@ extension BraveBrowserViewController: BraveTermsViewControllerDelegate {
     func braveTermsAcceptedTermsAndOptOut() {
         profile.prefs.setInt(0, forKey: BraveUX.PrefKeyUserAllowsTelemetry)
         profile.prefs.setInt(1, forKey: BraveUX.PrefKeyOptInDialogWasSeen)
+    }
+
+    func dismissed() {
+        let optedIn = self.profile.prefs.intForKey(BraveUX.PrefKeyUserAllowsTelemetry) ?? 1
+        if optedIn != 1 {
+            return
+        }
+
+        func showHiddenSafariViewController(controller:SFSafariViewController) {
+            controller.view.userInteractionEnabled = false
+            controller.view.alpha = 0.0
+            controller.view.frame = CGRectZero
+            self.addChildViewController(controller)
+            self.view.addSubview(controller.view)
+            controller.didMoveToParentViewController(self)
+        }
+
+        func removeHiddenSafariViewController(controller:SFSafariViewController) {
+            controller.willMoveToParentViewController(nil)
+            controller.view.removeFromSuperview()
+            controller.removeFromParentViewController()
+        }
+
+        let mixpanelToken = NSBundle.mainBundle().infoDictionary?["MIXPANEL_TOKEN"] ?? "no-token"
+        let callbackData = "{'event':'install','properties':{'product':'brave-ios','token':'\(mixpanelToken)','version':'/\(getApp().appVersion)'}}".stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet()) ?? "no-data"
+        let base64Encoded = callbackData.dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)) ?? "no-base64"
+        let callbackUrl = "https://metric-proxy.brave.com/track?data=" + base64Encoded
+
+        let sf = SFSafariViewController(URL: NSURL(string: callbackUrl)!)
+        showHiddenSafariViewController(sf)
+
+        postAsyncToMain(15) {
+            removeHiddenSafariViewController(sf)
+        }
     }
 }
 

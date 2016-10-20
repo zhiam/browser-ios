@@ -6,6 +6,7 @@ import Foundation
 protocol BraveTermsViewControllerDelegate {
     func braveTermsAcceptedTermsAndOptIn() -> Void
     func braveTermsAcceptedTermsAndOptOut() -> Void
+    func dismissed()
 }
 
 class BraveTermsViewController: UIViewController {
@@ -131,6 +132,11 @@ class BraveTermsViewController: UIViewController {
             delegate?.braveTermsAcceptedTermsAndOptOut()
         }
         dismissViewControllerAnimated(false, completion: nil)
+    }
+
+    override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
+        super.dismissViewControllerAnimated(flag, completion: completion)
+        delegate?.dismissed()
     }
 }
 
