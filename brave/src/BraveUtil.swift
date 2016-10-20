@@ -2,19 +2,19 @@
 
 import Foundation
 import Storage
+import Mixpanel
+
+var mixpanelInstance: MixpanelInstance?
 
 func telemetry(action action: String, props: [String: String]?) {
-/* TODO: GROWTH:
     #if NO_FABRIC
         return
     #else
-        if MixpanelManager.sharedInstance.getMainInstance() == nil {
-            return
+        if let mixpanel = mixpanelInstance {
+            mixpanel.track(event: action, properties: props)
         }
-        let mixpanel = Mixpanel.mainInstance()
-        mixpanel.track(event: action, properties: props)
     #endif
- */
+
 }
 
 func debugNoteIfNotMainThread() {

@@ -6,6 +6,7 @@ import Deferred
 #if !NO_FABRIC
     import Fabric
     import Crashlytics
+    import Mixpanel
 #endif
 
 #if !DEBUG
@@ -62,11 +63,11 @@ class BraveApp {
             let telemetryOn = getApp().profile!.prefs.intForKey(BraveUX.PrefKeyUserAllowsTelemetry) ?? 1 == 1
             if telemetryOn {
                 Fabric.with([Crashlytics.self])
-//// TODO: GROWTH:
-//                if let dict = NSBundle.mainBundle().infoDictionary, let token = dict["MIXPANEL_TOKEN"] as? String {
-//                    Mixpanel.initialize(token: token)
-//                    // ^ note setting this in willFinishLaunching is causing a crash, keep it in didFinish
-//                }
+
+                if let dict = NSBundle.mainBundle().infoDictionary, let token = dict["MIXPANEL_TOKEN"] as? String {
+                    mixpanelInstance = Mixpanel.initialize(token: token)
+                    // ^ note setting this in willFinishLaunching is causing a crash, keep it in didFinish
+                }
             }
        #endif
     }
