@@ -88,6 +88,8 @@ class ShareExtensionHelper: NSObject {
             activityItems.append(TitleActivityItemProvider(title: title))
         }
         
+        activityItems.append(selectedURL)
+        
         let selectedWebView = self.selectedTab?.webView
         
         if selectedWebView == nil {
