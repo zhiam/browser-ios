@@ -903,7 +903,7 @@ class BrowserViewController: UIViewController {
 
     var helper:ShareExtensionHelper!
     
-    func presentActivityViewController(url: NSURL, tab: Browser? = nil, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
+    func presentActivityViewController(url: NSURL, tab: Browser, sourceView: UIView?, sourceRect: CGRect, arrowDirection: UIPopoverArrowDirection) {
         var activities = [UIActivity]()
         
         let findInPageActivity = FindInPageActivity() { [unowned self] in
@@ -912,16 +912,14 @@ class BrowserViewController: UIViewController {
         activities.append(findInPageActivity)
         
         //if let tab = tab where (tab.getHelper(name: ReaderMode.name()) as? ReaderMode)?.state != .Active { // needed for reader mode?
-        if let tab = tab {
-            let requestDesktopSiteActivity = RequestDesktopSiteActivity() { [weak tab] in
-                if let url = tab?.url {
-                    (getApp().browserViewController as! BraveBrowserViewController).newTabForDesktopSite(url: url)
-                }
-                //tab?.toggleDesktopSite()
+        let requestDesktopSiteActivity = RequestDesktopSiteActivity() { [weak tab] in
+            if let url = tab?.url {
+                (getApp().browserViewController as! BraveBrowserViewController).newTabForDesktopSite(url: url)
             }
-            activities.append(requestDesktopSiteActivity)
+            //tab?.toggleDesktopSite()
         }
-        
+        activities.append(requestDesktopSiteActivity)
+
         helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
         helper.setupExtensionItem() {
             let controller = self.helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
