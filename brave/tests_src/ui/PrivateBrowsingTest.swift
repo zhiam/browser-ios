@@ -4,13 +4,6 @@ import Foundation
 import XCTest
 
 class PrivateBrowsingTest: XCTestCase {
-
-    func pasteTextFieldText(app:XCUIApplication, element:XCUIElement, value:String, clearText:Bool) {
-        UIPasteboard.generalPasteboard().string = value
-        element.tap()
-        app.menuItems["Paste"].tap()
-    }
-
     func testPrivateBrowsing() {
         UITestUtils.restart()
         let app = XCUIApplication()
@@ -39,11 +32,11 @@ class PrivateBrowsingTest: XCTestCase {
 
         app.buttons["TabTrayController.addTabButton"].tap()
         
-        app.collectionViews["Top Sites View"].cells["google"].tap()
+        UITestUtils.loadSite(app, "www.google.com")
 
         let googleSearchField = app.otherElements["Web content"].otherElements["Search"]
         googleSearchField.tap()
-        pasteTextFieldText(app, element: googleSearchField, value: "\(searchString)\r", clearText: false)
+        UITestUtils.pasteTextFieldText(app, element: googleSearchField, value: "\(searchString)\r")
 
         app.otherElements["Web content"].buttons["Google Search"].tap()
 
@@ -54,8 +47,7 @@ class PrivateBrowsingTest: XCTestCase {
         sleep(1)
         app.otherElements["Tabs Tray"].collectionViews.cells.elementBoundByIndex(0).tap()
 
-        let topSitesViewCollectionView = app.collectionViews["Top Sites View"]
-        topSitesViewCollectionView.cells["google"].tap()
+        UITestUtils.loadSite(app, "www.google.com")
 
         googleSearchField.tap()
 

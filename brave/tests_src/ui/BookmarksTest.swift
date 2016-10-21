@@ -7,9 +7,8 @@ class BookmarksTest: XCTestCase {
 
     private func addGoogleAsFirstBookmark() {
         let app = XCUIApplication()
-        app.textFields["url"].tap()
-        let topSitesViewCollectionView = app.collectionViews["Top Sites View"]
-        topSitesViewCollectionView.cells["google"].tap()
+        UITestUtils.loadSite(app, "www.google.com")
+
         let bookmarksAndHistoryPanelButton = app.buttons["Bookmarks and History Panel"]
         bookmarksAndHistoryPanelButton.tap()
 
@@ -27,7 +26,6 @@ class BookmarksTest: XCTestCase {
 
         addGoogleAsFirstBookmark()
 
-        let topSitesViewCollectionView = app.collectionViews["Top Sites View"]
         let bookmarksAndHistoryPanelButton = app.buttons["Bookmarks and History Panel"]
         let elementsQuery = app.scrollViews.otherElements
 
@@ -35,9 +33,9 @@ class BookmarksTest: XCTestCase {
         //app.otherElements["webViewContainer"].tap()
         app.coordinateWithNormalizedOffset(CGVector(dx: UIScreen.mainScreen().bounds.width, dy:  UIScreen.mainScreen().bounds.height)).tap()
 
-        // switch to yahoo
-        app.textFields["url"].tap()
-        topSitesViewCollectionView.cells["yahoo"].tap()
+        // switch sites
+        UITestUtils.loadSite(app, "www.example.com")
+
         bookmarksAndHistoryPanelButton.tap()
 
         // load google from bookmarks

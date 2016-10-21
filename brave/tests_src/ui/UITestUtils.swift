@@ -16,6 +16,18 @@ extension XCUIElement {
 }
 
 class UITestUtils {
+    static func loadSite(_ app:XCUIApplication, _ site: String) {
+        app.textFields["url"].tap()
+        app.textFields["address"].typeText(site)
+        app.typeText("\r")
+    }
+
+    static func pasteTextFieldText(app:XCUIApplication, element:XCUIElement, value:String) {
+        UIPasteboard.generalPasteboard().string = value
+        element.tap()
+        app.menuItems["Paste"].tap()
+    }
+
     static func restart(bootArgs: [String] = []) {
         let app = XCUIApplication()
 
