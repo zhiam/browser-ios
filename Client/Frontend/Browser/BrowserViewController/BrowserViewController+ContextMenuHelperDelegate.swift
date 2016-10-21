@@ -69,7 +69,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
             let shareTitle = Strings.Share_Link
             let shareAction = UIAlertAction(title: shareTitle, style: UIAlertActionStyle.Default) { _ in
-                self.presentActivityViewController(url, sourceView: self.view, sourceRect: CGRect(origin: touchPoint, size: touchSize), arrowDirection: .Any)
+                self.presentActivityViewController(url, tab: currentTab, sourceView: self.view, sourceRect: CGRect(origin: touchPoint, size: touchSize), arrowDirection: .Any)
                 telemetry(action: "share link", props: ["source" : "context menu"])
             }
             actionSheetController.addAction(shareAction)
