@@ -344,6 +344,11 @@ static NSString *const AppExtensionWebViewPageDetails = @"pageDetails";
 	NSString *typeIdentifier = yesOrNo ? kUTTypeAppExtensionFillWebViewAction  : kUTTypeAppExtensionFillBrowserAction;
 	UIActivityViewController *activityViewController = [self activityViewControllerForItem:item viewController:forViewController sender:sender typeIdentifier:typeIdentifier];
 	activityViewController.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+        
+        if (_dismissBlock != nil) {
+            _dismissBlock(activityType);
+        }
+        
 		if (returnedItems.count == 0) {
 			NSError *error = nil;
 			if (activityError) {

@@ -83,8 +83,16 @@ extension LoginsHelper {
                 old.removeFromSuperview()
             }
             
+            //
+            var option: Int? = ThirdPartyPasswordManagerSetting.currentSetting?.prefId
+            if option == nil || option == 0 {
+                if OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+                    option = ThirdPartyPasswordManagers.OnePassword.prefId
+                }
+            }
+            
             let image: UIImage?
-            switch ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 {
+            switch option ?? 0 {
             case 1:
                 image = UIImage(named: "passhelper_1pwd")
             case 2:
@@ -118,7 +126,21 @@ extension LoginsHelper {
             getApp().browserViewController.view.addSubview(iPadOffscreenView)
         }
         
-        OnePasswordExtension.sharedExtension().fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
+        let passwordHelper = OnePasswordExtension.sharedExtension()
+        passwordHelper.dismissBlock = { action in
+            if action.contains("onepassword") {
+                ThirdPartyPasswordManagerSetting.currentSetting = ThirdPartyPasswordManagers.OnePassword
+            }
+            else if action.contains("lastpass") {
+                ThirdPartyPasswordManagerSetting.currentSetting = ThirdPartyPasswordManagers.LastPass
+            }
+            else {
+                ThirdPartyPasswordManagerSetting.currentSetting = ThirdPartyPasswordManagers.UseBuiltInInstead
+            }
+            
+            BraveApp.getPrefs()?.setInt(Int32(ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0), forKey: kPrefName3rdPartyPasswordShortcutEnabled)
+        }
+        passwordHelper.fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
             if isIPad {
                 iPadOffscreenView.removeFromSuperview()
             } else {
@@ -134,7 +156,7 @@ extension LoginsHelper {
         
         // recurse through items until the 1pw share item is found
         func selectShareItem(view: UIView, shareItemName: String) {
-            if found {
+            if found || shareItemName.characters.count == 0 {
                 return
             }
             

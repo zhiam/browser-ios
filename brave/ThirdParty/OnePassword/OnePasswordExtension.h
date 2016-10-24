@@ -59,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 // conflicts for adopters of your library, you should rename the OnePasswordExtension class.
 // You might to so by adding your own project prefix, e.g., MyLibraryOnePasswordExtension.
 
+typedef void (^ActionDismissBlock)(NSString *type);
+
 @interface OnePasswordExtension : NSObject
 
 + (OnePasswordExtension *)sharedExtension;
@@ -75,6 +77,11 @@ NS_ASSUME_NONNULL_BEGIN
 #else
 - (BOOL)isAppExtensionAvailable;
 #endif
+
+/*!
+ @discussion Return action type from UIActivityViewController, for external use, on completion.
+ */
+@property (readwrite, nonatomic, copy) ActionDismissBlock dismissBlock;
 
 /*!
  Called from your login page, this method will find all available logins for the given URLString.
