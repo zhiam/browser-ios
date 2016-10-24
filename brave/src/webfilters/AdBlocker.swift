@@ -8,7 +8,7 @@ private let _singleton = AdBlocker()
 class AdBlocker {
     static let prefKey = "braveBlockAdsAndTracking"
     static let prefKeyDefaultValue = true
-    static let dataVersion = "1"
+    static let dataVersion = "2"
 
     lazy var abpFilterLibWrapper: ABPFilterLibWrapper = { return ABPFilterLibWrapper() }()
 
