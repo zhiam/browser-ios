@@ -5,22 +5,30 @@
 app_id=${1:-`whoami`.brave}
 echo Using APPID of $app_id, you can customize using ./setup.sh org.foo.myapp
 
-echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/.bundle-id.xcconfig
+echo CUSTOM_BUNDLE_ID=$app_id > xcconfig/local-def.xcconfig
 # Custom IDs get the BETA property set automatically
-[[ $app_id != com.brave.ios.browser ]] && echo BETA=Beta >> xcconfig/.bundle-id.xcconfig
+[[ $app_id != com.brave.ios.browser ]] && echo BETA=Beta >> xcconfig/local-def.xcconfig
+
+sed -e "s/APPGROUP_PLACEHOLDER/group.$app_id/" Brave.entitlements.template > Brave.entitlements
+
 # if a brave build, setup fabric and mixpanel
 if [[ $app_id == com.brave.ios.browser* ]]; then
+    dev_team_id="KL8N8XSYF4"
+    sed -i '' -e "s/KEYCHAIN_PLACEHOLDER/$dev_team_id.$app_id/" Brave.entitlements
+    echo "DEVELOPMENT_TEAM=$dev_team_id" >> xcconfig/local-def.xcconfig
     echo adding fabric
     echo "./Fabric.framework/run $(head -1 ~/.brave-fabric-keys) $(tail -1 ~/.brave-fabric-keys)" > build-system/.fabric-key-setup.sh
-    
-  sed -e s/FABRIC_KEY_REMOVED/$(head -1 ~/.brave-fabric-keys)/  BraveInfo.plist.template | sed -e s/MIXPANEL_TOKEN_REMOVED/$(head -1 ~/.brave-mixpanel-key)/ > BraveInfo.plist
+    sed -e s/FABRIC_KEY_REMOVED/$(head -1 ~/.brave-fabric-keys)/  BraveInfo.plist.template | sed -e s/MIXPANEL_TOKEN_REMOVED/$(head -1 ~/.brave-mixpanel-key)/ > BraveInfo.plist
 else
-   >build-system/.fabric-key-setup.sh
-   cat BraveInfo.plist.template > BraveInfo.plist
+    sed -i '' -e "s/KEYCHAIN_PLACEHOLDER/\$\(AppIdentifierPrefix\)$app_id/" Brave.entitlements
+    >build-system/.fabric-key-setup.sh
+    cat BraveInfo.plist.template > BraveInfo.plist
+    echo "Please edit xcconfig/local-def.xcconfig to add your DEVELOPMENT_TEAM id (or else you will need to set this in Xcode)"
+    echo "  It is found here: https://developer.apple.com/account/#/membership"
+    echo "// DEVELOPMENT_TEAM=" >> xcconfig/local-def.xcconfig
 fi
 
-sed -e "s/BUNDLE_ID_PLACEHOLDER/$app_id/" Brave.entitlements.template > Brave.entitlements
+echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"` >> xcconfig/local-def.xcconfig
 
 npm update
 
-echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"`  > xcconfig/build-id.xcconfig
