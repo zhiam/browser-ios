@@ -111,18 +111,9 @@ extension LoginsHelper {
     // MARK: Tap
     
     @objc func onExecuteTapped(sender: UIButton) {
+        self.browser?.webView?.endEditing(true)
+        
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
-        
-        if !isIPad {
-            UIView.animateWithDuration(0.2) {
-                // Hiding shows user feedback to the tap, don't remove, as snackbar should not show again until page change
-                // We don't hide on iPad, because if the autodetection of the cell to click fails, a popup is shown for the
-                // user to select their PW manager, and iPad needs a UIView to anchor the popup bubble
-                self.snackBar?.alpha = 0
-            }
-            UIAlertController.hackyHideOn(true)
-        }
-        
         if isIPad && iPadOffscreenView.superview == nil {
             getApp().browserViewController.view.addSubview(iPadOffscreenView)
         }
