@@ -74,12 +74,10 @@ MozBuildID.xcconfig
 Carthage/Build
 
 node_modules/
-build-id.xcconfig
 ABPFilterParserData.dat
 Client/Configuration
 Client/Info.plist
-/brave/xcconfig/.local-def.xcconfig
-/brave/xcconfig/.bundle-id.xcconfig
+/brave/xcconfig/local-def.xcconfig
 /brave/Brave.entitlements
 /brave/BraveInfo.plist
 .fabric-key-setup.sh
