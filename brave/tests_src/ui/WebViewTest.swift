@@ -5,6 +5,15 @@ import XCTest
 
 class WebViewTest: XCTestCase {
 
+    func testUnicodeUrl() {
+        UITestUtils.restart()
+        let app = XCUIApplication()
+        UITestUtils.loadSite(app, "nordølum.no")
+        let urlTextField = app.textFields["url"]
+        let value = urlTextField.value as? String
+        XCTAssert(value != nil && value!.containsString("nordoelum.no"))
+    }
+
     func testLongPress() {
         UITestUtils.restart()
         let app = XCUIApplication()
