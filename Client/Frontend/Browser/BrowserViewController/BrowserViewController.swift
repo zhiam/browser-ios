@@ -921,43 +921,41 @@ class BrowserViewController: UIViewController {
         activities.append(requestDesktopSiteActivity)
 
         helper = ShareExtensionHelper(url: url, tab: tab, activities: activities)
-        helper.setupExtensionItem() {
-            let controller = self.helper.createActivityViewController({ [unowned self, weak tab = tab] completed in
-                // After dismissing, check to see if there were any prompts we queued up
-                self.showQueuedAlertIfAvailable()
-                
-                self.updateDisplayedPopoverProperties = nil
-                self.helper = nil
-                
-                if completed {
-                    // We don't know what share action the user has chosen so we simply always
-                    // update the toolbar and reader mode bar to reflect the latest status.
-                    if let tab = tab {
-                        self.updateURLBarDisplayURL(tab)
-                    }
-                    self.updateReaderModeBar()
-                }
-                })
-            
-            if controller != nil {
-                let setupPopover = { [unowned self, weak controller = controller, weak sourceView = sourceView] in
-                    if let popoverPresentationController = controller?.popoverPresentationController {
-                        popoverPresentationController.sourceView = sourceView
-                        popoverPresentationController.sourceRect = sourceRect
-                        popoverPresentationController.permittedArrowDirections = arrowDirection
-                        popoverPresentationController.delegate = self
-                    }
-                }
-                
-                setupPopover()
-                
-                if controller!.popoverPresentationController != nil {
-                    self.displayedPopoverController = controller
-                    self.updateDisplayedPopoverProperties = setupPopover
-                }
-                self.presentViewController(controller!, animated: true, completion: nil)
+        let controller = helper.createActivityViewController({ [unowned self] completed in
+            // After dismissing, check to see if there were any prompts we queued up
+            self.showQueuedAlertIfAvailable()
+
+            // Usually the popover delegate would handle nil'ing out the references we have to it
+            // on the BVC when displaying as a popover but the delegate method doesn't seem to be
+            // invoked on iOS 10. See Bug 1297768 for additional details.
+            self.displayedPopoverController = nil
+            self.updateDisplayedPopoverProperties = nil
+
+            if completed {
+                // We don't know what share action the user has chosen so we simply always
+                // update the toolbar and reader mode bar to reflect the latest status.
+                self.updateURLBarDisplayURL(tab)
+                self.updateReaderModeBar()
+            }
+        })
+
+        let setupPopover = { [unowned self] in
+            if let popoverPresentationController = controller.popoverPresentationController {
+                popoverPresentationController.sourceView = sourceView
+                popoverPresentationController.sourceRect = sourceRect
+                popoverPresentationController.permittedArrowDirections = arrowDirection
+                popoverPresentationController.delegate = self
             }
         }
+
+        setupPopover()
+
+        if controller.popoverPresentationController != nil {
+            displayedPopoverController = controller
+            updateDisplayedPopoverProperties = setupPopover
+        }
+
+        self.presentViewController(controller, animated: true, completion: nil)
     }
 
     func updateFindInPageVisibility(visible visible: Bool) {
