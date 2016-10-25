@@ -384,7 +384,10 @@ static NSString *const AppExtensionWebViewPageDetails = @"pageDetails";
 		}];
 	};
 
-	[forViewController presentViewController:activityViewController animated:YES completion:nil];
+    [forViewController presentViewController:activityViewController animated:YES completion: ^void {
+        if (_shareDidAppearBlock != nil) {
+            _shareDidAppearBlock();
+        }}];
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0 || ONE_PASSWORD_EXTENSION_ENABLE_WK_WEB_VIEW

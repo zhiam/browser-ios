@@ -83,6 +83,8 @@ typedef void (^ActionDismissBlock)(NSString *type);
  */
 @property (readwrite, nonatomic, copy) ActionDismissBlock dismissBlock;
 
+@property (readwrite, nonatomic, copy) void(^shareDidAppearBlock)();
+
 /*!
  Called from your login page, this method will find all available logins for the given URLString.
  

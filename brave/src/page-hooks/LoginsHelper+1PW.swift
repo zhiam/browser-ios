@@ -115,17 +115,55 @@ extension LoginsHelper {
             managerButton.frame = managerButtonFrame
         }
     }
-    
+
+    // recurse through items until the 1pw/lastpass share item is found
+    private func selectShareItem(view: UIView, shareItemName: String) -> Bool {
+        if shareItemName.characters.count == 0 {
+            return false
+        }
+
+        for subview in view.subviews {
+            if subview.description.contains("UICollectionViewControllerWrapperView") && subview.subviews.first?.subviews.count > 1 {
+                let wrapperCell = subview.subviews.first?.subviews[1] as? UICollectionViewCell
+                if let collectionView = wrapperCell?.subviews.first?.subviews.first?.subviews.first as? UICollectionView {
+
+                    // As a safe upper bound, just look at 10 items max
+                    for i in 0..<10 {
+                        let indexPath = NSIndexPath(forItem: i, inSection: 0)
+                        let suspectCell = collectionView.cellForItemAtIndexPath(indexPath)
+                        if suspectCell == nil {
+                            break;
+                        }
+                        if suspectCell?.subviews.first?.subviews.last?.description.contains(shareItemName) ?? false {
+                            collectionView.delegate?.collectionView?(collectionView, didSelectItemAtIndexPath:indexPath)
+                            return true
+                        }
+                    }
+
+                    return false
+                }
+            }
+            let found = selectShareItem(subview, shareItemName: shareItemName)
+            if found {
+                return true
+            }
+        }
+        return false
+    }
+
     // MARK: Tap
-    
     @objc func onExecuteTapped(sender: UIButton) {
         self.browser?.webView?.endEditing(true)
-        
+
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
         if isIPad && iPadOffscreenView.superview == nil {
             getApp().browserViewController.view.addSubview(iPadOffscreenView)
         }
-        
+
+        if !isIPad {
+            UIActivityViewController.hackyHideSharePickerOn(true)
+        }
+
         let passwordHelper = OnePasswordExtension.sharedExtension()
         passwordHelper.dismissBlock = { action in
             if action.contains("onepassword") {
@@ -140,66 +178,33 @@ extension LoginsHelper {
             
             BraveApp.getPrefs()?.setInt(Int32(ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0), forKey: kPrefName3rdPartyPasswordShortcutEnabled)
         }
-        passwordHelper.fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
-            if isIPad {
-                iPadOffscreenView.removeFromSuperview()
-            } else {
-                UIAlertController.hackyHideOn(false)
-            }
-            
-            if success == false {
-                print("Failed to fill into webview: <\(error)>")
-            }
-        }
-        
-        var found = false
-        
-        // recurse through items until the 1pw share item is found
-        func selectShareItem(view: UIView, shareItemName: String) {
-            if found || shareItemName.characters.count == 0 {
-                return
-            }
-            
-            for subview in view.subviews {
-                if subview.description.contains("UICollectionViewControllerWrapperView") && subview.subviews.first?.subviews.count > 1 {
-                    let wrapperCell = subview.subviews.first?.subviews[1] as? UICollectionViewCell
-                    if let collectionView = wrapperCell?.subviews.first?.subviews.first?.subviews.first as? UICollectionView {
-                        
-                        // As a safe upper bound, just look at 10 items max
-                        for i in 0..<10 {
-                            let indexPath = NSIndexPath(forItem: i, inSection: 0)
-                            let suspectCell = collectionView.cellForItemAtIndexPath(indexPath)
-                            if suspectCell == nil {
-                                break;
-                            }
-                            if suspectCell?.subviews.first?.subviews.last?.description.contains(shareItemName) ?? false {
-                                collectionView.delegate?.collectionView?(collectionView, didSelectItemAtIndexPath:indexPath)
-                                found = true
-                            }
-                        }
-                        
-                        return
-                    }
-                }
-                selectShareItem(subview, shareItemName: shareItemName)
-            }
-        }
-        
-        // The event loop needs to run for the share screen to reliably be showing, a delay of zero also works.
-        postAsyncToMain(0.2) {
+
+        passwordHelper.shareDidAppearBlock = {
             guard let itemToLookFor = ThirdPartyPasswordManagerSetting.currentSetting?.cellLabel else { return }
-            selectShareItem(getApp().window!, shareItemName: itemToLookFor)
-            
+            let found = self.selectShareItem(getApp().window!, shareItemName: itemToLookFor)
+
             if !found {
-                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                if isIPad {
                     UIActivityViewController.hackyDismissal()
                     iPadOffscreenView.removeFromSuperview()
                     BraveApp.getPrefs()?.setInt(0, forKey: kPrefName3rdPartyPasswordShortcutEnabled)
                     BraveApp.showErrorAlert(title: "Password shortcut error", error: "Can't find item named \(itemToLookFor)")
                 } else {
                     // Just show the regular share screen, this isn't a fatal problem on iPhone
-                    UIAlertController.hackyHideOn(false)
+                    UIActivityViewController.hackyHideSharePickerOn(false)
                 }
+            }
+        }
+
+        passwordHelper.fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
+            if isIPad {
+                iPadOffscreenView.removeFromSuperview()
+            } else {
+                UIActivityViewController.hackyHideSharePickerOn(false)
+            }
+            
+            if !success {
+                print("Failed to fill into webview: <\(error)>")
             }
         }
     }
