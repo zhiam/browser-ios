@@ -136,6 +136,9 @@ class BraveTopViewController : UIViewController {
             togglePanel(rightSidePanel)
         }
         togglePanel(mainSidePanel)
+
+        // Dismiss keyboard if it is showing.
+        UIApplication.sharedApplication().sendAction(#selector(UIResponder.resignFirstResponder), to:nil, from:nil, forEvent:nil)
     }
 
     func onClickBraveButton(notification: NSNotification) {
