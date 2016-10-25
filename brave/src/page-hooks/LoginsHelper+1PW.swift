@@ -155,13 +155,21 @@ extension LoginsHelper {
     @objc func onExecuteTapped(sender: UIButton) {
         self.browser?.webView?.endEditing(true)
 
+        let automaticallyPickPasswordShareItem = (ThirdPartyPasswordManagerSetting.currentSetting != nil) ? ThirdPartyPasswordManagerSetting.currentSetting! != ThirdPartyPasswordManagers.UseBuiltInInstead : false
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
-        if isIPad && iPadOffscreenView.superview == nil {
-            getApp().browserViewController.view.addSubview(iPadOffscreenView)
-        }
 
-        if !isIPad {
-            UIActivityViewController.hackyHideSharePickerOn(true)
+        if automaticallyPickPasswordShareItem {
+            if isIPad && iPadOffscreenView.superview == nil {
+                getApp().browserViewController.view.addSubview(iPadOffscreenView)
+            }
+
+            if !isIPad {
+                UIActivityViewController.hackyHideSharePickerOn(true)
+            }
+
+            UIView.animateWithDuration(0.2) {
+                getApp().braveTopViewController.view.alpha = 0.5
+            }
         }
 
         let passwordHelper = OnePasswordExtension.sharedExtension()
@@ -180,10 +188,18 @@ extension LoginsHelper {
         }
 
         passwordHelper.shareDidAppearBlock = {
+            if !automaticallyPickPasswordShareItem {
+                return
+            }
+
             guard let itemToLookFor = ThirdPartyPasswordManagerSetting.currentSetting?.cellLabel else { return }
             let found = self.selectShareItem(getApp().window!, shareItemName: itemToLookFor)
 
             if !found {
+                UIView.animateWithDuration(0.2) {
+                    getApp().braveTopViewController.view.alpha = 1.0
+                }
+
                 if isIPad {
                     UIActivityViewController.hackyDismissal()
                     iPadOffscreenView.removeFromSuperview()
@@ -197,12 +213,18 @@ extension LoginsHelper {
         }
 
         passwordHelper.fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
-            if isIPad {
-                iPadOffscreenView.removeFromSuperview()
-            } else {
-                UIActivityViewController.hackyHideSharePickerOn(false)
+            if automaticallyPickPasswordShareItem {
+                if isIPad {
+                    iPadOffscreenView.removeFromSuperview()
+                } else {
+                    UIActivityViewController.hackyHideSharePickerOn(false)
+                }
+
+                UIView.animateWithDuration(0.1) {
+                    getApp().braveTopViewController.view.alpha = 1.0
+                }
             }
-            
+
             if !success {
                 print("Failed to fill into webview: <\(error)>")
             }
