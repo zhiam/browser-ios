@@ -85,3 +85,4 @@ Client/Info.plist
 # Xcode
 project.xcworkspace/
 *xcuserdata
+/brave/xcconfig/*

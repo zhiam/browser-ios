@@ -81,34 +81,50 @@ class BraveTermsViewController: UIViewController {
         
         continueButton.snp_makeConstraints { (make) in
             make.centerX.equalTo(self.view)
-            make.bottom.equalTo(self.view).offset(-30.0)
-            make.height.equalTo(40.0)
+            make.bottom.equalTo(self.view).offset(-30)
+            make.height.equalTo(40)
             
             let width = self.continueButton.sizeThatFits(CGSizeMake(CGFloat.max, CGFloat.max)).width
-            make.width.equalTo(width + 40.0)
+            make.width.equalTo(width + 40)
         }
         
         optLabel.snp_makeConstraints { (make) in
-            make.left.equalTo(85.0)
-            make.right.equalTo(-50.0)
-            make.bottom.equalTo(continueButton.snp_top).offset(-60.0).priorityHigh()
+            make.centerX.equalTo(self.view).offset(36/2)
+            
+            let width = min(UIScreen.mainScreen().bounds.width * 0.65, 350)
+            make.width.equalTo(width)
+            
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                make.bottom.equalTo(continueButton.snp_top).offset(-60).priorityHigh()
+            }
+            else {
+                make.bottom.lessThanOrEqualTo(continueButton.snp_top).offset(-60).priorityHigh()
+            }
         }
         
         checkButton.snp_makeConstraints { (make) in
-            make.left.equalTo(optLabel.snp_left).offset(-36.0)
-            make.top.equalTo(optLabel.snp_top).offset(4.0).priorityHigh()
+            make.left.equalTo(optLabel.snp_left).offset(-36)
+            make.top.equalTo(optLabel.snp_top).offset(4).priorityHigh()
         }
         
         termsLabel.snp_makeConstraints { (make) in
-            make.left.equalTo(45.0)
-            make.right.equalTo(-45.0)
-            make.bottom.equalTo(optLabel.snp_top).offset(-35.0).priorityMedium()
+            make.centerX.equalTo(self.view)
+            
+            let width = min(UIScreen.mainScreen().bounds.width * 0.70, 350)
+            make.width.equalTo(width)
+            make.bottom.equalTo(optLabel.snp_top).offset(-35).priorityMedium()
         }
         
         braveLogo.snp_makeConstraints { (make) in
             make.centerX.equalTo(self.view)
-            make.top.equalTo(10.0)
-            make.bottom.equalTo(termsLabel.snp_top).offset(-10.0)
+            make.top.equalTo(10)
+            
+            if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                make.bottom.equalTo(termsLabel.snp_top)
+            }
+            else {
+                make.height.equalTo(UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height ? UIScreen.mainScreen().bounds.height : UIScreen.mainScreen().bounds.width)
+            }
         }
         
         view.backgroundColor = UIColor(red: 63/255.0, green: 63/255.0, blue: 63/255.0, alpha: 1.0)
@@ -116,6 +132,26 @@ class BraveTermsViewController: UIViewController {
 
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return
+        }
+        
+        if toInterfaceOrientation == .LandscapeLeft || toInterfaceOrientation == .LandscapeRight {
+            UIView.animateWithDuration(0.2, animations: { 
+                self.braveLogo.alpha = 0.15
+            })
+        }
+        else {
+            UIView.animateWithDuration(0.2, animations: {
+                self.braveLogo.alpha = 1.0
+            })
+        }
+        
+        self.view.setNeedsUpdateConstraints()
     }
     
     // MARK: Actions
