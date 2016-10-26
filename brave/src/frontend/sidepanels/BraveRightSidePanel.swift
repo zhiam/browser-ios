@@ -118,7 +118,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         let statsSectionTitle = makeSectionHeaderTitle(Strings.Blocking_Monitor, sectionHeight: titleSectionHeight)
 
         let spacerLine = UIView()
-        var sections = [headerContainer, siteNameContainer, spacerLine, statsSectionTitle, statsContainer]
+        var sections = [headerContainer, siteNameContainer, statsSectionTitle, statsContainer]
         if let togglesSectionTitle = togglesSectionTitle {
             sections.append(togglesSectionTitle)
         }
@@ -222,6 +222,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 make.top.equalTo(shieldToggle.superview!.snp_centerY)
             }
             shieldToggle.onTintColor = BraveUX.BraveOrange
+            shieldToggle.tintColor = BraveUX.SwitchTintColor
             shieldToggle.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
         }
         setupSiteNameSection()
@@ -253,6 +254,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             var rows = [UIView]()
             for (i, item) in views_toggles.enumerate() {
                 item.onTintColor = BraveUX.BraveOrange
+                item.tintColor = BraveUX.SwitchTintColor
                 item.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
                 views_labels[i].text = labelTitles[i]
                 if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
