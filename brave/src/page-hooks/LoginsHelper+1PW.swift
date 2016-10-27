@@ -30,14 +30,18 @@ extension LoginsHelper {
     
     // MARK: Form Accessory
     
-    func show() {
+    func show(callback: (Bool, Int)->Void) {
         thirdPartyHelper { (enabled) in
             if enabled == true {
                 postAsyncToMain(0.1) {
                     [weak self] in
                     let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
                     if let ok = result where ok == "true" {
-                        self?.addPasswordManagerButton()
+                        let option = self?.addPasswordManagerButton()
+                        callback(true, option!)
+                    }
+                    else {
+                        callback(false, 0)
                     }
                 }
             }
@@ -70,10 +74,10 @@ extension LoginsHelper {
         return UIView()
     }
     
-    func addPasswordManagerButton() {
+    func addPasswordManagerButton() -> Int {
         let windows = UIApplication.sharedApplication().windows.count
         if windows < 2 {
-            return;
+            return 0
         }
         
         let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
@@ -83,22 +87,21 @@ extension LoginsHelper {
                 old.removeFromSuperview()
             }
             
-            //
-            var option: Int? = ThirdPartyPasswordManagerSetting.currentSetting?.prefId
-            if option == nil || option == 0 {
+            var option: Int = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0
+            if option == 0 {
                 if OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
                     option = ThirdPartyPasswordManagers.OnePassword.prefId
                 }
             }
             
             let image: UIImage?
-            switch option ?? 0 {
+            switch option {
             case 1:
                 image = UIImage(named: "passhelper_1pwd")
             case 2:
                 image = UIImage(named: "passhelper_lastpass")
             default:
-                return
+                return 0
             }
             
             let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
@@ -113,7 +116,11 @@ extension LoginsHelper {
             managerButtonFrame.origin.x = rint((CGRectGetWidth(UIScreen.mainScreen().bounds) - CGRectGetWidth(managerButtonFrame)) / 2.0)
             managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
             managerButton.frame = managerButtonFrame
+            
+            return option
         }
+        
+        return 0
     }
 
     // recurse through items until the 1pw/lastpass share item is found

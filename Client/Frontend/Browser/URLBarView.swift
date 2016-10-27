@@ -63,8 +63,8 @@ protocol URLBarDelegate: class {
     func urlBarDidLongPressReaderMode(urlBar: URLBarView) -> Bool
     func urlBarDidPressStop(urlBar: URLBarView)
     func urlBarDidPressReload(urlBar: URLBarView)
-    func urlBarDidEnterOverlayMode(urlBar: URLBarView)
-    func urlBarDidLeaveOverlayMode(urlBar: URLBarView)
+    func urlBarDidEnterSearchMode(urlBar: URLBarView)
+    func urlBarDidLeaveSearchMode(urlBar: URLBarView)
     func urlBarDidLongPressLocation(urlBar: URLBarView)
     func urlBarLocationAccessibilityActions(urlBar: URLBarView) -> [UIAccessibilityCustomAction]?
     func urlBarDidPressScrollToTop(urlBar: URLBarView)
@@ -77,14 +77,14 @@ class URLBarView: UIView {
     // Additional UIAppearance-configurable properties
     dynamic var locationBorderColor: UIColor = URLBarViewUX.TextFieldBorderColor {
         didSet {
-            if !inOverlayMode {
+            if !inSearchMode {
                 locationContainer.layer.borderColor = locationBorderColor.CGColor
             }
         }
     }
     dynamic var locationActiveBorderColor: UIColor = URLBarViewUX.TextFieldActiveBorderColor {
         didSet {
-            if inOverlayMode {
+            if inSearchMode {
                 locationContainer.layer.borderColor = locationActiveBorderColor.CGColor
             }
         }
@@ -102,7 +102,7 @@ class URLBarView: UIView {
 
     private var currentTheme: String = Theme.NormalMode
 
-    var toolbarIsShowing = false
+    var showBottomToolbar = false
 
     var locationTextField: ToolbarTextField?
 
@@ -110,7 +110,7 @@ class URLBarView: UIView {
     /// and the Cancel button is visible (allowing the user to leave overlay mode). Overlay mode
     /// is *not* tied to the location text field's editing state; for instance, when selecting
     /// a panel, the first responder will be resigned, yet the overlay mode UI is still active.
-    var inOverlayMode = false
+    var inSearchMode = false
 
     lazy var locationView: BrowserLocationView = {
         let locationView = BrowserLocationView()
@@ -166,6 +166,8 @@ class URLBarView: UIView {
     }()
 
     lazy var shareButton: UIButton = { return UIButton() }()
+    
+    lazy var pwdMgrButton: UIButton = { return UIButton() }()
 
     lazy var bookmarkButton: UIButton = { return UIButton() }()
 
@@ -176,7 +178,7 @@ class URLBarView: UIView {
     lazy var stopReloadButton: UIButton = { return UIButton() }()
 
     lazy var actionButtons: [UIButton] = {
-        return [self.shareButton, self.bookmarkButton, self.forwardButton, self.backButton, self.stopReloadButton]
+        return [self.shareButton, self.bookmarkButton, self.forwardButton, self.backButton, self.stopReloadButton, self.pwdMgrButton]
     }()
 
     // Used to temporarily store the cloned button so we can respond to layout changes during animation
@@ -217,6 +219,7 @@ class URLBarView: UIView {
         addSubview(cancelButton)
 
         addSubview(shareButton)
+        addSubview(pwdMgrButton)
         addSubview(bookmarkButton)
         addSubview(forwardButton)
         addSubview(backButton)
@@ -229,7 +232,7 @@ class URLBarView: UIView {
         setupConstraints()
 
         // Make sure we hide any views that shouldn't be showing in non-overlay mode.
-        updateViewsForOverlayModeAndToolbarChanges()
+        updateViewsForSearchModeAndToolbarChanges()
     }
 
     func setupConstraints() {}
@@ -274,15 +277,15 @@ class URLBarView: UIView {
     // Ideally we'd split this implementation in two, one URLBarView with a toolbar and one without
     // However, switching views dynamically at runtime is a difficult. For now, we just use one view
     // that can show in either mode.
-    func setShowToolbar(shouldShow: Bool) {
-        toolbarIsShowing = shouldShow
+    func shouldShowBottomToolbar(show: Bool) {
+        showBottomToolbar = show
         setNeedsUpdateConstraints()
         // when we transition from portrait to landscape, calling this here causes
         // the constraints to be calculated too early and there are constraint errors
-        if !toolbarIsShowing {
+        if !showBottomToolbar {
             updateConstraintsIfNeeded()
         }
-        updateViewsForOverlayModeAndToolbarChanges()
+        updateViewsForSearchModeAndToolbarChanges()
     }
 
     func updateAlphaForSubviews(alpha: CGFloat) {
@@ -376,14 +379,14 @@ class URLBarView: UIView {
         locationTextField?.setAutocompleteSuggestion(suggestion)
     }
 
-    func enterOverlayMode(locationText: String?, pasted: Bool) {
+    func enterSearchMode(locationText: String?, pasted: Bool) {
         createLocationTextField()
 
         // Show the overlay mode UI, which includes hiding the locationView and replacing it
         // with the editable locationTextField.
-        animateToOverlayState(overlayMode: true)
+        animateToSearchState(searchMode: true)
 
-        delegate?.urlBarDidEnterOverlayMode(self)
+        delegate?.urlBarDidEnterSearchMode(self)
 
         // Bug 1193755 Workaround - Calling becomeFirstResponder before the animation happens
         // won't take the initial frame of the label into consideration, which makes the label
@@ -407,35 +410,35 @@ class URLBarView: UIView {
         }
     }
 
-    func leaveOverlayMode(didCancel cancel: Bool = false) {
+    func leaveSearchMode(didCancel cancel: Bool = false) {
         locationTextField?.resignFirstResponder()
-        animateToOverlayState(overlayMode: false, didCancel: cancel)
-        delegate?.urlBarDidLeaveOverlayMode(self)
+        animateToSearchState(searchMode: false, didCancel: cancel)
+        delegate?.urlBarDidLeaveSearchMode(self)
     }
 
-    func prepareOverlayAnimation() {
+    func prepareSearchAnimation() {
         // Make sure everything is showing during the transition (we'll hide it afterwards).
         self.bringSubviewToFront(self.locationContainer)
         self.cancelButton.hidden = false
-        self.shareButton.hidden = !self.toolbarIsShowing
-        self.bookmarkButton.hidden = !self.toolbarIsShowing
-        self.forwardButton.hidden = !self.toolbarIsShowing
-        self.backButton.hidden = !self.toolbarIsShowing
+        self.shareButton.hidden = !self.showBottomToolbar
+        self.bookmarkButton.hidden = !self.showBottomToolbar
+        self.forwardButton.hidden = !self.showBottomToolbar
+        self.backButton.hidden = !self.showBottomToolbar
         self.stopReloadButton.hidden = false
     }
 
-    func transitionToOverlay(didCancel: Bool = false) {
-        self.cancelButton.alpha = inOverlayMode ? 1 : 0
-        self.shareButton.alpha = inOverlayMode ? 0 : 1
-        self.bookmarkButton.alpha = inOverlayMode ? 0 : 1
-        self.forwardButton.alpha = inOverlayMode ? 0 : 1
-        self.backButton.alpha = inOverlayMode ? 0 : 1
-        self.stopReloadButton.alpha = inOverlayMode ? 0 : 1
+    func transitionToSearch(didCancel: Bool = false) {
+        self.cancelButton.alpha = inSearchMode ? 1 : 0
+        self.shareButton.alpha = inSearchMode ? 0 : 1
+        self.bookmarkButton.alpha = inSearchMode ? 0 : 1
+        self.forwardButton.alpha = inSearchMode ? 0 : 1
+        self.backButton.alpha = inSearchMode ? 0 : 1
+        self.stopReloadButton.alpha = inSearchMode ? 0 : 1
 
-        let borderColor = inOverlayMode ? locationActiveBorderColor : locationBorderColor
+        let borderColor = inSearchMode ? locationActiveBorderColor : locationBorderColor
         locationContainer.layer.borderColor = borderColor.CGColor
 
-        if inOverlayMode {
+        if inSearchMode {
             self.cancelButton.transform = CGAffineTransformIdentity
             let tabsButtonTransform = CGAffineTransformMakeTranslation(self.tabsButton.frame.width + URLBarViewUX.URLBarCurveOffset, 0)
             self.tabsButton.transform = tabsButtonTransform
@@ -460,31 +463,31 @@ class URLBarView: UIView {
         }
     }
 
-    func updateViewsForOverlayModeAndToolbarChanges() {
-        self.cancelButton.hidden = !inOverlayMode
-        self.shareButton.hidden = !self.toolbarIsShowing || inOverlayMode
-        self.bookmarkButton.hidden = !self.toolbarIsShowing || inOverlayMode
-        self.forwardButton.hidden = !self.toolbarIsShowing || inOverlayMode
-        self.backButton.hidden = !self.toolbarIsShowing || inOverlayMode
-        self.stopReloadButton.hidden = inOverlayMode
+    func updateViewsForSearchModeAndToolbarChanges() {
+        self.cancelButton.hidden = !inSearchMode
+        self.shareButton.hidden = !self.showBottomToolbar || inSearchMode
+        self.bookmarkButton.hidden = !self.showBottomToolbar || inSearchMode
+        self.forwardButton.hidden = !self.showBottomToolbar || inSearchMode
+        self.backButton.hidden = !self.showBottomToolbar || inSearchMode
+        self.stopReloadButton.hidden = showBottomToolbar
     }
 
-    func animateToOverlayState(overlayMode overlay: Bool, didCancel cancel: Bool = false) {
-        prepareOverlayAnimation()
+    func animateToSearchState(searchMode search: Bool, didCancel cancel: Bool = false) {
+        prepareSearchAnimation()
         layoutIfNeeded()
 
-        inOverlayMode = overlay
+        inSearchMode = search
 
-        if !overlay {
+        if !search {
             removeLocationTextField()
         }
 
         UIView.animateWithDuration(0.3, delay: 0.0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.0, options: [], animations: { _ in
-            self.transitionToOverlay(cancel)
+            self.transitionToSearch(cancel)
             self.setNeedsUpdateConstraints()
             self.layoutIfNeeded()
             }, completion: { _ in
-                self.updateViewsForOverlayModeAndToolbarChanges()
+                self.updateViewsForSearchModeAndToolbarChanges()
         })
     }
 
@@ -494,7 +497,7 @@ class URLBarView: UIView {
     }
 
     func SELdidClickCancel() {
-        leaveOverlayMode(didCancel: true)
+        leaveSearchMode(didCancel: true)
     }
 
     func SELtappedScrollToTopArea() {
@@ -535,11 +538,11 @@ extension URLBarView: BrowserToolbarProtocol {
 
     override var accessibilityElements: [AnyObject]? {
         get {
-            if inOverlayMode {
+            if inSearchMode {
                 guard let locationTextField = locationTextField else { return nil }
                 return [locationTextField, cancelButton]
             } else {
-                if toolbarIsShowing {
+                if showBottomToolbar {
                     return [backButton, forwardButton, stopReloadButton, locationView, shareButton, bookmarkButton, tabsButton]
                 } else {
                     return [locationView, tabsButton, stopReloadButton]
@@ -559,7 +562,7 @@ extension URLBarView: BrowserLocationViewDelegate {
 
     func browserLocationViewDidTapLocation(browserLocationView: BrowserLocationView) {
         let locationText = delegate?.urlBarDisplayTextForURL(locationView.url)
-        enterOverlayMode(locationText, pasted: false)
+        enterSearchMode(locationText, pasted: false)
     }
 
     func browserLocationViewDidLongPressLocation(browserLocationView: BrowserLocationView) {

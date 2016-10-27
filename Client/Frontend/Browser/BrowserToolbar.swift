@@ -14,6 +14,7 @@ private let log = Logger.browserLogger
 protocol BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate? { get set }
     var shareButton: UIButton { get }
+    var pwdMgrButton: UIButton { get }
     var bookmarkButton: UIButton { get }
     var forwardButton: UIButton { get }
     var backButton: UIButton { get }
@@ -37,6 +38,7 @@ protocol BrowserToolbarDelegate: class {
     func browserToolbarDidPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidLongPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidPressShare(browserToolbar: BrowserToolbarProtocol, button: UIButton)
+    func browserToolbarDidPressPwdMgr(browserToolbar: BrowserToolbarProtocol, button: UIButton)
 }
 
 @objc
@@ -105,6 +107,12 @@ public class BrowserToolbarHelper: NSObject {
         toolbar.shareButton.accessibilityLabel = Strings.Share
         toolbar.shareButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickShare), forControlEvents: UIControlEvents.TouchUpInside)
         toolbar.bookmarkButton.contentMode = UIViewContentMode.Center
+        
+        toolbar.pwdMgrButton.setImage(UIImage(named: "passhelper_1pwd")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        toolbar.pwdMgrButton.hidden = true
+        toolbar.pwdMgrButton.tintColor = UIColor.whiteColor()
+        toolbar.pwdMgrButton.accessibilityLabel = Strings.PasswordManager
+        toolbar.pwdMgrButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickPwdMgr), forControlEvents: UIControlEvents.TouchUpInside)
 
         toolbar.bookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
         toolbar.bookmarkButton.setImage(UIImage(named: "bookmarked"), forState: UIControlState.Selected)
@@ -130,6 +138,10 @@ public class BrowserToolbarHelper: NSObject {
     func SELdidClickShare() {
         toolbar.browserToolbarDelegate?.browserToolbarDidPressShare(toolbar, button: toolbar.shareButton)
     }
+    
+    func SELdidClickPwdMgr() {
+        toolbar.browserToolbarDelegate?.browserToolbarDidPressPwdMgr(toolbar, button: toolbar.pwdMgrButton)
+    }
 
     func SELdidClickForward() {
         toolbar.browserToolbarDelegate?.browserToolbarDidPressForward(toolbar, button: toolbar.forwardButton)
@@ -150,8 +162,6 @@ public class BrowserToolbarHelper: NSObject {
             toolbar.browserToolbarDelegate?.browserToolbarDidLongPressBookmark(toolbar, button: toolbar.bookmarkButton)
         }
     }
-
-
 
     func SELdidClickStopReload() {
         if loading {
@@ -176,6 +186,7 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate?
 
     let shareButton: UIButton
+    let pwdMgrButton: UIButton
     let bookmarkButton: UIButton
     let forwardButton: UIButton
     let backButton: UIButton
@@ -208,6 +219,8 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
         stopReloadButton.accessibilityIdentifier = "BrowserToolbar.stopReloadButton"
         shareButton = UIButton()
         shareButton.accessibilityIdentifier = "BrowserToolbar.shareButton"
+        pwdMgrButton = UIButton()
+        pwdMgrButton.accessibilityIdentifier = "BrowserToolbar.pwdMgrButton"
         bookmarkButton = UIButton()
         bookmarkButton.accessibilityIdentifier = "BrowserToolbar.bookmarkButton"
         actionButtons = [backButton, forwardButton, stopReloadButton, shareButton, bookmarkButton]

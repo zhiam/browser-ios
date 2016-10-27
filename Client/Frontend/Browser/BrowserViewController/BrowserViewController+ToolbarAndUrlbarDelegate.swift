@@ -191,11 +191,11 @@ extension BrowserViewController: URLBarDelegate {
         finishEditingAndSubmit(url, visitType: VisitType.Typed)
     }
 
-    func urlBarDidEnterOverlayMode(urlBar: URLBarView) {
+    func urlBarDidEnterSearchMode(urlBar: URLBarView) {
         showHomePanelController(inline: false)
     }
 
-    func urlBarDidLeaveOverlayMode(urlBar: URLBarView) {
+    func urlBarDidLeaveSearchMode(urlBar: URLBarView) {
         hideSearchController()
         updateInContentHomePanel(tabManager.selectedTab?.url)
     }
@@ -264,6 +264,12 @@ extension BrowserViewController: BrowserToolbarDelegate {
         if let tab = tabManager.selectedTab, url = tab.displayURL {
             let sourceView = self.navigationToolbar.shareButton
             presentActivityViewController(url, tab: tab, sourceView: sourceView.superview, sourceRect: sourceView.frame, arrowDirection: .Up)
+        }
+    }
+    
+    func browserToolbarDidPressPwdMgr(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+        if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
+            loginsHelper.onExecuteTapped(button)
         }
     }
 }

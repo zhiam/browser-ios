@@ -86,6 +86,7 @@ extension Strings {
     public static let Back = NSLocalizedString("Back", comment: "Accessibility Label for the browser toolbar Back button")
     public static let Forward = NSLocalizedString("Forward", comment: "Accessibility Label for the browser toolbar Forward button")
     public static let Share = NSLocalizedString("Share", comment: "Accessibility Label for the browser toolbar Share button")
+    public static let PasswordManager = NSLocalizedString("Password Manager", comment: "Accessibility Label for the browser toolbar Password Manager button")
     public static let Bookmark = NSLocalizedString("Bookmark", comment: "Accessibility Label for the browser toolbar Bookmark button")
     public static let Navigation_Toolbar = NSLocalizedString("Navigation Toolbar", comment: "Accessibility label for the navigation toolbar displayed at the bottom of the screen.")
     public static let Open_In_Background_Tab = NSLocalizedString("Open In New Tab", comment: "Context menu item for opening a link in a new tab")

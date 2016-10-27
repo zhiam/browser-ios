@@ -202,7 +202,7 @@ class BraveURLBarView : URLBarView {
     }
 
     override func updateTabCount(count: Int, animated: Bool = true) {
-        super.updateTabCount(count, animated: toolbarIsShowing)
+        super.updateTabCount(count, animated: showBottomToolbar)
         BraveBrowserBottomToolbar.updateTabCountDuplicatedButton(count, animated: animated)
     }
 
@@ -214,11 +214,11 @@ class BraveURLBarView : URLBarView {
 
     override var accessibilityElements: [AnyObject]? {
         get {
-            if inOverlayMode {
+            if inSearchMode {
                 guard let locationTextField = locationTextField else { return nil }
                 return [leftSidePanelButton, locationTextField, cancelButton]
             } else {
-                if toolbarIsShowing {
+                if showBottomToolbar {
                     return [backButton, forwardButton, leftSidePanelButton, locationView, braveButton, shareButton, tabsButton]
                 } else {
                     return [leftSidePanelButton, locationView, braveButton]
@@ -230,10 +230,10 @@ class BraveURLBarView : URLBarView {
         }
     }
 
-    override func updateViewsForOverlayModeAndToolbarChanges() {
-        super.updateViewsForOverlayModeAndToolbarChanges()
+    override func updateViewsForSearchModeAndToolbarChanges() {
+        super.updateViewsForSearchModeAndToolbarChanges()
 
-        if !self.toolbarIsShowing {
+        if !self.showBottomToolbar {
             self.tabsButton.hidden = true
         } else {
             self.tabsButton.hidden = false
@@ -242,26 +242,26 @@ class BraveURLBarView : URLBarView {
         bookmarkButton.hidden = true
     }
 
-    override func prepareOverlayAnimation() {
-        super.prepareOverlayAnimation()
+    override func prepareSearchAnimation() {
+        super.prepareSearchAnimation()
         bookmarkButton.hidden = true
         braveButton.hidden = true
     }
 
-    override func transitionToOverlay(didCancel: Bool = false) {
-        super.transitionToOverlay(didCancel)
+    override func transitionToSearch(didCancel: Bool = false) {
+        super.transitionToSearch(didCancel)
         bookmarkButton.hidden = true
         locationView.alpha = 0.0
 
         locationView.superview?.backgroundColor = locationTextField?.backgroundColor
     }
 
-    override func leaveOverlayMode(didCancel cancel: Bool) {
-        if !inOverlayMode {
+    override func leaveSearchMode(didCancel cancel: Bool) {
+        if !inSearchMode {
             return
         }
 
-        super.leaveOverlayMode(didCancel: cancel)
+        super.leaveSearchMode(didCancel: cancel)
         locationView.alpha = 1.0
 
         // The orange brave button sliding in looks odd, lets fade it in in-place
@@ -300,7 +300,7 @@ class BraveURLBarView : URLBarView {
             }
         }
 
-        if inOverlayMode {
+        if inSearchMode {
             // In overlay mode, we always show the location view full width
             self.locationContainer.snp_remakeConstraints { make in
                 make.left.equalTo(self.leftSidePanelButton.snp_right)//.offset(URLBarViewUX.LocationLeftPadding)
@@ -311,10 +311,10 @@ class BraveURLBarView : URLBarView {
             pinLeftPanelButtonToLeft()
         } else {
             self.locationContainer.snp_remakeConstraints { make in
-                if self.toolbarIsShowing {
+                if self.showBottomToolbar {
                     // Firefox is not referring to the bottom toolbar, it is asking is this class showing more tool buttons
                     make.leading.equalTo(self.leftSidePanelButton.snp_trailing)
-                    make.trailing.equalTo(self).inset(UIConstants.ToolbarHeight * 3)
+                    make.trailing.equalTo(self).inset(UIConstants.ToolbarHeight * (3 + (pwdMgrButton.hidden == false ? 1 : 0)))
                 } else {
                     make.left.right.equalTo(self).inset(UIConstants.ToolbarHeight)
                 }
@@ -323,7 +323,7 @@ class BraveURLBarView : URLBarView {
                 make.top.equalTo(self).inset(8)
             }
 
-            if self.toolbarIsShowing {
+            if self.showBottomToolbar {
                 leftSidePanelButton.snp_remakeConstraints { make in
                     make.left.equalTo(self.forwardButton.snp_right)
                     make.centerY.equalTo(self.locationContainer)
@@ -337,6 +337,17 @@ class BraveURLBarView : URLBarView {
                 make.left.equalTo(self.locationContainer.snp_right)
                 make.centerY.equalTo(self.locationContainer)
                 make.size.equalTo(UIConstants.ToolbarHeight)
+            }
+            
+            if pwdMgrButton.hidden == true {
+                pwdMgrButton.snp_updateConstraints(closure: { (make) in
+                    make.width.equalTo(0)
+                })
+            }
+            else {
+                pwdMgrButton.snp_updateConstraints(closure: { (make) in
+                    make.width.equalTo(UIConstants.ToolbarHeight)
+                })
             }
         }
 
@@ -372,9 +383,15 @@ class BraveURLBarView : URLBarView {
         }
 
         shareButton.snp_remakeConstraints { make in
-            make.right.equalTo(self.tabsButton.snp_left).offset(0)
+            make.right.equalTo(self.pwdMgrButton.snp_left).offset(0)
             make.centerY.equalTo(self.locationContainer)
             make.width.equalTo(UIConstants.ToolbarHeight)
+        }
+        
+        pwdMgrButton.snp_remakeConstraints { make in
+            make.right.equalTo(self.tabsButton.snp_left).offset(0)
+            make.centerY.equalTo(self.locationContainer)
+            make.width.equalTo(0)
         }
 
         tabsButton.snp_makeConstraints { make in
@@ -382,7 +399,6 @@ class BraveURLBarView : URLBarView {
             make.trailing.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
-
 
         stopReloadButton.snp_makeConstraints { make in
             make.right.equalTo(self.locationView.snp_right)
