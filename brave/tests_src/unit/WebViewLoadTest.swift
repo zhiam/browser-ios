@@ -21,6 +21,33 @@ class WebViewLoadTest: XCTestCase {
         XCTAssert(ok, "open url failed for site: \(site)")
     }
 
+    func testJSPopupBlockedForNonCurrentWebView() {
+        let url = NSURL(string: "http://example.com")
+
+        let webview1 = BraveApp.getCurrentWebView()!
+        expectationForNotification(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
+        webview1.loadRequest(NSURLRequest(URL: url!))
+
+        waitForExpectationsWithTimeout(5) { (error:NSError?) -> Void in
+            if let _ = error {}
+        }
+
+        expectationForNotification(BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: nil, handler:nil)
+        getApp().tabManager.addTabAndSelect(NSURLRequest(URL: NSURL(string: "http://google.ca")!), configuration: WKWebViewConfiguration())
+        waitForExpectationsWithTimeout(5) { (error:NSError?) -> Void in
+            if let _ = error {}
+        }
+        let webview2 = BraveApp.getCurrentWebView()!
+        assert(webview1 !== webview2)
+        expectationForNotification("JavaScriptPopupBlockedHiddenWebView", object: nil, handler:nil)
+
+        webview1.stringByEvaluatingJavaScriptFromString("alert('hi')")
+        waitForExpectationsWithTimeout(5) { (error:NSError?) -> Void in
+            if let _ = error {}
+        }
+    }
+
+
     func testLocationChangeTimeoutHack() {
         // hackerone issue 175958
         let url = NSURL(string: "http://example.com")
@@ -53,6 +80,5 @@ class WebViewLoadTest: XCTestCase {
         waitForExpectationsWithTimeout(10) { (error:NSError?) -> Void in }
 
         XCTAssert(webview!.URL!.absoluteString!.contains("facebook"))
-
     }
 }
