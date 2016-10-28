@@ -39,11 +39,13 @@ class WebViewLoadTest: XCTestCase {
         }
         let webview2 = BraveApp.getCurrentWebView()!
         assert(webview1 !== webview2)
-        expectationForNotification("JavaScriptPopupBlockedHiddenWebView", object: nil, handler:nil)
 
-        webview1.stringByEvaluatingJavaScriptFromString("alert('hi')")
-        waitForExpectationsWithTimeout(5) { (error:NSError?) -> Void in
-            if let _ = error {}
+        for i in ["alert(' ')", "prompt(' ')", "confirm(' ')"] {
+            expectationForNotification("JavaScriptPopupBlockedHiddenWebView", object: nil, handler:nil)
+            webview1.stringByEvaluatingJavaScriptFromString(i)
+            waitForExpectationsWithTimeout(5) { (error:NSError?) -> Void in
+                if let _ = error {}
+            }
         }
     }
 
