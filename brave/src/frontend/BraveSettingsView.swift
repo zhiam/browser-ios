@@ -174,7 +174,7 @@ class VersionSetting : Setting {
 // Opens the search settings pane
 class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
 
-    static var currentSetting: (displayName: String, cellLabel: String, prefId: Int)?
+    static var currentSetting: ThirdPartyPasswordManagerType?
 
     private static let _prefName = kPrefName3rdPartyPasswordShortcutEnabled
     private static let _options =  [

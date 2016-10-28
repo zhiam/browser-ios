@@ -1180,25 +1180,22 @@ extension BrowserViewController: KeyboardHelperDelegate {
             self.findInPageContainer.layoutIfNeeded()
             self.snackBars.layoutIfNeeded()
         }
-        
-        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+
         if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
-            loginsHelper.show({ (shouldShow, managerOption) in
+            loginsHelper.show({ (shouldShow) in
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                     self.urlBar.pwdMgrButton.hidden = !shouldShow
-                    switch managerOption {
-                    case 1:
+                    
+                    guard let current = ThirdPartyPasswordManagerSetting.currentSetting else { return }
+                    if current == ThirdPartyPasswordManagers.OnePassword {
                         self.urlBar.pwdMgrButton.setImage(UIImage(named: "passhelper_1pwd")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                    case 2:
+                    } else if current == ThirdPartyPasswordManagers.LastPass {
                         self.urlBar.pwdMgrButton.setImage(UIImage(named: "passhelper_lastpass")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                    default:
-                        return
                     }
                     self.urlBar.updateConstraints()
                 }
             })
         }
-        #endif
     }
 
     func keyboardHelper(keyboardHelper: KeyboardHelper, keyboardDidShowWithState state: KeyboardState) {

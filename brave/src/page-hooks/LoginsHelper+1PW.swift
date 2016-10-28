@@ -10,11 +10,11 @@ var noPopupOnSites: [String] = []
 
 let kPrefName3rdPartyPasswordShortcutEnabled = "thirdPartyPasswordShortcutEnabled"
 
-
+typealias ThirdPartyPasswordManagerType = (displayName: String, cellLabel: String, prefId: Int)
 struct ThirdPartyPasswordManagers {
-    static let UseBuiltInInstead = (displayName: "Don't use", cellLabel: "", prefId: 0)
-    static let OnePassword = (displayName: "1Password", cellLabel: "1Password", prefId: 1)
-    static let LastPass = (displayName: "LastPass", cellLabel: "LastPass", prefId: 2)
+    static let UseBuiltInInstead:ThirdPartyPasswordManagerType = (displayName: "Don't use", cellLabel: "", prefId: 0)
+    static let OnePassword:ThirdPartyPasswordManagerType = (displayName: "1Password", cellLabel: "1Password", prefId: 1)
+    static let LastPass:ThirdPartyPasswordManagerType = (displayName: "LastPass", cellLabel: "LastPass", prefId: 2)
 }
 
 extension LoginsHelper {
@@ -30,19 +30,21 @@ extension LoginsHelper {
     
     // MARK: Form Accessory
     
-    func show(callback: (Bool, Int)->Void) {
+    func show(callback: (Bool)->Void) {
         thirdPartyHelper { (enabled) in
-            if enabled == true {
-                postAsyncToMain(0.1) {
-                    [weak self] in
-                    let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
-                    if let ok = result where ok == "true" {
-                        let option = self?.addPasswordManagerButton()
-                        callback(true, option!)
-                    }
-                    else {
-                        callback(false, 0)
-                    }
+            if !enabled {
+                return // No 3rd party password manager installed
+            }
+
+            postAsyncToMain(0.1) {
+                [weak self] in
+                let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
+                if let ok = result where ok == "true" {
+                    let didAdd = self?.addPasswordManagerButton() ?? false
+                    callback(didAdd)
+                }
+                else {
+                    callback(false)
                 }
             }
         }
@@ -73,11 +75,21 @@ extension LoginsHelper {
         }
         return UIView()
     }
-    
-    func addPasswordManagerButton() -> Int {
+
+    // Return true if added
+    func addPasswordManagerButton() -> Bool {
+        if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
+            return false
+        }
+
+        // If user explicitly selected to use the built-in autofill, don't add the PW manager button
+        if let setting = ThirdPartyPasswordManagerSetting.currentSetting where setting == ThirdPartyPasswordManagers.UseBuiltInInstead {
+            return false
+        }
+
         let windows = UIApplication.sharedApplication().windows.count
         if windows < 2 {
-            return 0
+            return false
         }
         
         let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
@@ -86,24 +98,10 @@ extension LoginsHelper {
             if let old = accessoryView.viewWithTag(tagForManagerButton) {
                 old.removeFromSuperview()
             }
-            
-            var option: Int = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0
-            if option == 0 {
-                if OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
-                    option = ThirdPartyPasswordManagers.OnePassword.prefId
-                }
-            }
-            
-            let image: UIImage?
-            switch option {
-            case 1:
-                image = UIImage(named: "passhelper_1pwd")
-            case 2:
-                image = UIImage(named: "passhelper_lastpass")
-            default:
-                return 0
-            }
-            
+
+            let lastPassSelected = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 == ThirdPartyPasswordManagers.LastPass.prefId
+            let image = lastPassSelected ? UIImage(named: "passhelper_lastpass") : UIImage(named: "passhelper_1pwd")
+
             let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
             managerButton.tag = tagForManagerButton
             managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
@@ -117,10 +115,10 @@ extension LoginsHelper {
             managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
             managerButton.frame = managerButtonFrame
             
-            return option
+            return true
         }
         
-        return 0
+        return false
     }
 
     // recurse through items until the 1pw/lastpass share item is found
@@ -162,7 +160,7 @@ extension LoginsHelper {
     @objc func onExecuteTapped(sender: UIButton) {
         self.browser?.webView?.endEditing(true)
 
-        let automaticallyPickPasswordShareItem = (ThirdPartyPasswordManagerSetting.currentSetting != nil) ? ThirdPartyPasswordManagerSetting.currentSetting! != ThirdPartyPasswordManagers.UseBuiltInInstead : false
+        let automaticallyPickPasswordShareItem = ThirdPartyPasswordManagerSetting.currentSetting != nil
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
         if automaticallyPickPasswordShareItem {
