@@ -5,8 +5,8 @@ private let log = Logger.browserLogger
 
 extension BrowserViewController: TabManagerDelegate {
     func tabManager(tabManager: TabManager, didSelectedTabChange selected: Browser?) {
-        if (urlBar.inOverlayMode) {
-            urlBar.leaveOverlayMode()
+        if (urlBar.inSearchMode) {
+            urlBar.leaveSearchMode()
         }
 
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it

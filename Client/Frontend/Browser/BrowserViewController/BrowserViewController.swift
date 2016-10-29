@@ -154,16 +154,16 @@ class BrowserViewController: UIViewController {
     }
 
     func updateToolbarStateForTraitCollection(newCollection: UITraitCollection) {
-        let showToolbar = shouldShowFooterForTraitCollection(newCollection)
+        let showBottomToolbar = shouldShowFooterForTraitCollection(newCollection)
 
-        urlBar.setShowToolbar(!showToolbar)
+        urlBar.shouldShowBottomToolbar(!showBottomToolbar)
         toolbar?.removeFromSuperview()
         toolbar?.browserToolbarDelegate = nil
         footerBackground?.removeFromSuperview()
         footerBackground = nil
         toolbar = nil
 
-        if showToolbar {
+        if showBottomToolbar {
             toolbar = BraveBrowserBottomToolbar()
             toolbar?.browserToolbarDelegate = self
             footerBackground = BlurWrapper(view: toolbar!)
@@ -321,7 +321,7 @@ class BrowserViewController: UIViewController {
         pasteAction = AccessibleAction(name: Strings.Paste, handler: { () -> Bool in
             if let pasteboardContents = UIPasteboard.generalPasteboard().string {
                 // Enter overlay mode and fire the text entered callback to make the search controller appear.
-                self.urlBar.enterOverlayMode(pasteboardContents, pasted: true)
+                self.urlBar.enterSearchMode(pasteboardContents, pasted: true)
                 self.urlBar(self.urlBar, didEnterText: pasteboardContents)
                 return true
             }
@@ -680,7 +680,7 @@ class BrowserViewController: UIViewController {
     }
 
     func updateInContentHomePanel(url: NSURL?) {
-        if !urlBar.inOverlayMode {
+        if !urlBar.inSearchMode {
             if AboutUtils.isAboutHomeURL(url){
                 urlBar.updateBookmarkStatus(false)
                 showHomePanelController(inline: (tabManager.selectedTab?.canGoForward ?? false || tabManager.selectedTab?.canGoBack ?? false))
@@ -697,7 +697,7 @@ class BrowserViewController: UIViewController {
         }
 
         urlBar.currentURL = url
-        urlBar.leaveOverlayMode()
+        urlBar.leaveSearchMode()
 
 #if !BRAVE // TODO hookup when adding desktop AU
         if let webView = tab.webView {
@@ -748,7 +748,7 @@ class BrowserViewController: UIViewController {
     }
 
     override func accessibilityPerformEscape() -> Bool {
-        if urlBar.inOverlayMode {
+        if urlBar.inSearchMode {
             urlBar.SELdidClickCancel()
             return true
         } else if let selectedTab = tabManager.selectedTab where selectedTab.canGoBack {
@@ -1180,12 +1180,22 @@ extension BrowserViewController: KeyboardHelperDelegate {
             self.findInPageContainer.layoutIfNeeded()
             self.snackBars.layoutIfNeeded()
         }
-        
-        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
+
         if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
-            loginsHelper.show()
+            loginsHelper.show({ (shouldShow) in
+                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+                    self.urlBar.pwdMgrButton.hidden = !shouldShow
+                    
+                    guard let current = ThirdPartyPasswordManagerSetting.currentSetting else { return }
+                    if current == ThirdPartyPasswordManagers.OnePassword {
+                        self.urlBar.pwdMgrButton.setImage(UIImage(named: "passhelper_1pwd")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                    } else if current == ThirdPartyPasswordManagers.LastPass {
+                        self.urlBar.pwdMgrButton.setImage(UIImage(named: "passhelper_lastpass")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                    }
+                    self.urlBar.updateConstraints()
+                }
+            })
         }
-        #endif
     }
 
     func keyboardHelper(keyboardHelper: KeyboardHelper, keyboardDidShowWithState state: KeyboardState) {
@@ -1204,6 +1214,8 @@ extension BrowserViewController: KeyboardHelperDelegate {
         #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
         if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
             loginsHelper.hide()
+            urlBar.pwdMgrButton.hidden = true
+            urlBar.updateConstraints()
         }
         #endif
     }

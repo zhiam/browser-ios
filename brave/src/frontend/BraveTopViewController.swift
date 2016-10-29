@@ -210,7 +210,7 @@ extension BraveTopViewController : HomePanelDelegate {
     func homePanelDidRequestToCreateAccount(homePanel: HomePanel) {}
     func homePanel(homePanel: HomePanel, didSelectURL url: NSURL, visitType: VisitType) {
         print("selected \(url)")
-        browserViewController.urlBar.leaveOverlayMode()
+        browserViewController.urlBar.leaveSearchMode()
         browserViewController.tabManager.selectedTab?.loadRequest(NSURLRequest(URL: url))
         togglePanel(mainSidePanel)
     }
