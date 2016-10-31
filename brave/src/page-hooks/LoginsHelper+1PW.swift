@@ -34,7 +34,7 @@ extension LoginsHelper {
                 return // No 3rd party password manager installed
             }
 
-            postAsyncToMain(0.1) {
+            postAsyncToMain {
                 [weak self] in
                 let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
                 if let ok = result, me = self where ok == "true" {
@@ -50,18 +50,21 @@ extension LoginsHelper {
             }
         }
     }
-    
+
+    func getKeyboardAccessory() -> UIView? {
+        let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
+        let accessoryView: UIView = findFormAccessory(keyboardWindow)
+        if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
+            return accessoryView.viewWithTag(tagForManagerButton)
+        }
+        return nil
+    }
+
     func hideKeyboardAccessory() {
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             return
         }
-        let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
-        let accessoryView: UIView = findFormAccessory(keyboardWindow)
-        if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
-            if let manager = accessoryView.viewWithTag(tagForManagerButton) {
-                manager.removeFromSuperview()
-            }
-        }
+        getKeyboardAccessory()?.removeFromSuperview()
     }
     
     func findFormAccessory(vw: UIView) -> UIView {

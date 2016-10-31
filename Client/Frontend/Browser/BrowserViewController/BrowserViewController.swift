@@ -1181,8 +1181,15 @@ extension BrowserViewController: KeyboardHelperDelegate {
             self.snackBars.layoutIfNeeded()
         }
 
+
+
         if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
-            loginsHelper.passwordManagerButtonSetup({ (shouldShow) in
+            // keyboardWillShowWithState is called during a hide (brilliant), and because PW button setup is async make sure to exit here if already showing the button, or the show code will be called after kb hide
+            if !urlBar.pwdMgrButton.hidden || loginsHelper.getKeyboardAccessory() != nil {
+                return
+            }
+
+                loginsHelper.passwordManagerButtonSetup({ (shouldShow) in
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                     self.urlBar.pwdMgrButton.hidden = !shouldShow
 
