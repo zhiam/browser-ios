@@ -339,15 +339,8 @@ class BraveURLBarView : URLBarView {
                 make.size.equalTo(UIConstants.ToolbarHeight)
             }
             
-            if pwdMgrButton.hidden == true {
-                pwdMgrButton.snp_updateConstraints(closure: { (make) in
-                    make.width.equalTo(0)
-                })
-            }
-            else {
-                pwdMgrButton.snp_updateConstraints(closure: { (make) in
-                    make.width.equalTo(UIConstants.ToolbarHeight)
-                })
+            pwdMgrButton.snp_updateConstraints { make in
+                make.width.equalTo(pwdMgrButton.hidden ? 0 : UIConstants.ToolbarHeight)
             }
         }
 

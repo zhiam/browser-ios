@@ -4,8 +4,7 @@ import Shared
 import Storage
 import Deferred
 
-var iPadOffscreenView = UIView(frame: CGRectMake(3000,0,1,1))
-let tagForManagerButton = 64682
+let tagForManagerButton = NSUUID().hash
 var noPopupOnSites: [String] = []
 
 let kPrefName3rdPartyPasswordShortcutEnabled = "thirdPartyPasswordShortcutEnabled"
@@ -27,21 +26,22 @@ extension LoginsHelper {
             enabled(true)
         }
     }
-    
-    // MARK: Form Accessory
-    
-    func show(callback: (Bool)->Void) {
+
+    func passwordManagerButtonSetup(callback: (Bool)->Void) {
         thirdPartyHelper { (enabled) in
             if !enabled {
                 return // No 3rd party password manager installed
             }
 
-            postAsyncToMain(0.1) {
+            postAsyncToMain {
                 [weak self] in
                 let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
-                if let ok = result where ok == "true" {
-                    let didAdd = self?.addPasswordManagerButton() ?? false
-                    callback(didAdd)
+                if let ok = result, me = self where ok == "true" {
+                    let show = me.shouldShowPasswordManagerButton()
+                    if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
+                        me.addPasswordManagerButtonKeyboardAccessory()
+                    }
+                    callback(show)
                 }
                 else {
                     callback(false)
@@ -49,15 +49,21 @@ extension LoginsHelper {
             }
         }
     }
-    
-    func hide() {
+
+    func getKeyboardAccessory() -> UIView? {
         let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
         let accessoryView: UIView = findFormAccessory(keyboardWindow)
         if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
-            if let manager = accessoryView.viewWithTag(tagForManagerButton) {
-                manager.removeFromSuperview()
-            }
+            return accessoryView.viewWithTag(tagForManagerButton)
         }
+        return nil
+    }
+
+    func hideKeyboardAccessory() {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return
+        }
+        getKeyboardAccessory()?.removeFromSuperview()
     }
     
     func findFormAccessory(vw: UIView) -> UIView {
@@ -76,8 +82,7 @@ extension LoginsHelper {
         return UIView()
     }
 
-    // Return true if added
-    func addPasswordManagerButton() -> Bool {
+    func shouldShowPasswordManagerButton() -> Bool {
         if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
             return false
         }
@@ -91,34 +96,40 @@ extension LoginsHelper {
         if windows < 2 {
             return false
         }
-        
+
+        return true
+    }
+
+    func addPasswordManagerButtonKeyboardAccessory() {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return
+        }
+
         let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
         let accessoryView: UIView = findFormAccessory(keyboardWindow)
-        if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
-            if let old = accessoryView.viewWithTag(tagForManagerButton) {
-                old.removeFromSuperview()
-            }
-
-            let lastPassSelected = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 == ThirdPartyPasswordManagers.LastPass.prefId
-            let image = lastPassSelected ? UIImage(named: "passhelper_lastpass") : UIImage(named: "passhelper_1pwd")
-
-            let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
-            managerButton.tag = tagForManagerButton
-            managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
-            managerButton.setImage(image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-            managerButton.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
-            managerButton.sizeToFit()
-            accessoryView.addSubview(managerButton)
-            
-            var managerButtonFrame = managerButton.frame
-            managerButtonFrame.origin.x = rint((CGRectGetWidth(UIScreen.mainScreen().bounds) - CGRectGetWidth(managerButtonFrame)) / 2.0)
-            managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
-            managerButton.frame = managerButtonFrame
-            
-            return true
+        if !accessoryView.description.hasPrefix("<UIWebFormAccessory") {
+            return
         }
         
-        return false
+        if let old = accessoryView.viewWithTag(tagForManagerButton) {
+            old.removeFromSuperview()
+        }
+
+        let lastPassSelected = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 == ThirdPartyPasswordManagers.LastPass.prefId
+        let image = lastPassSelected ? UIImage(named: "passhelper_lastpass") : UIImage(named: "passhelper_1pwd")
+
+        let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
+        managerButton.tag = tagForManagerButton
+        managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
+        managerButton.setImage(image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        managerButton.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
+        managerButton.sizeToFit()
+        accessoryView.addSubview(managerButton)
+        
+        var managerButtonFrame = managerButton.frame
+        managerButtonFrame.origin.x = rint((CGRectGetWidth(UIScreen.mainScreen().bounds) - CGRectGetWidth(managerButtonFrame)) / 2.0)
+        managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
+        managerButton.frame = managerButtonFrame
     }
 
     // recurse through items until the 1pw/lastpass share item is found
@@ -164,13 +175,7 @@ extension LoginsHelper {
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
         if automaticallyPickPasswordShareItem {
-            if isIPad && iPadOffscreenView.superview == nil {
-                getApp().browserViewController.view.addSubview(iPadOffscreenView)
-            }
-
-            if !isIPad {
-                UIActivityViewController.hackyHideSharePickerOn(true)
-            }
+            UIActivityViewController.hackyHideSharePickerOn(true)
 
             UIView.animateWithDuration(0.2) {
                 getApp().braveTopViewController.view.alpha = 0.5
@@ -207,23 +212,17 @@ extension LoginsHelper {
 
                 if isIPad {
                     UIActivityViewController.hackyDismissal()
-                    iPadOffscreenView.removeFromSuperview()
-                    BraveApp.getPrefs()?.setInt(0, forKey: kPrefName3rdPartyPasswordShortcutEnabled)
-                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Can't find item named \(itemToLookFor)")
-                } else {
-                    // Just show the regular share screen, this isn't a fatal problem on iPhone
-                    UIActivityViewController.hackyHideSharePickerOn(false)
+
+                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Make sure \(itemToLookFor) is enabled in the Share menu")
                 }
+                // Just show the regular share screen, this isn't a fatal problem on iPhone
+                UIActivityViewController.hackyHideSharePickerOn(false)
             }
         }
 
         passwordHelper.fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
             if automaticallyPickPasswordShareItem {
-                if isIPad {
-                    iPadOffscreenView.removeFromSuperview()
-                } else {
-                    UIActivityViewController.hackyHideSharePickerOn(false)
-                }
+                UIActivityViewController.hackyHideSharePickerOn(false)
 
                 UIView.animateWithDuration(0.1) {
                     getApp().braveTopViewController.view.alpha = 1.0
