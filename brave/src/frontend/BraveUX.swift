@@ -35,6 +35,8 @@ struct BraveUX {
     
     static let BackgroundColorForTopSitesPrivate = UIColor(red: 63/255.0, green: 63/255.0, blue: 63/255.0, alpha: 1.0)
 
+    static let DefaultBlue = UIColor(red: 28/255.0, green: 111/255.0, blue: 202/255.0, alpha: 1.0)
+    
     // debug settings
     //  static var IsToolbarHidingOff = false
     //  static var IsOverrideScrollingSpeedAndMakeSlower = false // overrides IsHighLoadAnimationAllowed effect

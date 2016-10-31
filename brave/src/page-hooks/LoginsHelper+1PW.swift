@@ -120,7 +120,7 @@ extension LoginsHelper {
 
         let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
         managerButton.tag = tagForManagerButton
-        managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
+        managerButton.tintColor = BraveUX.DefaultBlue
         managerButton.setImage(image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         managerButton.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
         managerButton.sizeToFit()
