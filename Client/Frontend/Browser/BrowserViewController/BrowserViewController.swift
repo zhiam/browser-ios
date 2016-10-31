@@ -1182,17 +1182,14 @@ extension BrowserViewController: KeyboardHelperDelegate {
         }
 
         if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
-            loginsHelper.show({ (shouldShow) in
+            loginsHelper.passwordManagerButtonSetup({ (shouldShow) in
                 if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
                     self.urlBar.pwdMgrButton.hidden = !shouldShow
-                    
-                    guard let current = ThirdPartyPasswordManagerSetting.currentSetting else { return }
-                    if current == ThirdPartyPasswordManagers.OnePassword {
-                        self.urlBar.pwdMgrButton.setImage(UIImage(named: "passhelper_1pwd")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                    } else if current == ThirdPartyPasswordManagers.LastPass {
-                        self.urlBar.pwdMgrButton.setImage(UIImage(named: "passhelper_lastpass")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                    }
-                    self.urlBar.updateConstraints()
+
+                    let iconName = ThirdPartyPasswordManagerSetting.currentSetting ?? ThirdPartyPasswordManagers.OnePassword == ThirdPartyPasswordManagers.LastPass ? "passhelper_lastpass" : "passhelper_1pwd"
+                    self.urlBar.pwdMgrButton.setImage(UIImage(named: iconName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+
+                    self.urlBar.setNeedsUpdateConstraints()
                 }
             })
         }
@@ -1211,13 +1208,11 @@ extension BrowserViewController: KeyboardHelperDelegate {
             self.snackBars.layoutIfNeeded()
         }
         
-        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
         if let loginsHelper = tabManager.selectedTab?.getHelper(LoginsHelper) {
-            loginsHelper.hide()
+            loginsHelper.hideKeyboardAccessory()
             urlBar.pwdMgrButton.hidden = true
-            urlBar.updateConstraints()
+            urlBar.setNeedsUpdateConstraints()
         }
-        #endif
     }
 }
 

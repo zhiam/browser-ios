@@ -27,10 +27,8 @@ extension LoginsHelper {
             enabled(true)
         }
     }
-    
-    // MARK: Form Accessory
-    
-    func show(callback: (Bool)->Void) {
+
+    func passwordManagerButtonSetup(callback: (Bool)->Void) {
         thirdPartyHelper { (enabled) in
             if !enabled {
                 return // No 3rd party password manager installed
@@ -39,9 +37,12 @@ extension LoginsHelper {
             postAsyncToMain(0.1) {
                 [weak self] in
                 let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
-                if let ok = result where ok == "true" {
-                    let didAdd = self?.addPasswordManagerButton() ?? false
-                    callback(didAdd)
+                if let ok = result, me = self where ok == "true" {
+                    let show = me.shouldShowPasswordManagerButton()
+                    if UIDevice.currentDevice().userInterfaceIdiom != .Pad {
+                        me.addPasswordManagerButtonKeyboardAccessory()
+                    }
+                    callback(show)
                 }
                 else {
                     callback(false)
@@ -50,7 +51,10 @@ extension LoginsHelper {
         }
     }
     
-    func hide() {
+    func hideKeyboardAccessory() {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return
+        }
         let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
         let accessoryView: UIView = findFormAccessory(keyboardWindow)
         if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
@@ -76,8 +80,7 @@ extension LoginsHelper {
         return UIView()
     }
 
-    // Return true if added
-    func addPasswordManagerButton() -> Bool {
+    func shouldShowPasswordManagerButton() -> Bool {
         if !OnePasswordExtension.sharedExtension().isAppExtensionAvailable() {
             return false
         }
@@ -91,34 +94,40 @@ extension LoginsHelper {
         if windows < 2 {
             return false
         }
-        
+
+        return true
+    }
+
+    func addPasswordManagerButtonKeyboardAccessory() {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            return
+        }
+
         let keyboardWindow: UIWindow = UIApplication.sharedApplication().windows[1] as UIWindow
         let accessoryView: UIView = findFormAccessory(keyboardWindow)
-        if accessoryView.description.hasPrefix("<UIWebFormAccessory") {
-            if let old = accessoryView.viewWithTag(tagForManagerButton) {
-                old.removeFromSuperview()
-            }
-
-            let lastPassSelected = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 == ThirdPartyPasswordManagers.LastPass.prefId
-            let image = lastPassSelected ? UIImage(named: "passhelper_lastpass") : UIImage(named: "passhelper_1pwd")
-
-            let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
-            managerButton.tag = tagForManagerButton
-            managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
-            managerButton.setImage(image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-            managerButton.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
-            managerButton.sizeToFit()
-            accessoryView.addSubview(managerButton)
-            
-            var managerButtonFrame = managerButton.frame
-            managerButtonFrame.origin.x = rint((CGRectGetWidth(UIScreen.mainScreen().bounds) - CGRectGetWidth(managerButtonFrame)) / 2.0)
-            managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
-            managerButton.frame = managerButtonFrame
-            
-            return true
+        if !accessoryView.description.hasPrefix("<UIWebFormAccessory") {
+            return
         }
         
-        return false
+        if let old = accessoryView.viewWithTag(tagForManagerButton) {
+            old.removeFromSuperview()
+        }
+
+        let lastPassSelected = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 == ThirdPartyPasswordManagers.LastPass.prefId
+        let image = lastPassSelected ? UIImage(named: "passhelper_lastpass") : UIImage(named: "passhelper_1pwd")
+
+        let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
+        managerButton.tag = tagForManagerButton
+        managerButton.tintColor = UIColor(white: 0.0, alpha: 0.3)
+        managerButton.setImage(image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        managerButton.addTarget(self, action: #selector(LoginsHelper.onExecuteTapped), forControlEvents: .TouchUpInside)
+        managerButton.sizeToFit()
+        accessoryView.addSubview(managerButton)
+        
+        var managerButtonFrame = managerButton.frame
+        managerButtonFrame.origin.x = rint((CGRectGetWidth(UIScreen.mainScreen().bounds) - CGRectGetWidth(managerButtonFrame)) / 2.0)
+        managerButtonFrame.origin.y = rint((CGRectGetHeight(accessoryView.bounds) - CGRectGetHeight(managerButtonFrame)) / 2.0)
+        managerButton.frame = managerButtonFrame
     }
 
     // recurse through items until the 1pw/lastpass share item is found
