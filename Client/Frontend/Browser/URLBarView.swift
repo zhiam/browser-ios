@@ -102,7 +102,7 @@ class URLBarView: UIView {
 
     private var currentTheme: String = Theme.NormalMode
 
-    var showBottomToolbar = false
+    var bottomToolbarIsHidden = false
 
     var locationTextField: ToolbarTextField?
 
@@ -277,12 +277,12 @@ class URLBarView: UIView {
     // Ideally we'd split this implementation in two, one URLBarView with a toolbar and one without
     // However, switching views dynamically at runtime is a difficult. For now, we just use one view
     // that can show in either mode.
-    func shouldShowBottomToolbar(show: Bool) {
-        showBottomToolbar = show
+    func hideBottomToolbar(isHidden: Bool) {
+        bottomToolbarIsHidden = isHidden
         setNeedsUpdateConstraints()
         // when we transition from portrait to landscape, calling this here causes
         // the constraints to be calculated too early and there are constraint errors
-        if !showBottomToolbar {
+        if !bottomToolbarIsHidden {
             updateConstraintsIfNeeded()
         }
         updateViewsForSearchModeAndToolbarChanges()
@@ -420,10 +420,10 @@ class URLBarView: UIView {
         // Make sure everything is showing during the transition (we'll hide it afterwards).
         self.bringSubviewToFront(self.locationContainer)
         self.cancelButton.hidden = false
-        self.shareButton.hidden = !self.showBottomToolbar
-        self.bookmarkButton.hidden = !self.showBottomToolbar
-        self.forwardButton.hidden = !self.showBottomToolbar
-        self.backButton.hidden = !self.showBottomToolbar
+        self.shareButton.hidden = !self.bottomToolbarIsHidden
+        self.bookmarkButton.hidden = !self.bottomToolbarIsHidden
+        self.forwardButton.hidden = !self.bottomToolbarIsHidden
+        self.backButton.hidden = !self.bottomToolbarIsHidden
         self.stopReloadButton.hidden = false
     }
 
@@ -465,11 +465,11 @@ class URLBarView: UIView {
 
     func updateViewsForSearchModeAndToolbarChanges() {
         self.cancelButton.hidden = !inSearchMode
-        self.shareButton.hidden = !self.showBottomToolbar || inSearchMode
-        self.bookmarkButton.hidden = !self.showBottomToolbar || inSearchMode
-        self.forwardButton.hidden = !self.showBottomToolbar || inSearchMode
-        self.backButton.hidden = !self.showBottomToolbar || inSearchMode
-        self.stopReloadButton.hidden = showBottomToolbar
+        self.shareButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
+        self.bookmarkButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
+        self.forwardButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
+        self.backButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
+        self.stopReloadButton.hidden = bottomToolbarIsHidden
     }
 
     func animateToSearchState(searchMode search: Bool, didCancel cancel: Bool = false) {
@@ -542,7 +542,7 @@ extension URLBarView: BrowserToolbarProtocol {
                 guard let locationTextField = locationTextField else { return nil }
                 return [locationTextField, cancelButton]
             } else {
-                if showBottomToolbar {
+                if bottomToolbarIsHidden {
                     return [backButton, forwardButton, stopReloadButton, locationView, shareButton, bookmarkButton, tabsButton]
                 } else {
                     return [locationView, tabsButton, stopReloadButton]

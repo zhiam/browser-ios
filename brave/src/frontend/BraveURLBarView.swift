@@ -202,7 +202,7 @@ class BraveURLBarView : URLBarView {
     }
 
     override func updateTabCount(count: Int, animated: Bool = true) {
-        super.updateTabCount(count, animated: showBottomToolbar)
+        super.updateTabCount(count, animated: bottomToolbarIsHidden)
         BraveBrowserBottomToolbar.updateTabCountDuplicatedButton(count, animated: animated)
     }
 
@@ -218,7 +218,7 @@ class BraveURLBarView : URLBarView {
                 guard let locationTextField = locationTextField else { return nil }
                 return [leftSidePanelButton, locationTextField, cancelButton]
             } else {
-                if showBottomToolbar {
+                if bottomToolbarIsHidden {
                     return [backButton, forwardButton, leftSidePanelButton, locationView, braveButton, shareButton, tabsButton]
                 } else {
                     return [leftSidePanelButton, locationView, braveButton]
@@ -233,7 +233,7 @@ class BraveURLBarView : URLBarView {
     override func updateViewsForSearchModeAndToolbarChanges() {
         super.updateViewsForSearchModeAndToolbarChanges()
 
-        if !self.showBottomToolbar {
+        if !self.bottomToolbarIsHidden {
             self.tabsButton.hidden = true
         } else {
             self.tabsButton.hidden = false
@@ -311,7 +311,7 @@ class BraveURLBarView : URLBarView {
             pinLeftPanelButtonToLeft()
         } else {
             self.locationContainer.snp_remakeConstraints { make in
-                if self.showBottomToolbar {
+                if self.bottomToolbarIsHidden {
                     // Firefox is not referring to the bottom toolbar, it is asking is this class showing more tool buttons
                     make.leading.equalTo(self.leftSidePanelButton.snp_trailing)
                     make.trailing.equalTo(self).inset(UIConstants.ToolbarHeight * (3 + (pwdMgrButton.hidden == false ? 1 : 0)))
@@ -323,7 +323,7 @@ class BraveURLBarView : URLBarView {
                 make.top.equalTo(self).inset(8)
             }
 
-            if self.showBottomToolbar {
+            if self.bottomToolbarIsHidden {
                 leftSidePanelButton.snp_remakeConstraints { make in
                     make.left.equalTo(self.forwardButton.snp_right)
                     make.centerY.equalTo(self.locationContainer)

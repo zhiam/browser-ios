@@ -154,16 +154,16 @@ class BrowserViewController: UIViewController {
     }
 
     func updateToolbarStateForTraitCollection(newCollection: UITraitCollection) {
-        let showBottomToolbar = shouldShowFooterForTraitCollection(newCollection)
+        let bottomToolbarIsHidden = shouldShowFooterForTraitCollection(newCollection)
 
-        urlBar.shouldShowBottomToolbar(!showBottomToolbar)
+        urlBar.hideBottomToolbar(!bottomToolbarIsHidden)
         toolbar?.removeFromSuperview()
         toolbar?.browserToolbarDelegate = nil
         footerBackground?.removeFromSuperview()
         footerBackground = nil
         toolbar = nil
 
-        if showBottomToolbar {
+        if bottomToolbarIsHidden {
             toolbar = BraveBrowserBottomToolbar()
             toolbar?.browserToolbarDelegate = self
             footerBackground = BlurWrapper(view: toolbar!)
