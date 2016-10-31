@@ -14,11 +14,20 @@ __weak UIViewController *currentActivityView = nil;
     });
 }
 
+void forceAlpha(CGFloat alpha)
+{
+    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        currentActivityView.view.superview.superview.alpha = alpha;
+    } else {
+        currentActivityView.view.superview.alpha = alpha;
+    }
+}
+
 + (void)hackyHideSharePickerOn:(bool)on
 {
     hackyHide = on;
     if (!on && currentActivityView) {
-        currentActivityView.view.superview.alpha = 1.0;
+        forceAlpha(1.0);
     }
 }
 
@@ -26,7 +35,7 @@ __weak UIViewController *currentActivityView = nil;
 {
     if (hackyHide) {
         currentActivityView = self;
-        self.view.superview.alpha = 0.0;
+        forceAlpha(0.0);
     }
     [self _viewWillAppear:animated];
 }

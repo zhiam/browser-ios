@@ -4,8 +4,7 @@ import Shared
 import Storage
 import Deferred
 
-var iPadOffscreenView = UIView(frame: CGRectMake(3000,0,1,1))
-let tagForManagerButton = 64682
+let tagForManagerButton = NSUUID().hash
 var noPopupOnSites: [String] = []
 
 let kPrefName3rdPartyPasswordShortcutEnabled = "thirdPartyPasswordShortcutEnabled"
@@ -176,13 +175,7 @@ extension LoginsHelper {
         let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
         if automaticallyPickPasswordShareItem {
-            if isIPad && iPadOffscreenView.superview == nil {
-                getApp().browserViewController.view.addSubview(iPadOffscreenView)
-            }
-
-            if !isIPad {
-                UIActivityViewController.hackyHideSharePickerOn(true)
-            }
+            UIActivityViewController.hackyHideSharePickerOn(true)
 
             UIView.animateWithDuration(0.2) {
                 getApp().braveTopViewController.view.alpha = 0.5
@@ -219,23 +212,17 @@ extension LoginsHelper {
 
                 if isIPad {
                     UIActivityViewController.hackyDismissal()
-                    iPadOffscreenView.removeFromSuperview()
-                    BraveApp.getPrefs()?.setInt(0, forKey: kPrefName3rdPartyPasswordShortcutEnabled)
-                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Can't find item named \(itemToLookFor)")
-                } else {
-                    // Just show the regular share screen, this isn't a fatal problem on iPhone
-                    UIActivityViewController.hackyHideSharePickerOn(false)
+
+                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Make sure \(itemToLookFor) is enabled in the Share menu")
                 }
+                // Just show the regular share screen, this isn't a fatal problem on iPhone
+                UIActivityViewController.hackyHideSharePickerOn(false)
             }
         }
 
         passwordHelper.fillItemIntoWebView(browser!.webView!, forViewController: getApp().browserViewController, sender: sender, showOnlyLogins: true) { (success, error) -> Void in
             if automaticallyPickPasswordShareItem {
-                if isIPad {
-                    iPadOffscreenView.removeFromSuperview()
-                } else {
-                    UIActivityViewController.hackyHideSharePickerOn(false)
-                }
+                UIActivityViewController.hackyHideSharePickerOn(false)
 
                 UIView.animateWithDuration(0.1) {
                     getApp().braveTopViewController.view.alpha = 1.0
