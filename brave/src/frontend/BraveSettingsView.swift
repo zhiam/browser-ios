@@ -184,7 +184,7 @@ class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
     ]
 
     static func setupOnAppStart() {
-        let current = BraveApp.getPrefs()?.intForKey(_prefName) ?? 0
+        guard let current = BraveApp.getPrefs()?.intForKey(_prefName) else { return }
         switch Int(current) {
         case ThirdPartyPasswordManagers.OnePassword.prefId:
             currentSetting = ThirdPartyPasswordManagers.OnePassword
