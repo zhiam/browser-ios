@@ -698,7 +698,7 @@ extension BraveWebView: UIWebViewDelegate {
     }
 
     func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
-        if let location = self.stringByEvaluatingJavaScriptFromString("window.location.href") {
+        if let location = self.stringByEvaluatingJavaScriptFromString("window.location.href") where !location.contains("localhost") {
             setUrl(NSURL(string: location), reliableSource: false)
         }
 
