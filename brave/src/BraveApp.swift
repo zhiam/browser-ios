@@ -149,7 +149,7 @@ class BraveApp {
         #if !TEST
             PrivateBrowsing.singleton.startupCheckIfKilledWhileInPBMode()
             CookieSetting.setupOnAppStart()
-            ThirdPartyPasswordManagerSetting.setupOnAppStart()
+            PasswordManagerButtonSetting.setupOnAppStart()
             //BlankTargetLinkHandler.updatedEnabledState()
         #endif
 

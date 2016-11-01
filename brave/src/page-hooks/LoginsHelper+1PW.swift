@@ -10,8 +10,8 @@ var noPopupOnSites: [String] = []
 let kPrefName3rdPartyPasswordShortcutEnabled = "thirdPartyPasswordShortcutEnabled"
 
 typealias ThirdPartyPasswordManagerType = (displayName: String, cellLabel: String, prefId: Int)
-struct ThirdPartyPasswordManagers {
-    static let UseBuiltInInstead:ThirdPartyPasswordManagerType = (displayName: "Don't use", cellLabel: "", prefId: 0)
+struct PasswordManagerButtonAction {
+    static let ShowPicker:ThirdPartyPasswordManagerType = (displayName: "Show picker", cellLabel: "", prefId: 0)
     static let OnePassword:ThirdPartyPasswordManagerType = (displayName: "1Password", cellLabel: "1Password", prefId: 1)
     static let LastPass:ThirdPartyPasswordManagerType = (displayName: "LastPass", cellLabel: "LastPass", prefId: 2)
 }
@@ -87,11 +87,6 @@ extension LoginsHelper {
             return false
         }
 
-        // If user explicitly selected to use the built-in autofill, don't add the PW manager button
-        if let setting = ThirdPartyPasswordManagerSetting.currentSetting where setting == ThirdPartyPasswordManagers.UseBuiltInInstead {
-            return false
-        }
-
         let windows = UIApplication.sharedApplication().windows.count
         if windows < 2 {
             return false
@@ -115,7 +110,7 @@ extension LoginsHelper {
             old.removeFromSuperview()
         }
 
-        let lastPassSelected = ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0 == ThirdPartyPasswordManagers.LastPass.prefId
+        let lastPassSelected = PasswordManagerButtonSetting.currentSetting?.prefId ?? 0 == PasswordManagerButtonAction.LastPass.prefId
         let image = lastPassSelected ? UIImage(named: "passhelper_lastpass") : UIImage(named: "passhelper_1pwd")
 
         let managerButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
@@ -171,30 +166,34 @@ extension LoginsHelper {
     @objc func onExecuteTapped(sender: UIButton) {
         self.browser?.webView?.endEditing(true)
 
-        let automaticallyPickPasswordShareItem = ThirdPartyPasswordManagerSetting.currentSetting != nil
-        let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
+        let automaticallyPickPasswordShareItem = PasswordManagerButtonSetting.currentSetting != nil && PasswordManagerButtonSetting.currentSetting!.prefId != PasswordManagerButtonAction.ShowPicker.prefId
 
         if automaticallyPickPasswordShareItem {
             UIActivityViewController.hackyHideSharePickerOn(true)
 
             UIView.animateWithDuration(0.2) {
+                // dim screen to show user feedback button was tapped
                 getApp().braveTopViewController.view.alpha = 0.5
             }
         }
 
         let passwordHelper = OnePasswordExtension.sharedExtension()
         passwordHelper.dismissBlock = { action in
+            if PasswordManagerButtonSetting.currentSetting != nil {
+                return
+            }
+
+            // At this point, user has not explicitly selected a currentSetting, let's choose one for them if a PW manager was picked
             if action.contains("onepassword") {
-                ThirdPartyPasswordManagerSetting.currentSetting = ThirdPartyPasswordManagers.OnePassword
+                PasswordManagerButtonSetting.currentSetting = PasswordManagerButtonAction.OnePassword
             }
             else if action.contains("lastpass") {
-                ThirdPartyPasswordManagerSetting.currentSetting = ThirdPartyPasswordManagers.LastPass
+                PasswordManagerButtonSetting.currentSetting = PasswordManagerButtonAction.LastPass
             }
-            else {
-                ThirdPartyPasswordManagerSetting.currentSetting = ThirdPartyPasswordManagers.UseBuiltInInstead
+
+            if let setting = PasswordManagerButtonSetting.currentSetting {
+                BraveApp.getPrefs()?.setInt(Int32(setting.prefId), forKey: kPrefName3rdPartyPasswordShortcutEnabled)
             }
-            
-            BraveApp.getPrefs()?.setInt(Int32(ThirdPartyPasswordManagerSetting.currentSetting?.prefId ?? 0), forKey: kPrefName3rdPartyPasswordShortcutEnabled)
         }
 
         passwordHelper.shareDidAppearBlock = {
@@ -202,7 +201,7 @@ extension LoginsHelper {
                 return
             }
 
-            guard let itemToLookFor = ThirdPartyPasswordManagerSetting.currentSetting?.cellLabel else { return }
+            guard let itemToLookFor = PasswordManagerButtonSetting.currentSetting?.cellLabel else { return }
             let found = self.selectShareItem(getApp().window!, shareItemName: itemToLookFor)
 
             if !found {
@@ -210,12 +209,6 @@ extension LoginsHelper {
                     getApp().braveTopViewController.view.alpha = 1.0
                 }
 
-                if isIPad {
-                    UIActivityViewController.hackyDismissal()
-
-                    BraveApp.showErrorAlert(title: "Password shortcut error", error: "Make sure \(itemToLookFor) is enabled in the Share menu")
-                }
-                // Just show the regular share screen, this isn't a fatal problem on iPhone
                 UIActivityViewController.hackyHideSharePickerOn(false)
             }
         }

@@ -73,30 +73,28 @@ class BraveSettingsView : AppSettingsTableViewController {
         }
 
 
-        #if !DISABLE_THIRD_PARTY_PASSWORD_SNACKBAR
-            if BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
-                generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
+        if BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
+            generalSettings.append(PasswordManagerButtonSetting(profile: self.profile))
+        }
+
+        BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true).upon {
+            result in
+            if result == BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
+                return
             }
+            BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled = result
 
-            BraveApp.is3rdPartyPasswordManagerInstalled(refreshLookup: true).upon {
-                result in
-                if result == BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled {
-                    return
-                }
-                BraveSettingsView.cachedIs3rdPartyPasswordManagerInstalled = result
-
-                // TODO: if PW manager is removed, settings must be opening a 2nd time for setting to disappear.
-                if result {
-                    postAsyncToMain(0) { // move from db thread back to main
-                        generalSettings.append(ThirdPartyPasswordManagerSetting(profile: self.profile))
-                        self.settings[0] = SettingSection(title: NSAttributedString(string: Strings.General), children: generalSettings)
-                        let range = NSMakeRange(0, 1)
-                        let section = NSIndexSet(indexesInRange: range)
-                        self.tableView.reloadSections(section, withRowAnimation: .Automatic)
-                    }
+            // TODO: if PW manager is removed, settings must be opening a 2nd time for setting to disappear.
+            if result {
+                postAsyncToMain(0) { // move from db thread back to main
+                    generalSettings.append(PasswordManagerButtonSetting(profile: self.profile))
+                    self.settings[0] = SettingSection(title: NSAttributedString(string: Strings.General), children: generalSettings)
+                    let range = NSMakeRange(0, 1)
+                    let section = NSIndexSet(indexesInRange: range)
+                    self.tableView.reloadSections(section, withRowAnimation: .Automatic)
                 }
             }
-        #endif
+        }
 
 
         settings += [
@@ -172,41 +170,41 @@ class VersionSetting : Setting {
 
 
 // Opens the search settings pane
-class ThirdPartyPasswordManagerSetting: PicklistSettingMainItem<String> {
+class PasswordManagerButtonSetting: PicklistSettingMainItem<String> {
 
     static var currentSetting: ThirdPartyPasswordManagerType?
 
     private static let _prefName = kPrefName3rdPartyPasswordShortcutEnabled
     private static let _options =  [
-        Choice<String> { ThirdPartyPasswordManagers.UseBuiltInInstead },
-        Choice<String> { ThirdPartyPasswordManagers.OnePassword },
-        Choice<String> { ThirdPartyPasswordManagers.LastPass }
+        Choice<String> { PasswordManagerButtonAction.ShowPicker },
+        Choice<String> { PasswordManagerButtonAction.OnePassword },
+        Choice<String> { PasswordManagerButtonAction.LastPass }
     ]
 
     static func setupOnAppStart() {
         guard let current = BraveApp.getPrefs()?.intForKey(_prefName) else { return }
         switch Int(current) {
-        case ThirdPartyPasswordManagers.OnePassword.prefId:
-            currentSetting = ThirdPartyPasswordManagers.OnePassword
-        case ThirdPartyPasswordManagers.LastPass.prefId:
-            currentSetting = ThirdPartyPasswordManagers.LastPass
+        case PasswordManagerButtonAction.OnePassword.prefId:
+            currentSetting = PasswordManagerButtonAction.OnePassword
+        case PasswordManagerButtonAction.LastPass.prefId:
+            currentSetting = PasswordManagerButtonAction.LastPass
         default:
-            currentSetting = ThirdPartyPasswordManagers.UseBuiltInInstead
+            currentSetting = PasswordManagerButtonAction.ShowPicker
         }
     }
 
     init(profile: Profile) {
-        super.init(profile: profile, displayName: "", prefName: ThirdPartyPasswordManagerSetting._prefName, options: ThirdPartyPasswordManagerSetting._options)
-        picklistFooterMessage = Strings.Show_a_prompt_to_open_your_password_manager_when_the_current_page_has_a_login_form
+        super.init(profile: profile, displayName: "", prefName: PasswordManagerButtonSetting._prefName, options: PasswordManagerButtonSetting._options)
+        picklistFooterMessage = Strings.Password_manager_button_settings_footer
     }
 
     override func picklistSetting(setting: PicklistSettingOptionsView, pickedOptionId: Int) {
         super.picklistSetting(setting, pickedOptionId: pickedOptionId)
-        ThirdPartyPasswordManagerSetting.setupOnAppStart()
+        PasswordManagerButtonSetting.setupOnAppStart()
     }
 
     override var title: NSAttributedString? {
-        return NSAttributedString(string: Strings.Thirdparty_password_manager, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor, NSFontAttributeName: UIFont.systemFontOfSize(14)])
+        return NSAttributedString(string: Strings.Password_manager_button, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor, NSFontAttributeName: UIFont.systemFontOfSize(14)])
     }
 }
 
