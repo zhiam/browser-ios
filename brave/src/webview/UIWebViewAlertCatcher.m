@@ -12,41 +12,49 @@
 {
     static dispatch_once_t token;
     dispatch_once(&token, ^{
-        SwizzleInstanceMethods(self.class, @selector(webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:), @selector(_webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:));
-        SwizzleInstanceMethods(self.class, @selector(webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:), @selector(_webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:));
-        SwizzleInstanceMethods(self.class, @selector(webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:), @selector(_webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:));
+        // Prefer not to swizzle these, but UIWebView has a sec hole that allows spoofing by showing JS popups, we need to plug that.
+        NSString *alert = @"runJavaScriptAlertPanelWithMessage:initiatedByFrame:";
+        NSString *confirm = @"runJavaScriptConfirmPanelWithMessage:initiatedByFrame:";
+        NSString *textInput = @"runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:";
+
+        SEL _alert = NSSelectorFromString([@"webView:" stringByAppendingString:alert]);
+        SEL _confirm = NSSelectorFromString([@"webView:" stringByAppendingString:confirm]);
+        SEL _textInput = NSSelectorFromString([@"webView:" stringByAppendingString:textInput]);
+
+        SwizzleInstanceMethods(self.class, _alert, @selector(_webView:jsAlertPanelWithMessage:initiatedByFrame:));
+        SwizzleInstanceMethods(self.class, _confirm, @selector(_webView:jsConfirmPanelWithMessage:initiatedByFrame:));
+        SwizzleInstanceMethods(self.class, _textInput, @selector(_webView:jsTextInputPanelWithPrompt:defaultText:initiatedByFrame:));
     });
 }
 
--(BOOL)_webView:(id)sender runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(id)frame
+-(BOOL)_webView:(id)sender jsConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(id)frame
 {
     if (self.superview == nil) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JavaScriptPopupBlockedHiddenWebView" object:nil];
         return false;
     }
 
-    return [self _webView:sender runJavaScriptConfirmPanelWithMessage:message initiatedByFrame:frame];
+    return [self _webView:sender jsConfirmPanelWithMessage:message initiatedByFrame:frame];
 }
 
-- (void)_webView:(id)sender runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(id)frame
+- (void)_webView:(id)sender jsAlertPanelWithMessage:(NSString *)message initiatedByFrame:(id)frame
 {
     if (self.superview == nil) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JavaScriptPopupBlockedHiddenWebView" object:nil];
         return;
     }
 
-    [self _webView:sender runJavaScriptAlertPanelWithMessage:message initiatedByFrame:frame];
+    [self _webView:sender jsAlertPanelWithMessage:message initiatedByFrame:frame];
 }
 
-- (id)_webView:(id)arg1 runJavaScriptTextInputPanelWithPrompt:(id)arg2 defaultText:(id)arg3 initiatedByFrame:(id)arg4
+- (id)_webView:(id)arg1 jsTextInputPanelWithPrompt:(id)arg2 defaultText:(id)arg3 initiatedByFrame:(id)arg4
 {
-
     if (self.superview == nil) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"JavaScriptPopupBlockedHiddenWebView" object:nil];
         return nil;
     }
 
-    return [self _webView:arg1 runJavaScriptTextInputPanelWithPrompt:arg2 defaultText:arg3 initiatedByFrame:arg4];
+    return [self _webView:arg1 jsTextInputPanelWithPrompt:arg2 defaultText:arg3 initiatedByFrame:arg4];
 }
 
 @end
