@@ -599,11 +599,13 @@ function onBlur(event) {
 }
 
 var documentBody = document.body
-var observer = new MutationObserver(function(mutations) {
-  for(var idx = 0; idx < mutations.length; ++idx){
-    findForms(mutations[idx].addedNodes);
-  }
-});
+
+// BRAVE: removing this, as I am not sure of the use case (I can't find a case where it is needed, our injection of this script is quite late after page completion), and I am concerned about affecting page performance
+//var observer = new MutationObserver(function(mutations) {
+//  for(var idx = 0; idx < mutations.length; ++idx){
+//    findForms(mutations[idx].addedNodes);
+//  }
+//});
 
 function findForms(nodes) {
   for (var i = 0; i < nodes.length; i++) {
@@ -618,7 +620,7 @@ function findForms(nodes) {
   return false;
 }
 
- observer.observe(documentBody, { attributes: false, childList: true, characterData: false, subtree: true });
+ // observer.observe(documentBody, { attributes: false, childList: true, characterData: false, subtree: true });
 
 function findLogins(form) {
   try {
