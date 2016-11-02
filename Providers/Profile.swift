@@ -78,6 +78,7 @@ protocol Profile: class {
     var certStore: CertStore { get }
 
     func shutdown()
+    func reopen()
 
     // I got really weird EXC_BAD_ACCESS errors on a non-null reference when I made this a getter.
     // Similar to <http://stackoverflow.com/questions/26029317/exc-bad-access-when-indirectly-accessing-inherited-member-in-swift>.
@@ -141,6 +142,18 @@ public class BrowserProfile: Profile {
     // Extensions don't have a UIApplication.
     convenience init(localName: String) {
         self.init(localName: localName, app: nil)
+    }
+
+    func reopen() {
+        log.debug("Reopening profile.")
+
+        if dbCreated {
+            db.reopenIfClosed()
+        }
+
+        if loginsDBCreated {
+            loginsDB.reopenIfClosed()
+        }
     }
 
     func shutdown() {

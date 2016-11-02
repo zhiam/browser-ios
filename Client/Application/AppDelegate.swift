@@ -316,7 +316,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(application: UIApplication) {
         print("Close database")
-        self.profile?.shutdown()
+        profile?.shutdown()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -324,6 +324,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // is that this method is only invoked whenever the application is entering the foreground where as 
         // `applicationDidBecomeActive` will get called whenever the Touch ID authentication overlay disappears.
         self.updateAuthenticationInfo()
+
+        profile?.reopen()
     }
 
     private func updateAuthenticationInfo() {
