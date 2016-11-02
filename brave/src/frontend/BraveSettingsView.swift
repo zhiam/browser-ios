@@ -204,7 +204,7 @@ class PasswordManagerButtonSetting: PicklistSettingMainItem<String> {
     }
 
     override var title: NSAttributedString? {
-        return NSAttributedString(string: Strings.Password_manager_button, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor, NSFontAttributeName: UIFont.systemFontOfSize(14)])
+        return NSAttributedString(string: Strings.Password_manager_button, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
     }
 }
 
