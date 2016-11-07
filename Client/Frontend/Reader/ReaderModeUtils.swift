@@ -18,41 +18,28 @@ struct ReaderModeUtils {
     }
 
     static func generateReaderContent(readabilityResult: ReadabilityResult, initialStyle: ReaderModeStyle) -> String? {
-        if let stylePath = NSBundle.mainBundle().pathForResource("Reader", ofType: "css") {
-            do {
-                let css = try NSString(contentsOfFile: stylePath, encoding: NSUTF8StringEncoding)
-                if let tmplPath = NSBundle.mainBundle().pathForResource("Reader", ofType: "html") {
-                    do {
-                        let tmpl = try NSMutableString(contentsOfFile: tmplPath, encoding: NSUTF8StringEncoding)
-                        tmpl.replaceOccurrencesOfString("%READER-CSS%", withString: css as String,
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
+        guard let tmplPath = NSBundle.mainBundle().pathForResource("Reader", ofType: "html") else { return nil }
 
-                        tmpl.replaceOccurrencesOfString("%READER-STYLE%", withString: initialStyle.encode(),
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
+        do {
+            let tmpl = try NSMutableString(contentsOfFile: tmplPath, encoding: NSUTF8StringEncoding)
 
-                        tmpl.replaceOccurrencesOfString("%READER-DOMAIN%", withString: simplifyDomain(readabilityResult.domain),
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
+            let replacements: [String: String] = ["%READER-STYLE%": initialStyle.encode(),
+                                                  "%READER-DOMAIN%": simplifyDomain(readabilityResult.domain),
+                                                  "%READER-URL%": readabilityResult.url,
+                                                  "%READER-TITLE%": readabilityResult.title,
+                                                  "%READER-CREDITS%": readabilityResult.credits,
+                                                  "%READER-CONTENT%": readabilityResult.content,
+                                                  "%READER-PAGE-TYPE-UUID%": ReaderMode.readerModeOnUUID
+            ]
 
-                        tmpl.replaceOccurrencesOfString("%READER-URL%", withString: readabilityResult.url,
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
-
-                        tmpl.replaceOccurrencesOfString("%READER-TITLE%", withString: readabilityResult.title,
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
-
-                        tmpl.replaceOccurrencesOfString("%READER-CREDITS%", withString: readabilityResult.credits,
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
-
-                        tmpl.replaceOccurrencesOfString("%READER-CONTENT%", withString: readabilityResult.content,
-                            options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
-
-                        return tmpl as String
-                    } catch _ {
-                    }
-                }
-            } catch _ {
+            for (k,v) in replacements {
+                tmpl.replaceOccurrencesOfString(k, withString: v, options: NSStringCompareOptions(), range: NSMakeRange(0, tmpl.length))
             }
+
+            return tmpl as String
+        } catch _ {
+            return nil
         }
-        return nil
     }
 
     static func isReaderModeURL(url: NSURL) -> Bool {

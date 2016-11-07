@@ -454,6 +454,19 @@
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
 		EB8F566F1DD0FC2800679A78 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = EB8F566E1DD0FC2800679A78 /* Readability.js */; };
+		EB8F56971DD13DF300679A78 /* CharisSILB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 197FAAA7C19EE6AC040F4558 /* CharisSILB.ttf */; };
+		EB8F56981DD13DF300679A78 /* CharisSILBI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 797B786D73B19443EE7AC18F /* CharisSILBI.ttf */; };
+		EB8F56991DD13DF300679A78 /* CharisSILI.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AAE028C64B419AFDEEDD89C /* CharisSILI.ttf */; };
+		EB8F569A1DD13DF300679A78 /* CharisSILR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09B26BBAC8D68EFA2A333975 /* CharisSILR.ttf */; };
+		EB8F569B1DD13DF300679A78 /* FiraSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C228461239640F53947A0964 /* FiraSans-Bold.ttf */; };
+		EB8F569C1DD13DF300679A78 /* FiraSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EB5ABED5591BDD452C702A7 /* FiraSans-BoldItalic.ttf */; };
+		EB8F569D1DD13DF300679A78 /* FiraSans-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50438081018B3AA0DE9E3FF9 /* FiraSans-Book.ttf */; };
+		EB8F569E1DD13DF300679A78 /* FiraSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15EC5680878673346481BD88 /* FiraSans-Italic.ttf */; };
+		EB8F569F1DD13DF300679A78 /* FiraSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC1FEF85CBD43B0AB6FD7312 /* FiraSans-Light.ttf */; };
+		EB8F56A01DD13DF300679A78 /* FiraSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D51D3125DCE8021CF113B80 /* FiraSans-Medium.ttf */; };
+		EB8F56A11DD13DF300679A78 /* FiraSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D5A0C238BFA68019EFA7599 /* FiraSans-Regular.ttf */; };
+		EB8F56A21DD13DF300679A78 /* FiraSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2849F28840241B31DFD49F20 /* FiraSans-SemiBold.ttf */; };
+		EB8F56A31DD13DF300679A78 /* FiraSans-UltraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5465B72EA414E035DEAE5667 /* FiraSans-UltraLight.ttf */; };
 		EB9CAB431DC2592700627A39 /* UIWebViewAlertCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9CAB421DC2592700627A39 /* UIWebViewAlertCatcher.m */; };
 		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
@@ -3369,12 +3382,17 @@
 				EB8F566F1DD0FC2800679A78 /* Readability.js in Resources */,
 				E428294E231DA4CAE65470A6 /* Brave.entitlements in Resources */,
 				B8D29DA8868D10CA43DFF30F /* adInfo-divquerytemplate.js in Resources */,
+				EB8F569C1DD13DF300679A78 /* FiraSans-BoldItalic.ttf in Resources */,
 				886E3B0001BC705ACFC4AD45 /* adInfo-wrapper.js in Resources */,
 				507ACE2A12D675DAF9C79198 /* adInfo.js in Resources */,
 				E4309BC56F1431FEA791E157 /* BlankTargetDetector.js in Resources */,
 				EB4E15ED1DB7F36600A4C7EA /* Localizable.strings in Resources */,
+				EB8F569F1DD13DF300679A78 /* FiraSans-Light.ttf in Resources */,
 				6EA5759D8C8DB32D81620895 /* ElementAtPoint.js in Resources */,
 				A0A20F790B43EED1614DC822 /* FingerprintingProtection.js in Resources */,
+				EB8F569A1DD13DF300679A78 /* CharisSILR.ttf in Resources */,
+				EB8F569B1DD13DF300679A78 /* FiraSans-Bold.ttf in Resources */,
+				EB8F569D1DD13DF300679A78 /* FiraSans-Book.ttf in Resources */,
 				4C8CFF069B42CD78C72CC4F4 /* HideEmptyImages.js in Resources */,
 				DDF18B7D90D1BF9E6072344C /* PageUnload.js in Resources */,
 				4305183B54F23C211BD5112A /* SafeBrowsingError.html in Resources */,
@@ -3382,30 +3400,38 @@
 				15172EAC2FF91D5014CAA0CB /* Licenses.html in Resources */,
 				4134197C39A4456007BCF42B /* CertError.css in Resources */,
 				E37145E30F71657D57F6747C /* CertError.html in Resources */,
+				EB8F56A31DD13DF300679A78 /* FiraSans-UltraLight.ttf in Resources */,
 				0A14A8BA1997EFDD9BF4F08A /* Favicons.js in Resources */,
 				59D6B30954B53C907F022CA7 /* FindInPage.js in Resources */,
 				FE87AE69E75D3BCA0217302B /* Images.xcassets in Resources */,
 				9EC9707BF7ABD93FBB0FFDB9 /* LoginsHelper.js in Resources */,
 				4D68B2825D2CAD5FB6098D21 /* NetError.css in Resources */,
+				EB8F56991DD13DF300679A78 /* CharisSILI.ttf in Resources */,
 				6B06EE00444FA99CCD366C2B /* NetError.html in Resources */,
 				13657B6789F5024F64E16739 /* PrintHelper.js in Resources */,
 				9238CC0C5284146DC56706EF /* default.txt in Resources */,
+				EB8F56A11DD13DF300679A78 /* FiraSans-Regular.ttf in Resources */,
 				F77753583610CDE305C0EE17 /* list.txt in Resources */,
 				51738B96F3E3C02A37A32C90 /* SearchPlugins in Resources */,
+				EB8F56A01DD13DF300679A78 /* FiraSans-Medium.ttf in Resources */,
 				2210C35A6B7EB8745B0E93B9 /* SessionRestore.html in Resources */,
+				EB8F569E1DD13DF300679A78 /* FiraSans-Italic.ttf in Resources */,
 				59F67C0B4DAA5B488E2C83EF /* SpotlightHelper.js in Resources */,
+				EB8F56981DD13DF300679A78 /* CharisSILBI.ttf in Resources */,
 				8F8FEAE7F3F5794866B0163C /* topdomains.txt in Resources */,
 				A017135F85E8E813D1E8DF11 /* WindowCloseHelper.js in Resources */,
 				C68CDF76C7FC1770D6427F76 /* Home.xcassets in Resources */,
 				3E0F37CB279D8276AD55303D /* Intro.xcassets in Resources */,
 				C415871DCEBA47DC7C423105 /* ReadabilityBrowserHelper.js in Resources */,
 				35A3D6A6BB8100ACF4EBFD5E /* Reader.css in Resources */,
+				EB8F56A21DD13DF300679A78 /* FiraSans-SemiBold.ttf in Resources */,
 				6D9E9FAAB66AFADE0D6B20F0 /* Reader.html in Resources */,
 				8853430700515F14F97FB274 /* Reader.xcassets in Resources */,
 				74A3987601C4DC33D8391098 /* ReaderMode.js in Resources */,
 				FDE245E7396869A614D170C8 /* ReaderSettings.xcassets in Resources */,
 				CE931E5572FEACC2B5691D07 /* ReaderViewLoading.html in Resources */,
 				F8210761AC1CD47310B219F6 /* SiteTableViewControllerHeader.xib in Resources */,
+				EB8F56971DD13DF300679A78 /* CharisSILB.ttf in Resources */,
 				85DCDA1793B10D86A3B9719E /* effective_tld_names.dat in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

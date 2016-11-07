@@ -373,8 +373,11 @@ class BraveWebView: UIWebView {
         // Wait a tiny bit in hopes the page contents are updated. Load completed doesn't mean the UIWebView has done any rendering (or even has the JS engine for the page ready, see the delay() below)
         postAsyncToMain(0.1) {
             [weak self] in
-            guard let me = self else { return }
-            guard let docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href") else { return }
+            guard let me = self,
+             docLoc = me.stringByEvaluatingJavaScriptFromString("document.location.href"),
+                tab = getApp().tabManager.tabForWebView(me) else {
+                    return
+            }
 
             if docLoc != me.prevDocumentLocation {
                 if !(me.URL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false) && !docLoc.startsWith(WebServer.sharedInstance.base) {
@@ -383,9 +386,9 @@ class BraveWebView: UIWebView {
                 #if DEBUG
                 print("Adding history, TITLE:\(me.title)")
                 #endif
-                if let nd = me.navigationDelegate {
-                    BraveWebView.containerWebViewForCallbacks.legacyWebView = me
-                    nd.webViewDidFinishNavigation(me, url: me.URL)
+                if let url = me.URL where !ErrorPageHelper.isErrorPageURL(url) && !AboutUtils.isAboutHomeURL(url) {
+                        tab.lastExecutedTime = NSDate.now()
+                        getApp().browserViewController.updateProfileForLocationChange(tab)
                 }
             }
             me.prevDocumentLocation = docLoc
@@ -397,6 +400,13 @@ class BraveWebView: UIWebView {
             me.stringByEvaluatingJavaScriptFromString("console.log('get favicons'); __firefox__.favicons.getFavicons()")
 
             me.checkScriptBlockedAndBroadcastStats()
+
+            getApp().tabManager.expireSnackbars()
+            getApp().browserViewController.screenshotHelper.takeDelayedScreenshot(tab)
+            getApp().browserViewController.addOpenInViewIfNeccessary(tab.url)
+
+            let info = me.stringByEvaluatingJavaScriptFromString(ReaderModeNamespace + ".checkReadability('\(ReaderMode.readerModeOnUUID)')")
+            print(info ?? "")
         }
     }
 

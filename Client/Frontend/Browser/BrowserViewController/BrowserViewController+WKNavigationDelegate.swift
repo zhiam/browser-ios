@@ -142,38 +142,7 @@ extension BrowserViewController: WKCompatNavigationDelegate {
     }
 
     func webViewDidFinishNavigation(webView: UIWebView, url: NSURL?) {
-        guard let tab = tabManager.tabForWebView(webView) else { return }
-        tabManager.expireSnackbars()
-        tab.lastExecutedTime = NSDate.now()
-
-        if let url = url where !ErrorPageHelper.isErrorPageURL(url) && !AboutUtils.isAboutHomeURL(url) {
-
-            updateProfileForLocationChange(tab)
-
-            // Fire the readability check. This is here and not in the pageShow event handler in ReaderMode.js anymore
-            // because that event wil not always fire due to unreliable page caching. This will either let us know that
-            // the currently loaded page can be turned into reading mode or if the page already is in reading mode. We
-            // ignore the result because we are being called back asynchronous when the readermode status changes.
-           // #if !BRAVE
-            postAsyncToMain(0.3) {
-                webView.stringByEvaluatingJavaScriptFromString(ReaderModeNamespace + ".checkReadability()")
-        }
-           // #endif
-        }
-
-        if tab === tabManager.selectedTab {
-            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil)
-            // must be followed by LayoutChanged, as ScreenChanged will make VoiceOver
-            // cursor land on the correct initial element, but if not followed by LayoutChanged,
-            // VoiceOver will sometimes be stuck on the element, not allowing user to move
-            // forward/backward. Strange, but LayoutChanged fixes that.
-            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil)
-        }
-
-        #if BRAVE
-            screenshotHelper.takeDelayedScreenshot(tab)
-        #endif
-        addOpenInViewIfNeccessary(tab.url)
+        // BraveWebView handles this
     }
 
     func addOpenInViewIfNeccessary(url: NSURL?) {
@@ -201,7 +170,7 @@ extension BrowserViewController: WKCompatNavigationDelegate {
         self.openInHelper = nil
     }
 
-    private func updateProfileForLocationChange(tab: Browser) {
+    func updateProfileForLocationChange(tab: Browser) {
         var info = [String : AnyObject]()
         info["url"] = tab.displayURL
         info["title"] = tab.title
