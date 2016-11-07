@@ -116,8 +116,9 @@ extension BrowserViewController: BrowserDelegate {
         let openURL = {(url: NSURL) -> Void in
             self.switchToTabForURLOrOpen(url)
         }
-        let spotlightHelper = SpotlightHelper(browser: browser, openURL: openURL)
-        browser.addHelper(spotlightHelper)
+        // TODO: Add spotlightHelper and test cases
+        //let spotlightHelper = SpotlightHelper(browser: browser, openURL: openURL)
+        //browser.addHelper(spotlightHelper)
 
         #if BRAVE
             let pageUnload = BravePageUnloadHelper(browser: browser)

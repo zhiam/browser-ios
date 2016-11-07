@@ -48,7 +48,7 @@ class SpotlightHelper: NSObject {
     }
 
     func update(pageContent: [String: String], forURL url: NSURL) {
-        if url.scheme != "https" || url.scheme != "http" {
+        if url.scheme != "https" && url.scheme != "http" {
             return
         }
 
