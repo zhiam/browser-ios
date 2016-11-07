@@ -207,20 +207,12 @@ extension BrowserViewController: BrowserToolbarDelegate {
         tabManager.selectedTab?.goBack()
     }
 
-    func browserToolbarDidLongPressBack(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
-        // See 1159373 - Disable long press back/forward for backforward list
-        //        let controller = BackForwardListViewController()
-        //        controller.listData = tabManager.selectedTab?.backList
-        //        controller.tabManager = tabManager
-        //        presentViewController(controller, animated: true, completion: nil)
-    }
-
-    func browserToolbarDidPressReload(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+    func browserLocationViewDidPressReload(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
         telemetry(action: "reload button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.reload()
     }
 
-    func browserToolbarDidPressStop(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
+    func browserLocationViewDidPressStop(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
         telemetry(action: "stop button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.stop()
     }
@@ -228,14 +220,6 @@ extension BrowserViewController: BrowserToolbarDelegate {
     func browserToolbarDidPressForward(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
         telemetry(action: "forward button", props: ["bottomToolbar": "\(browserToolbar as? BraveBrowserBottomToolbar != nil)"])
         tabManager.selectedTab?.goForward()
-    }
-
-    func browserToolbarDidLongPressForward(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
-        // See 1159373 - Disable long press back/forward for backforward list
-        //        let controller = BackForwardListViewController()
-        //        controller.listData = tabManager.selectedTab?.forwardList
-        //        controller.tabManager = tabManager
-        //        presentViewController(controller, animated: true, completion: nil)
     }
 
     func browserToolbarDidPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
@@ -254,9 +238,6 @@ extension BrowserViewController: BrowserToolbarDelegate {
                 }
             }
         }
-    }
-
-    func browserToolbarDidLongPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton) {
     }
 
     func browserToolbarDidPressShare(browserToolbar: BrowserToolbarProtocol, button: UIButton) {

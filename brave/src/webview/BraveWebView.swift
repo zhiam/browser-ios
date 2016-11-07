@@ -423,6 +423,7 @@ class BraveWebView: UIWebView {
     }
 
     override func reload() {
+        prevDocumentLocation = ""
         shieldStatUpdate(.reset)
         progress?.setProgress(0.3)
         NSURLCache.sharedURLCache().removeAllCachedResponses()

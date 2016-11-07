@@ -175,10 +175,8 @@ class URLBarView: UIView {
 
     lazy var backButton: UIButton = { return UIButton() }()
 
-    lazy var stopReloadButton: UIButton = { return UIButton() }()
-
     lazy var actionButtons: [UIButton] = {
-        return [self.shareButton, self.bookmarkButton, self.forwardButton, self.backButton, self.stopReloadButton, self.pwdMgrButton]
+        return [self.shareButton, self.bookmarkButton, self.forwardButton, self.backButton, self.pwdMgrButton]
     }()
 
     // Used to temporarily store the cloned button so we can respond to layout changes during animation
@@ -223,7 +221,6 @@ class URLBarView: UIView {
         addSubview(bookmarkButton)
         addSubview(forwardButton)
         addSubview(backButton)
-        addSubview(stopReloadButton)
 
         locationContainer.addSubview(locationView)
         addSubview(locationContainer)
@@ -424,7 +421,6 @@ class URLBarView: UIView {
         self.bookmarkButton.hidden = !self.bottomToolbarIsHidden
         self.forwardButton.hidden = !self.bottomToolbarIsHidden
         self.backButton.hidden = !self.bottomToolbarIsHidden
-        self.stopReloadButton.hidden = false
     }
 
     func transitionToSearch(didCancel: Bool = false) {
@@ -433,7 +429,6 @@ class URLBarView: UIView {
         self.bookmarkButton.alpha = inSearchMode ? 0 : 1
         self.forwardButton.alpha = inSearchMode ? 0 : 1
         self.backButton.alpha = inSearchMode ? 0 : 1
-        self.stopReloadButton.alpha = inSearchMode ? 0 : 1
 
         let borderColor = inSearchMode ? locationActiveBorderColor : locationBorderColor
         locationContainer.layer.borderColor = borderColor.CGColor
@@ -469,7 +464,6 @@ class URLBarView: UIView {
         self.bookmarkButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
         self.forwardButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
         self.backButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
-        self.stopReloadButton.hidden = bottomToolbarIsHidden
     }
 
     func animateToSearchState(searchMode search: Bool, didCancel cancel: Bool = false) {
@@ -520,19 +514,12 @@ extension URLBarView: BrowserToolbarProtocol {
     }
 
     func updateReloadStatus(isLoading: Bool) {
-        helper?.updateReloadStatus(isLoading)
-        if isLoading {
-            stopReloadButton.setImage(helper?.ImageStop, forState: .Normal)
-            stopReloadButton.setImage(helper?.ImageStopPressed, forState: .Highlighted)
-        } else {
-            stopReloadButton.setImage(helper?.ImageReload, forState: .Normal)
-            stopReloadButton.setImage(helper?.ImageReloadPressed, forState: .Highlighted)
-        }
+        locationView.stopReloadButtonIsLoading(isLoading)
     }
 
     func updatePageStatus(isWebPage isWebPage: Bool) {
         bookmarkButton.enabled = isWebPage
-        stopReloadButton.enabled = isWebPage
+        locationView.stopReloadButton.enabled = isWebPage
         shareButton.enabled = isWebPage
     }
 
@@ -543,9 +530,9 @@ extension URLBarView: BrowserToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if bottomToolbarIsHidden {
-                    return [backButton, forwardButton, stopReloadButton, locationView, shareButton, bookmarkButton, tabsButton]
+                    return [backButton, forwardButton, locationView, shareButton, bookmarkButton, tabsButton]
                 } else {
-                    return [locationView, tabsButton, stopReloadButton]
+                    return [locationView, tabsButton]
                 }
             }
         }

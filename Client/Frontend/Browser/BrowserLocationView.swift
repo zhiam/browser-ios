@@ -17,6 +17,8 @@ protocol BrowserLocationViewDelegate {
     /// - returns: whether the long-press was handled by the delegate; i.e. return `false` when the conditions for even starting handling long-press were not satisfied
     func browserLocationViewDidLongPressReaderMode(browserLocationView: BrowserLocationView) -> Bool
     func browserLocationViewLocationAccessibilityActions(browserLocationView: BrowserLocationView) -> [UIAccessibilityCustomAction]?
+    func browserLocationViewDidTapReload(browserLocationView: BrowserLocationView)
+    func browserLocationViewDidTapStop(browserLocationView: BrowserLocationView)
 }
 
 struct BrowserLocationViewUX {
@@ -144,11 +146,46 @@ class BrowserLocationView: UIView {
         return readerModeButton
     }()
 
+    let ImageReload = UIImage(named: "reload")
+    let ImageReloadPressed = UIImage(named: "reloadPressed")
+    let ImageStop = UIImage(named: "stop")
+    let ImageStopPressed = UIImage(named: "stopPressed")
+
+    var stopReloadButton: UIButton!
+
+    func stopReloadButtonIsLoading(isLoading: Bool) {
+        if isLoading {
+            stopReloadButton.setImage(ImageStop, forState: .Normal)
+            stopReloadButton.setImage(ImageStopPressed, forState: .Highlighted)
+            stopReloadButton.accessibilityLabel = Strings.Stop
+        } else {
+            stopReloadButton.setImage(ImageReload, forState: .Normal)
+            stopReloadButton.setImage(ImageReloadPressed, forState: .Highlighted)
+            stopReloadButton.accessibilityLabel = Strings.Reload
+        }
+    }
+
+    func didClickStopReload() {
+        if stopReloadButton.accessibilityLabel == Strings.Stop {
+            delegate?.browserLocationViewDidTapStop(self)
+        } else {
+            delegate?.browserLocationViewDidTapReload(self)
+        }
+    }
+
     // Prefixing with brave to distinguish from progress view that firefox has (which we hide)
     var braveProgressView: UIView = UIView(frame: CGRectMake(0, 0, 0, CGFloat(URLBarViewUX.LocationHeight)))
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+
+        stopReloadButton = UIButton()
+        stopReloadButton.tintColor = BraveUX.ActionButtonTintColor
+        stopReloadButton.accessibilityIdentifier = "BrowserToolbar.stopReloadButton"
+        stopReloadButton.setImage(UIImage(named: "reload"), forState: .Normal)
+        stopReloadButton.setImage(UIImage(named: "reloadPressed"), forState: .Highlighted)
+        stopReloadButton.accessibilityLabel = Strings.Reload
+        stopReloadButton.addTarget(self, action: #selector(BrowserLocationView.didClickStopReload), forControlEvents: UIControlEvents.TouchUpInside)
 
         longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(BrowserLocationView.SELlongPressLocation(_:)))
         tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(BrowserLocationView.SELtapLocation(_:)))
@@ -157,6 +194,7 @@ class BrowserLocationView: UIView {
         addSubview(privateBrowsingIconView)
         addSubview(lockImageView)
         addSubview(readerModeButton)
+        addSubview(stopReloadButton)
 
         braveProgressView.accessibilityLabel = "braveProgressView"
         braveProgressView.backgroundColor = BraveUX.ProgressBarColor
@@ -189,10 +227,16 @@ class BrowserLocationView: UIView {
         }
 
         readerModeButton.snp_makeConstraints { make in
-            make.right.centerY.equalTo(self)
-            make.width.equalTo(self.readerModeButton.intrinsicContentSize().width)
+            make.right.equalTo(stopReloadButton.snp_left)
+            make.height.centerY.equalTo(self)
+            make.width.equalTo(20)
         }
-        
+
+        stopReloadButton.snp_makeConstraints { make in
+            make.right.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset)
+            make.height.centerY.equalTo(self)
+            make.width.equalTo(20)
+        }
 
         urlTextField.snp_remakeConstraints { make in
             make.top.bottom.equalTo(self)
@@ -204,8 +248,7 @@ class BrowserLocationView: UIView {
             }
 
             if readerModeButton.hidden {
-                make.right.equalTo(self).inset(BrowserLocationViewUX.LocationContentInset
-                    + 20) // BRAVE added to make space for stopReloadButton
+                make.right.equalTo(self.stopReloadButton.snp_left)
             } else {
                 make.right.equalTo(self.readerModeButton.snp_left)
             }
@@ -317,7 +360,8 @@ extension BrowserLocationView: Themeable {
 private class ReaderModeButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setImage(UIImage(named: "reader.png"), forState: UIControlState.Normal)
+        tintColor = BraveUX.ActionButtonTintColor
+        setImage(UIImage(named: "reader.png")!.imageWithRenderingMode(.AlwaysTemplate), forState: UIControlState.Normal)
         setImage(UIImage(named: "reader_active.png"), forState: UIControlState.Selected)
     }
     
