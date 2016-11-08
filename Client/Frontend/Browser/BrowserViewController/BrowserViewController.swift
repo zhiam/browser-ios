@@ -763,23 +763,16 @@ class BrowserViewController: UIViewController {
 //    }
 
     func updateUIForReaderHomeStateForTab(tab: Browser) {
-#if BRAVE
         updateURLBarDisplayURL(tab)
         updateInContentHomePanel(tab.url)
-        return // TODO Reader Mode hookup. Beware showToolbars is a performance killer.
-#endif
-//        scrollController.showToolbars(animated: false)
-//        if let url = tab.url {
-//            if ReaderModeUtils.isReaderModeURL(url) {
-//                showReaderModeBar(animated: false)
-//                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BrowserViewController.SELDynamicFontChanged(_:)), name: NotificationDynamicFontChanged, object: nil)
-//            } else {
-//                hideReaderModeBar(animated: false)
-//                NSNotificationCenter.defaultCenter().removeObserver(self, name: NotificationDynamicFontChanged, object: nil)
-//            }
-//
-//            updateInContentHomePanel(url)
-//        }
+
+        if let url = tab.url {
+            if ReaderModeUtils.isReaderModeURL(url) {
+                showReaderModeBar(animated: false)
+            } else {
+                hideReaderModeBar(animated: false)
+            }
+        }
     }
 
     private func isWhitelistedUrl(url: NSURL) -> Bool {
