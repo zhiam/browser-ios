@@ -152,7 +152,15 @@ class PrivateBrowsing {
         ReentrantGuard.inFunc = true
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        postAsyncToMain(0.25) { // even after all webviews killed, an added delay is needed before the webview state is fully cleared, this is horrible. Fortunately, I have only seen this behaviour on the simulator.
+        postAsyncToMain(0.1) { // just in case any other webkit object cleanup needs to complete
+            if let clazz = NSClassFromString("Web" + "StorageManager") as? NSObjectProtocol {
+                if clazz.respondsToSelector(Selector("shared" + "WebStorageManager")) {
+                    if let webHistory = clazz.performSelector(Selector("shared" + "WebStorageManager")) {
+                        let o = webHistory.takeUnretainedValue()
+                        o.performSelector(Selector("delete" + "AllOrigins"))
+                    }
+                }
+            }
 
             self.webkitDirLocker(lock: false)
             getApp().profile?.shutdown()
