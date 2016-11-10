@@ -362,9 +362,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func disableTableEditingMode() {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.switchTableEditingMode(true)
-        }
+        switchTableEditingMode(true)
     }
     
     var bookmarksOrderChanged:Bool {
@@ -372,20 +370,28 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
     }
     
     func switchTableEditingMode(forceOff:Bool = false) {
-        // TODO: why async??
-        dispatch_async(dispatch_get_main_queue()) {
-            let editMode:Bool = forceOff ? false : !self.tableView.editing
-            self.tableView.setEditing(editMode, animated: forceOff ? false : true)
-            //only when the 'edit' button has been pressed
-            self.updateAddRemoveFolderButton(editMode)
-            self.updateEditBookmarksButton(editMode)
-        }
+        let editMode:Bool = forceOff ? false : !tableView.editing
+        tableView.setEditing(editMode, animated: forceOff ? false : true)
+        
+        //only when the 'edit' button has been pressed
+        updateAddRemoveFolderButton(editMode)
+        updateEditBookmarksButton(editMode)
+        resetCellLongpressGesture(tableView.editing)
     }
     
     func updateEditBookmarksButton(tableIsEditing:Bool) {
         self.editBookmarksButton.title = tableIsEditing ? Strings.Done : Strings.Edit
         self.editBookmarksButton.style = tableIsEditing ? .Done : .Plain
-
+    }
+    
+    func resetCellLongpressGesture(editing: Bool) {
+        for cell in self.tableView.visibleCells {
+            cell.gestureRecognizers?.forEach { cell.removeGestureRecognizer($0) }
+            if editing == false {
+                let lp = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
+                cell.addGestureRecognizer(lp)
+            }
+        }
     }
     
     /*
@@ -640,7 +646,7 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
                 cell.separatorInset = UIEdgeInsetsZero
             }
 
-            if longPressForContextMenu {
+            if longPressForContextMenu && tableView.editing == false {
                 cell.gestureRecognizers?.forEach { cell.removeGestureRecognizer($0) }
                 let lp = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
                 cell.addGestureRecognizer(lp)
