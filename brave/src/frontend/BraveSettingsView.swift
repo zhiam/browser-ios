@@ -122,7 +122,7 @@ class BraveSettingsView : AppSettingsTableViewController {
         //#if !DISABLE_INTRO_SCREEN
         settings += [
             SettingSection(title: NSAttributedString(string: Strings.Support), children: [
-                // TODO: GROWTH: BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyUserAllowsTelemetry, defaultValue: true, titleText: Strings.Allow_Brave_to_send_info_to_improve_our_app, comment: "option in settings screen")),
+                BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyUserAllowsTelemetry, defaultValue: true, titleText: Strings.Opt_in_to_telemetry),
                 ShowIntroductionSetting(settings: self),
                 BraveSupportLinkSetting(parentVC: self),
                 BravePrivacyPolicySetting(), BraveTermsOfUseSetting(),
