@@ -65,8 +65,9 @@ class BraveApp {
                 Fabric.with([Crashlytics.self])
 
                 if let dict = NSBundle.mainBundle().infoDictionary, let token = dict["MIXPANEL_TOKEN"] as? String {
+                    // note: setting this in willFinishLaunching is causing a crash, keep it in didFinish
                     mixpanelInstance = Mixpanel.initialize(token: token)
-                    // ^ note setting this in willFinishLaunching is causing a crash, keep it in didFinish
+                    mixpanelInstance?.serverURL = "https://metric-proxy.brave.com"
                 }
             }
        #endif
