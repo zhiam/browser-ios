@@ -49,16 +49,16 @@ class URLProtocol: NSURLProtocol {
     static func getShields(request: NSURLRequest) -> BraveShieldState {
         let ua = request.allHTTPHeaderFields?["User-Agent"]
         var webViewShield:BraveShieldState? = nil
-        let shieldResult = BraveShieldState()
+        var shieldResult = BraveShieldState()
 
         if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
-            webViewShield = webView.braveShieldState
+            webViewShield = webView.braveShieldStateSafeAsync.get()
         } else {
-            webViewShield = getApp().tabManager.selectedTab?.webView?.braveShieldState
+            webViewShield = getApp().tabManager.selectedTab?.webView?.braveShieldStateSafeAsync.get()
         }
 
         if let webViewShield = webViewShield where webViewShield.isAllOff() {
-            shieldResult.setState(BraveShieldState.kAllOff, on: true)
+            shieldResult.setState(.AllOff, on: true)
             return shieldResult
         }
 

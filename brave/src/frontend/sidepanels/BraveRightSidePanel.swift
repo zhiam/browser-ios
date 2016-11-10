@@ -351,9 +351,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     @objc func switchToggled(sender: UISwitch) {
         guard let site = siteName.text else { return }
 
-        func setKeys(globalPrefKey: String, _ globalPrefDefaultValue: Bool, _ siteShieldKey: String) {
+        func setKeys(globalPrefKey: String, _ globalPrefDefaultValue: Bool, _ siteShieldKey: BraveShieldState.Shield) {
             var state: Bool? = nil
-            if siteShieldKey == BraveShieldState.kAllOff {
+            if siteShieldKey == .AllOff {
                 state = !sender.on
             } else {
                 // state matches the prefs setting
@@ -363,7 +363,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 }
             }
 
-            getApp().profile?.setBraveShieldForNormalizedDomain(site, state: (siteShieldKey, state))
+            getApp().profile?.setBraveShieldForNormalizedDomain(site, state: (siteShieldKey.rawValue, state))
             (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: true)
             BraveApp.getCurrentWebView()?.reload()
 
@@ -372,18 +372,18 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
         switch (sender) {
         case toggleBlockAds:
-            setKeys(AdBlocker.prefKey, AdBlocker.prefKeyDefaultValue,  BraveShieldState.kAdBlockAndTp)
+            setKeys(AdBlocker.prefKey, AdBlocker.prefKeyDefaultValue, .AdblockAndTp)
         case toggleBlockMalware:
-            setKeys(SafeBrowsing.prefKey, SafeBrowsing.prefKeyDefaultValue, BraveShieldState.kSafeBrowsing)
+            setKeys(SafeBrowsing.prefKey, SafeBrowsing.prefKeyDefaultValue, .SafeBrowsing)
         case toggleBlockScripts:
-            setKeys(kPrefKeyNoScriptOn, false, BraveShieldState.kNoscript)
+            setKeys(kPrefKeyNoScriptOn, false, .NoScript)
         case toggleHttpse:
-            setKeys(HttpsEverywhere.prefKey, HttpsEverywhere.prefKeyDefaultValue, BraveShieldState.kHTTPSE)
+            setKeys(HttpsEverywhere.prefKey, HttpsEverywhere.prefKeyDefaultValue, .HTTPSE)
         case shieldToggle:
-            setKeys("", false, BraveShieldState.kAllOff)
+            setKeys("", false, .AllOff)
             updateSitenameAndTogglesState()
         case toggleBlockFingerprinting:
-            setKeys(kPrefKeyFingerprintProtection, false, BraveShieldState.kFPProtection)
+            setKeys(kPrefKeyFingerprintProtection, false, .FpProtection)
         default:
             break
         }

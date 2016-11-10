@@ -93,17 +93,27 @@ class BraveWebView: UIWebView {
     lazy var backForwardList: WebViewBackForwardList = { return WebViewBackForwardList(webView: self) } ()
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
-    var braveShieldState = BraveShieldState() {
-        didSet {
-            if let fpOn = braveShieldState.isOnFingerprintProtection(), let browser = getApp().tabManager.tabForWebView(self) where fpOn {
-                if browser.getHelper(FingerprintingProtection.self) == nil {
-                    let fp = FingerprintingProtection(browser: browser)
-                    browser.addHelper(fp)
-                }
-            } else {
+
+    // Wrap to indicate this is thread-safe (is called from networking thread), and to ensure safety.
+    class BraveShieldStateSafeAsync {
+        private var braveShieldState = BraveShieldState()
+
+        func set(webview: BraveWebView, state: BraveShieldState?) {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+
+            braveShieldState = state != nil ? BraveShieldState(orig: state!) : BraveShieldState()
+
+            postAsyncToMain() {
+                guard let browser = getApp().tabManager.tabForWebView(webview) else { return }
                 let fpOn = BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection)
-                if fpOn == nil || !fpOn! {
-                    getApp().tabManager.tabForWebView(self)?.removeHelper(FingerprintingProtection.self)
+                if let fpOn = fpOn where fpOn {
+                    if browser.getHelper(FingerprintingProtection.self) == nil {
+                        let fp = FingerprintingProtection(browser: browser)
+                        browser.addHelper(fp)
+                    }
+                } else {
+                    getApp().tabManager.tabForWebView(webview)?.removeHelper(FingerprintingProtection.self)
                 }
             }
 
@@ -111,7 +121,16 @@ class BraveWebView: UIWebView {
                 (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
             }
         }
+
+        func get() -> BraveShieldState {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+
+            return BraveShieldState(orig: braveShieldState)
+        }
     }
+    let braveShieldStateSafeAsync = BraveShieldStateSafeAsync()
+
     var blankTargetLinkDetectionOn = true
     var lastTappedTime: NSDate?
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
@@ -278,7 +297,8 @@ class BraveWebView: UIWebView {
 
     var jsBlockedStatLastUrl: String? = nil
     func checkScriptBlockedAndBroadcastStats() {
-        if braveShieldState.isOnScriptBlocking() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false {
+        let state = braveShieldStateSafeAsync.get()
+        if state.isOnScriptBlocking() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false {
             let jsBlocked = Int(stringByEvaluatingJavaScriptFromString("document.getElementsByTagName('script').length") ?? "0") ?? 0
 
             if request?.URL?.absoluteString == jsBlockedStatLastUrl && jsBlocked == 0 {
@@ -355,7 +375,7 @@ class BraveWebView: UIWebView {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveWebView.internalProgressNotification(_:)), name: internalProgressChangedNotification, object: internalWebView)
 
         if let url = request.URL, domain = url.normalizedHost() {
-            braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
+            braveShieldStateSafeAsync.set(self, state: BraveShieldState.perNormalizedDomain[domain])
         }
         super.loadRequest(request)
     }
@@ -430,7 +450,7 @@ class BraveWebView: UIWebView {
         NSURLCache.sharedURLCache().memoryCapacity = 0
 
         if let url = URL, domain = url.normalizedHost() {
-            braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
+            braveShieldStateSafeAsync.set(self, state: BraveShieldState.perNormalizedDomain[domain])
             (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
         }
         super.reload()
@@ -640,7 +660,7 @@ extension BraveWebView: UIWebViewDelegate {
             #endif
 
             if let url = request.URL, domain = url.normalizedHost() {
-                braveShieldState = BraveShieldState.perNormalizedDomain[domain] ?? BraveShieldState()
+                braveShieldStateSafeAsync.set(self, state: BraveShieldState.perNormalizedDomain[domain])
             }
 
             shieldStatUpdate(.reset)

@@ -155,9 +155,9 @@ class BraveApp {
 
         getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
             postAsyncToMain(0) { // back to main thread
-                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = BraveShieldState.perNormalizedDomain[base] where wv.braveShieldState.isNotSet() {
+                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = BraveShieldState.perNormalizedDomain[base] where wv.braveShieldStateSafeAsync.get().isNotSet() {
                     // on init, the webview's shield state doesn't match the db
-                    wv.braveShieldState = dbState
+                    wv.braveShieldStateSafeAsync.set(wv, state: dbState)
                     wv.reloadFromOrigin()
                 }
             }

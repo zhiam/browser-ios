@@ -202,20 +202,23 @@ extension BrowserProfile {
 }
 
 // These override the setting in the prefs
-public class BraveShieldState {
-    static let kAllOff = "all_off"
-    static let kAdBlockAndTp = "adblock_and_tp"
-    //static let kTrackingProtection = "tp" // unused
-    static let kHTTPSE = "httpse"
-    static let kSafeBrowsing = "safebrowsing"
-    static let kFPProtection = "fp_protection"
-    static let kNoscript = "noscript"
+public struct BraveShieldState {
 
-    typealias ShieldKey = String
+    enum Shield : String {
+        case AllOff = "all_off"
+        case AdblockAndTp = "adblock_and_tp"
+        case HTTPSE = "httpse"
+        case SafeBrowsing = "safebrowsing"
+        case FpProtection = "fp_protection"
+        case NoScript = "noscript"
+    }
+
+    private var state = [Shield:Bool]()
+
     typealias DomainKey = String
     static var perNormalizedDomain = [DomainKey: BraveShieldState]()
 
-    static func forDomain(domain: String, setState state:(ShieldKey, Bool?)) {
+    static func forDomain(domain: String, setState state:(String, Bool?)) {
         var shields = perNormalizedDomain[domain]
         if shields == nil {
             if state.1 == nil {
@@ -224,8 +227,12 @@ public class BraveShieldState {
             shields = BraveShieldState()
         }
 
-        shields!.setState(state.0, on: state.1)
-        perNormalizedDomain[domain] = shields!
+        if let key = Shield(rawValue: state.0) {
+            shields!.setState(key, on: state.1)
+            perNormalizedDomain[domain] = shields!
+        } else {
+            assert(false, "db has bad brave shield state")
+        }
     }
 
     static func getStateForDomain(domain: String) -> BraveShieldState? {
@@ -235,18 +242,30 @@ public class BraveShieldState {
     public init(jsonStateFromDbRow: String) {
         let js = JSON(string: jsonStateFromDbRow)
         for (k,v) in (js.asDictionary ?? [:]) {
-            setState(k, on: v.asBool)
+            if let key = Shield(rawValue: k) {
+                setState(key, on: v.asBool)
+            } else {
+                assert(false, "db has bad brave shield state")
+            }
         }
     }
 
     public init() {
     }
 
-    func toJsonString() -> String? {
-        return JSON(state).toString()
+    public init(orig: BraveShieldState) {
+        self.state = orig.state // Dict value type is copied
     }
 
-    func setState(key: ShieldKey, on: Bool?) {
+    func toJsonString() -> String? {
+        var _state = [String: Bool]()
+        for (k, v) in state {
+            _state[k.rawValue] = v
+        }
+        return JSON(_state).toString()
+    }
+
+    mutating func setState(key: Shield, on: Bool?) {
         if let on = on {
             state[key] = on
         } else {
@@ -254,10 +273,8 @@ public class BraveShieldState {
         }
     }
 
-    private var state = [ShieldKey:Bool]()
-
     func isAllOff() -> Bool {
-        return state[BraveShieldState.kAllOff] ?? false
+        return state[.AllOff] ?? false
     }
 
     func isNotSet() -> Bool {
@@ -265,30 +282,30 @@ public class BraveShieldState {
     }
 
     func isOnAdBlockAndTp() -> Bool? {
-        return state[BraveShieldState.kAdBlockAndTp] ?? nil
+        return state[.AdblockAndTp] ?? nil
     }
 
     func isOnHTTPSE() -> Bool? {
-        return state[BraveShieldState.kHTTPSE] ?? nil
+        return state[.HTTPSE] ?? nil
     }
 
     func isOnSafeBrowsing() -> Bool? {
-        return state[BraveShieldState.kSafeBrowsing] ?? nil
+        return state[.SafeBrowsing] ?? nil
     }
 
     func isOnScriptBlocking() -> Bool? {
-        return state[BraveShieldState.kNoscript] ?? nil
+        return state[.NoScript] ?? nil
     }
 
     func isOnFingerprintProtection() -> Bool? {
-        return state[BraveShieldState.kFPProtection] ?? nil
+        return state[.FpProtection] ?? nil
     }
 
-    func setStateFromPerPageShield(pageState: BraveShieldState?) {
-        setState(BraveShieldState.kNoscript, on: pageState?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false))
-        setState(BraveShieldState.kAdBlockAndTp, on: pageState?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled)
-        setState(BraveShieldState.kSafeBrowsing, on: pageState?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled)
-        setState(BraveShieldState.kHTTPSE, on: pageState?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled)
-        setState(BraveShieldState.kFPProtection, on: pageState?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false))
+    mutating func setStateFromPerPageShield(pageState: BraveShieldState?) {
+        setState(.NoScript, on: pageState?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false))
+        setState(.AdblockAndTp, on: pageState?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled)
+        setState(.SafeBrowsing, on: pageState?.isOnSafeBrowsing() ?? SafeBrowsing.singleton.isNSPrefEnabled)
+        setState(.HTTPSE, on: pageState?.isOnHTTPSE() ?? HttpsEverywhere.singleton.isNSPrefEnabled)
+        setState(.FpProtection, on: pageState?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false))
     }
 }
