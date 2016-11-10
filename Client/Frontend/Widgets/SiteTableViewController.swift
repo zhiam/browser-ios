@@ -131,10 +131,11 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.separatorInset = UIEdgeInsetsZero
         }
         
-        cell.gestureRecognizers?.forEach { cell.removeGestureRecognizer($0) }
-        let lp = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
-        cell.addGestureRecognizer(lp)
-
+        if tableView.editing == false {
+            cell.gestureRecognizers?.forEach { cell.removeGestureRecognizer($0) }
+            let lp = UILongPressGestureRecognizer(target: self, action: #selector(longPressOnCell))
+            cell.addGestureRecognizer(lp)
+        }
         return cell
     }
 
