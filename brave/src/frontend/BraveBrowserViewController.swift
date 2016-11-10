@@ -191,9 +191,10 @@ class BraveBrowserViewController : BrowserViewController {
     }
 
     func presentOptInDialog() {
-        let view = BraveTermsViewController()
-        view.delegate = self
-        presentViewController(view, animated: false) {}
+        // Off until TOS is properly set
+//        let view = BraveTermsViewController()
+//        view.delegate = self
+//        presentViewController(view, animated: false) {}
     }
 }
 

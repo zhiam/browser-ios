@@ -266,7 +266,7 @@ extension Strings {
     public static let Block_Scripts = NSLocalizedString("Block Scripts", comment: "")
     public static let Fingerprinting_Protection = NSLocalizedString("Fingerprinting Protection", comment: "")
     public static let Support = NSLocalizedString("Support", comment: "Support section title")
-    public static let Allow_Brave_to_send_info_to_improve_our_app = NSLocalizedString("Allow Brave to send info to improve our app", comment: "option in settings screen")
+    public static let Opt_in_to_telemetry = NSLocalizedString("Send crash reports and metrics", comment: "option in settings screen")
     public static let About = NSLocalizedString("About", comment: "About settings section title")
     public static let Version_template = NSLocalizedString("Version %@ (%@)", comment: "Version number of Brave shown in settings")
     public static let Password_manager_button_settings_footer = NSLocalizedString("You can choose to show a popup to pick your password manager, or have the selected one open automatically.", comment: "Footer message on picker for 3rd party password manager setting")
