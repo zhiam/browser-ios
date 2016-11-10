@@ -137,8 +137,6 @@ class BraveURLBarView : URLBarView {
         theme.buttonTintColor = BraveUX.ActionButtonTintColor
         URLBarViewUX.Themes[Theme.NormalMode] = theme
 
-        stopReloadButton.imageEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 0)
-
         tabsBarController.view.alpha = 0.0
         addSubview(tabsBarController.view)
         getApp().browserViewController.addChildViewController(tabsBarController)
@@ -343,8 +341,6 @@ class BraveURLBarView : URLBarView {
                 make.width.equalTo(pwdMgrButton.hidden ? 0 : UIConstants.ToolbarHeight)
             }
         }
-
-        bringSubviewToFront(stopReloadButton)
     }
 
     override func setupConstraints() {
@@ -392,14 +388,6 @@ class BraveURLBarView : URLBarView {
             make.trailing.equalTo(self)
             make.size.equalTo(UIConstants.ToolbarHeight)
         }
-
-        stopReloadButton.snp_makeConstraints { make in
-            make.right.equalTo(self.locationView.snp_right)
-            make.centerY.equalTo(self.locationContainer)
-            make.size.equalTo(UIConstants.ToolbarHeight)
-        }
-
-        bringSubviewToFront(stopReloadButton)
     }
 
     private var progressIsCompleting = false
@@ -504,16 +492,13 @@ class BraveURLBarView : URLBarView {
         v.textAlignment = .Right
         locationContainer.addSubview(v)
         v.alpha = 0.0
-        self.stopReloadButton.alpha = 0
         UIView.animateWithDuration(0.25, animations: { v.alpha = 1.0 }, completion: {
             finished in
             UIView.animateWithDuration(BraveUX.BraveButtonMessageInUrlBarFadeTime, delay: BraveUX.BraveButtonMessageInUrlBarShowTime, options: [], animations: {
                 v.alpha = 0
-                self.stopReloadButton.alpha = 1.0
                 }, completion: {
                     finished in
                     v.removeFromSuperview()
-                    self.stopReloadButton.alpha = 1.0
             })
         })
     }

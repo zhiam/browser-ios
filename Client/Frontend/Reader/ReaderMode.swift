@@ -212,6 +212,9 @@ protocol ReaderModeDelegate {
 let ReaderModeNamespace = "_firefox_ReaderMode"
 
 class ReaderMode: BrowserHelper {
+
+    static let readerModeOnUUID = "\(NSUUID())"
+
     var delegate: ReaderModeDelegate?
 
     private weak var browser: Browser?

@@ -18,11 +18,13 @@ var _firefox_ReaderMode = {
         console.log(s);
     },
 
-    checkReadability: function() {
-        if (document.location.href.match(/^http:\/\/localhost:\d+\/reader-mode\/page/)) {
-            this.debug({Type: "ReaderModeStateChange", Value: "Active"});
-            __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: "Active"});
-            return;
+
+    _checkReadability: function(readerModeOnUUID) {
+        if (document.getElementById(readerModeOnUUID) != null ||
+            document.location.href.match(/^http:\/\/localhost:\d+\/reader-mode\/page/)) {
+                this.debug({Type: "ReaderModeStateChange", Value: "Active"});
+                __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: "Active"});
+                return "Active";
         }
 
         if ((document.location.protocol === "http:" || document.location.protocol === "https:") && document.location.pathname !== "/") {
@@ -31,7 +33,7 @@ var _firefox_ReaderMode = {
             if (_firefox_ReaderMode.readabilityResult && _firefox_ReaderMode.readabilityResult.content) {
                 this.debug({Type: "ReaderModeStateChange", Value: "Available"});
                 __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: "Available"});
-                return;
+                return "Available";
             }
 
             var uri = {
@@ -52,11 +54,31 @@ var _firefox_ReaderMode = {
             this.debug({Type: "ReaderModeStateChange", Value: _firefox_ReaderMode.readabilityResult !== null ? "Available" : "Unavailable"});
             __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: _firefox_ReaderMode.readabilityResult !== null ? "Available" : "Unavailable"});
 
-            return;
+            return readabilityResult !== null ? "Available" : "Unavailable";
         }
 
         this.debug({Type: "ReaderModeStateChange", Value: "Unavailable"});
         __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: "Unavailable"});
+        return "Unavailable"
+    },
+
+    attempts: 0, // it can take a few tries to detect readability
+    checkReadability: function(readerModeOnUUID) {
+        if (this.attempts > 3) return;
+        this.attempts += 1;
+        if (window.READABILITY_WAS_CHECKED !== undefined) {
+            return "Was checked already";
+        }
+        var result = this._checkReadability(readerModeOnUUID);
+        if (result.length > 1) {
+            window.READABILITY_WAS_CHECKED = true;
+            if (result == "Active") {
+                _firefox_ReaderMode.configureReader();
+            }
+        } else {
+            setTimeout(checkReadability(readerModeOnUUID), 400);
+        }
+        return result;
     },
 
     // Readerize the document. Since we did the actual readerization already in checkReadability, we

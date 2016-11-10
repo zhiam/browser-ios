@@ -75,7 +75,6 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         BraveBrowserBottomToolbar.currentInstance = self
 
         bookmarkButton.hidden = true
-        stopReloadButton.hidden = true
 
         tabsContainer.addSubview(tabsButton)
         addSubview(tabsContainer)
@@ -158,8 +157,6 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
         super.updateConstraints()
 
         styleHacks()
-
-        stopReloadButton.hidden = true
 
         func common(make: ConstraintMaker, bottomInset: Int = 0) {
             make.top.equalTo(self)
