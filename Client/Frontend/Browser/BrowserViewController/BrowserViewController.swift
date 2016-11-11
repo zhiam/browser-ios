@@ -658,24 +658,27 @@ class BrowserViewController: UIViewController {
     }
 
     func hideHomePanelController() {
-        if let controller = homePanelController {
-            UIView.animateWithDuration(0.2, delay: 0, options: .BeginFromCurrentState, animations: { () -> Void in
-                controller.view.alpha = 0
-            }, completion: { finished in
-                if finished {
-                    controller.willMoveToParentViewController(nil)
-                    controller.view.removeFromSuperview()
-                    controller.removeFromParentViewController()
-                    self.homePanelController = nil
-                    self.webViewContainer.accessibilityElementsHidden = false
-                    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil)
+        guard let homePanel = homePanelController else { return }
+        homePanelController = nil
 
-                    // Refresh the reading view toolbar since the article record may have changed
-                    if let readerMode = self.tabManager.selectedTab?.getHelper(ReaderMode.self) where readerMode.state == .Active {
-                        self.showReaderModeBar(animated: false)
-                    }
-                }
-            })
+        // UIView animation conflict is causing completion block to run prematurely
+        let duration = 0.3
+
+        UIView.animateWithDuration(duration, delay: 0, options: .BeginFromCurrentState, animations: { () -> Void in
+            homePanel.view.alpha = 0
+            }, completion: { (b) in })
+
+        postAsyncToMain(duration) {
+            homePanel.willMoveToParentViewController(nil)
+            homePanel.view.removeFromSuperview()
+            homePanel.removeFromParentViewController()
+            self.webViewContainer.accessibilityElementsHidden = false
+            UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil)
+
+            // Refresh the reading view toolbar since the article record may have changed
+            if let readerMode = self.tabManager.selectedTab?.getHelper(ReaderMode.self) where readerMode.state == .Active {
+                self.showReaderModeBar(animated: false)
+            }
         }
     }
 
@@ -1034,6 +1037,7 @@ extension BrowserViewController: WindowCloseHelperDelegate {
 
 extension BrowserViewController: HomePanelViewControllerDelegate {
     func homePanelViewController(homePanelViewController: HomePanelViewController, didSelectURL url: NSURL, visitType: VisitType) {
+        hideHomePanelController()
         finishEditingAndSubmit(url, visitType: visitType)
     }
 

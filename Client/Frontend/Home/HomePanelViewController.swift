@@ -245,7 +245,6 @@ class HomePanelViewController: UIViewController, UITextFieldDelegate, HomePanelD
 
     func homePanel(homePanel: HomePanel, didSelectURL url: NSURL, visitType: VisitType) {
         delegate?.homePanelViewController(self, didSelectURL: url, visitType: visitType)
-        dismissViewControllerAnimated(true, completion: nil)
     }
 
     func homePanelDidRequestToCreateAccount(homePanel: HomePanel) {
