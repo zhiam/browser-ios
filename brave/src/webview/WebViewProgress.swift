@@ -78,6 +78,8 @@ public class WebViewProgress
             if let wv = webView {
                 wv.delegatesForPageState.forEach { $0.value?.webView(wv, progressChanged: Float(progress)) }
             }
+        } else {
+            webView?.checkLocationTimer.onProgressIncomplete()
         }
     }
 

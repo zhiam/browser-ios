@@ -94,6 +94,13 @@ class BraveWebView: UIWebView {
     var progress: WebViewProgress?
     var certificateInvalidConnection:NSURLConnection?
 
+    var uniqueId = -1
+    var internalIsLoadingEndedFlag = false
+    var knownFrameContexts = Set<NSObject>()
+    private static var containerWebViewForCallbacks = { return ContainerWebView() }()
+    // From http://stackoverflow.com/questions/14268230/has-anybody-found-a-way-to-load-https-pages-with-an-invalid-server-certificate-u
+    var loadingUnvalidatedHTTPSPage: Bool = false
+
     // Wrap to indicate this is thread-safe (is called from networking thread), and to ensure safety.
     class BraveShieldStateSafeAsync {
         private var braveShieldState = BraveShieldState()
@@ -180,13 +187,61 @@ class BraveWebView: UIWebView {
         }
     }
 
-    var uniqueId = -1
+    class CheckLocationTimer {
+        var timer:NSTimer = NSTimer()
+        weak var webview:BraveWebView?
+        static let kNonRepeating = -1
+        var timerCount = kNonRepeating
 
-    var internalIsLoadingEndedFlag: Bool = false;
-    var knownFrameContexts = Set<NSObject>()
-    private static var containerWebViewForCallbacks = { return ContainerWebView() }()
-    // From http://stackoverflow.com/questions/14268230/has-anybody-found-a-way-to-load-https-pages-with-an-invalid-server-certificate-u
-    var loadingUnvalidatedHTTPSPage: Bool = false
+        init(webview: BraveWebView) {
+            self.webview = webview
+        }
+
+        private func start(isRepeating isRepeating: Bool) {
+            timer.invalidate()
+            timerCount = isRepeating ? 0 : CheckLocationTimer.kNonRepeating
+            timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(CheckLocationTimer.timeout), userInfo: nil, repeats: isRepeating)
+        }
+
+        func onLoadFailure() {
+            if timer.valid {
+                return
+            }
+            start(isRepeating: false)
+        }
+
+        func onProgressIncomplete() {
+            if timer.valid && timerCount != CheckLocationTimer.kNonRepeating {
+                return
+            }
+            start(isRepeating: true)
+        }
+
+        func onProgressComplete() {
+            if timerCount == CheckLocationTimer.kNonRepeating {
+                return
+            }
+            timer.invalidate()
+        }
+
+        @objc func timeout() {
+            timerCount += 1
+
+            if let location = webview?.stringByEvaluatingJavaScriptFromString("window.location.href") where !location.contains("localhost") {
+                webview?.setUrl(NSURL(string: location), reliableSource: false)
+            }
+
+            if let readyState = webview?.stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase()") where readyState == "complete" {
+                webview?.progress?.completeProgress()
+                timer.invalidate()
+            }
+
+            if timerCount > 2 {
+                timer.invalidate()
+            }
+        }
+    }
+    lazy var checkLocationTimer: CheckLocationTimer = { return CheckLocationTimer(webview: self) }()
 
     private static var webviewBuiltinUserAgent = UserAgent.defaultUserAgent()
 
@@ -289,10 +344,8 @@ class BraveWebView: UIWebView {
 
         scrollView.showsHorizontalScrollIndicator = false
 
-        #if !TEST
-            let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
+        let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
             scrollView.setValue(NSValue(CGSize: CGSizeMake(rate, rate)), forKey: "_decelerationFactor")
-        #endif
     }
 
     var jsBlockedStatLastUrl: String? = nil
@@ -381,6 +434,8 @@ class BraveWebView: UIWebView {
     }
 
     func loadingCompleted() {
+        checkLocationTimer.onProgressComplete()
+        
         if internalIsLoadingEndedFlag {
             return
         }
@@ -675,6 +730,8 @@ extension BraveWebView: UIWebViewDelegate {
             }
 
             shieldStatUpdate(.reset)
+
+            checkLocationTimer.onProgressIncomplete()
         }
 
         broadcastToPageStateDelegates()
@@ -692,6 +749,7 @@ extension BraveWebView: UIWebViewDelegate {
             nd.webViewDidStartProvisionalNavigation(self, url: URL)
         }
         progress?.webViewDidStartLoad()
+        checkLocationTimer.onProgressIncomplete()
 
         delegatesForPageState.forEach { $0.value?.webView(self, isLoading: true) }
 
@@ -708,20 +766,17 @@ extension BraveWebView: UIWebViewDelegate {
         // browserleaks canvas requires injection at this point
         configuration.userContentController.injectFingerprintProtection()
 
-        guard let pageInfo = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase() + '|' + document.title") else {
-            return
-        }
-        
+        let readyState = stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase()")
+        let title = stringByEvaluatingJavaScriptFromString("document.title")
+
         if let isSafeBrowsingBlock = stringByEvaluatingJavaScriptFromString("document['BraveSafeBrowsingPageResult']") {
             safeBrowsingBlockTriggered = (isSafeBrowsingBlock as NSString).boolValue
         }
 
-        let pageInfoArray = pageInfo.componentsSeparatedByString("|")
-
-        let readyState = pageInfoArray.first // ;print("readyState:\(readyState)")
-        if let t = pageInfoArray.last where !t.isEmpty {
-            title = t
+        if let t = title where !t.isEmpty {
+            self.title = t
         }
+
         progress?.webViewDidFinishLoad(documentReadyState: readyState)
 
         backForwardList.update()
@@ -729,11 +784,9 @@ extension BraveWebView: UIWebViewDelegate {
     }
 
     func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
-        if let location = self.stringByEvaluatingJavaScriptFromString("window.location.href") where !location.contains("localhost") {
-            setUrl(NSURL(string: location), reliableSource: false)
-        }
-
         print("didFailLoadWithError: \(error)")
+
+        checkLocationTimer.onLoadFailure()
 
         if (error.domain == NSURLErrorDomain) {
             if (error.code == NSURLErrorServerCertificateHasBadDate      ||
