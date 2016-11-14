@@ -801,7 +801,8 @@ extension BraveWebView: UIWebViewDelegate {
                     return
                 }
 
-                let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(errorUrl.absoluteString) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
+                let alertUrl = errorUrl.absoluteString ?? "this site"
+                let alert = UIAlertController(title: "Certificate Error", message: "The identity of \(alertUrl) can't be verified", preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
                     handler in
                     self.stopLoading()
