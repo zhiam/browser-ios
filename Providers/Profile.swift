@@ -34,6 +34,9 @@ class ProfileFileAccessor: FileAccessor {
         if let sharedContainerIdentifier = AppInfo.sharedContainerIdentifier(), let url = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(sharedContainerIdentifier), path = url.path {
             rootPath = path as NSString
         } else {
+            if NSBundle.mainBundle().bundleIdentifier?.contains("com.brave.ios") ?? false {
+                BraveApp.showErrorAlert(title: "Database error", error: "App group not set, bookmarks will be lost")
+            }
             log.error("Unable to find the shared container. Defaulting profile location to ~/Documents instead.")
             rootPath = (NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]) as NSString
         }
