@@ -236,7 +236,7 @@ class BraveWebView: UIWebView {
                 timer.invalidate()
             }
 
-            if timerCount > 2 {
+            if timerCount > 10 { // try for 10 sec to see if readyState changes to complete
                 timer.invalidate()
             }
         }
@@ -341,11 +341,18 @@ class BraveWebView: UIWebView {
 
         delegate = self
         scalesPageToFit = true
-
         scrollView.showsHorizontalScrollIndicator = false
 
         let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
             scrollView.setValue(NSValue(CGSize: CGSizeMake(rate, rate)), forKey: "_decelerationFactor")
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(firstLayoutPerformed), name: swizzledFirstLayoutNotification, object: nil)
+    }
+
+    func firstLayoutPerformed() {
+        if let location = stringByEvaluatingJavaScriptFromString("window.location.href") where !location.contains("localhost") {
+            setUrl(NSURL(string: location), reliableSource: false)
+        }
     }
 
     var jsBlockedStatLastUrl: String? = nil
@@ -421,6 +428,8 @@ class BraveWebView: UIWebView {
     let internalProgressStartedNotification = "WebProgressStartedNotification"
     let internalProgressChangedNotification = "WebProgressEstimateChangedNotification"
     let internalProgressFinishedNotification = "WebProgressFinishedNotification" // Not usable
+
+    let swizzledFirstLayoutNotification = "WebViewFirstLayout" // not broadcast on history push nav
 
     override func loadRequest(request: NSURLRequest) {
         guard let internalWebView = valueForKeyPath("documentView.webView") else { return }

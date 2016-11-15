@@ -467,7 +467,7 @@
 		EB8F56A11DD13DF300679A78 /* FiraSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D5A0C238BFA68019EFA7599 /* FiraSans-Regular.ttf */; };
 		EB8F56A21DD13DF300679A78 /* FiraSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2849F28840241B31DFD49F20 /* FiraSans-SemiBold.ttf */; };
 		EB8F56A31DD13DF300679A78 /* FiraSans-UltraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5465B72EA414E035DEAE5667 /* FiraSans-UltraLight.ttf */; };
-		EB9CAB431DC2592700627A39 /* UIWebViewAlertCatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9CAB421DC2592700627A39 /* UIWebViewAlertCatcher.m */; };
+		EB9CAB431DC2592700627A39 /* UIWebViewSwizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */; };
 		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
 		EBB345801DAD465C00EE24F0 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B9A62DB1C4002B1005C83DC /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1267,7 +1267,7 @@
 		EB62B7FC1DB53F3D006FD479 /* Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Punycode.swift; path = Client/Frontend/Browser/Punycode.swift; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB8F566E1DD0FC2800679A78 /* Readability.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Carthage/Checkouts/readability/Readability.js; sourceTree = "<group>"; };
-		EB9CAB421DC2592700627A39 /* UIWebViewAlertCatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIWebViewAlertCatcher.m; path = brave/src/webview/UIWebViewAlertCatcher.m; sourceTree = "<group>"; };
+		EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIWebViewSwizzling.m; path = brave/src/webview/UIWebViewSwizzling.m; sourceTree = "<group>"; };
 		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
 		EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
@@ -1759,7 +1759,7 @@
 				E5287F4DC46DAD1154B404A5 /* WebViewDocScale.m */,
 				3E56C0216FAEB62B2CDF5FE7 /* WebViewProgress.swift */,
 				81F57A3BC5DC16D6451500BA /* WebViewScripting.swift */,
-				EB9CAB421DC2592700627A39 /* UIWebViewAlertCatcher.m */,
+				EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */,
 			);
 			name = webview;
 			sourceTree = "<group>";
@@ -3759,7 +3759,7 @@
 				907D2E87F3AB62A94DB2D9E7 /* InfoPlist.strings in Sources */,
 				CCCD5D311C1E3408F243DF5E /* ABPFilterLibWrapper.mm in Sources */,
 				3AAE8F176D74D5884854D830 /* AdBlocker.swift in Sources */,
-				EB9CAB431DC2592700627A39 /* UIWebViewAlertCatcher.m in Sources */,
+				EB9CAB431DC2592700627A39 /* UIWebViewSwizzling.m in Sources */,
 				A4997544E81DF456966522E6 /* BraveShieldState.swift in Sources */,
 				F0EA069256DABEECB329C591 /* binding.gyp in Sources */,
 				2F0860C25F7367CEED17E283 /* HttpsEverywhere.cpp in Sources */,

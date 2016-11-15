@@ -6,7 +6,7 @@
 /// If the webview is not foreground, don't show an alert, this could be used to spoof users
 /// TODO: queued up and shown
 
-@implementation UIWebView (JavaScriptAlert)
+@implementation UIWebView (Swizzling)
 
 + (void)load
 {
@@ -17,15 +17,32 @@
         NSString *confirm = @"runJavaScriptConfirmPanelWithMessage:initiatedByFrame:";
         NSString *textInput = @"runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:";
 
+        NSString *firstLayout = @"MainFrameDidFirstVisuallyNonEmptyLayoutInFrame:";
+
         SEL _alert = NSSelectorFromString([@"webView:" stringByAppendingString:alert]);
         SEL _confirm = NSSelectorFromString([@"webView:" stringByAppendingString:confirm]);
         SEL _textInput = NSSelectorFromString([@"webView:" stringByAppendingString:textInput]);
 
+        SEL _firstLayout = NSSelectorFromString([@"webView" stringByAppendingString:firstLayout]);
+
         SwizzleInstanceMethods(self.class, _alert, @selector(_webView:jsAlertPanelWithMessage:initiatedByFrame:));
         SwizzleInstanceMethods(self.class, _confirm, @selector(_webView:jsConfirmPanelWithMessage:initiatedByFrame:));
         SwizzleInstanceMethods(self.class, _textInput, @selector(_webView:jsTextInputPanelWithPrompt:defaultText:initiatedByFrame:));
+
+        SwizzleInstanceMethods(self.class, _firstLayout, @selector(webViewFirstLayout:));
+
     });
 }
+
+- (void)webViewFirstLayout:(id)arg1
+{
+    NSLog(@"web view first layout 🐎"); // a horse of course
+    // This is a missing API, without knowing this, we might have a security hole whereby the URL title doesn't match
+    // the currently displayed page
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"WebViewFirstLayout" object:nil];
+    [self webViewFirstLayout:arg1];
+}
+
 
 -(BOOL)_webView:(id)sender jsConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(id)frame
 {
