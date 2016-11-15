@@ -36,11 +36,13 @@
 
 - (void)webViewFirstLayout:(id)arg1
 {
-    NSLog(@"web view first layout 🐎"); // a horse of course
-    // This is a missing API, without knowing this, we might have a security hole whereby the URL title doesn't match
-    // the currently displayed page
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"WebViewFirstLayout" object:nil];
     [self webViewFirstLayout:arg1];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // This is a missing API, without knowing this, we might have a security hole whereby the URL title doesn't match
+        // the currently displayed page
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"WebViewFirstLayout" object:nil];
+    });
 }
 
 
