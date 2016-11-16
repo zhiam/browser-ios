@@ -38,7 +38,7 @@ if (!(username && password)) {
 }
 
 // URI and resource list
-const TEMPLATE = 'http://www.transifex.com/api/2/project/brave-ios-browser-1/resource/RESOURCE_SLUG/translation/LANG_CODE/?file'
+const TEMPLATE = 'https://www.transifex.com/api/2/project/brave-ios-browser-1/resource/RESOURCE_SLUG/translation/LANG_CODE/?file'
 
 console.log('languages ' + languages + '\n')
 
