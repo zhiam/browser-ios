@@ -465,14 +465,18 @@ class BraveWebView: UIWebView {
 
             if docLoc != me.prevDocumentLocation {
                 if !(me.URL?.absoluteString?.startsWith(WebServer.sharedInstance.base) ?? false) && !docLoc.startsWith(WebServer.sharedInstance.base) {
-                    me.title = me.stringByEvaluatingJavaScriptFromString("document.title") ?? NSURL(string: docLoc)?.baseDomain() ?? ""
+                    me.title = me.stringByEvaluatingJavaScriptFromString("document.title") ?? ""
+                    if me.title.isEmpty {
+                        me.title = NSURL(string: docLoc)?.baseDomain() ?? ""
+                    }
                 }
                 #if DEBUG
                 print("Adding history, TITLE:\(me.title)")
                 #endif
-                if let url = me.URL where !ErrorPageHelper.isErrorPageURL(url) && !AboutUtils.isAboutHomeURL(url) {
-                        tab.lastExecutedTime = NSDate.now()
-                        getApp().browserViewController.updateProfileForLocationChange(tab)
+                if let url = NSURL(string: docLoc) where !ErrorPageHelper.isErrorPageURL(url) && !AboutUtils.isAboutHomeURL(url) {
+                    me.setUrl(url, reliableSource: true)
+                    tab.lastExecutedTime = NSDate.now()
+                    getApp().browserViewController.updateProfileForLocationChange(tab)
                 }
             }
             me.prevDocumentLocation = docLoc
