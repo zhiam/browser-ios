@@ -111,19 +111,6 @@ class BraveWebView: UIWebView {
 
             braveShieldState = state != nil ? BraveShieldState(orig: state!) : BraveShieldState()
 
-            postAsyncToMain() {
-                guard let browser = getApp().tabManager.tabForWebView(webview) else { return }
-                let fpOn = BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection)
-                if let fpOn = fpOn where fpOn {
-                    if browser.getHelper(FingerprintingProtection.self) == nil {
-                        let fp = FingerprintingProtection(browser: browser)
-                        browser.addHelper(fp)
-                    }
-                } else {
-                    getApp().tabManager.tabForWebView(webview)?.removeHelper(FingerprintingProtection.self)
-                }
-            }
-
             postAsyncToMain(0.2) { // update the UI, wait a bit for loading to have started
                 (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
             }
@@ -694,7 +681,19 @@ extension BraveWebView: UIWebViewDelegate {
             // We need to block navigation using this tag.
             return false
         }
-        
+
+        if let tab = getApp().tabManager.tabForWebView(self) {
+            let state = braveShieldStateSafeAsync.get()
+            if state.isOnFingerprintProtection() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false {
+                if tab.getHelper(FingerprintingProtection.self) == nil {
+                    let fp = FingerprintingProtection(browser: tab)
+                    tab.addHelper(fp)
+                }
+            } else {
+                tab.removeHelper(FingerprintingProtection.self)
+            }
+        }
+
         if url.absoluteString == blankTargetUrl {
             blankTargetUrl = nil
             print(url)
