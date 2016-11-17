@@ -24,6 +24,14 @@ let kDesktopUserAgent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_11_6) Appl
     }
 #endif
 
+extension NSURL {
+    // The url is a local webserver url or an about url, a.k.a something we don't display to users
+    public func isSpecialInternalUrl() -> Bool {
+        assert(WebServer.sharedInstance.base.startsWith("http"))
+        return (absoluteString ?? "").startsWith(WebServer.sharedInstance.base) || AboutUtils.isAboutURL(self)
+    }
+}
+
 // Any app-level hooks we need from Firefox, just add a call to here
 class BraveApp {
     static var isSafeToRestoreTabs = true

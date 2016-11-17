@@ -79,7 +79,7 @@ public class WebViewProgress
                 wv.delegatesForPageState.forEach { $0.value?.webView(wv, progressChanged: Float(progress)) }
             }
         } else {
-            webView?.checkLocationTimer.onProgressIncomplete()
+            webView?.checkLoadCompletionTimer.onProgressIncomplete()
         }
     }
 
