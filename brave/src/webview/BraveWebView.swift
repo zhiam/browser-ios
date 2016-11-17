@@ -245,6 +245,10 @@ class BraveWebView: UIWebView {
     }
 
     func updateTitleFromHtml() {
+        if URL?.isSpecialInternalUrl() ?? false {
+            title = ""
+            return
+        }
         if let t = stringByEvaluatingJavaScriptFromString("document.title") where !t.isEmpty {
             title = t
         } else {
