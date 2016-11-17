@@ -95,7 +95,6 @@ class BraveWebView: UIWebView {
     var certificateInvalidConnection:NSURLConnection?
 
     var uniqueId = -1
-    var internalIsLoadingEndedFlag = false
     var knownFrameContexts = Set<NSObject>()
     private static var containerWebViewForCallbacks = { return ContainerWebView() }()
     // From http://stackoverflow.com/questions/14268230/has-anybody-found-a-way-to-load-https-pages-with-an-invalid-server-certificate-u
@@ -183,48 +182,6 @@ class BraveWebView: UIWebView {
         return setUrl(location)
     }
 
-    // A fallback used when progress is started, and no event is arriving to indicate we should check page state is completed
-    class CheckLoadCompletionTimer {
-        var timer:NSTimer = NSTimer()
-        weak var webview:BraveWebView?
-        var timerCount = 0
-
-        init(webview: BraveWebView) {
-            self.webview = webview
-        }
-
-        private func start() {
-            timer.invalidate()
-            timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(CheckLoadCompletionTimer.timeout), userInfo: nil, repeats: true)
-        }
-
-        func onProgressIncomplete() {
-            if timer.valid {
-                return
-            }
-            start()
-        }
-
-        func onProgressComplete() {
-            timer.invalidate()
-        }
-
-        @objc func timeout() {
-            timerCount += 1
-
-            if let readyState = webview?.stringByEvaluatingJavaScriptFromString("document.readyState.toLowerCase()") where readyState == "complete" {
-                webview?.updateLocationFromHtml()
-                webview?.progress?.completeProgress()
-                timer.invalidate()
-            }
-
-            if timerCount > 15 { // try for a few sec to see if readyState changes to complete
-                timer.invalidate()
-            }
-        }
-    }
-    lazy var checkLoadCompletionTimer: CheckLoadCompletionTimer = { return CheckLoadCompletionTimer(webview: self) }()
-
     private static var webviewBuiltinUserAgent = UserAgent.defaultUserAgent()
 
     // Needed to identify webview in url protocol
@@ -266,10 +223,8 @@ class BraveWebView: UIWebView {
         if URL?.isSpecialInternalUrl() ?? true {
             return
         }
-        
-        let prev = previousUrl?.absoluteString ?? ""
-        updateLocationFromHtml()
-        if URL?.absoluteString == prev || URL?.isSpecialInternalUrl() ?? true {
+
+        if !updateLocationFromHtml() {
             return
         }
 
@@ -344,19 +299,17 @@ class BraveWebView: UIWebView {
     }
 
     func internalProgressNotification(notification: NSNotification) {
-        //print("\(notification.userInfo?["WebProgressEstimatedProgressKey"])")
-        if (notification.userInfo?["WebProgressEstimatedProgressKey"] as? Double ?? 0 > 0.99) {
-            delegate?.webViewDidFinishLoad?(self)
+        if let prog = notification.userInfo?["WebProgressEstimatedProgressKey"] as? Double {
+            progress?.setProgress(prog)
+            if prog > 0.99 {
+                loadingCompleted()
+            }
         }
     }
 
     override var loading: Bool {
         get {
-            if internalIsLoadingEndedFlag {
-                // we detected load complete internally –UIWebView sometimes stays in a loading state (i.e. bbc.com)
-                return false
-            }
-            return super.loading
+            return estimatedProgress > 0 && estimatedProgress < 0.99
         }
     }
 
@@ -458,15 +411,13 @@ class BraveWebView: UIWebView {
     }
 
     func loadingCompleted() {
-        checkLoadCompletionTimer.onProgressComplete()
-
         if isLoadCompletedHtmlPropertySet() {
             return
         }
         setLoadCompletedHtmlProperty()
 
         print("loadingCompleted() ••••")
-
+        progress?.setProgress(1.0)
         broadcastToPageStateDelegates()
 
         if safeBrowsingBlockTriggered {
@@ -756,8 +707,6 @@ extension BraveWebView: UIWebViewDelegate {
             }
 
             shieldStatUpdate(.reset)
-
-            checkLoadCompletionTimer.onProgressIncomplete()
         }
 
         broadcastToPageStateDelegates()
@@ -775,7 +724,6 @@ extension BraveWebView: UIWebViewDelegate {
             nd.webViewDidStartProvisionalNavigation(self, url: URL)
         }
         progress?.webViewDidStartLoad()
-        checkLoadCompletionTimer.onProgressIncomplete()
 
         delegatesForPageState.forEach { $0.value?.webView(self, isLoading: true) }
 

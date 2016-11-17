@@ -416,7 +416,7 @@ class BraveURLBarView : URLBarView {
         func performUpdate() {
             let progress = staticProgress.val
 
-            if progress == 1.0 || !(BraveApp.getCurrentWebView()?.loading ?? false) {
+            if progress == 1.0 || progress == 0 {
                 if progressIsCompleting {
                     return
                 }

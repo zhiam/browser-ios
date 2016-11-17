@@ -41,20 +41,18 @@ public class WebViewProgress
         }
 
         @objc func delayedCompletionCheck() {
-            if (webView?.loading ?? false) || webView?.estimatedProgress > 0.99 {
-                return
-            }
 
             let readyState = webView?.stringByEvaluatingJavaScriptFromString("document.readyState")?.lowercaseString
-            if readyState == "loaded" || readyState == "complete" {
+            if readyState == "complete" {
                 webView?.progress?.completeProgress()
             }
         }
 
         @objc override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
             guard let path = keyPath  where path == kvoLoading else { return }
-            postAsyncToMain(0) { // ensure closure is on main thread, by-definition this func can be off-main
-                if !(self.webView?.loading ?? true) && self.webView?.estimatedProgress < 1.0 {
+            postAsyncToMain { // ensure closure is on main thread, by-definition this func can be off-main
+                guard let prog = self.webView?.estimatedProgress else { return }
+                if prog > 0 && prog < 1.0 {
                     self.timer?.invalidate()
                     self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(LoadingObserver.delayedCompletionCheck), userInfo: nil, repeats: false)
                 } else {
@@ -78,8 +76,6 @@ public class WebViewProgress
             if let wv = webView {
                 wv.delegatesForPageState.forEach { $0.value?.webView(wv, progressChanged: Float(progress)) }
             }
-        } else {
-            webView?.checkLoadCompletionTimer.onProgressIncomplete()
         }
     }
 
@@ -109,7 +105,6 @@ public class WebViewProgress
         loadingCount = 0
         interactiveCount = 0
         setProgress(0.0)
-        webView?.internalIsLoadingEndedFlag = false
     }
 
     public func pathContainsCompleted(path: String?) -> Bool {
@@ -186,13 +181,8 @@ public class WebViewProgress
                 completeProgress()
             case "interactive":
                 interactiveCount += 1
-                if let webView = webView {
-                    if  interactiveCount == 1 {
-                        NSNotificationCenter.defaultCenter().postNotificationName(BraveWebViewConstants.kNotificationPageInteractive, object: webView)
-                    }
-                    if !webView.loading {
-                        completeProgress()
-                    }
+                if let webView = webView where interactiveCount == 1 {
+                    NSNotificationCenter.defaultCenter().postNotificationName(BraveWebViewConstants.kNotificationPageInteractive, object: webView)
                 }
             case "complete":
                 completeProgress()
