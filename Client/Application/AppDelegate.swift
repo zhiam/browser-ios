@@ -160,7 +160,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         log.debug("Application will terminate.")
 
         // We have only five seconds here, so let's hope this doesn't take too long.
-        self.profile?.shutdown()
+        shutdownProfileWhenNotActive()
 
         // Allow deinitializers to close our database connections.
         self.profile = nil
@@ -316,7 +316,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidEnterBackground(application: UIApplication) {
         print("Close database")
-        profile?.shutdown()
+        shutdownProfileWhenNotActive()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -485,6 +485,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
   }
 #endif
+
+    private func shutdownProfileWhenNotActive() {
+        // Only shutdown the profile if we are not in the foreground
+        guard UIApplication.sharedApplication().applicationState != UIApplicationState.Active else { return }
+        profile?.shutdown()
+    }
+
 }
 
 // MARK: - Root View Controller Animations

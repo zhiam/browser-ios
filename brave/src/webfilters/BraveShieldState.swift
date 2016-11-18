@@ -14,12 +14,19 @@ class BraveShieldTable: GenericTable<BraveShieldTableRow> {
     static let colState = "state_json"
 
     var db: BrowserDB!
-    static func initialize(db: BrowserDB) -> BraveShieldTable? {
+    static func initialize(db: BrowserDB) -> BraveShieldTable {
         let table = BraveShieldTable()
         table.db = db
-        if !db.createOrUpdate(table) {
-            return nil
+        switch db.createOrUpdate(BrowserTable()) {
+        case .Failure:
+            print("Failed to create/update DB schema for BraveShieldTable!")
+            fatalError()
+        case .Closed:
+            print("BraveShieldTable not created as the SQLiteConnection is closed.")
+        case .Success:
+            print("BraveShieldTable succesfully created/updated")
         }
+
         return table
     }
 
