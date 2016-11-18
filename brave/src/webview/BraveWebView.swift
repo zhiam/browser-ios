@@ -271,6 +271,7 @@ class BraveWebView: UIWebView {
 
         progress = WebViewProgress(parent: self)
 
+        mediaPlaybackRequiresUserAction = true
         delegate = self
         scalesPageToFit = true
         scrollView.showsHorizontalScrollIndicator = false
