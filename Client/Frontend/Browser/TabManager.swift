@@ -135,7 +135,11 @@ class TabManager : NSObject {
         return tabs.internalTabList.count
     }
 
-    weak var selectedTab: Browser?
+    private weak var _selectedTab: Browser?
+    var selectedTab: Browser? {
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+        return _selectedTab
+    }
 
     func tabForWebView(webView: UIWebView) -> Browser? {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
@@ -171,7 +175,7 @@ class TabManager : NSObject {
             return
         }
 
-        selectedTab = tab
+        _selectedTab = tab
         preserveTabs()
 
         if let t = self.selectedTab where t.webView == nil {
@@ -421,7 +425,7 @@ class TabManager : NSObject {
         for tab in tabs.internalTabList {
             tab.deleteWebView(isTabDeleted: false)
         }
-        selectedTab = nil
+        _selectedTab = nil
         tabs.privateTabs.forEach{
             removeTab($0, flushToDisk: true, notify: notify, createTabIfNoneLeft: false)
         }

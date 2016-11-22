@@ -65,7 +65,14 @@ class Browser: NSObject, BrowserWebViewDelegate {
         }
     }
 
-    var webView: BraveWebView?
+    private var _webView: BraveWebView?
+    var webView: BraveWebView? {
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+        return _webView
+    }
+
+
+
     var browserDelegate: BrowserDelegate?
     var bars = [SnackBar]()
     var favicons = [String:Favicon]() // map baseDomain() to favicon
@@ -153,6 +160,9 @@ class Browser: NSObject, BrowserWebViewDelegate {
             return
         }
 
+        // self.webView setter/getter is thread-safe
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+
         if webView == nil {
 #if !BRAVE
             assert(configuration != nil, "Create webview can only be called once")
@@ -177,7 +187,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
 
             restore(webView)
 
-            self.webView = webView
+            _webView = webView
             browserDelegate?.browser(self, didCreateWebView: self.webView!)
 
 #if !BRAVE
@@ -221,13 +231,17 @@ class Browser: NSObject, BrowserWebViewDelegate {
         } else {
             log.error("creating webview with no lastRequest and no session data: \(self.url)")
         }
+
     }
 
     func deleteWebView(isTabDeleted isTabDeleted: Bool) {
         assert(NSThread.isMainThread()) // to find and remove these cases in debug
         guard let wv = webView else { return }
 
-        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+
+        // self.webView setter/getter is thread-safe
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+
             if !isTabDeleted {
                 self.lastTitle = self.title
                 let currentItem: LegacyBackForwardListItem! = wv.backForwardList.currentItem
@@ -242,8 +256,8 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 }
             }
             self.browserDelegate?.browser(self, willDeleteWebView: wv)
-            self.webView = nil
-        }
+            _webView = nil
+
     }
 
     deinit {
