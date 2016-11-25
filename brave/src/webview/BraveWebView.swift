@@ -437,9 +437,6 @@ class BraveWebView: UIWebView {
             }
 
             me.updateLocationFromHtml()
-            if me.URL?.isSpecialInternalUrl() ?? false {
-                return
-            }
             me.updateTitleFromHtml()
             tab.lastExecutedTime = NSDate.now()
             getApp().browserViewController.updateProfileForLocationChange(tab)
@@ -450,7 +447,9 @@ class BraveWebView: UIWebView {
 
             me.stringByEvaluatingJavaScriptFromString("console.log('get favicons'); __firefox__.favicons.getFavicons()")
 
-            me.stringByEvaluatingJavaScriptFromString(ReaderModeNamespace + ".checkReadability('\(ReaderMode.readerModeOnUUID)')")
+            let readerjs = ReaderModeNamespace + ".checkReadability('\(ReaderMode.readerModeOnUUID)')"
+            let tmp = me.stringByEvaluatingJavaScriptFromString(readerjs)
+            print(tmp)
 
             me.checkScriptBlockedAndBroadcastStats()
 

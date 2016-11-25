@@ -81,9 +81,9 @@ extension BrowserViewController: BrowserDelegate {
         #endif
         
         if !BraveUX.IsRelease {
-//            let readerMode = ReaderMode(browser: browser)
-//            readerMode.delegate = self
-//            browser.addHelper(readerMode)
+            let readerMode = ReaderMode(browser: browser)
+            readerMode.delegate = self
+            browser.addHelper(readerMode)
         }
 
         let favicons = FaviconManager(browser: browser, profile: profile)

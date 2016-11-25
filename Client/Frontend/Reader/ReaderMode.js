@@ -178,6 +178,8 @@ var _firefox_ReaderMode = {
     },
     
     configureReader: function() {
+        console.log("configureReader");
+        
         // Configure the reader with the initial style that was injected in the page.
         var style = JSON.parse(document.body.getAttribute("data-readerStyle"));
         _firefox_ReaderMode.setStyle(style);
