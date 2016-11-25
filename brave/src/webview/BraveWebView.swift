@@ -145,24 +145,24 @@ class BraveWebView: UIWebView {
     private var lastBroadcastedKvoUrl: String = ""
     // return true if set, false if unchanged
     func setUrl( newUrl: NSURL?) -> Bool {
-        guard var newUrl = newUrl else { return false }
+        guard var newUrl = newUrl, let urlString = newUrl.absoluteString where !urlString.isEmpty else { return false }
 
-        if newUrl.absoluteString?.endsWith("?") ?? false {
+        if urlString.endsWith("?") {
             if let noEndingQ = URL?.absoluteString?.componentsSeparatedByString("?")[0] {
                 newUrl = NSURL(string: noEndingQ) ?? newUrl
             }
         }
 
-        if newUrl.absoluteString == _url.url?.absoluteString {
+        if urlString == _url.url?.absoluteString {
             return false
         }
 
         _url.prevUrl = _url.url
         _url.url = newUrl
 
-        if let absoluteString = newUrl.absoluteString where absoluteString != lastBroadcastedKvoUrl {
-            delegatesForPageState.forEach { $0.value?.webView(self, urlChanged: absoluteString) }
-            lastBroadcastedKvoUrl = absoluteString
+        if urlString != lastBroadcastedKvoUrl {
+            delegatesForPageState.forEach { $0.value?.webView(self, urlChanged: urlString) }
+            lastBroadcastedKvoUrl = urlString
         }
 
         return true
