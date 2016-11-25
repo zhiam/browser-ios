@@ -17,7 +17,7 @@ enum ReaderModeBarButtonType {
         switch self {
         case .MarkAsRead: return Strings.Mark_as_Read
         case .MarkAsUnread: return Strings.Mark_as_Unread
-        case .Settings: return Strings.Display_Settings
+        case .Settings: return Strings.Reader_Mode_Settings
         case .AddToReadingList: return Strings.Add_to_Reading_List
         case .RemoveFromReadingList: return Strings.Remove_from_Reading_List
         }
@@ -64,41 +64,32 @@ struct ReaderModeBarViewUX {
 
 class ReaderModeBarView: UIView {
     var delegate: ReaderModeBarViewDelegate?
-
-    var readStatusButton: UIButton!
     var settingsButton: UIButton!
-    var listStatusButton: UIButton!
 
     dynamic var buttonTintColor: UIColor = UIColor.clearColor() {
         didSet {
-            readStatusButton.tintColor = self.buttonTintColor
             settingsButton.tintColor = self.buttonTintColor
-            listStatusButton.tintColor = self.buttonTintColor
         }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        readStatusButton = createButton(type: .MarkAsRead, action: #selector(ReaderModeBarView.SELtappedReadStatusButton(_:)))
-        readStatusButton.snp_makeConstraints { (make) -> () in
-            make.left.equalTo(self)
-            make.height.centerY.equalTo(self)
-            make.width.equalTo(80)
-        }
+        // This class is glued on to the bottom of the urlbar, and is outside of that frame, so we have to manually
+        // route clicks here. See see BrowserViewController.ViewToCaptureReaderModeTap
+        // TODO: Redo urlbar layout so that we can place this within the frame *if* we decide to keep the reader settings attached to urlbar
+        settingsButton = UIButton()
+        settingsButton.setTitleColor(BraveUX.BraveOrange, forState: .Normal)
+        settingsButton.titleLabel?.font = UIFont.boldSystemFontOfSize(UIFont.systemFontSize() - 1)
+        settingsButton.setTitle(Strings.Reader_Mode_Settings, forState: .Normal)
+        settingsButton.addTarget(self, action: #selector(ReaderModeBarView.SELtappedSettingsButton), forControlEvents: .TouchUpInside)
+        addSubview(settingsButton)
 
-        settingsButton = createButton(type: .Settings, action: #selector(ReaderModeBarView.SELtappedSettingsButton(_:)))
-        settingsButton.snp_makeConstraints { (make) -> () in
-            make.height.centerX.centerY.equalTo(self)
-            make.width.equalTo(80)
-        }
+        settingsButton.snp_makeConstraints { make in
+            make.centerX.centerY.equalTo(self)
 
-        listStatusButton = createButton(type: .AddToReadingList, action: #selector(ReaderModeBarView.SELtappedListStatusButton(_:)))
-        listStatusButton.snp_makeConstraints { (make) -> () in
-            make.right.equalTo(self)
-            make.height.centerY.equalTo(self)
-            make.width.equalTo(80)
         }
+        self.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -117,51 +108,20 @@ class ReaderModeBarView: UIView {
         CGContextStrokePath(context!)
     }
 
-    private func createButton(type type: ReaderModeBarButtonType, action: Selector) -> UIButton {
-        let button = UIButton()
-        addSubview(button)
-        button.setImage(type.image, forState: .Normal)
-        button.addTarget(self, action: action, forControlEvents: .TouchUpInside)
-        return button
-    }
-
-    func SELtappedReadStatusButton(sender: UIButton!) {
-        delegate?.readerModeBar(self, didSelectButton: unread ? .MarkAsRead : .MarkAsUnread)
-    }
-
-    func SELtappedSettingsButton(sender: UIButton!) {
+    func SELtappedSettingsButton() {
         delegate?.readerModeBar(self, didSelectButton: .Settings)
     }
 
-    func SELtappedListStatusButton(sender: UIButton!) {
-        delegate?.readerModeBar(self, didSelectButton: added ? .RemoveFromReadingList : .AddToReadingList)
-    }
-
-    var unread: Bool = true {
-        didSet {
-            let buttonType: ReaderModeBarButtonType = unread && added ? .MarkAsRead : .MarkAsUnread
-            readStatusButton.setImage(buttonType.image, forState: UIControlState.Normal)
-            readStatusButton.enabled = added
-            readStatusButton.alpha = added ? 1.0 : 0.6
-        }
-    }
-    
-    var added: Bool = false {
-        didSet {
-            let buttonType: ReaderModeBarButtonType = added ? .RemoveFromReadingList : .AddToReadingList
-            listStatusButton.setImage(buttonType.image, forState: UIControlState.Normal)
-        }
-    }
 }
 
-extension ReaderModeBarView: Themeable {
-    func applyTheme(themeName: String) {
-        guard let theme = ReaderModeBarViewUX.Themes[themeName] else {
-            log.error("Unable to apply unknown theme \(themeName)")
-            return
-        }
-
-        backgroundColor = theme.backgroundColor
-        buttonTintColor = theme.buttonTintColor!
-    }
-}
+//extension ReaderModeBarView: Themeable {
+//    func applyTheme(themeName: String) {
+//        guard let theme = ReaderModeBarViewUX.Themes[themeName] else {
+//            log.error("Unable to apply unknown theme \(themeName)")
+//            return
+//        }
+//
+//        backgroundColor = theme.backgroundColor
+//        buttonTintColor = theme.buttonTintColor!
+//    }
+//}

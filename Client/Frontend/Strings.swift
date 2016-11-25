@@ -113,7 +113,7 @@ extension Strings {
     public static let Open_in = NSLocalizedString("Open in…", comment: "String indicating that the file can be opened in another application on the device")
     public static let Mark_as_Read = NSLocalizedString("Mark as Read", comment: "Name for Mark as read button in reader mode")
     public static let Mark_as_Unread = NSLocalizedString("Mark as Unread", comment: "Name for Mark as unread button in reader mode")
-    public static let Display_Settings = NSLocalizedString("Display Settings", comment: "Name for display settings button in reader mode. Display in the meaning of presentation, not monitor.")
+    public static let Reader_Mode_Settings = NSLocalizedString("Reader Mode Settings", comment: "Name for display settings button in reader mode. Display in the meaning of presentation, not monitor.")
     public static let Could_not_add_page_to_Reading_List = NSLocalizedString("Could not add page to Reading List. Maybe it's already there?", comment: "Accessibility message e.g. spoken by VoiceOver after the user wanted to add current page to the Reading List and this was not done, likely because it already was in the Reading List, but perhaps also because of real failures.")
     public static let Remove_from_Reading_List = NSLocalizedString("Remove from Reading List", comment: "Name for button removing current article from reading list in reader mode")
     public static let Turn_on_search_suggestions = NSLocalizedString("Turn on search suggestions?", comment: "Prompt shown before enabling provider search queries")

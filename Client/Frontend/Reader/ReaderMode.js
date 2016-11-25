@@ -19,9 +19,8 @@ var _firefox_ReaderMode = {
     },
 
 
-    _checkReadability: function(readerModeOnUUID) {
-        if (document.getElementById(readerModeOnUUID) != null ||
-            document.location.href.match(/^http:\/\/localhost:\d+\/reader-mode\/page/)) {
+    _checkReadability: function() {
+        if (document.location.href.match(/^http:\/\/localhost:\d+\/reader-mode\/page/)) {
                 this.debug({Type: "ReaderModeStateChange", Value: "Active"});
                 __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: "Active"});
                 return "Active";
@@ -54,7 +53,7 @@ var _firefox_ReaderMode = {
             this.debug({Type: "ReaderModeStateChange", Value: _firefox_ReaderMode.readabilityResult !== null ? "Available" : "Unavailable"});
             __bravejs___readerModeMessageHandler({Type: "ReaderModeStateChange", Value: _firefox_ReaderMode.readabilityResult !== null ? "Available" : "Unavailable"});
 
-            return readabilityResult !== null ? "Available" : "Unavailable";
+            return _firefox_ReaderMode.readabilityResult !== null ? "Available" : "Unavailable";
         }
 
         this.debug({Type: "ReaderModeStateChange", Value: "Unavailable"});
@@ -62,22 +61,29 @@ var _firefox_ReaderMode = {
         return "Unavailable"
     },
 
-    attempts: 0, // it can take a few tries to detect readability
-    checkReadability: function(readerModeOnUUID) {
-        if (this.attempts > 3) return;
-        this.attempts += 1;
+    timerId: 0,
+    checkReadability: function(loopCount = 0) {
+        if (loopCount == 0) {
+            clearTimeout(this.timerId);
+        }
+        if (loopCount > 5) {
+            return "made many attempts to check";
+        }
+        loopCount += 1;
+
         if (window.READABILITY_WAS_CHECKED !== undefined) {
             return "Was checked already";
         }
-        var result = this._checkReadability(readerModeOnUUID);
+        var result = this._checkReadability();
         if (result.length > 1) {
             window.READABILITY_WAS_CHECKED = true;
             if (result == "Active") {
                 _firefox_ReaderMode.configureReader();
             }
         } else {
-            setTimeout(checkReadability(readerModeOnUUID), 400);
+            this.timerId = setTimeout(checkReadability(loopCount), 800);
         }
+
         return result;
     },
 
@@ -85,7 +91,8 @@ var _firefox_ReaderMode = {
     // can simply return the results we already have.
 
     readerize: function() {
-        return _firefox_ReaderMode.readabilityResult;
+        var r = _firefox_ReaderMode.readabilityResult;
+        return (r != null)? r : {result:'empty'};
     },
 
     // TODO The following code only makes sense in about:reader context. It may be a good idea to move

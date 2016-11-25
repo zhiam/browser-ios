@@ -11,6 +11,8 @@ struct BraveUX {
 
     static var PanelShadowWidth = 15
 
+    static let ReaderModeBarHeight = 28
+
     static let BraveOrange = UIColor(colorLiteralRed: 1.0, green: 80/255.0, blue: 0, alpha: 1.0)
     static let BraveButtonMessageInUrlBarColor = BraveOrange
     static let BraveButtonMessageInUrlBarShowTime = 0.5

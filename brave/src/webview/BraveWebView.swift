@@ -380,18 +380,11 @@ class BraveWebView: UIWebView {
     // Not pretty, but we set some items on the page to know when the load completion arrived
     // You would think the DOM gets refreshed on page change, but not with modern js lib navigation
     // Domain changes will reset the DOM, which is easily to detect, but path changes require a few properties to reliably detect
-    private func loadCompleteHtmlProperty(option option: LoadCompleteHtmlPropertyOption) -> Bool {
-        struct loadCompletionSentinel {
-            static let value = "\(NSUUID.hash())"
-        }
-
-        let sentinels = ["_brave_cached_title": "document.title", "_brave_cached_location" : "location.href",
-                         "document.body.firstElementChild._brave_loaded_id" : loadCompletionSentinel.value]
+    func loadCompleteHtmlProperty(option option: LoadCompleteHtmlPropertyOption) -> Bool {
+        let sentinels = ["_brave_cached_title": "document.title", "_brave_cached_location" : "location.href"]
 
         if option == .debug {
-            let js = sentinels.values.flatMap{
-                return $0.contains(".body") ? "'id':document.body.firstElementChild._brave_loaded_id" : "'\($0)':" + $0
-            }.joinWithSeparator(",")
+            let js = sentinels.values.joinWithSeparator(",")
             print(stringByEvaluatingJavaScriptFromString("JSON.stringify({ \(js) })"))
             return false
         }
@@ -399,7 +392,10 @@ class BraveWebView: UIWebView {
         let oper = (option != .checkIsCompleted) ? " = " : " === "
         let joiner = (option != .checkIsCompleted) ? "; " : " && "
 
-        let js = sentinels.map{ $0 + oper + (option == .clear ? "''" :$1) }.joinWithSeparator(joiner)
+        var js = sentinels.map{ $0 + oper + (option == .clear ? "''" :$1) }.joinWithSeparator(joiner)
+        if option == .checkIsCompleted {
+            js = "('_brave_cached_title' in window) && \(js) "
+        }
         return stringByEvaluatingJavaScriptFromString(js) == "true"
     }
 
@@ -447,9 +443,11 @@ class BraveWebView: UIWebView {
 
             me.stringByEvaluatingJavaScriptFromString("console.log('get favicons'); __firefox__.favicons.getFavicons()")
 
-            let readerjs = ReaderModeNamespace + ".checkReadability('\(ReaderMode.readerModeOnUUID)')"
-            let tmp = me.stringByEvaluatingJavaScriptFromString(readerjs)
-            print(tmp)
+            postAsyncToMain(0.3) { // the longer we wait, the more reliable the result (even though this script does polling for a result)
+                [weak self] in
+                let readerjs = ReaderModeNamespace + ".checkReadability()"
+                self?.stringByEvaluatingJavaScriptFromString(readerjs)
+            }
 
             me.checkScriptBlockedAndBroadcastStats()
 

@@ -28,8 +28,7 @@ struct ReaderModeUtils {
                                                   "%READER-URL%": readabilityResult.url,
                                                   "%READER-TITLE%": readabilityResult.title,
                                                   "%READER-CREDITS%": readabilityResult.credits,
-                                                  "%READER-CONTENT%": readabilityResult.content,
-                                                  "%READER-PAGE-TYPE-UUID%": ReaderMode.readerModeOnUUID
+                                                  "%READER-CONTENT%": readabilityResult.content
             ]
 
             for (k,v) in replacements {

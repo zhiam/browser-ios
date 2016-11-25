@@ -23,46 +23,22 @@ extension BrowserViewController: ReaderModeStyleViewControllerDelegate {
 
 extension BrowserViewController {
     func updateReaderModeBar() {
-        if let readerModeBar = readerModeBar {
-            if let tab = self.tabManager.selectedTab where tab.isPrivate {
-                readerModeBar.applyTheme(Theme.PrivateMode)
-            } else {
-                readerModeBar.applyTheme(Theme.NormalMode)
-            }
-            if let url = self.tabManager.selectedTab?.displayURL?.absoluteString, result = profile.readingList?.getRecordWithURL(url) {
-                if let successValue = result.successValue, record = successValue {
-                    readerModeBar.unread = record.unread
-                    readerModeBar.added = true
-                } else {
-                    readerModeBar.unread = true
-                    readerModeBar.added = false
-                }
-            } else {
-                readerModeBar.unread = true
-                readerModeBar.added = false
-            }
-        }
+//        if let readerModeBar = readerModeBar {
+//            if let tab = self.tabManager.selectedTab where tab.isPrivate {
+//                readerModeBar.applyTheme(Theme.PrivateMode)
+//            } else {
+//                readerModeBar.applyTheme(Theme.NormalMode)
+//            }
+//        }
     }
 
     func showReaderModeBar(animated animated: Bool) {
-        if self.readerModeBar == nil {
-            let readerModeBar = ReaderModeBarView(frame: CGRectZero)
-            readerModeBar.delegate = self
-            view.insertSubview(readerModeBar, belowSubview: header)
-            self.readerModeBar = readerModeBar
-        }
-
+        (urlBar as! BraveURLBarView).showReaderModeBar()
         updateReaderModeBar()
-
-        self.updateViewConstraints()
     }
 
     func hideReaderModeBar(animated animated: Bool) {
-        if let readerModeBar = self.readerModeBar {
-            readerModeBar.removeFromSuperview()
-            self.readerModeBar = nil
-            self.updateViewConstraints()
-        }
+        (urlBar as! BraveURLBarView).hideReaderModeBar()
     }
 
     /// There are two ways we can enable reader mode. In the simplest case we open a URL to our internal reader mode
@@ -151,75 +127,40 @@ extension BrowserViewController {
 
 extension BrowserViewController: ReaderModeBarViewDelegate {
     func readerModeBar(readerModeBar: ReaderModeBarView, didSelectButton buttonType: ReaderModeBarButtonType) {
-        switch buttonType {
-        case .Settings:
-            if let readerMode = tabManager.selectedTab?.getHelper(ReaderMode.self) where readerMode.state == ReaderModeState.Active {
-                var readerModeStyle = DefaultReaderModeStyle
-                if let dict = profile.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
-                    if let style = ReaderModeStyle(dict: dict) {
-                        readerModeStyle = style
-                    }
-                }
-
-                let readerModeStyleViewController = ReaderModeStyleViewController()
-                readerModeStyleViewController.delegate = self
-                readerModeStyleViewController.readerModeStyle = readerModeStyle
-                readerModeStyleViewController.modalPresentationStyle = UIModalPresentationStyle.Popover
-
-                let setupPopover = { [unowned self] in
-                    if let popoverPresentationController = readerModeStyleViewController.popoverPresentationController {
-                        popoverPresentationController.backgroundColor = UIColor.whiteColor()
-                        popoverPresentationController.delegate = self
-                        popoverPresentationController.sourceView = readerModeBar
-                        popoverPresentationController.sourceRect = CGRect(x: readerModeBar.frame.width/2, y: UIConstants.ToolbarHeight, width: 1, height: 1)
-                        popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection.Up
-                    }
-                }
-
-                setupPopover()
-
-                if readerModeStyleViewController.popoverPresentationController != nil {
-                    displayedPopoverController = readerModeStyleViewController
-                    updateDisplayedPopoverProperties = setupPopover
-                }
-
-                self.presentViewController(readerModeStyleViewController, animated: true, completion: nil)
-            }
-
-        case .MarkAsRead:
-            if let url = self.tabManager.selectedTab?.displayURL?.absoluteString, result = profile.readingList?.getRecordWithURL(url) {
-                if let successValue = result.successValue, record = successValue {
-                    profile.readingList?.updateRecord(record, unread: false) // TODO Check result, can this fail?
-                    readerModeBar.unread = false
-                }
-            }
-
-        case .MarkAsUnread:
-            if let url = self.tabManager.selectedTab?.displayURL?.absoluteString, result = profile.readingList?.getRecordWithURL(url) {
-                if let successValue = result.successValue, record = successValue {
-                    profile.readingList?.updateRecord(record, unread: true) // TODO Check result, can this fail?
-                    readerModeBar.unread = true
-                }
-            }
-
-        case .AddToReadingList:
-            if let tab = tabManager.selectedTab,
-                let url = tab.url where ReaderModeUtils.isReaderModeURL(url) {
-                if let url = ReaderModeUtils.decodeURL(url) {
-                    profile.readingList?.createRecordWithURL(url.absoluteString ?? "", title: tab.title ?? "", addedBy: UIDevice.currentDevice().name) // TODO Check result, can this fail?
-                    readerModeBar.added = true
-                    readerModeBar.unread = true
-                }
-            }
-
-        case .RemoveFromReadingList:
-            if let url = self.tabManager.selectedTab?.displayURL?.absoluteString, result = profile.readingList?.getRecordWithURL(url) {
-                if let successValue = result.successValue, record = successValue {
-                    profile.readingList?.deleteRecord(record) // TODO Check result, can this fail?
-                    readerModeBar.added = false
-                    readerModeBar.unread = false
-                }
+//        switch buttonType {
+//        case .Settings:
+        guard let readerMode = tabManager.selectedTab?.getHelper(ReaderMode.self) where readerMode.state == ReaderModeState.Active else {
+            return
+        }
+        var readerModeStyle = DefaultReaderModeStyle
+        if let dict = profile.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
+            if let style = ReaderModeStyle(dict: dict) {
+                readerModeStyle = style
             }
         }
+
+        let readerModeStyleViewController = ReaderModeStyleViewController()
+        readerModeStyleViewController.delegate = self
+        readerModeStyleViewController.readerModeStyle = readerModeStyle
+        readerModeStyleViewController.modalPresentationStyle = UIModalPresentationStyle.Popover
+
+        let setupPopover = { [unowned self] in
+            if let popoverPresentationController = readerModeStyleViewController.popoverPresentationController {
+                popoverPresentationController.backgroundColor = UIColor.whiteColor()
+                popoverPresentationController.delegate = self
+                popoverPresentationController.sourceView = readerModeBar
+                popoverPresentationController.sourceRect = CGRect(x: readerModeBar.frame.width/2, y: readerModeBar.frame.height, width: 1, height: 1)
+                popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection.Up
+            }
+        }
+
+        setupPopover()
+
+        if readerModeStyleViewController.popoverPresentationController != nil {
+            displayedPopoverController = readerModeStyleViewController
+            updateDisplayedPopoverProperties = setupPopover
+        }
+
+        self.presentViewController(readerModeStyleViewController, animated: true, completion: nil)
     }
 }

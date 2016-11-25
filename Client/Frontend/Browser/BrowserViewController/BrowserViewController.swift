@@ -25,6 +25,22 @@ struct BrowserViewControllerUX {
 }
 
 class BrowserViewController: UIViewController {
+
+    // Reader mode bar is currently (temporarily) glued onto the urlbar bottom, and is outside of the frame of the urlbar.
+    // Need this to detect touches as a result
+    class ViewToCaptureReaderModeTap : UIView {
+        weak var urlBarView:BraveURLBarView?
+        override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
+            if let readerView = urlBarView?.readerModeToolbar {
+                let pointForTargetView = readerView.convertPoint(point, fromView: self)
+                if CGRectContainsPoint(readerView.bounds, pointForTargetView) {
+                    return readerView.settingsButton
+                }
+            }
+            return super.hitTest(point, withEvent: event)
+        }
+    }
+
     var homePanelController: HomePanelViewController?
     var webViewContainer: UIView!
     var urlBar: URLBarView!
@@ -259,6 +275,11 @@ class BrowserViewController: UIViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationDidEnterBackgroundNotification, object: nil)
     }
 
+    override func loadView() {
+        let v = ViewToCaptureReaderModeTap(frame: UIScreen.mainScreen().bounds)
+        view = v
+    }
+
     override func viewDidLoad() {
         log.debug("BVC viewDidLoad…")
         super.viewDidLoad()
@@ -308,6 +329,8 @@ class BrowserViewController: UIViewController {
         urlBar.browserToolbarDelegate = self
         header = BlurWrapper(view: urlBar)
         view.addSubview(header)
+
+        (view as! ViewToCaptureReaderModeTap).urlBarView = (urlBar as! BraveURLBarView)
  #endif
 
         // UIAccessibilityCustomAction subclass holding an AccessibleAction instance does not work, thus unable to generate AccessibleActions and UIAccessibilityCustomActions "on-demand" and need to make them "persistent" e.g. by being stored in BVC
@@ -540,7 +563,7 @@ class BrowserViewController: UIViewController {
 
         readerModeBar?.snp_remakeConstraints { make in
             make.top.equalTo(self.header.snp_bottom).constraint
-            make.height.equalTo(UIConstants.ToolbarHeight)
+            make.height.equalTo(BraveUX.ReaderModeBarHeight)
             make.leading.trailing.equalTo(self.view)
         }
 
@@ -1259,7 +1282,7 @@ extension BrowserViewController: Themeable {
     func applyTheme(themeName: String) {
         urlBar.applyTheme(themeName)
         toolbar?.applyTheme(themeName)
-        readerModeBar?.applyTheme(themeName)
+        //readerModeBar?.applyTheme(themeName)
 
         switch(themeName) {
         case Theme.NormalMode:

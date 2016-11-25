@@ -80,6 +80,7 @@ class BraveURLBarView : URLBarView {
     lazy var braveButton = { return UIButton() }()
 
     let tabsBarController = TabsBarViewController()
+    var readerModeToolbar: ReaderModeBarView?
 
     override func commonInit() {
         BraveURLBarView.currentInstance = self
@@ -142,6 +143,25 @@ class BraveURLBarView : URLBarView {
         getApp().browserViewController.addChildViewController(tabsBarController)
         tabsBarController.didMoveToParentViewController(getApp().browserViewController)
     }
+
+    func showReaderModeBar() {
+        if readerModeToolbar != nil {
+            return
+        }
+        readerModeToolbar = ReaderModeBarView(frame: CGRectZero)
+        readerModeToolbar!.delegate = getApp().browserViewController
+        addSubview(readerModeToolbar!)
+        self.setNeedsLayout()
+    }
+
+    func hideReaderModeBar() {
+        if let readerModeBar = readerModeToolbar {
+            readerModeBar.removeFromSuperview()
+            readerModeToolbar = nil
+            self.setNeedsLayout()
+        }
+    }
+
 
     override func updateTabsBarShowing() {
         var tabCount = getApp().tabManager.tabs.displayedTabsForCurrentPrivateMode.count
@@ -279,6 +299,17 @@ class BraveURLBarView : URLBarView {
             }
         }
 
+        clipsToBounds = false
+        if let readerModeToolbar = readerModeToolbar {
+            bringSubviewToFront(readerModeToolbar)
+            readerModeToolbar.snp_makeConstraints {
+                make in
+                make.left.right.equalTo(self)
+                make.top.equalTo(snp_bottom)
+                make.height.equalTo(24)
+            }
+        }
+        
         leftSidePanelButton.underlay.snp_makeConstraints {
             make in
             make.left.right.equalTo(leftSidePanelButton).inset(4)

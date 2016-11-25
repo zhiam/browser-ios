@@ -213,8 +213,6 @@ let ReaderModeNamespace = "_firefox_ReaderMode"
 
 class ReaderMode: BrowserHelper {
 
-    static let readerModeOnUUID = "\(NSUUID())"
-
     var delegate: ReaderModeDelegate?
 
     private weak var browser: Browser?
@@ -261,6 +259,8 @@ class ReaderMode: BrowserHelper {
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if let msg = message.body as? Dictionary<String,String> {
+            print("\(#function) in \(self.dynamicType): \(msg)")
+
             if let messageType = ReaderModeMessageType(rawValue: msg["Type"] ?? "") {
                 switch messageType {
                     case .PageEvent:
