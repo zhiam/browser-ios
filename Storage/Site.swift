@@ -43,7 +43,7 @@ public enum IconType: Int {
     case NoneFound = 5
 }
 
-public class Favicon: Identifiable {
+public class Favicon: NSObject, Identifiable, NSCoding {
     public var id: Int? = nil
 
     public let url: String
@@ -56,6 +56,32 @@ public class Favicon: Identifiable {
         self.url = url
         self.date = date
         self.type = type
+    }
+    
+    required public init?(coder: NSCoder) {
+        self.id = Int(coder.decodeInt64ForKey("id"))
+        self.url = coder.decodeObjectForKey("url") as? String ?? ""
+        self.date = coder.decodeObjectForKey("date") as? NSDate ?? NSDate()
+        self.width = Int(coder.decodeInt64ForKey("width"))
+        self.height = Int(coder.decodeInt64ForKey("height"))
+        self.type = IconType(rawValue: Int(coder.decodeInt64ForKey("type"))) ?? .NoneFound
+    }
+    
+    public func encodeWithCoder(coder: NSCoder) {
+        if let id = id {
+            coder.encodeInt64(Int64(id), forKey: "id")
+        }
+        coder.encodeObject(url, forKey: "url")
+        coder.encodeObject(date, forKey: "date")
+        if let width = width {
+            coder.encodeInt64(Int64(width), forKey: "width")
+        }
+        
+        if let height = height {
+            coder.encodeInt64(Int64(height), forKey: "height")
+        }
+        
+        coder.encodeInt64(Int64(type.rawValue), forKey: "type")
     }
 }
 
