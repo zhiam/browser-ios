@@ -252,7 +252,8 @@ class Browser: NSObject, BrowserWebViewDelegate {
                     let forwardList = wv.backForwardList.forwardList ?? []
                     let urls = (backList + [currentItem] + forwardList).map { $0.URL }
                     let currentPage = -forwardList.count
-                    self.sessionData = SessionData(currentPage: currentPage, currentTitle: self.title, urls: urls, lastUsedTime: self.lastExecutedTime ?? NSDate.now())
+                    
+                    self.sessionData = SessionData(currentPage: currentPage, currentTitle: self.title, currentFavicon: self.displayFavicon, urls: urls, lastUsedTime: self.lastExecutedTime ?? NSDate.now())
                 }
             }
             self.browserDelegate?.browser(self, willDeleteWebView: wv)
@@ -323,7 +324,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 largest = icon.1
             }
         }
-        return largest
+        return largest ?? self.sessionData?.currentFavicon
     }
 
     var url: NSURL? {

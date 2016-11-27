@@ -527,7 +527,7 @@ extension TabManager {
                 let forwardList = browser.webView?.backForwardList.forwardList ?? []
                 let urls = (backList + [currentItem] + forwardList).map { $0.URL }
                 let currentPage = -forwardList.count
-                self.sessionData = SessionData(currentPage: currentPage, currentTitle: browser.title, urls: urls, lastUsedTime: browser.lastExecutedTime ?? NSDate.now())
+                self.sessionData = SessionData(currentPage: currentPage, currentTitle: browser.title, currentFavicon: browser.displayFavicon, urls: urls, lastUsedTime: browser.lastExecutedTime ?? NSDate.now())
             } else {
                 self.sessionData = browser.sessionData
             }
