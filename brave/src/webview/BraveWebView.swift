@@ -275,6 +275,7 @@ class BraveWebView: UIWebView {
         delegate = self
         scalesPageToFit = true
         scrollView.showsHorizontalScrollIndicator = false
+        allowsInlineMediaPlayback = true
 
         let rate = UIScrollViewDecelerationRateFast + (UIScrollViewDecelerationRateNormal - UIScrollViewDecelerationRateFast) * 0.5;
             scrollView.setValue(NSValue(CGSize: CGSizeMake(rate, rate)), forKey: "_decelerationFactor")
