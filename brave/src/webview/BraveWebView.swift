@@ -3,6 +3,7 @@
 import Foundation
 import WebKit
 import Shared
+import JavaScriptCore
 
 let kNotificationPageUnload = "kNotificationPageUnload"
 let kNotificationAllWebViewsDeallocated = "kNotificationAllWebViewsDeallocated"
@@ -739,7 +740,13 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webViewDidFinishLoad(webView: UIWebView) {
         assert(NSThread.isMainThread())
-
+#if DEBUGJS
+        let context = valueForKeyPath("documentView.webView.mainFrame.javaScriptContext") as! JSContext
+        let logFunction : @convention(block) (String) -> Void = { (msg: String) in
+            NSLog("Console: %@", msg)
+        }
+        context.objectForKeyedSubscript("console").setObject(unsafeBitCast(logFunction, AnyObject.self), forKeyedSubscript: "log")
+#endif
         // browserleaks canvas requires injection at this point
         configuration.userContentController.injectFingerprintProtection()
 
