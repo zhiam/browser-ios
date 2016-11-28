@@ -66,17 +66,13 @@ var _firefox_ReaderMode = {
         if (loopCount == 0) {
             clearTimeout(this.timerId);
         }
-        if (loopCount > 5) {
+        if (loopCount > 3) {
             return "made many attempts to check";
         }
         loopCount += 1;
 
-        if (window.READABILITY_WAS_CHECKED !== undefined) {
-            return "Was checked already";
-        }
         var result = this._checkReadability();
         if (result.length > 1) {
-            window.READABILITY_WAS_CHECKED = true;
             if (result == "Active") {
                 _firefox_ReaderMode.configureReader();
             }

@@ -90,7 +90,7 @@ extension BrowserViewController {
             let backList = webView.backForwardList.backList
             let forwardList = webView.backForwardList.forwardList
 
-            if let currentURL = webView.backForwardList.currentItem?.URL {
+            if let currentURL = webView.URL {
                 if let originalURL = ReaderModeUtils.decodeURL(currentURL) {
                     if backList.count > 1 && backList.last?.URL == originalURL {
                         webView.goToBackForwardListItem(backList.last!)

@@ -227,7 +227,7 @@ class BrowserLocationView: UIView {
         }
 
         readerModeButton.snp_makeConstraints { make in
-            make.right.equalTo(stopReloadButton.snp_left)
+            make.right.equalTo(stopReloadButton.snp_left).inset(-6)
             make.height.centerY.equalTo(self)
             make.width.equalTo(20)
         }
@@ -250,7 +250,7 @@ class BrowserLocationView: UIView {
             if readerModeButton.hidden {
                 make.right.equalTo(self.stopReloadButton.snp_left)
             } else {
-                make.right.equalTo(self.readerModeButton.snp_left)
+                make.right.equalTo(self.readerModeButton.snp_left).inset(-4)
             }
         }
 
