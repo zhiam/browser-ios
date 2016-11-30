@@ -145,11 +145,7 @@ class BraveTopViewController : UIViewController {
         if !mainSidePanel.view.hidden {
             togglePanel(mainSidePanel)
         }
-
-        if self.browserViewController.tabManager.selectedTab?.displayURL?.absoluteString?.isEmpty ?? true {
-            return
-        }
-
+        
         browserViewController.tabManager.selectedTab?.webView?.checkScriptBlockedAndBroadcastStats()
         togglePanel(rightSidePanel)
     }
