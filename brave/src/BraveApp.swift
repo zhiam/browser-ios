@@ -79,6 +79,10 @@ class BraveApp {
                 }
             }
        #endif
+
+        postAsyncToMain(10) {
+            updateDauStat()
+        }
     }
 
     // Be aware: the Prefs object has not been created yet
@@ -236,3 +240,54 @@ class BraveApp {
         return deferred
     }
 }
+
+extension BraveApp {
+
+    static func updateDauStat() {
+
+        guard let prefs = getApp().profile?.prefs else { return }
+        let prefName = "dau_stat"
+        let dauStat = prefs.arrayForKey(prefName)
+
+        let appVersion = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
+        var statsQuery = "https://laptop-updates.brave.com/1/usage/ios?platform=ios" + "&channel=\(BraveUX.IsRelease ? "stable" : "beta")"
+            + "&version=\(appVersion)"
+            + "&first=\(dauStat != nil)"
+
+        let today = NSDate()
+        let components = NSCalendar.currentCalendar().components([.Month , .Year], fromDate: today)
+        let year =  components.year
+        let month = components.month
+
+        if let stat = dauStat as? [Int] where stat.count == 3 {
+            let dSecs = Int(today.timeIntervalSince1970) - stat[0]
+            let _month = stat[1]
+            let _year = stat[2]
+            let MILLISECONDS_IN_A_DAY = 86400 * 1000;
+            let MILLISECONDS_IN_A_WEEK = 7 * 86400 * 1000;
+            let daily = dSecs >= MILLISECONDS_IN_A_DAY
+            let weekly = dSecs >= MILLISECONDS_IN_A_WEEK
+            let monthly = month != _month || year != _year
+            if (!daily && !weekly && !monthly) {
+               return
+            }
+            statsQuery += "&daily=\(daily)&weekly=\(weekly)&monthly=\(monthly)"
+        }
+
+        let secsMonthYear = [Int(today.timeIntervalSince1970), month, year]
+        prefs.setObject(secsMonthYear, forKey: prefName)
+
+        guard let url = NSURL(string: statsQuery) else {
+            if !BraveUX.IsRelease {
+                BraveApp.showErrorAlert(title: "Debug", error: "failed stats update")
+            }
+            return
+        }
+        NSURLSession.sharedSession().dataTaskWithURL(url) {
+            (_, _, error) in
+            if let e = error { NSLog("status update error: \(e)") }
+        }
+    }
+}
+
+
