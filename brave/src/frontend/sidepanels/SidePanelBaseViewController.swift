@@ -15,10 +15,16 @@ class SidePanelBaseViewController : UIViewController {
 
     // Set false for a right side panel
     var isLeftSidePanel = true
+    
+    var isShowingOverview = false
 
     let shadow = UIImageView()
 
     var parentSideConstraints: [Constraint?]?
+    
+    func isShowingHome() -> Bool {
+        return getApp().browserViewController.homePanelController != nil
+    }
 
     override func loadView() {
         self.view = UIScrollView(frame: UIScreen.mainScreen().bounds)
@@ -68,7 +74,8 @@ class SidePanelBaseViewController : UIViewController {
                 if isLeftSidePanel {
                     make.right.top.equalTo(containerView)
                 } else {
-                    make.left.top.equalTo(view)
+                    make.left.equalTo(view)
+                    make.top.equalTo(view.superview!)
                 }
                 make.width.equalTo(BraveUX.PanelShadowWidth)
 
@@ -79,7 +86,9 @@ class SidePanelBaseViewController : UIViewController {
     }
 
     func setupConstraints() {
-        if shadow.image == nil { // arbitrary item check to see if func needs calling
+        if shadow.image == nil || // arbitrary item check to see if func needs calling
+            isShowingHome() && !isShowingOverview && !isLeftSidePanel ||
+            !isShowingHome() && isShowingOverview && !isLeftSidePanel {
             setupUIElements()
         }
     }
@@ -150,5 +159,6 @@ class SidePanelBaseViewController : UIViewController {
     func setHomePanelDelegate(delegate: HomePanelDelegate?) {}
 
 }
+
 
 
