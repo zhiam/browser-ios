@@ -298,7 +298,8 @@ extension Strings {
     public static let Scripts_Blocked = NSLocalizedString("Scripts Blocked", comment: "individual blocking statistic title")
     public static let Fingerprinting_Methods = NSLocalizedString("Fingerprinting Methods", comment: "individual blocking statistic title")
     public static let Fingerprinting_Protection_wrapped = NSLocalizedString("Fingerprinting\nProtection", comment: "blocking stat title")
-
+    public static let Shields_Overview = NSLocalizedString("Site Shields allow you to control when ads and trackers are blocked for each site that you visit. If you prefer to see ads on a specific site, you can enable them here.", comment: "shields overview message")
+    public static let Shields_Overview_Footer = NSLocalizedString("Note: Some sites may require scripts to work properly so this shield is turned off by default.", comment: "shields overview footer message")
 }
 
 
