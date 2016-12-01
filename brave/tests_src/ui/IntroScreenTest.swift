@@ -13,25 +13,23 @@ class IntroScreenTest: XCTestCase {
         super.tearDown()
     }
 
-    func testIntroScreenAndOptInDialog() {
-        // when run from command line needs to be restarted twice to work, not sure why
-        UITestUtils.restart(["BRAVE-TEST-CLEAR-PREFS"])
+    func testFirstRunIntroScreen() {
         UITestUtils.restart(["BRAVE-TEST-CLEAR-PREFS"])
         let app = XCUIApplication()
         app.buttons["Start Browsing"].tap()
-        app.buttons["Accept & Continue"].tap()
+        //app.buttons["Accept & Continue"].tap()
     }
 
-    func testOptInDialogWithoutIntroScreen() {
-        UITestUtils.restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
-        UITestUtils.restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
-        let app = XCUIApplication()
-        app.buttons["Accept & Continue"].tap()
-
-        UITestUtils.restart()
-        // Ensure UI isn't blocked with modal dialog
-        sleep(1)
-        app.buttons["Bookmarks and History Panel"].tap()
-        app.scrollViews.otherElements.buttons["Settings"].tap()
-    }
+//    func testOptInDialogWithoutIntroScreen() {
+//        UITestUtils.restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
+//        UITestUtils.restart(["BRAVE-TEST-NO-SHOW-INTRO", "BRAVE-TEST-SHOW-OPT-IN"])
+//        let app = XCUIApplication()
+//        app.buttons["Accept & Continue"].tap()
+//
+//        UITestUtils.restart()
+//        // Ensure UI isn't blocked with modal dialog
+//        sleep(1)
+//        app.buttons["Bookmarks and History Panel"].tap()
+//        app.scrollViews.otherElements.buttons["Settings"].tap()
+//    }
 }
