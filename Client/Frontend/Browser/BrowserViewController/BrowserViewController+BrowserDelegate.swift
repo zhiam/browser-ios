@@ -79,12 +79,10 @@ extension BrowserViewController: BrowserDelegate {
         #if !BRAVE
             webView.UIDelegate = self /// these are for javascript alert panels
         #endif
-        
-        if !BraveUX.IsRelease {
-            let readerMode = ReaderMode(browser: browser)
-            readerMode.delegate = self
-            browser.addHelper(readerMode)
-        }
+
+        let readerMode = ReaderMode(browser: browser)
+        readerMode.delegate = self
+        browser.addHelper(readerMode)
 
         let favicons = FaviconManager(browser: browser, profile: profile)
         browser.addHelper(favicons)
