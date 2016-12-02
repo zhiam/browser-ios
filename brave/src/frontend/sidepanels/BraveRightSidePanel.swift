@@ -463,9 +463,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
     
     func toggleInteractionEnabled(enabled: Bool) {
-        for toggle: UISwitch in views_toggles {
-            toggle.enabled = enabled && !isShowingOverview
-        }
+        views_toggles.forEach { $0.on = enabled && !isShowingOverview }
     }
 
     func updateSitenameAndTogglesState() {
@@ -484,9 +482,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
             toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
         } else {
-            for toggle: UISwitch in views_toggles {
-                toggle.on = false
-            }
+            views_toggles.forEach { $0.on = false }
         }
     }
 
