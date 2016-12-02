@@ -58,6 +58,7 @@ class SidePanelBaseViewController : UIViewController {
         view.hidden = true
     }
 
+    /// This should just be called one time to initially setup the UI elements for the side panels
     func setupUIElements() {
         shadow.image = UIImage(named: "panel_shadow")
         shadow.contentMode = .ScaleToFill
@@ -86,9 +87,7 @@ class SidePanelBaseViewController : UIViewController {
     }
 
     func setupConstraints() {
-        if shadow.image == nil || // arbitrary item check to see if func needs calling
-            isShowingHome() && !isShowingOverview && !isLeftSidePanel ||
-            !isShowingHome() && isShowingOverview && !isLeftSidePanel {
+        if shadow.image == nil { // arbitrary item check to see if func needs calling
             setupUIElements()
         }
     }
