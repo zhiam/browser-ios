@@ -30,7 +30,8 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let shieldsOverview = UILabel()
     let shieldsOverviewFooter = UILabel()
     
-    var headerContainerHeightConsraint: LayoutConstraint?
+    // Constraints stored for updating dynamically
+    var headerContainerHeightConstraint: LayoutConstraint?
     var siteNameContainerHeightConstraint: LayoutConstraint?
     var shieldsOverviewContainerHeightConstraint: LayoutConstraint?
 
@@ -155,7 +156,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 if i == 0 {
                     make.top.equalTo(section.superview!)
                     // Updated dynamically, setting to 0 just to setup height constraint
-                    headerContainerHeightConsraint = make.height.equalTo(0).constraint.layoutConstraints.first
+                    headerContainerHeightConstraint = make.height.equalTo(0).constraint.layoutConstraints.first
                 } else if section !== sections.last {
                     make.top.equalTo(sections[i - 1].snp_bottom)
                     make.bottom.equalTo(sections[i + 1].snp_top)
@@ -455,7 +456,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     
     func updateSitenameAndTogglesState() {
         let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
-        // hostName will generally be "localhost" if home page is showing, so checking home page too
+        // hostName will generally be "localhost" if home page is showing, so checking home page
         siteName.text = isShowingShieldOverview() ? "" : hostName
 
         shieldToggle.enabled = !isShowingShieldOverview()
@@ -488,7 +489,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
     
     func updateConstraintsForPanelSections() {
-        headerContainerHeightConsraint?.constant = 44 + CGFloat(spaceForStatusBar())
+        headerContainerHeightConstraint?.constant = 44 + CGFloat(spaceForStatusBar())
         if isShowingShieldOverview() {
             siteNameContainerHeightConstraint?.constant = ui_siteNameSectionHeight - 30
             shieldsOverviewContainerHeightConstraint?.active = false
