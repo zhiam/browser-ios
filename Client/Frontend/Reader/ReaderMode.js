@@ -62,7 +62,10 @@ var _firefox_ReaderMode = {
     },
 
     timerId: 0,
-    checkReadability: function(loopCount = 0) {
+    checkReadability: function(loopCount) {
+        if (loopCount == undefined) {
+            loopCount = 0;
+        }
         if (loopCount == 0) {
             clearTimeout(this.timerId);
         }
