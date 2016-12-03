@@ -450,7 +450,6 @@
 		EB4E16011DB7F3C400A4C7EA /* BraveShareToInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB4E15EF1DB7F3BA00A4C7EA /* BraveShareToInfoPlist.strings */; };
 		EB62B7FD1DB53F3D006FD479 /* Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB62B7FC1DB53F3D006FD479 /* Punycode.swift */; };
 		EB62B8021DB59EF9006FD479 /* WebViewLoadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661711D9C3CEC00445C92 /* WebViewLoadTest.swift */; };
-		EB7CAD981DF2007A00BE89E2 /* Readability.js in Resources */ = {isa = PBXBuildFile; fileRef = EB7CAD971DF2007A00BE89E2 /* Readability.js */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
@@ -1266,7 +1265,6 @@
 		EB4EC7836B7D80B31285DCC6 /* SiteTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiteTableViewController.swift; path = ./Client/Frontend/Widgets/SiteTableViewController.swift; sourceTree = "<group>"; };
 		EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-ui-test.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB62B7FC1DB53F3D006FD479 /* Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Punycode.swift; path = Client/Frontend/Browser/Punycode.swift; sourceTree = "<group>"; };
-		EB7CAD971DF2007A00BE89E2 /* Readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Carthage/Checkouts/readability/Readability.js; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB8F566E1DD0FC2800679A78 /* Readability.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Carthage/Checkouts/readability/Readability.js; sourceTree = "<group>"; };
 		EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIWebViewSwizzling.m; path = brave/src/webview/UIWebViewSwizzling.m; sourceTree = "<group>"; };
@@ -2258,7 +2256,6 @@
 		AEC7CC1649CB3DF5D490AFD2 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				EB7CAD971DF2007A00BE89E2 /* Readability.js */,
 				F1D471871D777C7C007B443D /* OnePassword */,
 				BB67FBA7FC78E3187AF22B8B /* leveldb */,
 				8FD32DFF23D2E6882260066D /* NSData+GZIP.h */,
@@ -3426,7 +3423,6 @@
 				C68CDF76C7FC1770D6427F76 /* Home.xcassets in Resources */,
 				3E0F37CB279D8276AD55303D /* Intro.xcassets in Resources */,
 				C415871DCEBA47DC7C423105 /* ReadabilityBrowserHelper.js in Resources */,
-				EB7CAD981DF2007A00BE89E2 /* Readability.js in Resources */,
 				35A3D6A6BB8100ACF4EBFD5E /* Reader.css in Resources */,
 				EB8F56A21DD13DF300679A78 /* FiraSans-SemiBold.ttf in Resources */,
 				6D9E9FAAB66AFADE0D6B20F0 /* Reader.html in Resources */,
