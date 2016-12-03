@@ -16,15 +16,9 @@ class SidePanelBaseViewController : UIViewController {
     // Set false for a right side panel
     var isLeftSidePanel = true
     
-    var isShowingOverview = false
-
     let shadow = UIImageView()
 
     var parentSideConstraints: [Constraint?]?
-    
-    func isShowingHome() -> Bool {
-        return getApp().browserViewController.homePanelController != nil
-    }
 
     override func loadView() {
         self.view = UIScrollView(frame: UIScreen.mainScreen().bounds)

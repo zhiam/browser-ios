@@ -29,6 +29,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let toggleBlockFingerprintingTitle =  UILabel()
     let shieldsOverview = UILabel()
     let shieldsOverviewFooter = UILabel()
+    
+    var siteNameContainerHeightConstraint: LayoutConstraint?
+    var shieldsOverviewContainerHeightConstraint: LayoutConstraint?
 
     let togglesContainer = UIView()
     let headerContainer = UIView()
@@ -91,6 +94,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         return h < 500
     }
 
+    private func isShowingShieldOverview() -> Bool {
+        return getApp().browserViewController.homePanelController != nil
+    }
+
     private func setGrayTextColor(v: UIView) {
         if let label = v as? UILabel {
             if label.textColor == UIColor.blackColor() {
@@ -129,14 +136,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         let statsSectionTitle = makeSectionHeaderTitle(Strings.Blocking_Monitor, sectionHeight: titleSectionHeight)
 
         let spacerLine = UIView()
-        var sections = [headerContainer]
-        
-        isShowingOverview = isShowingHome()
-        
-        if isShowingOverview {
-            sections.append(shieldsOverviewContainer)
-        }
-        sections += [siteNameContainer, statsSectionTitle, statsContainer]
+        var sections = [headerContainer, shieldsOverviewContainer, siteNameContainer, statsSectionTitle, statsContainer]
         
         if let togglesSectionTitle = togglesSectionTitle {
             sections.append(togglesSectionTitle)
@@ -160,7 +160,11 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 }
 
                 if section === siteNameContainer {
-                    make.height.equalTo(isShowingOverview ? ui_siteNameSectionHeight - 30 : ui_siteNameSectionHeight)
+                    // This will be updated dynamically, setting to 0 just to setup height constraint
+                    siteNameContainerHeightConstraint = make.height.equalTo(0).constraint.layoutConstraints.first
+                } else if section === shieldsOverviewContainer {
+                    // This will also be updated dynamically
+                    shieldsOverviewContainerHeightConstraint = make.height.equalTo(0).constraint.layoutConstraints.first
                 } else if section === statsContainer {
                     make.height.equalTo(isTinyScreen() ? 120 : 160)
                 } else if section === togglesContainer {
@@ -232,10 +236,8 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 make.bottom.equalTo(shieldsOverviewFooter.superview!).inset(50)
             }
         }
-        
-        if isShowingOverview {
-            setupShieldsOverviewSection()
-        }
+        // Always setup shield overview section, it will be hidden if not needed
+        setupShieldsOverviewSection()
         
         func setupSiteNameSection() {
             siteName.font = UIFont.boldSystemFontOfSize(22)
@@ -247,19 +249,15 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             let up = UILabel()
             up.text = Strings.Up
 
-            let elements = isShowingOverview ? [up, down, shieldToggle] : [siteName, up, down, shieldToggle]
-            
-            elements.forEach { siteNameContainer.addSubview($0) }
+            [siteName, up, down, shieldToggle].forEach { siteNameContainer.addSubview($0) }
 
-            if !isShowingOverview {
-                siteName.snp_makeConstraints {
-                    make in
-                    make.left.equalTo(siteName.superview!).inset(ui_edgeInset)
-                    make.right.equalTo(siteName.superview!).inset(ui_edgeInset)
-                    make.bottom.equalTo(shieldToggle.snp_top).inset(-8)
-                }
-                siteName.adjustsFontSizeToFitWidth = true
+            siteName.snp_makeConstraints {
+                make in
+                make.left.equalTo(siteName.superview!).inset(ui_edgeInset)
+                make.right.equalTo(siteName.superview!).inset(ui_edgeInset)
+                make.bottom.equalTo(shieldToggle.snp_top).inset(-8)
             }
+            siteName.adjustsFontSizeToFitWidth = true
 
             [down, up].forEach {
                 $0.font = UIFont.boldSystemFontOfSize(14)
@@ -281,17 +279,12 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             shieldToggle.snp_makeConstraints {
                 make in
                 make.left.equalTo(down.snp_right).offset(8)
-                if isShowingOverview {
-                    make.centerY.equalTo(shieldToggle.superview!)
-                } else {
-                    make.top.equalTo(shieldToggle.superview!.snp_centerY)
-                }
-                
+                make.bottom.equalTo(shieldToggle.superview!.snp_bottomMargin)
             }
             shieldToggle.onTintColor = BraveUX.BraveOrange
             shieldToggle.tintColor = BraveUX.SwitchTintColor
             shieldToggle.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
-            shieldToggle.enabled = !isShowingOverview
+            shieldToggle.enabled = !isShowingShieldOverview()
         }
         setupSiteNameSection()
 
@@ -329,7 +322,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                     views_labels[i].font = UIFont.systemFontOfSize(15)
                 }
                 views_labels[i].adjustsFontSizeToFitWidth = true
-                item.enabled = !isShowingOverview
+                item.enabled = shieldToggle.enabled
                 rows.append(layoutSwitch(item, label: views_labels[i]))
             }
 
@@ -463,11 +456,13 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
     
     func toggleInteractionEnabled(enabled: Bool) {
-        views_toggles.forEach { $0.on = enabled && !isShowingOverview }
+        views_toggles.forEach { $0.on = enabled && !isShowingShieldOverview() }
     }
 
     func updateSitenameAndTogglesState() {
-        siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
+        let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost()
+        // hostName will generally be "localhost" if home page is showing, so checking home page too
+        siteName.text = isShowingShieldOverview() || hostName == nil ? "" : hostName!
 
         let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
         shieldToggle.on = !(state?.isAllOff() ?? false)
@@ -498,16 +493,27 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 make.top.left.right.equalTo(headerContainer.superview!)
                 make.height.equalTo(44 + spaceForStatusBar())
             }
+            updateConstraintsForPanelSections()
+
         }
+    }
+    
+    func updateConstraintsForPanelSections() {
+        if isShowingShieldOverview() {
+            siteNameContainerHeightConstraint?.constant = ui_siteNameSectionHeight - 30
+            shieldsOverviewContainerHeightConstraint?.active = false
+        } else {
+            siteNameContainerHeightConstraint?.constant = ui_siteNameSectionHeight
+            shieldsOverviewContainerHeightConstraint?.active = true
+        }
+
     }
 
     func setShieldBlockedStats(shieldStats: ShieldBlockedStats) {
-        if !isShowingHome() {
-            statAdsBlocked.text = String(shieldStats.abAndTp)
-            statHttpsUpgrades.text = String(shieldStats.httpse)
-            statFPBlocked.text = String(shieldStats.fp)
-            statScriptsBlocked.text = String(shieldStats.js)
-        }
+        statAdsBlocked.text = String(shieldStats.abAndTp)
+        statHttpsUpgrades.text = String(shieldStats.httpse)
+        statFPBlocked.text = String(shieldStats.fp)
+        statScriptsBlocked.text = String(shieldStats.js)
     }
 }
 
