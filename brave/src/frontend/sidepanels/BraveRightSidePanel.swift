@@ -454,9 +454,9 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
     
     func updateSitenameAndTogglesState() {
-        let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost()
+        let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
         // hostName will generally be "localhost" if home page is showing, so checking home page too
-        siteName.text = isShowingShieldOverview() || hostName == nil ? "" : hostName!
+        siteName.text = isShowingShieldOverview() ? "" : hostName
 
         shieldToggle.enabled = !isShowingShieldOverview()
         
@@ -501,6 +501,14 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
 
     func setShieldBlockedStats(shieldStats: ShieldBlockedStats) {
+        var shieldStats = shieldStats
+        // This check is placed here (instead of an update view method) because it can get called via external
+        //  sources, so safest to place right before assigning new text values
+        if isShowingShieldOverview() {
+            // HttpsUpgrade seems to be 1 for localhost, so overriding it
+            shieldStats = ShieldBlockedStats()
+        }
+        
         statAdsBlocked.text = String(shieldStats.abAndTp)
         statHttpsUpgrades.text = String(shieldStats.httpse)
         statFPBlocked.text = String(shieldStats.fp)
