@@ -286,7 +286,6 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             shieldToggle.onTintColor = BraveUX.BraveOrange
             shieldToggle.tintColor = BraveUX.SwitchTintColor
             shieldToggle.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
-            shieldToggle.enabled = !isShowingShieldOverview()
         }
         setupSiteNameSection()
 
@@ -324,7 +323,6 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                     views_labels[i].font = UIFont.systemFontOfSize(15)
                 }
                 views_labels[i].adjustsFontSizeToFitWidth = true
-                item.enabled = shieldToggle.enabled
                 rows.append(layoutSwitch(item, label: views_labels[i]))
             }
 
@@ -412,8 +410,6 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         setGrayTextColor(togglesContainer)
         setGrayTextColor(statsContainer)
         setGrayTextColor(shieldsOverviewContainer)
-
-        setupContainerViewContentSize()
     }
 
     @objc func switchToggled(sender: UISwitch) {
@@ -457,20 +453,18 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         }
     }
     
-    func toggleInteractionEnabled(enabled: Bool) {
-        views_toggles.forEach { $0.on = enabled && !isShowingShieldOverview() }
-    }
-
     func updateSitenameAndTogglesState() {
         let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost()
         // hostName will generally be "localhost" if home page is showing, so checking home page too
         siteName.text = isShowingShieldOverview() || hostName == nil ? "" : hostName!
 
+        shieldToggle.enabled = !isShowingShieldOverview()
+        
         let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
         shieldToggle.on = !(state?.isAllOff() ?? false)
 
         let masterOn = shieldToggle.on
-        toggleInteractionEnabled(masterOn)
+        views_toggles.forEach { $0.enabled = masterOn && shieldToggle.enabled }
 
         if masterOn {
             toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
@@ -484,13 +478,11 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
 
     override func showPanel(showing: Bool, parentSideConstraints: [Constraint?]?) {
-        if showing {
-            updateSitenameAndTogglesState()
-        }
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
 
         if showing {
+            updateSitenameAndTogglesState()
             updateConstraintsForPanelSections()
         }
     }
@@ -504,7 +496,8 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             siteNameContainerHeightConstraint?.constant = ui_siteNameSectionHeight
             shieldsOverviewContainerHeightConstraint?.active = true
         }
-
+        
+        setupContainerViewSize()
     }
 
     func setShieldBlockedStats(shieldStats: ShieldBlockedStats) {
