@@ -29,6 +29,11 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     let toggleBlockFingerprintingTitle =  UILabel()
     let shieldsOverview = UILabel()
     let shieldsOverviewFooter = UILabel()
+    
+    // Constraints stored for updating dynamically
+    var headerContainerHeightConstraint: LayoutConstraint?
+    var siteNameContainerHeightConstraint: LayoutConstraint?
+    var shieldsOverviewContainerHeightConstraint: LayoutConstraint?
 
     let togglesContainer = UIView()
     let headerContainer = UIView()
@@ -91,6 +96,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         return h < 500
     }
 
+    private func isShowingShieldOverview() -> Bool {
+        return getApp().browserViewController.homePanelController != nil
+    }
+
     private func setGrayTextColor(v: UIView) {
         if let label = v as? UILabel {
             if label.textColor == UIColor.blackColor() {
@@ -129,14 +138,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         let statsSectionTitle = makeSectionHeaderTitle(Strings.Blocking_Monitor, sectionHeight: titleSectionHeight)
 
         let spacerLine = UIView()
-        var sections = [headerContainer]
-        
-        isShowingOverview = isShowingHome()
-        
-        if isShowingOverview {
-            sections.append(shieldsOverviewContainer)
-        }
-        sections += [siteNameContainer, statsSectionTitle, statsContainer]
+        var sections = [headerContainer, shieldsOverviewContainer, siteNameContainer, statsSectionTitle, statsContainer]
         
         if let togglesSectionTitle = togglesSectionTitle {
             sections.append(togglesSectionTitle)
@@ -153,14 +155,19 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
                 if i == 0 {
                     make.top.equalTo(section.superview!)
-                    make.height.equalTo(44 + spaceForStatusBar())
+                    // Updated dynamically, setting to 0 just to setup height constraint
+                    headerContainerHeightConstraint = make.height.equalTo(0).constraint.layoutConstraints.first
                 } else if section !== sections.last {
                     make.top.equalTo(sections[i - 1].snp_bottom)
                     make.bottom.equalTo(sections[i + 1].snp_top)
                 }
 
                 if section === siteNameContainer {
-                    make.height.equalTo(isShowingOverview ? ui_siteNameSectionHeight - 30 : ui_siteNameSectionHeight)
+                    // Updated dynamically
+                    siteNameContainerHeightConstraint = make.height.equalTo(0).constraint.layoutConstraints.first
+                } else if section === shieldsOverviewContainer {
+                    // Updated dynamically
+                    shieldsOverviewContainerHeightConstraint = make.height.equalTo(0).constraint.layoutConstraints.first
                 } else if section === statsContainer {
                     make.height.equalTo(isTinyScreen() ? 120 : 160)
                 } else if section === togglesContainer {
@@ -232,10 +239,8 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                 make.bottom.equalTo(shieldsOverviewFooter.superview!).inset(50)
             }
         }
-        
-        if isShowingOverview {
-            setupShieldsOverviewSection()
-        }
+        // Always setup shield overview section, it will be hidden if not needed
+        setupShieldsOverviewSection()
         
         func setupSiteNameSection() {
             siteName.font = UIFont.boldSystemFontOfSize(22)
@@ -247,19 +252,15 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             let up = UILabel()
             up.text = Strings.Up
 
-            let elements = isShowingOverview ? [up, down, shieldToggle] : [siteName, up, down, shieldToggle]
-            
-            elements.forEach { siteNameContainer.addSubview($0) }
+            [siteName, up, down, shieldToggle].forEach { siteNameContainer.addSubview($0) }
 
-            if !isShowingOverview {
-                siteName.snp_makeConstraints {
-                    make in
-                    make.left.equalTo(siteName.superview!).inset(ui_edgeInset)
-                    make.right.equalTo(siteName.superview!).inset(ui_edgeInset)
-                    make.bottom.equalTo(shieldToggle.snp_top).inset(-8)
-                }
-                siteName.adjustsFontSizeToFitWidth = true
+            siteName.snp_makeConstraints {
+                make in
+                make.left.equalTo(siteName.superview!).inset(ui_edgeInset)
+                make.right.equalTo(siteName.superview!).inset(ui_edgeInset)
+                make.bottom.equalTo(shieldToggle.snp_top).inset(-8)
             }
+            siteName.adjustsFontSizeToFitWidth = true
 
             [down, up].forEach {
                 $0.font = UIFont.boldSystemFontOfSize(14)
@@ -281,17 +282,11 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             shieldToggle.snp_makeConstraints {
                 make in
                 make.left.equalTo(down.snp_right).offset(8)
-                if isShowingOverview {
-                    make.centerY.equalTo(shieldToggle.superview!)
-                } else {
-                    make.top.equalTo(shieldToggle.superview!.snp_centerY)
-                }
-                
+                make.bottom.equalTo(shieldToggle.superview!.snp_bottomMargin)
             }
             shieldToggle.onTintColor = BraveUX.BraveOrange
             shieldToggle.tintColor = BraveUX.SwitchTintColor
             shieldToggle.addTarget(self, action: #selector(switchToggled(_:)), forControlEvents: .ValueChanged)
-            shieldToggle.enabled = !isShowingOverview
         }
         setupSiteNameSection()
 
@@ -329,7 +324,6 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
                     views_labels[i].font = UIFont.systemFontOfSize(15)
                 }
                 views_labels[i].adjustsFontSizeToFitWidth = true
-                item.enabled = !isShowingOverview
                 rows.append(layoutSwitch(item, label: views_labels[i]))
             }
 
@@ -417,8 +411,6 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         setGrayTextColor(togglesContainer)
         setGrayTextColor(statsContainer)
         setGrayTextColor(shieldsOverviewContainer)
-
-        setupContainerViewContentSize()
     }
 
     @objc func switchToggled(sender: UISwitch) {
@@ -462,20 +454,18 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
         }
     }
     
-    func toggleInteractionEnabled(enabled: Bool) {
-        for toggle: UISwitch in views_toggles {
-            toggle.enabled = enabled && !isShowingOverview
-        }
-    }
-
     func updateSitenameAndTogglesState() {
-        siteName.text = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
+        let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
+        // hostName will generally be "localhost" if home page is showing, so checking home page
+        siteName.text = isShowingShieldOverview() ? "" : hostName
 
+        shieldToggle.enabled = !isShowingShieldOverview()
+        
         let state = BraveShieldState.getStateForDomain(siteName.text ?? "")
         shieldToggle.on = !(state?.isAllOff() ?? false)
 
         let masterOn = shieldToggle.on
-        toggleInteractionEnabled(masterOn)
+        views_toggles.forEach { $0.enabled = masterOn && shieldToggle.enabled }
 
         if masterOn {
             toggleBlockAds.on = state?.isOnAdBlockAndTp() ?? AdBlocker.singleton.isNSPrefEnabled
@@ -484,34 +474,46 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             toggleBlockScripts.on = state?.isOnScriptBlocking() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyNoScriptOn) ?? false)
             toggleBlockFingerprinting.on = state?.isOnFingerprintProtection() ?? (BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
         } else {
-            for toggle: UISwitch in views_toggles {
-                toggle.on = false
-            }
+            views_toggles.forEach { $0.on = false }
         }
     }
 
     override func showPanel(showing: Bool, parentSideConstraints: [Constraint?]?) {
-        if showing {
-            updateSitenameAndTogglesState()
-        }
 
         super.showPanel(showing, parentSideConstraints: parentSideConstraints)
 
         if showing {
-            headerContainer.snp_remakeConstraints { make in
-                make.top.left.right.equalTo(headerContainer.superview!)
-                make.height.equalTo(44 + spaceForStatusBar())
-            }
+            updateSitenameAndTogglesState()
+            updateConstraintsForPanelSections()
         }
+    }
+    
+    func updateConstraintsForPanelSections() {
+        headerContainerHeightConstraint?.constant = 44 + CGFloat(spaceForStatusBar())
+        if isShowingShieldOverview() {
+            siteNameContainerHeightConstraint?.constant = ui_siteNameSectionHeight - 30
+            shieldsOverviewContainerHeightConstraint?.active = false
+        } else {
+            siteNameContainerHeightConstraint?.constant = ui_siteNameSectionHeight
+            shieldsOverviewContainerHeightConstraint?.active = true
+        }
+        
+        setupContainerViewSize()
     }
 
     func setShieldBlockedStats(shieldStats: ShieldBlockedStats) {
-        if !isShowingHome() {
-            statAdsBlocked.text = String(shieldStats.abAndTp)
-            statHttpsUpgrades.text = String(shieldStats.httpse)
-            statFPBlocked.text = String(shieldStats.fp)
-            statScriptsBlocked.text = String(shieldStats.js)
+        var shieldStats = shieldStats
+        // This check is placed here (instead of an update view method) because it can get called via external
+        //  sources, so safest to place right before assigning new text values
+        if isShowingShieldOverview() {
+            // HttpsUpgrade seems to be 1 for localhost, so overriding it
+            shieldStats = ShieldBlockedStats()
         }
+        
+        statAdsBlocked.text = String(shieldStats.abAndTp)
+        statHttpsUpgrades.text = String(shieldStats.httpse)
+        statFPBlocked.text = String(shieldStats.fp)
+        statScriptsBlocked.text = String(shieldStats.js)
     }
 }
 

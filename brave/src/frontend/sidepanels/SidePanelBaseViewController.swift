@@ -16,15 +16,9 @@ class SidePanelBaseViewController : UIViewController {
     // Set false for a right side panel
     var isLeftSidePanel = true
     
-    var isShowingOverview = false
-
     let shadow = UIImageView()
 
     var parentSideConstraints: [Constraint?]?
-    
-    func isShowingHome() -> Bool {
-        return getApp().browserViewController.homePanelController != nil
-    }
 
     override func loadView() {
         self.view = UIScrollView(frame: UIScreen.mainScreen().bounds)
@@ -58,6 +52,7 @@ class SidePanelBaseViewController : UIViewController {
         view.hidden = true
     }
 
+    /// This should just be called one time to initially setup the UI elements for the side panels
     func setupUIElements() {
         shadow.image = UIImage(named: "panel_shadow")
         shadow.contentMode = .ScaleToFill
@@ -86,9 +81,7 @@ class SidePanelBaseViewController : UIViewController {
     }
 
     func setupConstraints() {
-        if shadow.image == nil || // arbitrary item check to see if func needs calling
-            isShowingHome() && !isShowingOverview && !isLeftSidePanel ||
-            !isShowingHome() && isShowingOverview && !isLeftSidePanel {
+        if shadow.image == nil { // arbitrary item check to see if func needs calling
             setupUIElements()
         }
     }
