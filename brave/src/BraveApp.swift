@@ -283,10 +283,11 @@ extension BraveApp {
             }
             return
         }
-        NSURLSession.sharedSession().dataTaskWithURL(url) {
+        let task = NSURLSession.sharedSession().dataTaskWithURL(url) {
             (_, _, error) in
             if let e = error { NSLog("status update error: \(e)") }
         }
+        task.resume()
     }
 }
 
