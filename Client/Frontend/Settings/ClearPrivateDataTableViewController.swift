@@ -183,19 +183,19 @@ class ClearPrivateDataTableViewController: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
-
-        if (BraveWebView.allocCounter == 0) {
-            allWebViewsKilled()
-        } else {
-            getApp().tabManager.removeAll()
-            postAsyncToMain(0.5, closure: {
-                if !self.gotNotificationDeathOfAllWebViews {
-                    getApp().tabManager.tabs.internalTabList.forEach { $0.deleteWebView(isTabDeleted: true) }
-                    self.allWebViewsKilled()
-                }
-            })
-        }
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
+//
+//        if (BraveWebView.allocCounter == 0) {
+//            allWebViewsKilled()
+//        } else {
+//            getApp().tabManager.removeAll()
+//            postAsyncToMain(0.5, closure: {
+//                if !self.gotNotificationDeathOfAllWebViews {
+//                    getApp().tabManager.tabs.internalTabList.forEach { $0.deleteWebView(isTabDeleted: true) }
+//                    self.allWebViewsKilled()
+//                }
+//            })
+//        }
     }
 
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

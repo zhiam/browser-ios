@@ -88,6 +88,9 @@ class BraveApp {
     // Be aware: the Prefs object has not been created yet
     class func willFinishLaunching_begin() {
         BraveApp.setupCacheDefaults()
+
+        NSURLProtocol.wk_registerScheme("http")
+        NSURLProtocol.wk_registerScheme("https")
         NSURLProtocol.registerClass(URLProtocol);
 
         NSNotificationCenter.defaultCenter().addObserver(BraveApp.singleton,
@@ -166,15 +169,15 @@ class BraveApp {
             //BlankTargetLinkHandler.updatedEnabledState()
         #endif
 
-        getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
-            postAsyncToMain(0) { // back to main thread
-                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = BraveShieldState.perNormalizedDomain[base] where wv.braveShieldStateSafeAsync.get().isNotSet() {
-                    // on init, the webview's shield state doesn't match the db
-                    wv.braveShieldStateSafeAsync.set(wv, state: dbState)
-                    wv.reloadFromOrigin()
-                }
-            }
-        }
+//        getApp().profile?.loadBraveShieldsPerBaseDomain().upon() {
+//            postAsyncToMain(0) { // back to main thread
+//                if let wv = getCurrentWebView(), url = wv.URL, base = url.normalizedHost(), dbState = BraveShieldState.perNormalizedDomain[base] where wv.braveShieldStateSafeAsync.get().isNotSet() {
+//                    // on init, the webview's shield state doesn't match the db
+//                    wv.braveShieldStateSafeAsync.set(wv, state: dbState)
+//                    wv.reloadFromOrigin()
+//                }
+//            }
+//        }
     }
 
     // This can only be checked ONCE, the flag is cleared after this.

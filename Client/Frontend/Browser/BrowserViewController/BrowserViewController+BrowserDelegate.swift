@@ -16,21 +16,21 @@ protocol BrowserTabStateDelegate: class {
 }
 
 extension BrowserViewController: WebPageStateDelegate {
-    func webView(webView: UIWebView, canGoBack: Bool) {
+    func webView(webView: BraveWebView, canGoBack: Bool) {
         guard let tab = tabManager.tabForWebView(webView) else { return }
         if tab === tabManager.selectedTab {
             navigationToolbar.updateBackStatus(canGoBack)
         }
     }
     
-    func webView(webView: UIWebView, canGoForward: Bool) {
+    func webView(webView: BraveWebView, canGoForward: Bool) {
         guard let tab = tabManager.tabForWebView(webView) else { return }
         if tab === tabManager.selectedTab {
             navigationToolbar.updateForwardStatus(canGoForward)
         }
     }
 
-    func webView(webView: UIWebView, urlChanged: String) {
+    func webView(webView: BraveWebView, urlChanged: String) {
         guard let tab = tabManager.tabForWebView(webView) else { return }
 
         if let selected = tabManager.selectedTab {
@@ -44,14 +44,14 @@ extension BrowserViewController: WebPageStateDelegate {
         }
     }
 
-    func webView(webView: UIWebView, progressChanged: Float) {
+    func webView(webView: BraveWebView, progressChanged: Float) {
         guard let tab = tabManager.tabForWebView(webView) else { return }
         if tab === tabManager.selectedTab {
             urlBar.updateProgressBar(progressChanged)
         }
     }
 
-    func webView(webView: UIWebView, isLoading: Bool) {
+    func webView(webView: BraveWebView, isLoading: Bool) {
         guard let tab = tabManager.tabForWebView(webView) else { return }
 
         if tab === tabManager.selectedTab {

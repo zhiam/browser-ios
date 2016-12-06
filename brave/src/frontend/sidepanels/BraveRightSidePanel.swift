@@ -65,7 +65,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
 
     override func viewDidLoad() {
         isLeftSidePanel = false
-         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(pageChanged), name: kNotificationPageUnload, object: nil)
+//         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(pageChanged), name: kNotificationPageUnload, object: nil)
         super.viewDidLoad()
     }
 

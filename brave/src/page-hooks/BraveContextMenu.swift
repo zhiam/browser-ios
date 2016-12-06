@@ -44,7 +44,7 @@ class BraveContextMenu {
         guard let braveWebView = BraveApp.getCurrentWebView() else { return }
 
         if let touches = event.touchesForWindow(window), let touch = touches.first where touches.count == 1 {
-            braveWebView.lastTappedTime = NSDate()
+//            braveWebView.lastTappedTime = NSDate()
             switch touch.phase {
             case .Began:  // A finger touched the screen
                 guard let touchView = event.allTouches()?.first?.view where touchView.isDescendantOfView(braveWebView) else {

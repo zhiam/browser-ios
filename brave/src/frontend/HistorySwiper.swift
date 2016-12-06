@@ -121,8 +121,8 @@ class HistorySwiper : NSObject {
                             self.restoreWebview()
                         }
                         NSNotificationCenter.defaultCenter().removeObserver(self)
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebViewConstants.kNotificationPageInteractive, object: webview)
-                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: webview)
+//                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebViewConstants.kNotificationPageInteractive, object: webview)
+//                        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HistorySwiper.updateDetected), name: BraveWebViewConstants.kNotificationWebViewLoadCompleteOrFailed, object: webview)
                     } else {
                         getApp().browserViewController.scrollController.edgeSwipingActive = false
 #if IMAGE_SWIPE_ON
@@ -183,10 +183,10 @@ class HistorySwiper : NSObject {
 extension HistorySwiper : UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(recognizer: UIGestureRecognizer) -> Bool {
         guard let tab = getApp().browserViewController.tabManager.selectedTab, webview = tab.webView else { return false}
-        if (recognizer == goBackSwipe && !webview.canNavigateBackward()) ||
-            (recognizer == goForwardSwipe && !webview.canNavigateForward()) {
-            return false
-        }
+//        if (recognizer == goBackSwipe && !webview.canNavigateBackward()) ||
+//            (recognizer == goForwardSwipe && !webview.canNavigateForward()) {
+//            return false
+//        }
 
         guard let recognizer = recognizer as? UIPanGestureRecognizer else { return false }
         let v = recognizer.velocityInView(recognizer.view)

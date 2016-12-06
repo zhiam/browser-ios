@@ -442,6 +442,8 @@
 		EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12F8F9AA927469C395A01A8 /* TabTrayController.swift */; };
 		EA57C937929B9D79638AE0C2 /* SupportUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2B94BA962519A13DDE91E3 /* SupportUtils.swift */; };
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
+		EB1D65741DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = EB1D65721DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.h */; };
+		EB1D65751DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1D65731DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.m */; };
 		EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1222,6 +1224,8 @@
 		EA9AEBF65F0394D67D7135DC /* CertStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CertStore.swift; path = ./Storage/CertStore.swift; sourceTree = "<group>"; };
 		EAF179D957607D89D4BDC9A3 /* crc32c.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc32c.h; path = ./brave/ThirdParty/leveldb/util/crc32c.h; sourceTree = "<group>"; };
 		EB0F42511C9A46D800676650 /* BraveShareTo.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BraveShareTo.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB1D65721DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURLProtocol+WKWebViewSupport.h"; path = "brave/src/webfilters/NSURLProtocol+WKWebViewSupport.h"; sourceTree = "<group>"; };
+		EB1D65731DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURLProtocol+WKWebViewSupport.m"; path = "brave/src/webfilters/NSURLProtocol+WKWebViewSupport.m"; sourceTree = "<group>"; };
 		EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSURLProtectionSpaceExtensions.swift; path = ./Utils/Extensions/NSURLProtectionSpaceExtensions.swift; sourceTree = "<group>"; };
 		EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroScreenTest.swift; sourceTree = "<group>"; };
 		EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpsEverywhereTest.swift; sourceTree = "<group>"; };
@@ -1569,6 +1573,8 @@
 		15951D18F29334B2608306A6 /* webfilters */ = {
 			isa = PBXGroup;
 			children = (
+				EB1D65721DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.h */,
+				EB1D65731DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.m */,
 				CE26A0072322D258FA2595EB /* ABPFilterLibWrapper.h */,
 				44A1D7CEF39DC47354E3383E /* ABPFilterLibWrapper.mm */,
 				54CC27D1519C3A454491A6F1 /* AdBlocker.swift */,
@@ -2931,6 +2937,7 @@
 				9E40A64898564A86FB8FE825 /* HashItem.h in Headers */,
 				3707DD80479CB3FC1CD7231F /* HashSet.h in Headers */,
 				92B5106CE3238BECC9CEF05A /* cosmeticFilter.h in Headers */,
+				EB1D65741DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.h in Headers */,
 				49EC58027D98E205CF632DCF /* FirstPartyHost.h in Headers */,
 				7FB94B0D2DE4CE146F113E90 /* TPParser.h in Headers */,
 			);
@@ -3153,44 +3160,54 @@
 				TargetAttributes = {
 					288A2D851AB8B3260023ABC3 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 					};
 					2FCAE2191ABB51F800877008 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 					};
 					2FCAE2231ABB51F800877008 = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
 					E4D567171ADECE2700F1EFE7 = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 					};
 					E4D567211ADECE2700F1EFE7 = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
 					E6F9650B1B2F1CF20034B023 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = N2VQUP3835;
 					};
 					EB0F42501C9A46D800676650 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 					};
 					EB53D0FA1D9C2BB20093077A = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 						TestTargetID = F84B21BD1A090F8100AAB793;
 					};
 					EB8E9B351C7CB4E1003AA90E = {
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 					};
 					F84B21BD1A090F8100AAB793 = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = N2VQUP3835;
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -3700,6 +3717,7 @@
 				3078EC63F4D0D10D8CE0B5E5 /* version_set.cc in Sources */,
 				7BA3C826C13C285AA2A6F789 /* write_batch.cc in Sources */,
 				23E105570490AC11F27B26E8 /* memenv.cc in Sources */,
+				EB1D65751DF66C5300F2E3AE /* NSURLProtocol+WKWebViewSupport.m in Sources */,
 				5E5E76550DFB4EB71194132F /* LICENSE in Sources */,
 				8C37559D5128842F1EA41DC1 /* port_posix.cc in Sources */,
 				4DB470E1162880D83AB88E5C /* block.cc in Sources */,

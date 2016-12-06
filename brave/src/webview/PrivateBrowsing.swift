@@ -114,7 +114,7 @@ class PrivateBrowsing {
         isOn = false
         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "WebKitPrivateBrowsingEnabled")
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(allWebViewsKilled), name: kNotificationAllWebViewsDeallocated, object: nil)
 
         if getApp().tabManager.tabs.privateTabs.count < 1 {
             postAsyncToMain {

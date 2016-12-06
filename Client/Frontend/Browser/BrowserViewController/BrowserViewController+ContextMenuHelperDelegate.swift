@@ -31,7 +31,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
         let actionSheetController = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
         var dialogTitle: String?
-        actionSheetController.view.tag = BraveWebViewConstants.kContextMenuBlockNavigation
+        //actionSheetController.view.tag = BraveWebViewConstants.kContextMenuBlockNavigation
 
         if let url = elements.link, let currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString?.regexReplacePattern("^mailto:", with: "")

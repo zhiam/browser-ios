@@ -90,25 +90,25 @@ extension BrowserViewController: WKUIDelegate {
         }
 
         if error.code == Int(CFNetworkErrors.CFURLErrorCancelled.rawValue) {
-            guard let container = webView as? ContainerWebView else { return }
-            guard let legacyWebView = container.legacyWebView else { return }
-            if let browser = tabManager.tabForWebView(legacyWebView) where browser === tabManager.selectedTab {
-                urlBar.currentURL = browser.displayURL
-            }
+//            guard let container = webView as? ContainerWebView else { return }
+//            guard let legacyWebView = container.legacyWebView else { return }
+//            if let browser = tabManager.tabForWebView(legacyWebView) where browser === tabManager.selectedTab {
+//                urlBar.currentURL = browser.displayURL
+//            }
             return
         }
 
         if let url = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL {
-            guard let uiwebview = (webView as? ContainerWebView)?.legacyWebView else { assert(false) ; return }
-            ErrorPageHelper().showPage(error, forUrl: url, inWebView: uiwebview)
-
-            // If the local web server isn't working for some reason (Firefox cellular data is
-            // disabled in settings, for example), we'll fail to load the session restore URL.
-            // We rely on loading that page to get the restore callback to reset the restoring
-            // flag, so if we fail to load that page, reset it here.
-            if AboutUtils.getAboutComponent(url) == "sessionrestore" {
-                tabManager.tabs.internalTabList.filter { $0.webView == webView }.first?.restoring = false
-            }
+//            guard let uiwebview = (webView as? ContainerWebView)?.legacyWebView else { assert(false) ; return }
+//            ErrorPageHelper().showPage(error, forUrl: url, inWebView: uiwebview)
+//
+//            // If the local web server isn't working for some reason (Firefox cellular data is
+//            // disabled in settings, for example), we'll fail to load the session restore URL.
+//            // We rely on loading that page to get the restore callback to reset the restoring
+//            // flag, so if we fail to load that page, reset it here.
+//            if AboutUtils.getAboutComponent(url) == "sessionrestore" {
+//                tabManager.tabs.internalTabList.filter { $0.webView == webView }.first?.restoring = false
+//            }
         }
     }
 

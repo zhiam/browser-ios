@@ -28,9 +28,9 @@ class BlankTargetLinkHandler {
 
         if let touches = event.touchesForWindow(window), let touch = touches.first where touches.count == 1 {
             guard let webView = BraveApp.getCurrentWebView(), webViewSuperview = webView.superview  else { return }
-            if !webView.blankTargetLinkDetectionOn {
-                return
-            }
+//            if !webView.blankTargetLinkDetectionOn {
+//                return
+//            }
 
             let globalRect = webViewSuperview.convertRect(webView.frame, toView: nil)
             if !globalRect.contains(touch.locationInView(window)) {
@@ -44,7 +44,7 @@ class BlankTargetLinkHandler {
                     url = element.url,
                     t = element.urlTarget where t == "_blank"
                 {
-                    webView.urlBlankTargetTapped(url)
+                    //webView.urlBlankTargetTapped(url)
                     print("LinkTargetBlankHandler \(element)")
                 }
 

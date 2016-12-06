@@ -8,7 +8,7 @@ class HideEmptyImages {
             HideEmptyImages.source = try! NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
         }
         if let source = HideEmptyImages.source {
-            webView.stringByEvaluatingJavaScriptFromString(source)
+//            webView.stringByEvaluatingJavaScriptFromString(source)
         }
     }
 }

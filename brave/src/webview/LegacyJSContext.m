@@ -136,19 +136,19 @@ JSCallbackBlock blockFactory(NSString *handlerName, id<WKScriptMessageHandler> h
 
 - (void)windowOpenOverride:(UIWebView *)webView context:(id)_context
 {
-    assert([NSThread isMainThread]);
-    JSContext *context = _context;
-    if (!context) {
-        context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-    }
-
-    if (!context) {
-        return;
-    }
-
-    context[@"window"][@"open"] = ^(NSString *url) {
-        [HandleJsWindowOpen open:url];
-    };
+//    assert([NSThread isMainThread]);
+//    JSContext *context = _context;
+//    if (!context) {
+//        context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+//    }
+//
+//    if (!context) {
+//        return;
+//    }
+//
+//    context[@"window"][@"open"] = ^(NSString *url) {
+//        [HandleJsWindowOpen open:url];
+//    };
 }
 
 

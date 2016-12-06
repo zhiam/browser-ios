@@ -5,7 +5,7 @@ private let log = Logger.browserLogger
 
 extension BrowserViewController: WKCompatNavigationDelegate {
 
-    func webViewDidStartProvisionalNavigation(webView: UIWebView, url: NSURL?) {
+    func webViewDidStartProvisionalNavigation(webView: BraveWebView, url: NSURL?) {
         #if !BRAVE
             if tabManager.selectedTab?.webView !== webView {
                 return
@@ -55,7 +55,7 @@ extension BrowserViewController: WKCompatNavigationDelegate {
     // This is the place where we decide what to do with a new navigation action. There are a number of special schemes
     // and http(s) urls that need to be handled in a different way. All the logic for that is inside this delegate
     // method.
-    func webViewDecidePolicyForNavigationAction(webView: UIWebView, url: NSURL?, inout shouldLoad: Bool) {
+    func webViewDecidePolicyForNavigationAction(webView: BraveWebView, url: NSURL?, inout shouldLoad: Bool) {
         guard let url = url else { return }
         // Fixes 1261457 - Rich text editor fails because requests to about:blank are blocked
         if url.scheme == "about" && url.resourceSpecifier == "blank" {
@@ -141,7 +141,7 @@ extension BrowserViewController: WKCompatNavigationDelegate {
         shouldLoad = false
     }
 
-    func webViewDidFinishNavigation(webView: UIWebView, url: NSURL?) {
+    func webViewDidFinishNavigation(webView: BraveWebView, url: NSURL?) {
         // BraveWebView handles this
     }
 
@@ -182,7 +182,7 @@ extension BrowserViewController: WKCompatNavigationDelegate {
     }
 
 
-    func webViewDidFailNavigation(webView: UIWebView, withError error: NSError) {
+    func webViewDidFailNavigation(webView: BraveWebView, withError error: NSError) {
         // Ignore the "Frame load interrupted" error that is triggered when we cancel a request
         // to open an external application and hand it over to UIApplication.openURL(). The result
         // will be that we switch to the external app, for example the app store, while keeping the

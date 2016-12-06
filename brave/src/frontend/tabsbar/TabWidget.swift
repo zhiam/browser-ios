@@ -182,7 +182,7 @@ class TabWidget : UIView {
 }
 
 extension TabWidget : WebPageStateDelegate {
-    func webView(webView: UIWebView, urlChanged: String) {
+    func webView(webView: BraveWebView, urlChanged: String) {
         if let t = browser?.url?.baseDomain() where  title.titleLabel?.text?.isEmpty ?? true {
             setTitle(t)
         }
@@ -190,13 +190,13 @@ extension TabWidget : WebPageStateDelegate {
         updateTitle_throttled()
     }
 
-    func webView(webView: UIWebView, progressChanged: Float) {
+    func webView(webView: BraveWebView, progressChanged: Float) {
         updateTitle_throttled()
     }
 
-    func webView(webView: UIWebView, isLoading: Bool) {}
-    func webView(webView: UIWebView, canGoBack: Bool) {}
-    func webView(webView: UIWebView, canGoForward: Bool) {}
+    func webView(webView: BraveWebView, isLoading: Bool) {}
+    func webView(webView: BraveWebView, canGoBack: Bool) {}
+    func webView(webView: BraveWebView, canGoForward: Bool) {}
 }
 
 extension TabWidget : UIGestureRecognizerDelegate {

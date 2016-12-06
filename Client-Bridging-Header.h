@@ -24,6 +24,7 @@
 #import "SwizzlingToHideSharePicker.h"
 #import "ODRefreshControl.h"
 #import "WebViewDocScale.h"
+#import "NSURLProtocol+WKWebViewSupport.h"
 
 #if FLEX_ON
 #import "FLEXManager.h"

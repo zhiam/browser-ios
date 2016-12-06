@@ -96,7 +96,7 @@ class BraveScrollController: NSObject {
     override init() {
         super.init()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveScrollController.pageUnload), name: kNotificationPageUnload, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveScrollController.pageUnload), name: kNotificationPageUnload, object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillAppear(_:)), name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillDisappear(_:)), name: UIKeyboardWillHideNotification, object: nil)
@@ -193,7 +193,7 @@ class BraveScrollController: NSObject {
             entrantGuard = false
         }
         if (keyPath ?? "") == "contentSize" && browser?.webView?.scrollView === object {
-            browser?.webView?.contentSizeChangeDetected()
+            //browser?.webView?.contentSizeChangeDetected()
             checkHeightOfPageAndAdjustWebViewInsets()
             if !isScrollHeightIsLargeEnoughForScrolling() && !toolbarsShowing {
                 showToolbars(animated: true, completion: nil)
@@ -362,9 +362,9 @@ var isRefreshBlockedDueToMomentumScroll = false
 extension BraveScrollController: UIScrollViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         guard let webView = browser?.webView else { return }
-        if (webViewIsZoomed(webView)) {
-            return;
-        }
+//        if (webViewIsZoomed(webView)) {
+//            return;
+//        }
 
         let position = -webView.convertPoint(webView.frame.origin, fromView: nil).y
         if contentOffset.y < 0 && !isInRefreshQuietPeriod && !isRefreshBlockedDueToMomentumScroll && verticalTranslation == 0 && toolbarsShowing {

@@ -33,20 +33,20 @@ extension LoginsHelper {
                 return // No 3rd party password manager installed
             }
 
-            postAsyncToMain {
-                [weak self] in
-                let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
-                if let ok = result, me = self where ok == "true" {
-                    let show = me.shouldShowPasswordManagerButton()
-                    if show && UIDevice.currentDevice().userInterfaceIdiom != .Pad {
-                        me.addPasswordManagerButtonKeyboardAccessory()
-                    }
-                    callback(show)
-                }
-                else {
-                    callback(false)
-                }
-            }
+//            postAsyncToMain {
+//                [weak self] in
+//                let result = self?.browser?.webView?.stringByEvaluatingJavaScriptFromString("document.querySelectorAll(\"input[type='password']\").length !== 0")
+//                if let ok = result, me = self where ok == "true" {
+//                    let show = me.shouldShowPasswordManagerButton()
+//                    if show && UIDevice.currentDevice().userInterfaceIdiom != .Pad {
+//                        me.addPasswordManagerButtonKeyboardAccessory()
+//                    }
+//                    callback(show)
+//                }
+//                else {
+//                    callback(false)
+//                }
+//            }
         }
     }
 

@@ -51,11 +51,11 @@ class URLProtocol: NSURLProtocol {
         var webViewShield:BraveShieldState? = nil
         var shieldResult = BraveShieldState()
 
-        if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
-            webViewShield = webView.braveShieldStateSafeAsync.get()
-        } else {
-            webViewShield = getApp().tabManager.selectedTab?.webView?.braveShieldStateSafeAsync.get()
-        }
+//        if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
+//            webViewShield = webView.braveShieldStateSafeAsync.get()
+//        } else {
+//            webViewShield = getApp().tabManager.selectedTab?.webView?.braveShieldStateSafeAsync.get()
+//        }
 
         if let webViewShield = webViewShield where webViewShield.isAllOff() {
             shieldResult.setState(.AllOff, on: true)
@@ -158,7 +158,7 @@ class URLProtocol: NSURLProtocol {
             } else {
                 connection = NSURLConnection(request: newRequest, delegate: self)
                 postAsyncToMain(0.1) {
-                    WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
+                WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
                 }
             }
             return
@@ -175,7 +175,7 @@ class URLProtocol: NSURLProtocol {
                 returnEmptyResponse()
             }
             postAsyncToMain(0.1) {
-                WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.abAndTpIncrement)
+               WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.abAndTpIncrement)
             }
             return
         }

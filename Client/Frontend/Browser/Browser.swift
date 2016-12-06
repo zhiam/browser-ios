@@ -149,89 +149,69 @@ class Browser: NSObject, BrowserWebViewDelegate {
     weak var navigationDelegate: WKCompatNavigationDelegate? {
         didSet {
             if let webView = webView {
-                webView.navigationDelegate = navigationDelegate
+                webView.navigationDelegateWrapper = navigationDelegate
             }
         }
     }
 
     func createWebview(useDesktopUserAgent useDesktopUserAgent:Bool = false) {
-        assert(NSThread.isMainThread())
-        if !NSThread.isMainThread() {
-            return
-        }
-
-        // self.webView setter/getter is thread-safe
-        objc_sync_enter(self); defer { objc_sync_exit(self) }
-
         if webView == nil {
-#if !BRAVE
             assert(configuration != nil, "Create webview can only be called once")
             configuration!.userContentController = WKUserContentController()
             configuration!.preferences = WKPreferences()
             configuration!.preferences.javaScriptCanOpenWindowsAutomatically = false
-#endif
-            let webView = BraveWebView(frame: CGRectZero, useDesktopUserAgent: useDesktopUserAgent)
+            let webView = BraveWebView(frame: CGRectZero, configuration: configuration!)
+            //webView.delegate = self
             configuration = nil
 
-            webView.accessibilityLabel = Strings.Web_content
-#if !BRAVE
+            webView.accessibilityLabel = NSLocalizedString("Web content", comment: "Accessibility label for the main web content view")
             webView.allowsBackForwardNavigationGestures = true
-#endif
             webView.backgroundColor = UIColor.lightGrayColor()
 
             // Turning off masking allows the web content to flow outside of the scrollView's frame
             // which allows the content appear beneath the toolbars in the BrowserViewController
             webView.scrollView.layer.masksToBounds = false
-            webView.navigationDelegate = navigationDelegate
-            helperManager = HelperManager(webView: webView)
+            webView.navigationDelegateWrapper = navigationDelegate
+            //helperManager = HelperManager(webView: webView)
 
             restore(webView)
 
-            _webView = webView
+            self._webView = webView
             browserDelegate?.browser(self, didCreateWebView: self.webView!)
-
-#if !BRAVE
-            // lastTitle is used only when showing zombie tabs after a session restore.
-            // Since we now have a web view, lastTitle is no longer useful.
-            lastTitle = nil
-#endif
-            lastExecutedTime = NSDate.now()
         }
     }
 
-    func restore(webView: BraveWebView) {
-        // Pulls restored session data from a previous SavedTab to load into the Browser. If it's nil, a session restore
+    func restore(webView: WKWebView) {
+        // Pulls restored session data from a previous SavedTab to load into the Tab. If it's nil, a session restore
         // has already been triggered via custom URL, so we use the last request to trigger it again; otherwise,
         // we extract the information needed to restore the tabs and create a NSURLRequest with the custom session restore URL
         // to trigger the session restore via custom handlers
         if let sessionData = self.sessionData {
-            #if !BRAVE // no idea why restoring is needed, but it causes the displayed url not to update, which is bad
-                restoring = true
-            #endif
-            lastTitle = sessionData.currentTitle
-            if let title = lastTitle {
-                webView.title = title
-            }
-            var updatedURLs = [String]()
+            restoring = true
+
+            var urls = [String]()
             for url in sessionData.urls {
-                let updatedURL = WebServer.sharedInstance.updateLocalURL(url)!.absoluteString
-                updatedURLs.append(updatedURL!)
+                guard let urlString = url.absoluteString else {
+                    assertionFailure("Invalid session URL: \(url)")
+                    continue
+                }
+                urls.append(urlString)
             }
+
             let currentPage = sessionData.currentPage
             self.sessionData = nil
             var jsonDict = [String: AnyObject]()
-            jsonDict["history"] = updatedURLs
+            jsonDict["history"] = urls
             jsonDict["currentPage"] = currentPage
             let escapedJSON = JSON.stringify(jsonDict, pretty: false).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
             let restoreURL = NSURL(string: "\(WebServer.sharedInstance.base)/about/sessionrestore?history=\(escapedJSON)")
-            lastRequest = NSURLRequest(URL: restoreURL!)
+            ///lastRequest = PrivilegedRequest(URL: restoreURL!)
             webView.loadRequest(lastRequest!)
         } else if let request = lastRequest {
             webView.loadRequest(request)
         } else {
             log.error("creating webview with no lastRequest and no session data: \(self.url)")
         }
-
     }
 
     func deleteWebView(isTabDeleted isTabDeleted: Bool) {
@@ -243,18 +223,18 @@ class Browser: NSObject, BrowserWebViewDelegate {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
 
             if !isTabDeleted {
-                self.lastTitle = self.title
-                let currentItem: LegacyBackForwardListItem! = wv.backForwardList.currentItem
-                // Freshly created web views won't have any history entries at all.
-                // If we have no history, abort.
-                if currentItem != nil {
-                    let backList = wv.backForwardList.backList ?? []
-                    let forwardList = wv.backForwardList.forwardList ?? []
-                    let urls = (backList + [currentItem] + forwardList).map { $0.URL }
-                    let currentPage = -forwardList.count
-                    
-                    self.sessionData = SessionData(currentPage: currentPage, currentTitle: self.title, currentFavicon: self.displayFavicon, urls: urls, lastUsedTime: self.lastExecutedTime ?? NSDate.now())
-                }
+//                self.lastTitle = self.title
+//                let currentItem: LegacyBackForwardListItem! = wv.backForwardList.currentItem
+//                // Freshly created web views won't have any history entries at all.
+//                // If we have no history, abort.
+//                if currentItem != nil {
+//                    let backList = wv.backForwardList.backList ?? []
+//                    let forwardList = wv.backForwardList.forwardList ?? []
+//                    let urls = (backList + [currentItem] + forwardList).map { $0.URL }
+//                    let currentPage = -forwardList.count
+//                    
+//                    self.sessionData = SessionData(currentPage: currentPage, currentTitle: self.title, currentFavicon: self.displayFavicon, urls: urls, lastUsedTime: self.lastExecutedTime ?? NSDate.now())
+//                }
             }
             self.browserDelegate?.browser(self, willDeleteWebView: wv)
             _webView = nil
@@ -273,12 +253,12 @@ class Browser: NSObject, BrowserWebViewDelegate {
         return webView?.estimatedProgress ?? 0
     }
 
-    var backList: [LegacyBackForwardListItem]? {
-        return webView?.backForwardList.backList
+    var backList: [LegacyBackForwardListItem]? { return nil
+        //return webView?.backForwardList.backList
     }
 
-    var forwardList: [LegacyBackForwardListItem]? {
-        return webView?.backForwardList.forwardList
+    var forwardList: [LegacyBackForwardListItem]? { return nil
+        //return webView?.backForwardList.forwardList
     }
 
     var historyList: [NSURL] {
@@ -380,7 +360,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     func goToBackForwardListItem(item: LegacyBackForwardListItem) {
-        webView?.goToBackForwardListItem(item)
+        //webView?.goToBackForwardListItem(item)
     }
 
     func loadRequest(request: NSURLRequest) -> WKNavigation? {
@@ -404,7 +384,7 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     func addHelper(helper: BrowserHelper) {
-        helperManager!.addHelper(helper)
+        helperManager?.addHelper(helper)
     }
 
     func getHelper<T>(classType: T.Type) -> T? {
@@ -548,7 +528,7 @@ private class HelperManager: NSObject, WKScriptMessageHandler {
 
     func removeHelper<T>(classType: T.Type) {
         if let t = T.self as? BrowserHelper.Type, name = t.scriptMessageHandlerName() {
-            webView?.configuration.userContentController.removeScriptMessageHandler(name: name)
+           // webView?.configuration.userContentController.removeScriptMessageHandler(name: name)
         }
         helpers.removeValueForKey("\(classType)")
     }

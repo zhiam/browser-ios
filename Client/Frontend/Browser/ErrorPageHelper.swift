@@ -212,7 +212,7 @@ class ErrorPageHelper {
         })
     }
 
-    func showPage(error: NSError, forUrl url: NSURL, inWebView webView: UIWebView) {
+    func showPage(error: NSError, forUrl url: NSURL, inWebView webView: BraveWebView) {
         // Don't show error pages for error pages.
         if ErrorPageHelper.isErrorPageURL(url) {
             if let previousURL = ErrorPageHelper.originalURLFromQuery(url),

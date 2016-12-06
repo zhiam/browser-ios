@@ -12,7 +12,7 @@ extension BrowserViewController: TabManagerDelegate {
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
         // and having multiple views with the same label confuses tests.
 
-        if let prevWebView = webViewContainer.subviews.filter({ $0 as? UIWebView != nil }).first {
+        if let prevWebView = webViewContainer.subviews.filter({ $0 as? BraveWebView != nil }).first {
             if prevWebView == selected?.webView {
                 assert(false)
                 NSLog("Error: Selected webview should not be in view heirarchy already")
