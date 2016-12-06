@@ -3,13 +3,6 @@
 import Shared
 private let log = Logger.browserLogger
 
-private let KVOLoading = "loading"
-private let KVOEstimatedProgress = "estimatedProgress"
-private let KVOURL = "URL"
-private let KVOCanGoBack = "canGoBack"
-private let KVOCanGoForward = "canGoForward"
-private let KVOContentSize = "contentSize"
-
 protocol BrowserTabStateDelegate: class {
     func browserUrlChanged(browser: Browser)
     func browserProgressChanged(browser: Browser)
@@ -66,12 +59,6 @@ extension BrowserViewController: BrowserDelegate {
     func browser(browser: Browser, didCreateWebView webView: BraveWebView) {
         if webView.removeBvcObserversOnDeinit != nil {
             return
-        }
-
-        webView.scrollView.addObserver(self.scrollController, forKeyPath: KVOContentSize, options: .New, context: nil)
-        webView.removeBvcObserversOnDeinit = {
-            [weak sc = self.scrollController] (wv) in
-            wv.scrollView.removeObserver(sc!, forKeyPath: KVOContentSize)
         }
 
         webView.delegatesForPageState.append(BraveWebView.Weak_WebPageStateDelegate(value: self))

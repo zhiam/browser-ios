@@ -17,7 +17,13 @@ class URLProtocol: NSURLProtocol {
         if let scheme = request.URL?.scheme where !scheme.startsWith("http") {
             return false
         }
-
+        
+        if let content = request.valueForHTTPHeaderField("Content-Type") {
+            if content.contains("form") {
+                print("form detected")
+                return false
+            }
+        }
         if NSURLProtocol.propertyForKey(markerRequestHandled, inRequest: request) != nil {
             return false
         }
@@ -66,9 +72,9 @@ class URLProtocol: NSURLProtocol {
         return shieldResult
     }
 
-    override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-        return request
-    }
+//    override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
+//        return request
+//    }
 
     private class func cloneRequest(request: NSURLRequest) -> NSMutableURLRequest {
         // Reportedly not safe to use built-in cloning methods: http://openradar.appspot.com/11596316

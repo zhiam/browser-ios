@@ -18,10 +18,12 @@ private let KVOEstimatedProgress = "estimatedProgress"
 private let KVOURL = "URL"
 private let KVOCanGoBack = "canGoBack"
 private let KVOCanGoForward = "canGoForward"
-private let KVOContentSize = "contentSize"
+private let KVOContentSize = "contentSize" // installed on scroll view
 
 class BraveWebView : WKWebView {
     var removeBvcObserversOnDeinit: ((UIWebView) -> Void)?
+
+    private let kvoList = [KVOEstimatedProgress, KVOLoading, KVOCanGoBack,KVOCanGoForward,KVOURL]
 
     private static var webviewBuiltinUserAgent = UserAgent.defaultUserAgent()
     private var uniqueId = -1
@@ -98,11 +100,7 @@ class BraveWebView : WKWebView {
             braveWebView.navigationDelegateWrapper?.webViewDidFailNavigation(braveWebView, withError: error)
         }
     }
-    private lazy var internalNavDelegateWrapper:NavDelegate = {
-        let x = NavDelegate()
-        x.braveWebView = self
-        return x
-    }()
+    private var internalNavDelegateWrapper = NavDelegate()
 
     class Weak_WebPageStateDelegate {     // We can't use a WeakList here because this is a protocol.
         weak var value : WebPageStateDelegate?
@@ -110,17 +108,17 @@ class BraveWebView : WKWebView {
     }
     var delegatesForPageState = [Weak_WebPageStateDelegate]()
 
-    private let kvoList = [KVOEstimatedProgress, KVOLoading, KVOCanGoBack,KVOCanGoForward,KVOURL]
-
     override init(frame: CGRect, configuration: WKWebViewConfiguration) {
         let x = BraveWebView.generateUniqueUserAgent()
         super.init(frame: frame, configuration: configuration)
         self.uniqueId = x
         WebViewToUAMapper.setId(uniqueId, webView:self)
-        addObserver(self, forKeyPath: "URL", options: .New, context: nil)
-        kvoList.forEach {
-            addObserver(self, forKeyPath: $0, options: .New, context: nil)
-        }
+        kvoList.forEach { addObserver(self, forKeyPath: $0, options: .New, context: nil) }
+        scrollView.addObserver(self, forKeyPath: KVOContentSize, options: .New, context: nil)
+
+
+        internalNavDelegateWrapper.braveWebView = self
+        navigationDelegate = internalNavDelegateWrapper
     }
     
     required init?(coder: NSCoder) {
@@ -163,8 +161,17 @@ class BraveWebView : WKWebView {
     }
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String: AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard let path = keyPath else { assertionFailure("Unhandled KVO key: \(keyPath)"); return }
+        guard let path = keyPath else { assertionFailure("Unhandled KVO key!"); return }
+
+       struct StaticSize { static var val = CGSizeZero }
+
         switch path {
+        case KVOContentSize:
+           // guard let progress = change?[NSKeyValueChangeNewKey] as? NSSize else { break }
+            guard let newSize = change?[NSKeyValueChangeNewKey]?.CGSizeValue() else { break }
+            if StaticSize.val == newSize { break }
+            StaticSize.val = newSize
+            print("content size, send notification")
         case KVOEstimatedProgress:
             guard let progress = change?[NSKeyValueChangeNewKey] as? Float else { break }
             delegatesForPageState.forEach { $0.value?.webView(self, progressChanged: Float(progress)) }
@@ -210,6 +217,7 @@ class BraveWebView : WKWebView {
 
     deinit {
         kvoList.forEach { removeObserver(self, forKeyPath: $0) }
+        removeObserver(self, forKeyPath: KVOContentSize)
     }
 }
 
