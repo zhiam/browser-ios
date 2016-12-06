@@ -83,6 +83,7 @@ class ReaderModeBarView: UIView {
         settingsButton.titleLabel?.font = UIFont.boldSystemFontOfSize(UIFont.systemFontSize() - 1)
         settingsButton.setTitle(Strings.Reader_Mode_Settings, forState: .Normal)
         settingsButton.addTarget(self, action: #selector(ReaderModeBarView.SELtappedSettingsButton), forControlEvents: .TouchUpInside)
+        settingsButton.accessibilityLabel = Strings.Reader_Mode_Settings
         addSubview(settingsButton)
 
         settingsButton.snp_makeConstraints { make in

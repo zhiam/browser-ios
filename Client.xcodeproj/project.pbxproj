@@ -442,6 +442,7 @@
 		EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12F8F9AA927469C395A01A8 /* TabTrayController.swift */; };
 		EA57C937929B9D79638AE0C2 /* SupportUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2B94BA962519A13DDE91E3 /* SupportUtils.swift */; };
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
+		EB1D65801DF7337100F2E3AE /* ReaderModeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */; };
 		EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
 		EB28B5EC1C9A5CEB00B237A3 /* BraveShareTo.appex in copy app extension */ = {isa = PBXBuildFile; fileRef = EB0F42511C9A46D800676650 /* BraveShareTo.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1222,6 +1223,7 @@
 		EA9AEBF65F0394D67D7135DC /* CertStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CertStore.swift; path = ./Storage/CertStore.swift; sourceTree = "<group>"; };
 		EAF179D957607D89D4BDC9A3 /* crc32c.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc32c.h; path = ./brave/ThirdParty/leveldb/util/crc32c.h; sourceTree = "<group>"; };
 		EB0F42511C9A46D800676650 /* BraveShareTo.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BraveShareTo.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeTest.swift; sourceTree = "<group>"; };
 		EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSURLProtectionSpaceExtensions.swift; path = ./Utils/Extensions/NSURLProtectionSpaceExtensions.swift; sourceTree = "<group>"; };
 		EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroScreenTest.swift; sourceTree = "<group>"; };
 		EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpsEverywhereTest.swift; sourceTree = "<group>"; };
@@ -2633,6 +2635,7 @@
 		EB36616B1D9C3CEC00445C92 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */,
 				EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */,
 				EBE50B8C1DB02386000BC0A1 /* PrivateBrowsingTest.swift */,
 				EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */,
@@ -3667,6 +3670,7 @@
 				EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */,
 				EBE50B8A1DAEC8DD000BC0A1 /* UITestUtils.swift in Sources */,
 				EBE50B8D1DB02386000BC0A1 /* PrivateBrowsingTest.swift in Sources */,
+				EB1D65801DF7337100F2E3AE /* ReaderModeTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
