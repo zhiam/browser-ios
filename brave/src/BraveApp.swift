@@ -263,10 +263,10 @@ extension BraveApp {
             let dSecs = Int(today.timeIntervalSince1970) - stat[0]
             let _month = stat[1]
             let _year = stat[2]
-            let MILLISECONDS_IN_A_DAY = 86400 * 1000;
-            let MILLISECONDS_IN_A_WEEK = 7 * 86400 * 1000;
-            let daily = dSecs >= MILLISECONDS_IN_A_DAY
-            let weekly = dSecs >= MILLISECONDS_IN_A_WEEK
+            let SECONDS_IN_A_DAY = 86400
+            let SECONDS_IN_A_WEEK = 7 * 86400
+            let daily = dSecs >= SECONDS_IN_A_DAY
+            let weekly = dSecs >= SECONDS_IN_A_WEEK
             let monthly = month != _month || year != _year
             if (!daily && !weekly && !monthly) {
                return
