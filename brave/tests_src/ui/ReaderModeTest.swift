@@ -20,6 +20,5 @@ class ReaderModeTest : XCTestCase {
         app.buttons["Dark"].tap()
         app.buttons["Sepia"].tap()
 
-        app.buttons["Reader View"].tap()
     }
 }
