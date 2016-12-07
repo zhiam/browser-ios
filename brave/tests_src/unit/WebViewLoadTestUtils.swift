@@ -4,6 +4,26 @@ import XCTest
 @testable import Client
 import Shared
 
+extension XCTestCase {
+    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
+        return KIFUITestActor(inFile: file, atLine: line, delegate: self)
+    }
+
+    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
+        return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
+    }
+}
+
+extension KIFTestActor {
+    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
+        return KIFUITestActor(inFile: file, atLine: line, delegate: self)
+    }
+
+    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
+        return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
+    }
+}
+
 class WebViewLoadTestUtils {
     static func urlProtocolEnabled(enable:Bool) {
         if enable {
@@ -15,7 +35,7 @@ class WebViewLoadTestUtils {
 
     static func httpseEnabled(enable: Bool) {
         URLProtocol.testShieldState = BraveShieldState()
-        URLProtocol.testShieldState?.setState(BraveShieldState.kHTTPSE, on: enable)
+        URLProtocol.testShieldState?.setState(.HTTPSE, on: enable)
     }
 
     static func loadSite(testCase: XCTestCase, site:String, webview:BraveWebView) ->Bool {

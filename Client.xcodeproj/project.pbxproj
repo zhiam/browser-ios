@@ -451,6 +451,9 @@
 		EB4E16011DB7F3C400A4C7EA /* BraveShareToInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB4E15EF1DB7F3BA00A4C7EA /* BraveShareToInfoPlist.strings */; };
 		EB62B7FD1DB53F3D006FD479 /* Punycode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB62B7FC1DB53F3D006FD479 /* Punycode.swift */; };
 		EB62B8021DB59EF9006FD479 /* WebViewLoadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661711D9C3CEC00445C92 /* WebViewLoadTest.swift */; };
+		EB8E3D661DF78237006EA0D1 /* FingerprintProtectionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB8E3D651DF78237006EA0D1 /* FingerprintProtectionTest.swift */; };
+		EB8E3D711DF785CD006EA0D1 /* WebViewLoadTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3661721D9C3CEC00445C92 /* WebViewLoadTestUtils.swift */; };
+		EB8E3D721DF79ABA006EA0D1 /* KIF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D30EBB6A1C75503800105AE9 /* KIF.framework */; };
 		EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E6231C001B90A44F005ABB0D /* libz.tbd */; };
 		EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D36998881AD70A0A00650C6C /* IOKit.framework */; };
 		EB8E9B591C7CB4E1003AA90E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
@@ -1267,6 +1270,7 @@
 		EB4EC7836B7D80B31285DCC6 /* SiteTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiteTableViewController.swift; path = ./Client/Frontend/Widgets/SiteTableViewController.swift; sourceTree = "<group>"; };
 		EB53D0FB1D9C2BB20093077A /* brave-ui-test.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-ui-test.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB62B7FC1DB53F3D006FD479 /* Punycode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Punycode.swift; path = Client/Frontend/Browser/Punycode.swift; sourceTree = "<group>"; };
+		EB8E3D651DF78237006EA0D1 /* FingerprintProtectionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FingerprintProtectionTest.swift; sourceTree = "<group>"; };
 		EB8E9B6B1C7CB4E1003AA90E /* brave-unit-KIF-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brave-unit-KIF-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB8F566E1DD0FC2800679A78 /* Readability.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = Readability.js; path = Carthage/Checkouts/readability/Readability.js; sourceTree = "<group>"; };
 		EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIWebViewSwizzling.m; path = brave/src/webview/UIWebViewSwizzling.m; sourceTree = "<group>"; };
@@ -1404,6 +1408,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB8E3D721DF79ABA006EA0D1 /* KIF.framework in Frameworks */,
 				EBE50B871DAEC689000BC0A1 /* Deferred.framework in Frameworks */,
 				EB8E9B561C7CB4E1003AA90E /* libz.tbd in Frameworks */,
 				EB8E9B581C7CB4E1003AA90E /* IOKit.framework in Frameworks */,
@@ -2649,6 +2654,7 @@
 		EB36616D1D9C3CEC00445C92 /* unit */ = {
 			isa = PBXGroup;
 			children = (
+				EB8E3D651DF78237006EA0D1 /* FingerprintProtectionTest.swift */,
 				EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */,
 				EB36616E1D9C3CEC00445C92 /* HttpsEverywhereTest.swift */,
 				EB3661701D9C3CEC00445C92 /* top500.swift */,
@@ -3679,7 +3685,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB62B8021DB59EF9006FD479 /* WebViewLoadTest.swift in Sources */,
+				EB8E3D661DF78237006EA0D1 /* FingerprintProtectionTest.swift in Sources */,
 				EB3661761D9C3CEC00445C92 /* HttpsEverywhereTest.swift in Sources */,
+				EB8E3D711DF785CD006EA0D1 /* WebViewLoadTestUtils.swift in Sources */,
 				EBE50B831DAE8D77000BC0A1 /* BookmarksTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

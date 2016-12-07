@@ -639,7 +639,11 @@ extension BraveWebView: UIWebViewDelegate {
 
         if let tab = getApp().tabManager.tabForWebView(self) {
             let state = braveShieldStateSafeAsync.get()
-            if state.isOnFingerprintProtection() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false {
+            var fpShieldOn = state.isOnFingerprintProtection() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false
+            if URLProtocol.testShieldState?.isOnFingerprintProtection() ?? false {
+                fpShieldOn = true
+            }
+            if fpShieldOn {
                 if tab.getHelper(FingerprintingProtection.self) == nil {
                     let fp = FingerprintingProtection(browser: tab)
                     tab.addHelper(fp)
@@ -765,6 +769,10 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
         print("didFailLoadWithError: \(error)")
+        guard let errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
+        if errorUrl.isSpecialInternalUrl() {
+            return
+        }
 
         if (error.domain == NSURLErrorDomain) &&
                (error.code == NSURLErrorServerCertificateHasBadDate      ||
@@ -772,8 +780,6 @@ extension BraveWebView: UIWebViewDelegate {
                 error.code == NSURLErrorServerCertificateHasUnknownRoot    ||
                 error.code == NSURLErrorServerCertificateNotYetValid)
         {
-            guard let errorUrl = error.userInfo[NSURLErrorFailingURLErrorKey] as? NSURL else { return }
-
             if errorUrl.absoluteString?.regexReplacePattern("^.+://", with: "") != URL?.absoluteString?.regexReplacePattern("^.+://", with: "") {
                 print("only show cert error for top-level page")
                 return
