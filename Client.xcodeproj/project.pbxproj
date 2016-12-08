@@ -474,6 +474,7 @@
 		EB9CAB431DC2592700627A39 /* UIWebViewSwizzling.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */; };
 		EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */; };
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
+		EBACC8551DF9BB3500D5E048 /* SettingsViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBACC8541DF9BB3500D5E048 /* SettingsViewTest.swift */; };
 		EBB345801DAD465C00EE24F0 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B9A62DB1C4002B1005C83DC /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EBE50B831DAE8D77000BC0A1 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */; };
 		EBE50B871DAEC689000BC0A1 /* Deferred.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE50B861DAEC689000BC0A1 /* Deferred.framework */; };
@@ -1276,6 +1277,7 @@
 		EB9CAB421DC2592700627A39 /* UIWebViewSwizzling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIWebViewSwizzling.m; path = brave/src/webview/UIWebViewSwizzling.m; sourceTree = "<group>"; };
 		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
+		EBACC8541DF9BB3500D5E048 /* SettingsViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewTest.swift; sourceTree = "<group>"; };
 		EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EBE50B861DAEC689000BC0A1 /* Deferred.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Deferred.framework; path = Carthage/Build/iOS/Deferred.framework; sourceTree = "<group>"; };
 		EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITestUtils.swift; sourceTree = "<group>"; };
@@ -2640,6 +2642,7 @@
 		EB36616B1D9C3CEC00445C92 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EBACC8541DF9BB3500D5E048 /* SettingsViewTest.swift */,
 				EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */,
 				EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */,
 				EBE50B8C1DB02386000BC0A1 /* PrivateBrowsingTest.swift */,
@@ -3673,6 +3676,7 @@
 			files = (
 				EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */,
 				EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */,
+				EBACC8551DF9BB3500D5E048 /* SettingsViewTest.swift in Sources */,
 				EB9D8F241D9CCE5F00CA1624 /* BookmarksTest.swift in Sources */,
 				EBE50B8A1DAEC8DD000BC0A1 /* UITestUtils.swift in Sources */,
 				EBE50B8D1DB02386000BC0A1 /* PrivateBrowsingTest.swift in Sources */,

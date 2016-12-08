@@ -124,7 +124,7 @@ class BraveSettingsView : AppSettingsTableViewController {
             SettingSection(title: NSAttributedString(string: Strings.Support), children: [
                 BoolSetting(prefs: prefs, prefKey: BraveUX.PrefKeyUserAllowsTelemetry, defaultValue: true, titleText: Strings.Opt_in_to_telemetry),
                 ShowIntroductionSetting(settings: self),
-                BraveSupportLinkSetting(parentVC: self),
+                BraveSupportLinkSetting(),
                 BravePrivacyPolicySetting(), BraveTermsOfUseSetting(),
                 ])]
         //#endif
@@ -296,89 +296,25 @@ class PasswordsClearable: Clearable {
     }
 }
 
-class BraveSupportLinkSetting: Setting, MFMailComposeViewControllerDelegate {
-    let parentViewController:UIViewController
-    
-    init(parentVC:UIViewController) {
-        parentViewController = parentVC
-    }
-
+class BraveSupportLinkSetting: Setting {
     override var title: NSAttributedString? {
         return NSAttributedString(string: Strings.Report_a_bug, attributes: [NSForegroundColorAttributeName: UIConstants.TableViewRowTextColor])
     }
-    
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        
-        controller.dismissViewControllerAnimated(true) {
-            if result == MFMailComposeResult.Saved || result == MFMailComposeResult.Sent {
-                //only show 'thanks' dialog when Saved/Sent.
-                //TODO turn this into a Toast-type notification that goes away by itself.
-                let sendFeedbackThanks = UIAlertView(title: "Thanks!", message: "Thank you for your feedback!", delegate: self, cancelButtonTitle: "OK")
-                sendFeedbackThanks.show()
-            } else if result == MFMailComposeResult.Failed {
-                self.showMailErrorDialog()
-            }
-        }
+
+    override var url: NSURL? {
+        return BraveUX.BraveCommunityURL
     }
 
     override func onClick(navigationController: UINavigationController?) {
-        //MFMailComposeViewController is wonky on simulator, detect & avoid
-        let isDevice = (TARGET_OS_SIMULATOR == 0)
-        
-        if MFMailComposeViewController.canSendMail() && isDevice {
-            
-            let reportBugMailAddress = "support+ios@brave.com"
-            let reportBugMailSubject = Strings.Brave_for_iOS_Feedback
-            let reportBugMailBody = Strings.Email_Body
-
-            
-            let mailComposerVC = MFMailComposeViewController()
-            mailComposerVC.mailComposeDelegate = self
-            mailComposerVC.setToRecipients([reportBugMailAddress])
-            mailComposerVC.setSubject(reportBugMailSubject)
-            
-            let iOSVersionLabel = "iOS version"
-            let deviceLabel = "Device"
-            let braveVersionLabel = "Brave version"
-            
-            let appVersionString: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String
-            let buildNumber: String = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleVersion") as! String
-            let versionAndBuildNumber: String = "\(appVersionString) (\(buildNumber))"
-            
-            var message = reportBugMailBody
-            message += "\(iOSVersionLabel) [\(UIDevice.currentDevice().systemName)/\(UIDevice.currentDevice().systemVersion)]\n"
-            message += "\(deviceLabel): [\(UIDevice.currentDevice().name)/\(UIDevice.currentDevice().model)]\n"
-            message += "\(braveVersionLabel): [\(versionAndBuildNumber)]\n"
-            message += "-----------------------------\n"
-            mailComposerVC.setMessageBody(message, isHTML: false)
-            
-            parentViewController.presentViewController(mailComposerVC, animated: true, completion: nil)
-        } else {
-            showMailErrorDialog()
+        (navigationController as! SettingsNavigationController).SELdone()
+        let url = self.url!
+        postAsyncToMain(0) {
+            getApp().braveTopViewController.dismissAllSidePanels()
+            postAsyncToMain(0.1) {
+                let t = getApp().tabManager
+                t.addTabAndSelect(NSURLRequest(URL: url))
+            }
         }
-    }
-    
-    func showMailErrorDialog() {
-        let sendMailErrorAlert = UIAlertView(title: "Error sending email", message: "It appears you're not setup for email on this device.  Please check your email configuration and try again.", delegate: self, cancelButtonTitle: "OK")
-        sendMailErrorAlert.show()
-    }
-
-    override func onConfigureCell(cell: UITableViewCell) {
-        super.onConfigureCell(cell)
-        let g = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
-        cell.addGestureRecognizer(g)
-    }
-
-    @objc func longPress(g: UILongPressGestureRecognizer) {
-        if g.state != .Began {
-            return
-        }
-        // Use this to experiment with fixing bug where page is partially rendered
-        // TODO use this to add special debugging functions
-
-        #if FLEX_ON
-           FLEXManager.sharedManager().showExplorer()
-        #endif
     }
 
 }
