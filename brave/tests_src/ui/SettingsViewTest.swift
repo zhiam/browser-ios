@@ -4,13 +4,19 @@ import Foundation
 import XCTest
 
 class SettingsViewTest : XCTestCase {
-    func testReportABug() {
+
+    func navToSettings() -> XCUIElement {
         UITestUtils.restart()
         let app = XCUIApplication()
-
         app.buttons["Bookmarks and History Panel"].tap()
         app.otherElements.buttons["Settings"].tap()
         let table = app.tables["AppSettingsTableViewController.tableView"]
+        return table
+    }
+
+    func testReportABug() {
+        let table = navToSettings()
+        let app = XCUIApplication()
         table.swipeUp()
         table.staticTexts["Report a bug"].tap()
         app.textFields["url"].tap()
@@ -20,4 +26,25 @@ class SettingsViewTest : XCTestCase {
         let url = addressTextField.value as? String
         XCTAssertTrue(url != nil && url!.containsString("https://community.brave.com"))
     }
+
+    func testPrivacyPolicy() {
+        let table = navToSettings()
+        let app = XCUIApplication()
+        table.swipeUp()
+        table.staticTexts["Privacy Policy"].tap()
+        let search = NSPredicate(format: "label contains %@", "Brave Privacy Policy") // case sensitive
+        let found = app.staticTexts.elementMatchingPredicate(search)
+        XCTAssertTrue(found.exists)
+    }
+
+    func testTermsOfUse() {
+        let table = navToSettings()
+        let app = XCUIApplication()
+        table.swipeUp()
+        table.staticTexts["Terms of Use"].tap()
+        let search = NSPredicate(format: "label contains[c] %@", "Please read these terms of use") // case insensitive
+        let found = app.staticTexts.elementMatchingPredicate(search)
+        XCTAssertTrue(found.exists)
+    }
+
 }
