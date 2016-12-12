@@ -31,11 +31,13 @@ class PrivateBrowsing {
     private func webkitDirLocker(lock lock: Bool) {
         let fm = NSFileManager.defaultManager()
         let baseDir = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)[0]
-        let webkitDir = baseDir + "/WebKit"
-        do {
-            try fm.setAttributes([NSFilePosixPermissions: (lock ? NSNumber(short:0) : NSNumber(short:0o755))], ofItemAtPath: webkitDir)
-        } catch {
-            print(error)
+        let webkitDirs = [baseDir + "/WebKit", baseDir + "/Caches"]
+        for dir in webkitDirs {
+            do {
+                try fm.setAttributes([NSFilePosixPermissions: (lock ? NSNumber(short:0) : NSNumber(short:0o755))], ofItemAtPath: dir)
+            } catch {
+                print(error)
+            }
         }
     }
 
