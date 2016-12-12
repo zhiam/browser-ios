@@ -84,13 +84,9 @@ class BraveScrollController: NSObject {
     // This added check is a secondary validator of the scroll direction
     private var scrollViewWillBeginDragPoint: CGFloat = 0
 
-    // Can "lock" them for special cases (buggy pages like facebook messenger) that require a specific offset
-    private var lockedContentInsets = false
     func setContentInset(top top: CGFloat, bottom: CGFloat) {
-        if lockedContentInsets {
-            return
-        }
         scrollView?.contentInset = UIEdgeInsetsMake(top, 0, bottom, 0)
+        scrollView?.scrollIndicatorInsets = UIEdgeInsetsMake(top, 0, bottom, 0)
     }
 
     override init() {
@@ -99,21 +95,23 @@ class BraveScrollController: NSObject {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(BraveScrollController.pageUnload), name: kNotificationPageUnload, object: nil)
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillAppear(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardDidAppear(_:)), name: UIKeyboardDidShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(BraveScrollController.keyboardWillDisappear(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
 
     func keyboardWillAppear(notification: NSNotification){
         keyboardIsShowing = true
     }
+    
+    func keyboardDidAppear(notification: NSNotification){
+        checkHeightOfPageAndAdjustWebViewInsets()
+    }
 
     func keyboardWillDisappear(notification: NSNotification){
         keyboardIsShowing = false
-        lockedContentInsets = false
     }
 
     func pageUnload() {
-        lockedContentInsets = false
-
         postAsyncToMain(0.1) {
             self.showToolbars(animated: true)
         }
@@ -137,28 +135,18 @@ class BraveScrollController: NSObject {
         } else {
             StaticVar.isRunningCheck = false
 
-            if !isScrollHeightIsLargeEnoughForScrolling() {
-                if (scrollView?.contentInset.bottom == 0) {
-                    let h = BraveApp.isIPhonePortrait() ? UIConstants.ToolbarHeight + BraveURLBarView.CurrentHeight : BraveURLBarView.CurrentHeight
-                    setContentInset(top: 0, bottom: h)
-                }
-            } else {
-                if (scrollView?.contentInset.bottom != 0) {
-                    setContentInset(top: 0, bottom: 0)
-                }
+            if !isScrollHeightIsLargeEnoughForScrolling() && !keyboardIsShowing {
+                let h = BraveApp.isIPhonePortrait() ? UIConstants.ToolbarHeight + BraveURLBarView.CurrentHeight : BraveURLBarView.CurrentHeight
+                setContentInset(top: 0, bottom: h)
             }
-
-            // https://github.com/brave/browser-ios/issues/125 workaround
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                if let url = self.browser?.webView?.URL?.absoluteString where url.contains("facebook.com") && url.contains("messages") {
-                    setContentInset(top: 0, bottom: 100)
-                    lockedContentInsets = true
-                } else {
-                    lockedContentInsets = false
-                }
+            else {
+                // Use offset of header and footer bar positions to determine contentInset and scrollIndicatorInsets
+                let top = max((CGRectGetMaxY(header?.frame ?? CGRectZero) - CGRectGetMaxY(UIApplication.sharedApplication().statusBarFrame)), 0)
+                let bottom = BraveApp.isIPhonePortrait() ? min((CGRectGetMaxY(UIApplication.sharedApplication().keyWindow?.frame ?? CGRectZero) - CGRectGetMinY(footer?.frame ?? CGRectZero)), 0) : 0
+                let h = keyboardIsShowing ? (header?.frame.height ?? 0) + (footer?.frame.height ?? 0)  : (top + bottom)
+                setContentInset(top: 0, bottom: h)
             }
         }
-
     }
 
     func showToolbars(animated animated: Bool, isShowingDueToBottomTap: Bool = false, completion: ((finished: Bool) -> Void)? = nil) {
@@ -243,6 +231,8 @@ private extension BraveScrollController {
         if gesture.state == .Ended || gesture.state == .Cancelled {
             lastContentOffset = 0
         }
+        
+        checkHeightOfPageAndAdjustWebViewInsets()
     }
 
     func scrollToolbarsWithDelta(delta: CGFloat) {
