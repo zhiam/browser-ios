@@ -67,7 +67,7 @@ class BraveBrowserViewController : BrowserViewController {
     }
 
     func updateBraveShieldButtonState(animated animated: Bool) {
-        guard let s = tabManager.selectedTab?.webView?.braveShieldStateSafeAsync.get() else { return }
+        guard let s = tabManager.selectedTab?.braveShieldStateSafeAsync.get() else { return }
         let up = s.isNotSet() || !s.isAllOff()
         (urlBar as! BraveURLBarView).setBraveButtonState(shieldsUp: up, animated: animated)
     }

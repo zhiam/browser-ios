@@ -72,6 +72,44 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
 
+    // Wrap to indicate this is thread-safe (is called from networking thread), and to ensure safety.
+    class BraveShieldStateSafeAsync {
+        private var braveShieldState = BraveShieldState()
+        private weak var browserTab: Browser?
+        init(browser: Browser) {
+            browserTab = browser
+        }
+
+        func set(state: BraveShieldState?) {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+
+            braveShieldState = state != nil ? BraveShieldState(orig: state!) : BraveShieldState()
+
+            // safely copy the currently set state, and copy it to the webview on the main thread
+            let stateCopy = braveShieldState
+            postAsyncToMain() { [weak browserTab] in
+                browserTab?.webView?.setShieldStateSafely(stateCopy)
+            }
+
+            postAsyncToMain(0.2) { // update the UI, wait a bit for loading to have started
+                (getApp().browserViewController as! BraveBrowserViewController).updateBraveShieldButtonState(animated: false)
+            }
+        }
+
+        func get() -> BraveShieldState {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+            
+            return BraveShieldState(orig: braveShieldState)
+        }
+    }
+    
+
+    // Thread safe access to this property
+    lazy var braveShieldStateSafeAsync: BraveShieldStateSafeAsync = {
+        return BraveShieldStateSafeAsync(browser: self)
+    }()
 
     var browserDelegate: BrowserDelegate?
     var bars = [SnackBar]()
@@ -172,6 +210,8 @@ class Browser: NSObject, BrowserWebViewDelegate {
 #endif
             let webView = BraveWebView(frame: CGRectZero, useDesktopUserAgent: useDesktopUserAgent)
             configuration = nil
+
+            BrowserTabToUAMapper.setId(webView.uniqueId, tab:self)
 
             webView.accessibilityLabel = Strings.Web_content
 #if !BRAVE
@@ -579,3 +619,4 @@ private class BrowserWebView: WKWebView, MenuHelperInterface {
         return super.hitTest(point, withEvent: event)
     }
 }
+

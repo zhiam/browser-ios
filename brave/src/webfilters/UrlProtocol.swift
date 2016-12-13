@@ -6,6 +6,12 @@ import CoreData
 var requestCount = 0
 let markerRequestHandled = "request-already-handled"
 
+/*
+ When URLProtocol is called, the WebThread is locked; we need to be wary of deadlock
+ if we call other places in the code that may also have locks, because if the URLProtocol
+ doesn't return, the WebThread is locked, and accessing UIWebView on the main thread will deadlock.
+ */
+
 class URLProtocol: NSURLProtocol {
 
     var connection: NSURLConnection?
@@ -51,10 +57,13 @@ class URLProtocol: NSURLProtocol {
         var webViewShield:BraveShieldState? = nil
         var shieldResult = BraveShieldState()
 
-        if let webView = WebViewToUAMapper.userAgentToWebview(ua) {
-            webViewShield = webView.braveShieldStateSafeAsync.get()
+        struct LastBrowserTab { static weak var val: Browser? }
+        if let browserTab = BrowserTabToUAMapper.userAgentToBrowserTab(ua) {
+            LastBrowserTab.val = browserTab
+            webViewShield = browserTab.braveShieldStateSafeAsync.get()
         } else {
-            webViewShield = getApp().tabManager.selectedTab?.webView?.braveShieldStateSafeAsync.get()
+            // some requests arrive with no user agent, can only assume which tab to use
+            webViewShield = LastBrowserTab.val?.braveShieldStateSafeAsync.get()
         }
 
         if let webViewShield = webViewShield where webViewShield.isAllOff() {
@@ -153,12 +162,12 @@ class URLProtocol: NSURLProtocol {
             if url == request.mainDocumentURL {
                 returnEmptyResponse()
                 postAsyncToMain(0) {
-                    WebViewToUAMapper.userAgentToWebview(ua)?.loadRequest(newRequest)
+                    BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.loadRequest(newRequest)
                 }
             } else {
                 connection = NSURLConnection(request: newRequest, delegate: self)
                 postAsyncToMain(0.1) {
-                    WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.httpseIncrement)
+                    BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.shieldStatUpdate(.httpseIncrement)
                 }
             }
             return
@@ -175,7 +184,7 @@ class URLProtocol: NSURLProtocol {
                 returnEmptyResponse()
             }
             postAsyncToMain(0.1) {
-                WebViewToUAMapper.userAgentToWebview(ua)?.shieldStatUpdate(.abAndTpIncrement)
+                BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.shieldStatUpdate(.abAndTpIncrement)
             }
             return
         }
