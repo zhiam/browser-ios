@@ -157,9 +157,17 @@ class PrivateBrowsing {
         postAsyncToMain(0.1) { // just in case any other webkit object cleanup needs to complete
             if let clazz = NSClassFromString("Web" + "StorageManager") as? NSObjectProtocol {
                 if clazz.respondsToSelector(Selector("shared" + "WebStorageManager")) {
-                    if let webHistory = clazz.performSelector(Selector("shared" + "WebStorageManager")) {
-                        let o = webHistory.takeUnretainedValue()
+                    if let storage = clazz.performSelector(Selector("shared" + "WebStorageManager")) {
+                        let o = storage.takeUnretainedValue()
                         o.performSelector(Selector("delete" + "AllOrigins"))
+                    }
+                }
+            }
+            if let clazz = NSClassFromString("Web" + "History") as? NSObjectProtocol {
+                if clazz.respondsToSelector(Selector("optional" + "SharedHistory")) {
+                    if let webHistory = clazz.performSelector(Selector("optional" + "SharedHistory")) {
+                        let o = webHistory.takeUnretainedValue()
+                        o.performSelector(Selector("remove" + "AllItems"))
                     }
                 }
             }
@@ -170,7 +178,7 @@ class PrivateBrowsing {
             BraveApp.setupCacheDefaults()
 
             getApp().profile?.loadBraveShieldsPerBaseDomain().upon() { _ in // clears PB in-memory-only shield data, loads from disk
-                let clear: [Clearable] = [CacheClearable(), CookiesClearable()]
+                let clear: [Clearable] = [CookiesClearable()]
                 ClearPrivateDataTableViewController.clearPrivateData(clear).uponQueue(dispatch_get_main_queue()) { _ in
                     self.cookiesFileDiskOperation(.DeletePublicBackup)
                     let storage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
