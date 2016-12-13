@@ -109,6 +109,21 @@ class BraveScrollController: NSObject {
 
     func keyboardWillDisappear(notification: NSNotification){
         keyboardIsShowing = false
+
+        postAsyncToMain(0.2) {
+            // Hiding/showing toolbars during kb show affects layout updating, reset the toolbar state
+            self.verticalTranslation = 0
+            self.header?.layer.transform = CATransform3DIdentity
+            self.footer?.layer.transform = CATransform3DIdentity
+            if self.headerTopOffset < 0 {
+                self.headerTopOffset = -BraveURLBarView.CurrentHeight
+                self.footerBottomOffset = UIConstants.ToolbarHeight
+            } else {
+                self.headerTopOffset = 0
+                self.footerBottomOffset = 0
+                self.urlBar?.updateAlphaForSubviews(1.0)
+            }
+        }
     }
 
     func pageUnload() {
