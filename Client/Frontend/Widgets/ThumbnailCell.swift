@@ -67,7 +67,7 @@ struct ThumbnailCellUX {
 
     static let LabelInsets = UIEdgeInsetsMake(0, 3, 2, 3)
     static let PlaceholderImage = UIImage(named: "defaultTopSiteIcon")
-    static let CornerRadius: CGFloat = 1.5
+    static let CornerRadius: CGFloat = 4
 
     // Make the remove button look 20x20 in size but have the clickable area be 44x44
     static let RemoveButtonSize: CGFloat = 44

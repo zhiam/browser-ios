@@ -583,12 +583,16 @@ class BraveWebView: UIWebView {
             shieldStats = ShieldBlockedStats()
         case .httpseIncrement:
             shieldStats.httpse += value
+            BraveGlobalShieldStats.singleton.httpse += value
         case .abAndTpIncrement:
             shieldStats.abAndTp += value
+            BraveGlobalShieldStats.singleton.adblockAndTp += value
         case .jsSetValue:
             shieldStats.js = value
+            BraveGlobalShieldStats.singleton.noScript += value
         case .fpIncrement:
             shieldStats.fp += value
+            BraveGlobalShieldStats.singleton.fpProtection += value
         }
 
         postAsyncToMain(0.2) { [weak self] in

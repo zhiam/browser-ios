@@ -22,6 +22,8 @@ struct BraveUX {
     static let TabsBarPlusButtonWidth = (UIDevice.currentDevice().userInterfaceIdiom == .Pad) ? 40 : 0
     
     static let SwitchTintColor = UIColor(white: 0.8, alpha: 1.0)
+    
+    static let TopSitesStatTitleColor = UIColor(white: 0.6, alpha: 1.0)
 
     // I am considering using DeviceInfo.isBlurSupported() to set this, and reduce heavy animations
     static var IsHighLoadAnimationAllowed = true
