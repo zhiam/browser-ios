@@ -95,11 +95,26 @@ class TopSitesPanel: UIViewController {
         collection.registerClass(ThumbnailCell.self, forCellWithReuseIdentifier: ThumbnailIdentifier)
         collection.keyboardDismissMode = .OnDrag
         collection.accessibilityIdentifier = "Top Sites View"
+        collection.contentInset = UIEdgeInsetsMake(120, 0, 0, 0)
         view.addSubview(collection)
         collection.snp_makeConstraints { make in
             make.edges.equalTo(self.view)
         }
         self.collection = collection
+        
+        let braveShieldStatsView = BraveShieldStatsView(frame: CGRectZero)
+        collection.addSubview(braveShieldStatsView)
+        
+        // Could setup as section header but would need to use flow layout,
+        // Auto-layout subview within collection doesn't work properly,
+        // Quick-and-dirty layout here.
+        var statsViewFrame: CGRect = braveShieldStatsView.frame
+        statsViewFrame.origin.x = 10
+        statsViewFrame.origin.y = -120
+        statsViewFrame.size.width = CGRectGetWidth(collection.frame) - CGRectGetMinX(statsViewFrame) * 2
+        statsViewFrame.size.height = 120
+        braveShieldStatsView.frame = statsViewFrame
+        braveShieldStatsView.autoresizingMask = [.FlexibleWidth]
 
         self.dataSource.collectionView = self.collection
         succeed().upon { _ in // move sync call off-main

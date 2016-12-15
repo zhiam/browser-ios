@@ -158,9 +158,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         log.debug("Application will terminate.")
-
+        
         // We have only five seconds here, so let's hope this doesn't take too long.
         shutdownProfileWhenNotActive()
+        BraveGlobalShieldStats.singleton.save()
 
         // Allow deinitializers to close our database connections.
         self.profile = nil
@@ -317,8 +318,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         print("Close database")
         shutdownProfileWhenNotActive()
+        BraveGlobalShieldStats.singleton.save()
     }
-
+    
     func applicationWillEnterForeground(application: UIApplication) {
         // The reason we need to call this method here instead of `applicationDidBecomeActive`
         // is that this method is only invoked whenever the application is entering the foreground where as 

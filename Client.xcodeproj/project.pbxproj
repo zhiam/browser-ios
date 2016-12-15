@@ -169,6 +169,8 @@
 		5C32C7B6034B41A9C822555E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE1D74E40F9E392FFCE9F2F /* main.swift */; };
 		5C404E1B2531DC2E178F80F8 /* ReaderPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8C87651157C51F01D4D96F /* ReaderPanel.swift */; };
 		5C67126F8B355442E99D9EDB /* BrowserViewController+FindInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BA9175CB5140E6C4D47DC15 /* BrowserViewController+FindInPage.swift */; };
+		5CE70E451E022FAB008B307A /* BraveShieldStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE70E441E022FAB008B307A /* BraveShieldStatsView.swift */; };
+		5CE70E4D1E02831B008B307A /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE70E4C1E02831B008B307A /* IntExtensions.swift */; };
 		5CFC706D1D9D9F30008A7B7A /* BraveTermsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CFC706C1D9D9F30008A7B7A /* BraveTermsViewController.swift */; };
 		5E5E76550DFB4EB71194132F /* LICENSE in Sources */ = {isa = PBXBuildFile; fileRef = 36C647DC00749BCC944D6EC6 /* LICENSE */; };
 		5E6571D452F3C000461D2481 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F94204C0EC007236424A86 /* AppDelegate.swift */; };
@@ -909,6 +911,8 @@
 		5B7417C2784852C8AA016A94 /* filename.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = filename.cc; path = ./brave/ThirdParty/leveldb/db/filename.cc; sourceTree = "<group>"; };
 		5B8A3FF8C10C5708D9DAD03D /* BraveUX.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveUX.swift; path = ./brave/src/frontend/BraveUX.swift; sourceTree = "<group>"; };
 		5C39A9721F0FECF98A48015E /* BraveBrowserViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BraveBrowserViewController.swift; path = ./brave/src/frontend/BraveBrowserViewController.swift; sourceTree = "<group>"; };
+		5CE70E441E022FAB008B307A /* BraveShieldStatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BraveShieldStatsView.swift; path = brave/src/frontend/BraveShieldStatsView.swift; sourceTree = "<group>"; };
+		5CE70E4C1E02831B008B307A /* IntExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntExtensions.swift; path = Utils/Extensions/IntExtensions.swift; sourceTree = "<group>"; };
 		5CFC706C1D9D9F30008A7B7A /* BraveTermsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BraveTermsViewController.swift; path = brave/src/frontend/BraveTermsViewController.swift; sourceTree = "<group>"; };
 		5D09BD4576555D874B5D0D4A /* db_impl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = db_impl.h; path = ./brave/ThirdParty/leveldb/db/db_impl.h; sourceTree = "<group>"; };
 		5D84AB2CBD701CBBDC40620C /* ReadingListAuthenticator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListAuthenticator.swift; path = ./ReadingList/ReadingListAuthenticator.swift; sourceTree = "<group>"; };
@@ -1484,6 +1488,7 @@
 				430FDA25DAA3C35191998991 /* SwizzlingToHideSharePicker.h */,
 				84C51F13ADC0C2BC71D40BEF /* SwizzlingToHideSharePicker.m */,
 				3A6E86EA8E9535F4C6C7B748 /* tabsbar */,
+				5CE70E441E022FAB008B307A /* BraveShieldStatsView.swift */,
 			);
 			name = frontend;
 			sourceTree = "<group>";
@@ -2846,6 +2851,7 @@
 				2A6BFEC103054810F8925EAF /* UIColorExtensions.swift */,
 				286FDAED8C109239AF5BA1E4 /* UIImageExtensions.swift */,
 				4380F19554944742F9E55A9B /* UIViewExtensions.swift */,
+				5CE70E4C1E02831B008B307A /* IntExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -3722,6 +3728,7 @@
 				5FBB6E142EFF5F6E989ABD49 /* block_builder.cc in Sources */,
 				1204E92DCEECF3540EA648CF /* filter_block.cc in Sources */,
 				40DD8F2FF8733625CF906534 /* format.cc in Sources */,
+				5CE70E451E022FAB008B307A /* BraveShieldStatsView.swift in Sources */,
 				5F88581725B7AAA78F91A4D4 /* iterator.cc in Sources */,
 				3FE012C35D0AD5E2B5BB4767 /* merger.cc in Sources */,
 				479A31771C308868296EA8C3 /* table.cc in Sources */,
@@ -3774,6 +3781,7 @@
 				A1CFE166EBD926880A69E052 /* LoginsHelper+1PW.swift in Sources */,
 				907D2E87F3AB62A94DB2D9E7 /* InfoPlist.strings in Sources */,
 				CCCD5D311C1E3408F243DF5E /* ABPFilterLibWrapper.mm in Sources */,
+				5CE70E4D1E02831B008B307A /* IntExtensions.swift in Sources */,
 				3AAE8F176D74D5884854D830 /* AdBlocker.swift in Sources */,
 				EB9CAB431DC2592700627A39 /* UIWebViewSwizzling.m in Sources */,
 				A4997544E81DF456966522E6 /* BraveShieldState.swift in Sources */,
@@ -4061,6 +4069,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4088,6 +4097,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4118,6 +4128,7 @@
 		2FCAE2381ABB51F900877008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -4189,6 +4200,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;
+				DEVELOPMENT_TEAM = "";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4228,6 +4240,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4278,6 +4291,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4332,6 +4346,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4376,6 +4391,7 @@
 				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4426,6 +4442,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4457,6 +4474,7 @@
 				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4484,6 +4502,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -4503,6 +4522,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -4536,6 +4556,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4562,6 +4583,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = BraveShareTo/BraveShareToInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
@@ -4592,6 +4614,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4620,6 +4643,7 @@
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -4641,6 +4665,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = brave/tests_src/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -4656,6 +4681,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -4679,6 +4705,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -4697,6 +4724,7 @@
 		EB8E9B691C7CB4E1003AA90E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -4771,6 +4799,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;
+				DEVELOPMENT_TEAM = "";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
