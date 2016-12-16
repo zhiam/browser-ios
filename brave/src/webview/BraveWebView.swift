@@ -569,7 +569,8 @@ class BraveWebView: UIWebView {
         case reset
         case broadcastOnly
         case httpseIncrement
-        case abAndTpIncrement
+        case abIncrement
+        case tpIncrement
         case jsSetValue
         case fpIncrement
     }
@@ -601,12 +602,14 @@ class BraveWebView: UIWebView {
         case .httpseIncrement:
             shieldStats.httpse += increment
             BraveGlobalShieldStats.singleton.httpse += increment
-        case .abAndTpIncrement:
+        case .abIncrement:
             shieldStats.abAndTp += increment
-            BraveGlobalShieldStats.singleton.adblockAndTp += increment
+            BraveGlobalShieldStats.singleton.adblock += increment
+        case .tpIncrement:
+            shieldStats.abAndTp += increment
+            BraveGlobalShieldStats.singleton.trackingProtection += increment
         case .jsSetValue:
             shieldStats.js = increment
-            BraveGlobalShieldStats.singleton.noScript += increment
         case .fpIncrement:
             shieldStats.fp += increment
             BraveGlobalShieldStats.singleton.fpProtection += increment
