@@ -455,9 +455,10 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     }
     
     func updateSitenameAndTogglesState() {
-        let hostName = BraveApp.getCurrentWebView()?.URL?.normalizedHost() ?? "-"
+        let current = stripLocalhostWebServer(BraveApp.getCurrentWebView()?.URL?.absoluteString ?? "")
+        guard let url = NSURL(string:current) else { return }
         // hostName will generally be "localhost" if home page is showing, so checking home page
-        siteName.text = isShowingShieldOverview() ? "" : hostName
+        siteName.text = isShowingShieldOverview() ? "" : url.normalizedHost()
 
         shieldToggle.enabled = !isShowingShieldOverview()
         

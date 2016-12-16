@@ -129,10 +129,10 @@ func stripLocalhostWebServer(url: String?) -> String {
     }
 #endif
     // I think the ones prefixed with the following are the only ones of concern. There is also about/sessionrestore urls, not sure if we need to look at those
-    let token = "errors/error.html?url="
+    let token = "?url="
     let range = url.rangeOfString(token)
     if let range = range {
-        return url.substringFromIndex(range.endIndex)
+        return url.substringFromIndex(range.endIndex).stringByRemovingPercentEncoding ?? ""
     } else {
         return url
     }
