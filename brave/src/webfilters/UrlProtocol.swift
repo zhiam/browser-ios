@@ -183,8 +183,10 @@ class URLProtocol: NSURLProtocol {
             } else {
                 returnEmptyResponse()
             }
-            postAsyncToMain(0.1) {
-                BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.shieldStatUpdate(.abAndTpIncrement)
+            if let url = request.URL?.absoluteString {
+                postAsyncToMain(0.1) {
+                    BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.shieldStatUpdate(.abAndTpIncrement, increment: 1, affectedUrl: url)
+                }
             }
             return
         }

@@ -290,7 +290,7 @@ class BraveWebView: UIWebView {
             }
             jsBlockedStatLastUrl = request?.URL?.absoluteString
 
-            shieldStatUpdate(.jsSetValue, jsBlocked)
+            shieldStatUpdate(.jsSetValue, increment: jsBlocked)
         } else {
             shieldStatUpdate(.broadcastOnly)
         }
@@ -413,6 +413,8 @@ class BraveWebView: UIWebView {
         print("loadingCompleted() ••••")
         progress?.setProgress(1.0)
         broadcastToPageStateDelegates()
+
+        navigationDelegate?.webViewDidFinishNavigation(self, url: URL)
 
         if safeBrowsingBlockTriggered {
             return
@@ -574,25 +576,40 @@ class BraveWebView: UIWebView {
 
     var shieldStats = ShieldBlockedStats()
 
-    func shieldStatUpdate(stat: ShieldStatUpdate, _ value: Int = 1) {
+    // Some sites will re-try loads (us.yahoo.com). Trivially block this case by keeping small list of recently blocked
+    struct RecentlyBlocked {
+        var urls = [String](count: 5, repeatedValue: "")
+        var insertAtIndex = 0
+    }
+    var recentlyBlocked = RecentlyBlocked()
+
+    func shieldStatUpdate(stat: ShieldStatUpdate, increment: Int = 1, affectedUrl: String = "") {
+        if !affectedUrl.isEmpty {
+            if recentlyBlocked.urls.contains(affectedUrl) {
+                return
+            }
+            recentlyBlocked.urls[recentlyBlocked.insertAtIndex] = affectedUrl
+            recentlyBlocked.insertAtIndex = (recentlyBlocked.insertAtIndex + 1) % recentlyBlocked.urls.count
+        }
 
         switch stat {
         case .broadcastOnly:
             break
         case .reset:
             shieldStats = ShieldBlockedStats()
+            recentlyBlocked = RecentlyBlocked()
         case .httpseIncrement:
-            shieldStats.httpse += value
-            BraveGlobalShieldStats.singleton.httpse += value
+            shieldStats.httpse += increment
+            BraveGlobalShieldStats.singleton.httpse += increment
         case .abAndTpIncrement:
-            shieldStats.abAndTp += value
-            BraveGlobalShieldStats.singleton.adblockAndTp += value
+            shieldStats.abAndTp += increment
+            BraveGlobalShieldStats.singleton.adblockAndTp += increment
         case .jsSetValue:
-            shieldStats.js = value
-            BraveGlobalShieldStats.singleton.noScript += value
+            shieldStats.js = increment
+            BraveGlobalShieldStats.singleton.noScript += increment
         case .fpIncrement:
-            shieldStats.fp += value
-            BraveGlobalShieldStats.singleton.fpProtection += value
+            shieldStats.fp += increment
+            BraveGlobalShieldStats.singleton.fpProtection += increment
         }
 
         postAsyncToMain(0.2) { [weak self] in
