@@ -12,21 +12,21 @@ class BraveShieldStatsView: UIView {
     lazy var adsStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
         statView.title = "Ads \rBlocked"
-        statView.color = UIColor(red: 234/255.0, green: 90/255.0, blue: 45/255.0, alpha: 1.0)
+        statView.color = UIColor(red: 242/255.0, green: 142/255.0, blue: 45/255.0, alpha: 1.0)
         return statView
     }()
 
     lazy var trackersStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
         statView.title = "Trackers \rBlocked"
-        statView.color = UIColor(red: 25/255.0, green: 152/255.0, blue: 252/255.0, alpha: 1.0)
+        statView.color = UIColor(red: 234/255.0, green: 90/255.0, blue: 45/255.0, alpha: 1.0)
         return statView
     }()
 
     lazy var httpsStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
         statView.title = "HTTPS \rUpgrades"
-        statView.color = UIColor(red: 242/255.0, green: 142/255.0, blue: 45/255.0, alpha: 1.0)
+        statView.color = UIColor(red: 25/255.0, green: 152/255.0, blue: 252/255.0, alpha: 1.0)
         return statView
     }()
 
