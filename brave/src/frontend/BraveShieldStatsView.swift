@@ -9,27 +9,27 @@ class BraveShieldStatsView: UIView {
     private let millisecondsPerItem = 50
     private let line = UIView()
     
-    lazy var trackersStatView: StatView = {
+    lazy var adsStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
-        statView.title = "Ad/Trackers \rBlocked"
+        statView.title = "Ads \rBlocked"
         statView.color = UIColor(red: 234/255.0, green: 90/255.0, blue: 45/255.0, alpha: 1.0)
         return statView
     }()
-    
+
+    lazy var trackersStatView: StatView = {
+        let statView = StatView(frame: CGRectZero)
+        statView.title = "Trackers \rBlocked"
+        statView.color = UIColor(red: 25/255.0, green: 152/255.0, blue: 252/255.0, alpha: 1.0)
+        return statView
+    }()
+
     lazy var httpsStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
         statView.title = "HTTPS \rUpgrades"
         statView.color = UIColor(red: 242/255.0, green: 142/255.0, blue: 45/255.0, alpha: 1.0)
         return statView
     }()
-    
-    lazy var scriptsStatView: StatView = {
-        let statView = StatView(frame: CGRectZero)
-        statView.title = "Scripts \rBlocked"
-        statView.color = UIColor(red: 25/255.0, green: 152/255.0, blue: 252/255.0, alpha: 1.0)
-        return statView
-    }()
-    
+
     lazy var timeStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
         statView.title = "Est. Time \rSaved"
@@ -38,7 +38,7 @@ class BraveShieldStatsView: UIView {
     }()
     
     lazy var stats: [StatView] = {
-        return [self.trackersStatView, self.httpsStatView, self.scriptsStatView, self.timeStatView]
+        return [self.adsStatView, self.trackersStatView, self.httpsStatView, self.timeStatView]
     }()
     
     override init(frame: CGRect) {
@@ -84,15 +84,15 @@ class BraveShieldStatsView: UIView {
     }
     
     func update() {
-        trackersStatView.stat = BraveGlobalShieldStats.singleton.adblockAndTp.formatUsingAbbrevation()
+        adsStatView.stat = BraveGlobalShieldStats.singleton.adblock.formatUsingAbbrevation()
+        trackersStatView.stat = BraveGlobalShieldStats.singleton.trackingProtection.formatUsingAbbrevation()
         httpsStatView.stat = BraveGlobalShieldStats.singleton.httpse.formatUsingAbbrevation()
-        scriptsStatView.stat = BraveGlobalShieldStats.singleton.noScript.formatUsingAbbrevation()
         timeStatView.stat = timeSaved
     }
     
     var timeSaved: String {
         get {
-            let estimatedMillisecondsSaved = BraveGlobalShieldStats.singleton.adblockAndTp * millisecondsPerItem
+            let estimatedMillisecondsSaved = (BraveGlobalShieldStats.singleton.adblock + BraveGlobalShieldStats.singleton.trackingProtection) * millisecondsPerItem
             let hours = estimatedMillisecondsSaved < 1000 * 60 * 60 * 24
             let minutes = estimatedMillisecondsSaved < 1000 * 60 * 60
             let seconds = estimatedMillisecondsSaved < 1000 * 60

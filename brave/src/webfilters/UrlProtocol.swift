@@ -183,9 +183,10 @@ class URLProtocol: NSURLProtocol {
             } else {
                 returnEmptyResponse()
             }
+            let isBlockedByTP = TrackingProtection.singleton.shouldBlock(request)
             if let url = request.URL?.absoluteString {
                 postAsyncToMain(0.1) {
-                    BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.shieldStatUpdate(.abAndTpIncrement, increment: 1, affectedUrl: url)
+                    BrowserTabToUAMapper.userAgentToBrowserTab(ua)?.webView?.shieldStatUpdate(isBlockedByTP ? .tpIncrement : .abIncrement, increment: 1, affectedUrl: url)
                 }
             }
             return
