@@ -49,9 +49,9 @@
             // For some reason (maybe a WebKit bug?), document.location still points to SessionRestore.html at this point,
             // so wait until the next tick when the location points to the correct index and URL.
             setTimeout(function () {
-                document.location.reload();
+               document.location.reload();
                 __bravejs___sessionRestoreHelper({ name: "didRestoreSession" });
-            }, 0);
+            }, 100);
         }) ();
         </script>
     </body>

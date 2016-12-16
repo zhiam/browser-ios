@@ -253,9 +253,16 @@ class Browser: NSObject, BrowserWebViewDelegate {
                 webView.title = title
             }
             var updatedURLs = [String]()
+            var prev = ""
             for url in sessionData.urls {
                 let updatedURL = WebServer.sharedInstance.updateLocalURL(url)!.absoluteString
+                guard let curr = updatedURL?.regexReplacePattern("https?:..", with: "") else { continue }
+                if curr.characters.count > 1 && curr == prev {
+                    updatedURLs.removeLast()
+                }
+                prev = curr
                 updatedURLs.append(updatedURL!)
+                print("😇" + updatedURL!)
             }
             let currentPage = sessionData.currentPage
             self.sessionData = nil
@@ -412,7 +419,27 @@ class Browser: NSObject, BrowserWebViewDelegate {
     }
 
     func goBack() {
+        let backUrl = webView?.backForwardList.backItem?.URL.absoluteString
         webView?.goBack()
+
+        // UIWebView has a restoration bug, if the current page after restore is reader, and back is pressed, the page location
+        // changes but the page doesn't reload with the new location
+        guard let back = backUrl where back.contains("localhost") && back.contains("errors/error.html") else { return }
+
+        if let url = url where ReaderModeUtils.isReaderModeURL(url) {
+            postAsyncToMain(0.4) { [weak self] in
+                let isReaderDoc = self?.webView?.stringByEvaluatingJavaScriptFromString("document.getElementById('reader-header') != null && document.getElementById('reader-content') != null") == "true"
+                if (!isReaderDoc) {
+                    return
+                }
+                guard let loc = self?.webView?.stringByEvaluatingJavaScriptFromString("location"),
+                    url = NSURL(string:loc) else { return }
+
+                if !ReaderModeUtils.isReaderModeURL(url) {
+                    self?.reload()
+                }
+            }
+        }
     }
 
     func goForward() {
