@@ -413,6 +413,7 @@ class BraveWebView: UIWebView {
         print("loadingCompleted() ••••")
         progress?.setProgress(1.0)
         broadcastToPageStateDelegates()
+        backgroundColor = UIColor.lightGrayColor()
 
         navigationDelegate?.webViewDidFinishNavigation(self, url: URL)
 
@@ -644,6 +645,8 @@ extension BraveWebView: UIWebViewDelegate {
 
     func webView(webView: UIWebView,shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType ) -> Bool {
         guard let url = request.URL else { return false }
+
+        webView.backgroundColor = UIColor.whiteColor()
 
         if let contextMenu = window?.rootViewController?.presentedViewController
             where contextMenu.view.tag == BraveWebViewConstants.kContextMenuBlockNavigation {
