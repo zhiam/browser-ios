@@ -33,7 +33,7 @@ class BraveShieldStatsView: UIView {
     lazy var timeStatView: StatView = {
         let statView = StatView(frame: CGRectZero)
         statView.title = "Est. Time \rSaved"
-        statView.color = UIColor(red: 14/255.0, green: 14/255.0, blue: 14/255.0, alpha: 1.0)
+        statView.color = UIColor.blackColor()
         return statView
     }()
     
@@ -45,7 +45,7 @@ class BraveShieldStatsView: UIView {
         super.init(frame: frame)
         
         addSubview(line)
-        line.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
+        line.backgroundColor = UIColor(white: 0.0, alpha: 0.2)
         line.snp_makeConstraints { (make) in
             make.bottom.equalTo(0).offset(-0.5)
             make.height.equalTo(0.5)
