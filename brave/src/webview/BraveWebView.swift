@@ -157,7 +157,9 @@ class BraveWebView: UIWebView {
 
     func updateLocationFromHtml() -> Bool {
         guard let js = stringByEvaluatingJavaScriptFromString("document.location.href"), let location = NSURL(string: js) else { return false }
-
+        if AboutUtils.isAboutHomeURL(location) {
+            return false
+        }
         return setUrl(location)
     }
 

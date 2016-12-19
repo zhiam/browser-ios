@@ -725,6 +725,7 @@ class BrowserViewController: UIViewController {
         // Ugly UI when submit completes, the view stack pops back to homepanel stats, which flash
         // then disappear as the webview is reshown. Hide the elements so the homepanel is just a white screen
         homePanelController?.view.subviews.forEach { $0.hidden = true }
+        tabManager.selectedTab?.webView?.backgroundColor = UIColor.whiteColor()
 
         urlBar.currentURL = url
         urlBar.leaveSearchMode()

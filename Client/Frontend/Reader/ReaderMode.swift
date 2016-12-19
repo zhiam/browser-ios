@@ -226,7 +226,7 @@ class ReaderMode: BrowserHelper {
         if let path = NSBundle.mainBundle().pathForResource("Readability", ofType: "js") {
             if let source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String {
                 let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
-                browser.webView!.configuration.userContentController.addUserScript(userScript)
+                browser.webView?.configuration.userContentController.addUserScript(userScript)
             }
         }
 
@@ -234,7 +234,7 @@ class ReaderMode: BrowserHelper {
         if let path = NSBundle.mainBundle().pathForResource("ReaderMode", ofType: "js") {
             if let source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String {
                 let userScript = WKUserScript(source: source, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
-                browser.webView!.configuration.userContentController.addUserScript(userScript)
+                browser.webView?.configuration.userContentController.addUserScript(userScript)
             }
         }
     }
@@ -254,7 +254,9 @@ class ReaderMode: BrowserHelper {
 
     private func handleReaderModeStateChange(state: ReaderModeState) {
         self.state = state
-        delegate?.readerMode(self, didChangeReaderModeState: state, forBrowser: browser!)
+        if let browser = browser {
+            delegate?.readerMode(self, didChangeReaderModeState: state, forBrowser: browser)
+        }
     }
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
@@ -280,8 +282,8 @@ class ReaderMode: BrowserHelper {
 
     var style: ReaderModeStyle = DefaultReaderModeStyle {
         didSet {
-            if state == ReaderModeState.Active {
-                browser!.webView?.evaluateJavaScript("\(ReaderModeNamespace).setStyle(\(style.encode()))", completionHandler: {
+            if let browser = browser where state == ReaderModeState.Active {
+                browser.webView?.evaluateJavaScript("\(ReaderModeNamespace).setStyle(\(style.encode()))", completionHandler: {
                     (object, error) -> Void in
                     return
                 })
