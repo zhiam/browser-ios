@@ -237,6 +237,13 @@ class ReaderMode: BrowserHelper {
                 browser.webView?.configuration.userContentController.addUserScript(userScript)
             }
         }
+
+        if let dict = getApp().profile?.prefs.dictionaryForKey(ReaderModeProfileKeyStyle) {
+            if let _style = ReaderModeStyle(dict: dict) {
+                // Force didSet to get called to ensure style is updated on the page
+                style = _style
+            }
+        }
     }
 
     class func scriptMessageHandlerName() -> String? {
@@ -256,6 +263,9 @@ class ReaderMode: BrowserHelper {
         self.state = state
         if let browser = browser {
             delegate?.readerMode(self, didChangeReaderModeState: state, forBrowser: browser)
+            if state == .Active {
+                style = (style)
+            }
         }
     }
 
