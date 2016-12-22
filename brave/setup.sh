@@ -32,3 +32,4 @@ echo GENERATED_BUILD_ID=`date +"%y.%m.%d.%H"` >> xcconfig/local-def.xcconfig
 
 npm update
 
+(cd ../Carthage/Checkouts/sync && brew install yarn && npm install && npm run build)

@@ -478,6 +478,10 @@
 		EB9D8F261D9CCE5F00CA1624 /* WebViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */; };
 		EBACC8551DF9BB3500D5E048 /* SettingsViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBACC8541DF9BB3500D5E048 /* SettingsViewTest.swift */; };
 		EBB345801DAD465C00EE24F0 /* SQLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7B9A62DB1C4002B1005C83DC /* SQLite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EBDB7D471E14231900D744C7 /* SyncWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDB7D461E14231900D744C7 /* SyncWebView.swift */; };
+		EBDB7D501E1432E800D744C7 /* bundle.js in Resources */ = {isa = PBXBuildFile; fileRef = EBDB7D4E1E1432E800D744C7 /* bundle.js */; };
+		EBDB7D551E14331900D744C7 /* fetch.js in Resources */ = {isa = PBXBuildFile; fileRef = EBDB7D531E14331900D744C7 /* fetch.js */; };
+		EBDB7D571E14337800D744C7 /* ios-sync.js in Resources */ = {isa = PBXBuildFile; fileRef = EBDB7D561E14337800D744C7 /* ios-sync.js */; };
 		EBE50B831DAE8D77000BC0A1 /* BookmarksTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */; };
 		EBE50B871DAEC689000BC0A1 /* Deferred.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE50B861DAEC689000BC0A1 /* Deferred.framework */; };
 		EBE50B8A1DAEC8DD000BC0A1 /* UITestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */; };
@@ -1282,6 +1286,10 @@
 		EB9D8F211D9CCE5F00CA1624 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EB9D8F231D9CCE5F00CA1624 /* WebViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewTest.swift; sourceTree = "<group>"; };
 		EBACC8541DF9BB3500D5E048 /* SettingsViewTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewTest.swift; sourceTree = "<group>"; };
+		EBDB7D461E14231900D744C7 /* SyncWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncWebView.swift; sourceTree = "<group>"; };
+		EBDB7D4E1E1432E800D744C7 /* bundle.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = bundle.js; sourceTree = "<group>"; };
+		EBDB7D531E14331900D744C7 /* fetch.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = fetch.js; sourceTree = "<group>"; };
+		EBDB7D561E14337800D744C7 /* ios-sync.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "ios-sync.js"; sourceTree = "<group>"; };
 		EBE50B7C1DAE8D70000BC0A1 /* BookmarksTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTest.swift; sourceTree = "<group>"; };
 		EBE50B861DAEC689000BC0A1 /* Deferred.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Deferred.framework; path = Carthage/Build/iOS/Deferred.framework; sourceTree = "<group>"; };
 		EBE50B881DAEC884000BC0A1 /* UITestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITestUtils.swift; sourceTree = "<group>"; };
@@ -2531,6 +2539,7 @@
 		DD7766D867DDB5BB9D39E6ED /* src */ = {
 			isa = PBXGroup;
 			children = (
+				EBDB7D271E14206700D744C7 /* sync */,
 				C75F23E274D805CF47CC56F4 /* adinfo */,
 				4A968F5D043E33C1866219E7 /* BraveApp.swift */,
 				6F8856E29DAA2D9EAC4F9A85 /* BraveUtil.swift */,
@@ -2699,6 +2708,36 @@
 			name = BraveShareTo;
 			path = brave/l10n/BraveShareTo;
 			sourceTree = "<group>";
+		};
+		EBDB7D271E14206700D744C7 /* sync */ = {
+			isa = PBXGroup;
+			children = (
+				EBDB7D561E14337800D744C7 /* ios-sync.js */,
+				EBDB7D511E14331900D744C7 /* polyfill */,
+				EBDB7D4C1E1432E800D744C7 /* bundles */,
+				EBDB7D461E14231900D744C7 /* SyncWebView.swift */,
+			);
+			name = sync;
+			path = brave/src/sync;
+			sourceTree = "<group>";
+		};
+		EBDB7D4C1E1432E800D744C7 /* bundles */ = {
+			isa = PBXGroup;
+			children = (
+				EBDB7D4E1E1432E800D744C7 /* bundle.js */,
+			);
+			name = bundles;
+			path = Carthage/Checkouts/sync/bundles;
+			sourceTree = SOURCE_ROOT;
+		};
+		EBDB7D511E14331900D744C7 /* polyfill */ = {
+			isa = PBXGroup;
+			children = (
+				EBDB7D531E14331900D744C7 /* fetch.js */,
+			);
+			name = polyfill;
+			path = Carthage/Checkouts/sync/client/polyfill;
+			sourceTree = SOURCE_ROOT;
 		};
 		F1D471871D777C7C007B443D /* OnePassword */ = {
 			isa = PBXGroup;
@@ -3403,6 +3442,7 @@
 				EB8F569C1DD13DF300679A78 /* FiraSans-BoldItalic.ttf in Resources */,
 				886E3B0001BC705ACFC4AD45 /* adInfo-wrapper.js in Resources */,
 				507ACE2A12D675DAF9C79198 /* adInfo.js in Resources */,
+				EBDB7D501E1432E800D744C7 /* bundle.js in Resources */,
 				E4309BC56F1431FEA791E157 /* BlankTargetDetector.js in Resources */,
 				EB4E15ED1DB7F36600A4C7EA /* Localizable.strings in Resources */,
 				EB8F569F1DD13DF300679A78 /* FiraSans-Light.ttf in Resources */,
@@ -3425,7 +3465,9 @@
 				9EC9707BF7ABD93FBB0FFDB9 /* LoginsHelper.js in Resources */,
 				4D68B2825D2CAD5FB6098D21 /* NetError.css in Resources */,
 				EB8F56991DD13DF300679A78 /* CharisSILI.ttf in Resources */,
+				EBDB7D551E14331900D744C7 /* fetch.js in Resources */,
 				6B06EE00444FA99CCD366C2B /* NetError.html in Resources */,
+				EBDB7D571E14337800D744C7 /* ios-sync.js in Resources */,
 				13657B6789F5024F64E16739 /* PrintHelper.js in Resources */,
 				9238CC0C5284146DC56706EF /* default.txt in Resources */,
 				EB8F56A11DD13DF300679A78 /* FiraSans-Regular.ttf in Resources */,
@@ -3843,6 +3885,7 @@
 				A90DB45DF991E67B7130B8BB /* ContextMenuHelper.swift in Sources */,
 				DD024D7E481298ACAB9EF286 /* ErrorPageHelper.swift in Sources */,
 				91B903FBE39F640B651928D0 /* FaviconManager.swift in Sources */,
+				EBDB7D471E14231900D744C7 /* SyncWebView.swift in Sources */,
 				B12303762D2ADF302DF8F575 /* FindInPageBar.swift in Sources */,
 				57A89B3DB802440164DBCA3E /* FindInPageHelper.swift in Sources */,
 				BAE512B7D2251A8207EBA7D4 /* LoginsHelper.swift in Sources */,
