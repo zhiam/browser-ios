@@ -264,6 +264,7 @@ class BraveURLBarView : URLBarView {
         super.prepareSearchAnimation()
         bookmarkButton.hidden = true
         braveButton.hidden = true
+        readerModeToolbar?.hidden = true
     }
 
     override func transitionToSearch(didCancel: Bool = false) {
@@ -286,6 +287,7 @@ class BraveURLBarView : URLBarView {
         braveButton.alpha = 0
         braveButton.hidden = false
         UIView.animateWithDuration(0.3, animations: { self.braveButton.alpha = 1.0 })
+        readerModeToolbar?.hidden = false
     }
 
     override func updateConstraints() {

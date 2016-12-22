@@ -31,10 +31,11 @@ class BrowserViewController: UIViewController {
     class ViewToCaptureReaderModeTap : UIView {
         weak var urlBarView:BraveURLBarView?
         override func hitTest(point: CGPoint, withEvent event: UIEvent?) -> UIView? {
-            if let readerView = urlBarView?.readerModeToolbar {
-                let pointForTargetView = readerView.convertPoint(point, fromView: self)
-                if CGRectContainsPoint(readerView.bounds, pointForTargetView) {
-                    return readerView.settingsButton
+            if let toolbar = urlBarView?.readerModeToolbar {
+                let pointForTargetView = toolbar.convertPoint(point, fromView: self)
+                let isHidden = toolbar.hidden || toolbar.convertPoint(CGPoint(x:0,y:0), toView: nil).y < UIConstants.ToolbarHeight
+                if !isHidden && CGRectContainsPoint(toolbar.bounds, pointForTargetView) {
+                    return toolbar.settingsButton
                 }
             }
             return super.hitTest(point, withEvent: event)
