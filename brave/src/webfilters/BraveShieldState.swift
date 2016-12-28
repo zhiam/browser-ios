@@ -371,9 +371,11 @@ public class BraveGlobalShieldStats {
     }
     
     public func save() {
-        var task: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier()
-        task = UIApplication.sharedApplication().beginBackgroundTaskWithName("brave-global-stats-save", expirationHandler: { () -> Void in
-            UIApplication.sharedApplication().endBackgroundTask(task)
+        var task:UIBackgroundTaskIdentifier?
+        task = UIApplication.sharedApplication().beginBackgroundTaskWithName("brave-global-stats-save", expirationHandler: {
+            if let task = task {
+                UIApplication.sharedApplication().endBackgroundTask(task)
+            }
             task = UIBackgroundTaskInvalid
         })
         
@@ -384,7 +386,10 @@ public class BraveGlobalShieldStats {
             self.prefs.setInteger(self.safeBrowsing, forKey: Shield.SafeBrowsing.rawValue)
             self.prefs.setInteger(self.fpProtection, forKey: Shield.FpProtection.rawValue)
             self.prefs.synchronize()
-            
+
+            if let task = task {
+                UIApplication.sharedApplication().endBackgroundTask(task)
+            }
             task = UIBackgroundTaskInvalid
         }
     }
