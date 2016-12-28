@@ -58,7 +58,6 @@ class BraveShieldStatsView: UIView {
         }
         
         update()
-        setNeedsLayout()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(update), name: BraveGlobalShieldStats.DidUpdateNotification, object: nil)
     }
