@@ -369,14 +369,19 @@ public class BraveGlobalShieldStats {
         safeBrowsing += prefs.integerForKey(Shield.SafeBrowsing.rawValue)
         fpProtection += prefs.integerForKey(Shield.FpProtection.rawValue)
     }
-    
+
+    var bgSaveTask: UIBackgroundTaskIdentifier?
+
     public func save() {
-        var task:UIBackgroundTaskIdentifier?
-        task = UIApplication.sharedApplication().beginBackgroundTaskWithName("brave-global-stats-save", expirationHandler: {
-            if let task = task {
+        if let t = bgSaveTask where t != UIBackgroundTaskInvalid {
+            return
+        }
+        
+        bgSaveTask = UIApplication.sharedApplication().beginBackgroundTaskWithName("brave-global-stats-save", expirationHandler: {
+            if let task = self.bgSaveTask {
                 UIApplication.sharedApplication().endBackgroundTask(task)
             }
-            task = UIBackgroundTaskInvalid
+            self.bgSaveTask = UIBackgroundTaskInvalid
         })
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
@@ -387,10 +392,10 @@ public class BraveGlobalShieldStats {
             self.prefs.setInteger(self.fpProtection, forKey: Shield.FpProtection.rawValue)
             self.prefs.synchronize()
 
-            if let task = task {
+            if let task = self.bgSaveTask {
                 UIApplication.sharedApplication().endBackgroundTask(task)
             }
-            task = UIBackgroundTaskInvalid
+            self.bgSaveTask = UIBackgroundTaskInvalid
         }
     }
 }
