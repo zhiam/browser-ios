@@ -659,10 +659,13 @@ extension BraveWebView: UIWebViewDelegate {
 
         if let tab = getApp().tabManager.tabForWebView(self) {
             let state = braveShieldState
-            var fpShieldOn = state.isOnFingerprintProtection() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false
+            var fpShieldOn = !state.isAllOff() && (state.isOnFingerprintProtection() ?? BraveApp.getPrefs()?.boolForKey(kPrefKeyFingerprintProtection) ?? false)
+
+            // Override for automated testing
             if URLProtocol.testShieldState?.isOnFingerprintProtection() ?? false {
                 fpShieldOn = true
             }
+
             if fpShieldOn {
                 if tab.getHelper(FingerprintingProtection.self) == nil {
                     let fp = FingerprintingProtection(browser: tab)
