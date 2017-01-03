@@ -58,7 +58,6 @@
 		1A8A23CF250C3C55D7A59952 /* Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1351869FA6D75F5DF93BDC2 /* Accessibility.swift */; };
 		1AD5A92B8D7E128A09DCB480 /* AboutHomeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC754FCC79857891055187B /* AboutHomeHandler.swift */; };
 		1BB69837CDB9BA1A8ED56628 /* OpenSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEF54F179B81FB069863662 /* OpenSearch.swift */; };
-		1BCE28AC15D1870A4B2DE65A /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A96420AA85436FEC1EF938 /* filter.cpp */; };
 		1BEC203DBC0FE2B59740A167 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A16E42938DD99B48BCB7015 /* Functions.swift */; };
 		1C1BD844C67E5F9C40F06A40 /* ReaderModeStyleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6D95C23337865036C98FDB /* ReaderModeStyleViewController.swift */; };
 		1D0EC87F3C7005732156DB55 /* dbformat.h in Headers */ = {isa = PBXBuildFile; fileRef = 78C221FEB531A8D07123FBA6 /* dbformat.h */; };
@@ -94,7 +93,6 @@
 		2FCAE2251ABB51F800877008 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* Storage.framework */; };
 		2FCAE2311ABB51F800877008 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* Storage.framework */; };
 		2FCAE2321ABB51F800877008 /* Storage.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* Storage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		306ED68A266F87F2F71F7F78 /* BloomFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 876BB2FE74496E2BF874174A /* BloomFilter.cpp */; };
 		3078EC63F4D0D10D8CE0B5E5 /* version_set.cc in Sources */ = {isa = PBXBuildFile; fileRef = 5A96238B8C31C177C5873A11 /* version_set.cc */; };
 		309EA23114E638AD05EBCD27 /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3DBBA58E534C89EA119ABA /* UIConstants.swift */; };
 		30F4C5A4EF356D2EB010954C /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA44049520165C97336C18F /* Cancellable.swift */; };
@@ -108,7 +106,6 @@
 		365D79EB4650B90378CCF45B /* HideEmptyImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CADC3E350A25BA3BC86931 /* HideEmptyImages.swift */; };
 		3696DC8F3824B7E55FDE2466 /* SpotlightHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FE3C79F6DF96D365FD7D6 /* SpotlightHelper.swift */; };
 		36C8635323CDD4DC0F28C5E3 /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 3CB164FB4D60884D27DFCA0B /* options.h */; };
-		3707DD80479CB3FC1CD7231F /* HashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 26B0F125A4C7C1816219505B /* HashSet.h */; };
 		383CFEF70D62A26D58CBB466 /* ReadingListRecordsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9E6252BF290B6EE66FF11 /* ReadingListRecordsResponse.swift */; };
 		38C6079808773B8CF97618FF /* SQLiteQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649B1272F9C9DAD1CD4E4CA0 /* SQLiteQueue.swift */; };
 		395AE47342666E8B07D1C1ED /* SQLiteBookmarksSyncing.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC06D800C038456E4F17FF59 /* SQLiteBookmarksSyncing.swift */; };
@@ -150,7 +147,6 @@
 		4FCC90F45C8CC749A62A5F4D /* UIAlertControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD518CD61521727267829F7 /* UIAlertControllerExtensions.swift */; };
 		4FEB5747628DB091D4F1B625 /* db_iter.h in Headers */ = {isa = PBXBuildFile; fileRef = E6B96DA50B22FDA73E39FBBF /* db_iter.h */; };
 		507ACE2A12D675DAF9C79198 /* adInfo.js in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA045288C7CF6656937FC1 /* adInfo.js */; };
-		510CCA37B412E8175AC029E4 /* hashFn.h in Headers */ = {isa = PBXBuildFile; fileRef = A476C7CF9478983D9837EC28 /* hashFn.h */; };
 		512E10479437E91E0C460A9E /* SafeBrowsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3777B25D6E2DCFE76040F35 /* SafeBrowsing.swift */; };
 		51738B96F3E3C02A37A32C90 /* SearchPlugins in Resources */ = {isa = PBXBuildFile; fileRef = AA44EA103045B9E3603E2207 /* SearchPlugins */; };
 		518DC47C3214F272D78DFBD9 /* DebugSettingsBundleOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BE39E512689513A2A395390 /* DebugSettingsBundleOptions.swift */; };
@@ -162,7 +158,6 @@
 		56439B27AA657730554FE84A /* block_builder.h in Headers */ = {isa = PBXBuildFile; fileRef = E0916123D3F050C51F690CD8 /* block_builder.h */; };
 		57A89B3DB802440164DBCA3E /* FindInPageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6184965624CC221A1AEEDE /* FindInPageHelper.swift */; };
 		58B8BB9CDCB0B95E091EA072 /* BrowserViewController+BrowserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9340801BD8388DEB00FEBA /* BrowserViewController+BrowserDelegate.swift */; };
-		592036CE6D10474A5F1A6A0F /* ABPFilterParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 088680FCC190641E53B16209 /* ABPFilterParser.cpp */; };
 		59D6B30954B53C907F022CA7 /* FindInPage.js in Resources */ = {isa = PBXBuildFile; fileRef = EA59A531812A82B1DAC03D72 /* FindInPage.js */; };
 		59F67C0B4DAA5B488E2C83EF /* SpotlightHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = E76112E70EDA47CD3A7F2845 /* SpotlightHelper.js */; };
 		5B352CB4FE3A4ED634975490 /* WebViewProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E56C0216FAEB62B2CDF5FE7 /* WebViewProgress.swift */; };
@@ -188,7 +183,6 @@
 		6287F57212354177AA5D5F28 /* BraveURLBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC3246EB07883A76BDD2DCC /* BraveURLBarView.swift */; };
 		62B5EDA86994D2198B91FFFC /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEACFD6CCE9B72D21CB2ADAD /* TestAppDelegate.swift */; };
 		6496B09C16B08B8A36235C5D /* ReadingListAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D84AB2CBD701CBBDC40620C /* ReadingListAuthenticator.swift */; };
-		658955A1457DA35A1878CB0C /* BloomFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A21DF4A91DD8DCE7C03C4CE3 /* BloomFilter.h */; };
 		65D7C98408394E5F2E760894 /* LegacyJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = F322087D8EA0FBEBE2CC1B12 /* LegacyJSContext.m */; };
 		66D96438D7A6745AE7673C3E /* cache.cc in Sources */ = {isa = PBXBuildFile; fileRef = D67DB7F7781109349E0B3EDC /* cache.cc */; };
 		671590F1C38A4EF0DAE62A83 /* SQLiteBookmarksBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470C37FDCDBA7F0B4F53CC4D /* SQLiteBookmarksBase.swift */; };
@@ -273,7 +267,6 @@
 		91B903FBE39F640B651928D0 /* FaviconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 394747630A3208C0183000C2 /* FaviconManager.swift */; };
 		9238CC0C5284146DC56706EF /* default.txt in Resources */ = {isa = PBXBuildFile; fileRef = E0C5C6F1D13FCD5152DBBE33 /* default.txt */; };
 		92B2B7F2B17137887C97E54D /* HomePanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A01E0C243FA16CD4A8D1BB6 /* HomePanels.swift */; };
-		92B5106CE3238BECC9CEF05A /* cosmeticFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C7960862EB3C0FF647E67905 /* cosmeticFilter.h */; };
 		92CC0725B0FA394A4D96F9E5 /* snapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = EF580DF3F5E52AC613B75662 /* snapshot.h */; };
 		93A842BE3895EA27CC7F29D4 /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB53DD417F3A21B17BA52E2B /* KeyboardHelper.swift */; };
 		9434B7BDDB6ADA2AA738386D /* env.h in Headers */ = {isa = PBXBuildFile; fileRef = 04B2B929DA420D27682ACF82 /* env.h */; };
@@ -293,7 +286,6 @@
 		9BFE547FF9C37E82814BA9C6 /* SessionRestoreHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EF65657121B82D0298261D /* SessionRestoreHandler.swift */; };
 		9CF9F9970296253C177CD2E8 /* ReaderModeBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA7DED2447BA5A4E6FE7C35 /* ReaderModeBarView.swift */; };
 		9E08BE0D0C19A5DA7BA7BB52 /* two_level_iterator.cc in Sources */ = {isa = PBXBuildFile; fileRef = BED9E8295A95A1639164EC89 /* two_level_iterator.cc */; };
-		9E40A64898564A86FB8FE825 /* HashItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 76914CF6080B360AB8542464 /* HashItem.h */; };
 		9EAB0C6103188CF38E86ED36 /* hash.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1EDEAAE020488481B5A4A1F /* hash.cc */; };
 		9EC9707BF7ABD93FBB0FFDB9 /* LoginsHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = B6339DA63849AA7EBB1AD756 /* LoginsHelper.js */; };
 		9F50BCE3D5FDCED5636CC737 /* FSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 968A68795E0C74E23C2E6F4F /* FSUtils.m */; };
@@ -337,7 +329,6 @@
 		B735CA1D323CBBD44E763DD9 /* BravePageUnloadHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2B364C727B9A34AB89A2A0 /* BravePageUnloadHelper.swift */; };
 		B742F2D270D9E2378953F327 /* RequestDesktopSiteActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7213910FF51709F3F5E2C59 /* RequestDesktopSiteActivity.swift */; };
 		B777CA48C19B1D9F19FE6F78 /* Prefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF4A2609CAA3CA6EBB8326E6 /* Prefs.swift */; };
-		B7B5B27F05E78F55751580BF /* ABPFilterParser.h in Headers */ = {isa = PBXBuildFile; fileRef = F7896A54C069C7C687CA581D /* ABPFilterParser.h */; };
 		B7E587522DCD821AA0940F37 /* slice.h in Headers */ = {isa = PBXBuildFile; fileRef = 38D2A7274015F5CFD209EA31 /* slice.h */; };
 		B8D29DA8868D10CA43DFF30F /* adInfo-divquerytemplate.js in Resources */ = {isa = PBXBuildFile; fileRef = 6E4F971F06CCD5FE5475FF99 /* adInfo-divquerytemplate.js */; };
 		B8D98177EF45872E5DBFF377 /* SyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2B45122FEC198975B82223 /* SyncQueue.swift */; };
@@ -370,7 +361,6 @@
 		C834296D0C5D0BA797E763D3 /* FaviconsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81718B80CF233F354112CA85 /* FaviconsTable.swift */; };
 		CA11457A28163F3B1B0FD258 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1852F166F6BAB2154A8BEA92 /* Crashlytics.framework */; };
 		CB4E437860D2905954E3F7CA /* table_cache.cc in Sources */ = {isa = PBXBuildFile; fileRef = D59264E87AE2E178065BEACD /* table_cache.cc */; };
-		CB4FAC73BBE8432291B82EEB /* HashSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28CF91B25C58507CD9D36AD0 /* HashSet.cpp */; };
 		CBE8F9770BF74CCB68E0807A /* BraveMainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105A3ED2E6BEFE42CDC7E572 /* BraveMainWindow.swift */; };
 		CC1E2496D2BBE436131C1F81 /* filter_policy.cc in Sources */ = {isa = PBXBuildFile; fileRef = E6649E63B1FC5323B1BFF2E3 /* filter_policy.cc */; };
 		CCAC3364419AA9AB527A29B9 /* TPParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F90C6C6C21DCA3E0ED89E177 /* TPParser.cpp */; };
@@ -433,7 +423,6 @@
 		E7137CFBEDF3A241B3FF612E /* MockLogins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CB429412ED076CFF5E85FD /* MockLogins.swift */; };
 		E74857EF8CE5864799349B87 /* DefaultSuggestedSites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98340FA08AFE0EA9B23DD3BC /* DefaultSuggestedSites.swift */; };
 		E77C749FCE7245FCCE69C315 /* logging.cc in Sources */ = {isa = PBXBuildFile; fileRef = C3603756FF1A103E2F905E53 /* logging.cc */; };
-		E7CFA1FE7C250B7864A900CE /* cosmeticFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 01BDC2595431D2730AE59026 /* cosmeticFilter.cpp */; };
 		E88158BB7457CE7E9093BD73 /* RemoteTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF9CB6EF0E9F25746DCD514F /* RemoteTabs.swift */; };
 		E89DEAF4A642EA060CAC3883 /* dbformat.cc in Sources */ = {isa = PBXBuildFile; fileRef = 63385F88C43F167A141D6643 /* dbformat.cc */; };
 		E8A10AA61C5538355063C087 /* SwizzlingToHideSharePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 430FDA25DAA3C35191998991 /* SwizzlingToHideSharePicker.h */; };
@@ -444,6 +433,20 @@
 		EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12F8F9AA927469C395A01A8 /* TabTrayController.swift */; };
 		EA57C937929B9D79638AE0C2 /* SupportUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2B94BA962519A13DDE91E3 /* SupportUtils.swift */; };
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
+		EB0090781E1BF23D00680DB8 /* ABPFilterParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0088621E1BF23800680DB8 /* ABPFilterParser.cpp */; };
+		EB0090791E1BF23D00680DB8 /* ABPFilterParser.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0088631E1BF23800680DB8 /* ABPFilterParser.h */; };
+		EB0090841E1BF23D00680DB8 /* base.h in Headers */ = {isa = PBXBuildFile; fileRef = EB00886E1E1BF23800680DB8 /* base.h */; };
+		EB00909D1E1BF23D00680DB8 /* cosmeticFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0088951E1BF23800680DB8 /* cosmeticFilter.cpp */; };
+		EB00909E1E1BF23D00680DB8 /* cosmeticFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0088961E1BF23800680DB8 /* cosmeticFilter.h */; };
+		EB00909F1E1BF23D00680DB8 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0088971E1BF23800680DB8 /* filter.cpp */; };
+		EB0090A01E1BF23D00680DB8 /* filter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0088981E1BF23800680DB8 /* filter.h */; };
+		EB009BAF1E1BF44200680DB8 /* HashItem.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0097E21E1BF44000680DB8 /* HashItem.h */; };
+		EB009BB01E1BF44200680DB8 /* HashSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0097E31E1BF44000680DB8 /* HashSet.cpp */; };
+		EB009BB11E1BF44200680DB8 /* HashSet.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0097E41E1BF44000680DB8 /* HashSet.h */; };
+		EB00A2F51E1BF4CC00680DB8 /* BloomFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB009F1E1E1BF4CA00680DB8 /* BloomFilter.cpp */; };
+		EB00A2F61E1BF4CC00680DB8 /* BloomFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB009F1F1E1BF4CA00680DB8 /* BloomFilter.h */; };
+		EB00A3081E1BF4CC00680DB8 /* hashFn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB009F391E1BF4CA00680DB8 /* hashFn.cpp */; };
+		EB00A3091E1BF4CC00680DB8 /* hashFn.h in Headers */ = {isa = PBXBuildFile; fileRef = EB009F3A1E1BF4CA00680DB8 /* hashFn.h */; };
 		EB1D65801DF7337100F2E3AE /* ReaderModeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */; };
 		EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
@@ -696,7 +699,6 @@
 		00F0C79A1A031D0298A1167B /* DiskImageStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DiskImageStore.swift; path = ./Storage/DiskImageStore.swift; sourceTree = "<group>"; };
 		016FF6C150629D4A91A838B8 /* Crasher.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = Crasher.m; path = ./Client/Application/Crasher.m; sourceTree = "<group>"; };
 		01A57127C178E1032C56625F /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = ./ReadingList/Info.plist; sourceTree = "<group>"; };
-		01BDC2595431D2730AE59026 /* cosmeticFilter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = cosmeticFilter.cpp; sourceTree = "<group>"; };
 		02C139BC9FA47F8C0F789FF0 /* CertError.css */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.css; name = CertError.css; path = ./Client/Assets/CertError.css; sourceTree = "<group>"; };
 		03435436D07EB2E82C401AA6 /* ThumbnailCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ThumbnailCell.swift; path = ./Client/Frontend/Widgets/ThumbnailCell.swift; sourceTree = "<group>"; };
 		03E632C3081928FF6C86DEE4 /* memtable.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = memtable.cc; path = ./brave/ThirdParty/leveldb/db/memtable.cc; sourceTree = "<group>"; };
@@ -712,7 +714,6 @@
 		07047A7781F4E177F5513C54 /* GeometryExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GeometryExtensions.swift; path = ./Utils/Extensions/GeometryExtensions.swift; sourceTree = "<group>"; };
 		073761130B84455FB1E15D57 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = "./Shared/Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		08373AAA053C26FAD1A95023 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = ./Storage/Info.plist; sourceTree = "<group>"; };
-		088680FCC190641E53B16209 /* ABPFilterParser.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = ABPFilterParser.cpp; sourceTree = "<group>"; };
 		0994D8CB826BBAE3C446B125 /* Crasher.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Crasher.h; path = ./Client/Application/Crasher.h; sourceTree = "<group>"; };
 		09B26BBAC8D68EFA2A333975 /* CharisSILR.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = CharisSILR.ttf; path = ./Client/Assets/Fonts/CharisSILR.ttf; sourceTree = "<group>"; };
 		0B5DA2C8E2A696FCBB8FC07F /* CompletionOps.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CompletionOps.swift; path = ./Storage/CompletionOps.swift; sourceTree = "<group>"; };
@@ -776,14 +777,12 @@
 		221C89002AFF8CAA7A46AED0 /* write_batch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = write_batch.h; path = ./brave/ThirdParty/leveldb/include/leveldb/write_batch.h; sourceTree = "<group>"; };
 		23742BDDA52668C11FC7C59F /* DatabaseError.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DatabaseError.swift; path = ./Storage/DatabaseError.swift; sourceTree = "<group>"; };
 		24E7EB795FD310C03CA104FF /* scrape_plugins.py */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.python; name = scrape_plugins.py; path = ./Client/Assets/Search/scrape_plugins.py; sourceTree = "<group>"; };
-		26B0F125A4C7C1816219505B /* HashSet.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = HashSet.h; path = "node_modules/hashset-cpp/HashSet.h"; sourceTree = "<group>"; };
 		281FBE9AF8B7F6EFCAF1C39F /* Bookmarks.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Bookmarks.swift; path = ./Storage/Bookmarks/Bookmarks.swift; sourceTree = "<group>"; };
 		2849F28840241B31DFD49F20 /* FiraSans-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = "FiraSans-SemiBold.ttf"; path = "./Client/Assets/Fonts/FiraSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		28642F23E2CE9D7D43B28CFA /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+ImageEffects.m"; path = "./ThirdParty/Apple/UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		286FDAED8C109239AF5BA1E4 /* UIImageExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UIImageExtensions.swift; path = ./Utils/Extensions/UIImageExtensions.swift; sourceTree = "<group>"; };
 		288A2D861AB8B3260023ABC3 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		28B36C3F85252AC06EB2CEA7 /* RXMLElement.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RXMLElement.m; path = ./ThirdParty/RaptureXML/RXMLElement.m; sourceTree = "<group>"; };
-		28CF91B25C58507CD9D36AD0 /* HashSet.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = HashSet.cpp; path = "node_modules/hashset-cpp/HashSet.cpp"; sourceTree = "<group>"; };
 		29311D3AC154C483EAB3021A /* filter_policy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = filter_policy.h; path = ./brave/ThirdParty/leveldb/include/leveldb/filter_policy.h; sourceTree = "<group>"; };
 		2932A3FE9BEA1C5424721AA1 /* FBSnapshotTestController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FBSnapshotTestController.h; path = ./ThirdParty/FBSnapshotTestCase/FBSnapshotTestController.h; sourceTree = "<group>"; };
 		297C9F7E7B235E8B4EF7E3A5 /* SchemaTable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SchemaTable.swift; path = ./Storage/SQL/SchemaTable.swift; sourceTree = "<group>"; };
@@ -844,7 +843,6 @@
 		3EB5ABED5591BDD452C702A7 /* FiraSans-BoldItalic.ttf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = "FiraSans-BoldItalic.ttf"; path = "./Client/Assets/Fonts/FiraSans-BoldItalic.ttf"; sourceTree = "<group>"; };
 		3F8C87651157C51F01D4D96F /* ReaderPanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReaderPanel.swift; path = ./Client/Frontend/Home/ReaderPanel.swift; sourceTree = "<group>"; };
 		3FF3DEB1602874A5B2FF6610 /* FBSnapshotTestCasePlatform.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FBSnapshotTestCasePlatform.m; path = ./ThirdParty/FBSnapshotTestCase/FBSnapshotTestCasePlatform.m; sourceTree = "<group>"; };
-		41A96420AA85436FEC1EF938 /* filter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = filter.cpp; sourceTree = "<group>"; };
 		421F3D5F398D03429D10C994 /* thread_annotations.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = thread_annotations.h; path = ./brave/ThirdParty/leveldb/port/thread_annotations.h; sourceTree = "<group>"; };
 		42B92EC10DACFBFF5E890E54 /* ClearPrivateDataTableViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ClearPrivateDataTableViewController.swift; path = ./Client/Frontend/Settings/ClearPrivateDataTableViewController.swift; sourceTree = "<group>"; };
 		42E7370C905EB0AE722AA0C5 /* block_builder.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = block_builder.cc; path = ./brave/ThirdParty/leveldb/table/block_builder.cc; sourceTree = "<group>"; };
@@ -967,7 +965,6 @@
 		746EED2B1340B91CD6058A91 /* WebViewBackForward.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebViewBackForward.swift; path = ./brave/src/webview/WebViewBackForward.swift; sourceTree = "<group>"; };
 		74F371D05B609063A51549E8 /* BrowserTrayAnimators.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserTrayAnimators.swift; path = ./Client/Frontend/Browser/BrowserTrayAnimators.swift; sourceTree = "<group>"; };
 		7603332AE0280F9C718F188E /* main.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ./ThirdParty/SWTableViewCell/main.m; sourceTree = "<group>"; };
-		76914CF6080B360AB8542464 /* HashItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = HashItem.h; path = "node_modules/hashset-cpp/HashItem.h"; sourceTree = "<group>"; };
 		76F97764BF56AA792C3FCDCE /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = ./Client/Frontend/Widgets/Theme.swift; sourceTree = "<group>"; };
 		77608A4209364B0714688815 /* PrintHelper.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; name = PrintHelper.js; path = ./Client/Assets/PrintHelper.js; sourceTree = "<group>"; };
 		77E657254121B3FC16DBDED0 /* NotificationConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationConstants.swift; path = ./Utils/NotificationConstants.swift; sourceTree = "<group>"; };
@@ -1003,7 +1000,6 @@
 		85E73012CDCAD318AC829281 /* URIFixup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URIFixup.swift; path = ./Client/Frontend/Browser/URIFixup.swift; sourceTree = "<group>"; };
 		870EB988AA65C4BB4CD0BCE2 /* table_builder.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = table_builder.cc; path = ./brave/ThirdParty/leveldb/table/table_builder.cc; sourceTree = "<group>"; };
 		87678C04836F13BD02C57749 /* SearchEnginePicker.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SearchEnginePicker.swift; path = ./Client/Frontend/Settings/SearchEnginePicker.swift; sourceTree = "<group>"; };
-		876BB2FE74496E2BF874174A /* BloomFilter.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = BloomFilter.cpp; path = "node_modules/bloom-filter-cpp/BloomFilter.cpp"; sourceTree = "<group>"; };
 		87E6BAC631D43FC504CC2291 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ./Client/Assets/Search/README.md; sourceTree = "<group>"; };
 		87F3EC59F5985F716F89D46B /* ArrayExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ArrayExtensions.swift; path = ./Utils/Extensions/ArrayExtensions.swift; sourceTree = "<group>"; };
 		882EBF0C05C3676F1DE9EBE5 /* ImageAlignmentTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = ImageAlignmentTests.m; path = ./ThirdParty/UIImageViewAligned/Example/ImageAlignmentTests/ImageAlignmentTests.m; sourceTree = "<group>"; };
@@ -1056,11 +1052,9 @@
 		A039A46D3958AB005BCBE545 /* AuralProgressBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuralProgressBar.swift; path = ./Client/Frontend/Widgets/AuralProgressBar.swift; sourceTree = "<group>"; };
 		A127F3B5A0BED3305F68B2E0 /* HexExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HexExtensions.swift; path = ./Utils/Extensions/HexExtensions.swift; sourceTree = "<group>"; };
 		A144D8E467E687B3871C8836 /* ReadingListClientRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReadingListClientRecord.swift; path = ./ReadingList/ReadingListClientRecord.swift; sourceTree = "<group>"; };
-		A21DF4A91DD8DCE7C03C4CE3 /* BloomFilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BloomFilter.h; path = "node_modules/bloom-filter-cpp/BloomFilter.h"; sourceTree = "<group>"; };
 		A2805F59AFF335BB9E950000 /* adInfo-wrapper.js */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.javascript; name = "adInfo-wrapper.js"; path = "./brave/src/adinfo/adInfo-wrapper.js"; sourceTree = "<group>"; };
 		A2855E97F1A6BA46F570C2C2 /* UIImageViewAligned.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = UIImageViewAligned.m; path = ./ThirdParty/UIImageViewAligned/UIImageViewAligned/UIImageViewAligned.m; sourceTree = "<group>"; };
 		A3F2FC6AC3AFE5BD6E376F55 /* BrowserLocationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowserLocationView.swift; path = ./Client/Frontend/Browser/BrowserLocationView.swift; sourceTree = "<group>"; };
-		A476C7CF9478983D9837EC28 /* hashFn.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = hashFn.h; path = "node_modules/hashset-cpp/hashFn.h"; sourceTree = "<group>"; };
 		A513DCE559389AD0BDE0D411 /* SyncCommandsTable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SyncCommandsTable.swift; path = ./Storage/SQL/SyncCommandsTable.swift; sourceTree = "<group>"; };
 		A55035C70518D7C18E6528AE /* table.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = table.h; path = ./brave/ThirdParty/leveldb/include/leveldb/table.h; sourceTree = "<group>"; };
 		A62C053A18EDCEAE240498A6 /* NSMutableAttributedStringExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSMutableAttributedStringExtensions.swift; path = ./Utils/Extensions/NSMutableAttributedStringExtensions.swift; sourceTree = "<group>"; };
@@ -1143,7 +1137,6 @@
 		C504B043B95B6E6E53B51F03 /* filter_block.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = filter_block.cc; path = ./brave/ThirdParty/leveldb/table/filter_block.cc; sourceTree = "<group>"; };
 		C5C1C8130DF9FA0A918B7891 /* IntroViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IntroViewController.swift; path = ./Client/Frontend/Intro/IntroViewController.swift; sourceTree = "<group>"; };
 		C760C12370CD279FD30D83CF /* status.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = status.cc; path = ./brave/ThirdParty/leveldb/util/status.cc; sourceTree = "<group>"; };
-		C7960862EB3C0FF647E67905 /* cosmeticFilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = cosmeticFilter.h; sourceTree = "<group>"; };
 		C7C37EB043E611C439AA9768 /* TabManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TabManager.swift; path = ./Client/Frontend/Browser/TabManager.swift; sourceTree = "<group>"; };
 		C8014F0C6AC0AD571CB8BC80 /* InitialViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InitialViewController.swift; path = ./Extensions/ShareTo/InitialViewController.swift; sourceTree = "<group>"; };
 		C8ED06F8D4F8DF4936BB88C5 /* histogram.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = histogram.cc; path = ./brave/ThirdParty/leveldb/util/histogram.cc; sourceTree = "<group>"; };
@@ -1230,6 +1223,20 @@
 		EA85A2F9F4AF9C5BAB2EF608 /* SeparatorTableCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SeparatorTableCell.swift; path = ./Client/Frontend/Widgets/SeparatorTableCell.swift; sourceTree = "<group>"; };
 		EA9AEBF65F0394D67D7135DC /* CertStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CertStore.swift; path = ./Storage/CertStore.swift; sourceTree = "<group>"; };
 		EAF179D957607D89D4BDC9A3 /* crc32c.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc32c.h; path = ./brave/ThirdParty/leveldb/util/crc32c.h; sourceTree = "<group>"; };
+		EB0088621E1BF23800680DB8 /* ABPFilterParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ABPFilterParser.cpp; sourceTree = "<group>"; };
+		EB0088631E1BF23800680DB8 /* ABPFilterParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABPFilterParser.h; sourceTree = "<group>"; };
+		EB00886E1E1BF23800680DB8 /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
+		EB0088951E1BF23800680DB8 /* cosmeticFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cosmeticFilter.cpp; sourceTree = "<group>"; };
+		EB0088961E1BF23800680DB8 /* cosmeticFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cosmeticFilter.h; sourceTree = "<group>"; };
+		EB0088971E1BF23800680DB8 /* filter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter.cpp; sourceTree = "<group>"; };
+		EB0088981E1BF23800680DB8 /* filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filter.h; sourceTree = "<group>"; };
+		EB0097E21E1BF44000680DB8 /* HashItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HashItem.h; sourceTree = "<group>"; };
+		EB0097E31E1BF44000680DB8 /* HashSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HashSet.cpp; sourceTree = "<group>"; };
+		EB0097E41E1BF44000680DB8 /* HashSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HashSet.h; sourceTree = "<group>"; };
+		EB009F1E1E1BF4CA00680DB8 /* BloomFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BloomFilter.cpp; sourceTree = "<group>"; };
+		EB009F1F1E1BF4CA00680DB8 /* BloomFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BloomFilter.h; sourceTree = "<group>"; };
+		EB009F391E1BF4CA00680DB8 /* hashFn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hashFn.cpp; sourceTree = "<group>"; };
+		EB009F3A1E1BF4CA00680DB8 /* hashFn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashFn.h; sourceTree = "<group>"; };
 		EB0F42511C9A46D800676650 /* BraveShareTo.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BraveShareTo.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeTest.swift; sourceTree = "<group>"; };
 		EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSURLProtectionSpaceExtensions.swift; path = ./Utils/Extensions/NSURLProtectionSpaceExtensions.swift; sourceTree = "<group>"; };
@@ -1311,7 +1318,6 @@
 		F322087D8EA0FBEBE2CC1B12 /* LegacyJSContext.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LegacyJSContext.m; path = ./brave/src/webview/LegacyJSContext.m; sourceTree = "<group>"; };
 		F3EF65657121B82D0298261D /* SessionRestoreHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SessionRestoreHandler.swift; path = ./Client/Frontend/Browser/SessionRestoreHandler.swift; sourceTree = "<group>"; };
 		F531AA3072A05E23D289957F /* Default-568h@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "./ThirdParty/SWTableViewCell/Default-568h@2x.png"; sourceTree = "<group>"; };
-		F7896A54C069C7C687CA581D /* ABPFilterParser.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ABPFilterParser.h; sourceTree = "<group>"; };
 		F84B21BE1A090F8100AAB793 /* Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Client.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8B17D264514FF2D0EAF15EC /* ReaderViewLoading.html */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.html; name = ReaderViewLoading.html; path = ./Client/Frontend/Reader/ReaderViewLoading.html; sourceTree = "<group>"; };
 		F90C6C6C21DCA3E0ED89E177 /* TPParser.cpp */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; path = TPParser.cpp; sourceTree = "<group>"; };
@@ -2139,25 +2145,6 @@
 			name = BrowserViewController;
 			sourceTree = "<group>";
 		};
-		9AAD66728A0044DD78DC6D32 /* abp-filter-parser-cpp */ = {
-			isa = PBXGroup;
-			children = (
-				F7896A54C069C7C687CA581D /* ABPFilterParser.h */,
-				088680FCC190641E53B16209 /* ABPFilterParser.cpp */,
-				41A96420AA85436FEC1EF938 /* filter.cpp */,
-				876BB2FE74496E2BF874174A /* BloomFilter.cpp */,
-				A21DF4A91DD8DCE7C03C4CE3 /* BloomFilter.h */,
-				A476C7CF9478983D9837EC28 /* hashFn.h */,
-				76914CF6080B360AB8542464 /* HashItem.h */,
-				26B0F125A4C7C1816219505B /* HashSet.h */,
-				28CF91B25C58507CD9D36AD0 /* HashSet.cpp */,
-				C7960862EB3C0FF647E67905 /* cosmeticFilter.h */,
-				01BDC2595431D2730AE59026 /* cosmeticFilter.cpp */,
-			);
-			name = "abp-filter-parser-cpp";
-			path = "brave/node_modules/abp-filter-parser-cpp";
-			sourceTree = "<group>";
-		};
 		9D9FA65B7AF80B044B65F8B2 /* brave */ = {
 			isa = PBXGroup;
 			children = (
@@ -2539,7 +2526,7 @@
 				8C6D919BD7E164B0A94BA52B /* resources */,
 				15951D18F29334B2608306A6 /* webfilters */,
 				2EF2AC6C81EA9097DBAA1D73 /* webview */,
-				9AAD66728A0044DD78DC6D32 /* abp-filter-parser-cpp */,
+				EB00885E1E1BF23800680DB8 /* ad-block */,
 				0D2D7788962AEC9F27031459 /* tracking-protection */,
 			);
 			name = src;
@@ -2643,6 +2630,46 @@
 			);
 			name = Utils;
 			sourceTree = "<group>";
+		};
+		EB00885E1E1BF23800680DB8 /* ad-block */ = {
+			isa = PBXGroup;
+			children = (
+				EB009F141E1BF4CA00680DB8 /* bloom-filter-cpp */,
+				EB0097C51E1BF44000680DB8 /* hashset-cpp */,
+				EB0088621E1BF23800680DB8 /* ABPFilterParser.cpp */,
+				EB0088631E1BF23800680DB8 /* ABPFilterParser.h */,
+				EB00886E1E1BF23800680DB8 /* base.h */,
+				EB0088951E1BF23800680DB8 /* cosmeticFilter.cpp */,
+				EB0088961E1BF23800680DB8 /* cosmeticFilter.h */,
+				EB0088971E1BF23800680DB8 /* filter.cpp */,
+				EB0088981E1BF23800680DB8 /* filter.h */,
+			);
+			name = "ad-block";
+			path = "brave/node_modules/ad-block";
+			sourceTree = "<group>";
+		};
+		EB0097C51E1BF44000680DB8 /* hashset-cpp */ = {
+			isa = PBXGroup;
+			children = (
+				EB0097E21E1BF44000680DB8 /* HashItem.h */,
+				EB0097E31E1BF44000680DB8 /* HashSet.cpp */,
+				EB0097E41E1BF44000680DB8 /* HashSet.h */,
+			);
+			name = "hashset-cpp";
+			path = "brave/node_modules/hashset-cpp";
+			sourceTree = SOURCE_ROOT;
+		};
+		EB009F141E1BF4CA00680DB8 /* bloom-filter-cpp */ = {
+			isa = PBXGroup;
+			children = (
+				EB009F1E1E1BF4CA00680DB8 /* BloomFilter.cpp */,
+				EB009F1F1E1BF4CA00680DB8 /* BloomFilter.h */,
+				EB009F391E1BF4CA00680DB8 /* hashFn.cpp */,
+				EB009F3A1E1BF4CA00680DB8 /* hashFn.h */,
+			);
+			name = "bloom-filter-cpp";
+			path = "brave/node_modules/bloom-filter-cpp";
+			sourceTree = SOURCE_ROOT;
 		};
 		EB36616B1D9C3CEC00445C92 /* ui */ = {
 			isa = PBXGroup;
@@ -2890,8 +2917,10 @@
 				92CC0725B0FA394A4D96F9E5 /* snapshot.h in Headers */,
 				7C3D2D00C996F08B5296CEC5 /* table_cache.h in Headers */,
 				CFF6C3BBB78F3B7F99DC50B6 /* version_edit.h in Headers */,
+				EB00A2F61E1BF4CC00680DB8 /* BloomFilter.h in Headers */,
 				0DFE30543A571642D72FA039 /* version_set.h in Headers */,
 				D7C5871B5B5ADBFAC3919E65 /* write_batch_internal.h in Headers */,
+				EB0090A01E1BF23D00680DB8 /* filter.h in Headers */,
 				691BA9CA6E3647CC3D9ECAB6 /* memenv.h in Headers */,
 				8B13A0FD936AEA06A5289912 /* c.h in Headers */,
 				906F2B9E09174887AE1FFC89 /* cache.h in Headers */,
@@ -2916,7 +2945,10 @@
 				56439B27AA657730554FE84A /* block_builder.h in Headers */,
 				F90CAD0FC189B7DC71007DA7 /* filter_block.h in Headers */,
 				9A3CF331365EA997C962DCF5 /* format.h in Headers */,
+				EB0090791E1BF23D00680DB8 /* ABPFilterParser.h in Headers */,
 				8C3AB1D6EF08514FD714B10A /* iterator_wrapper.h in Headers */,
+				EB0090841E1BF23D00680DB8 /* base.h in Headers */,
+				EB00909E1E1BF23D00680DB8 /* cosmeticFilter.h in Headers */,
 				07A2E57EFF8E47EB72D8FEE3 /* merger.h in Headers */,
 				678B238DB54F5D618481FEBE /* two_level_iterator.h in Headers */,
 				0A5B1B5CA22425374E4B314C /* arena.h in Headers */,
@@ -2929,26 +2961,23 @@
 				DD5E172A2A502EBEEAB77E61 /* posix_logger.h in Headers */,
 				2693462AAD80728B82279A60 /* random.h in Headers */,
 				E39C2782941C47224F91EAF6 /* testharness.h in Headers */,
+				EB009BB11E1BF44200680DB8 /* HashSet.h in Headers */,
 				EF875F2BA5E1EB136ADE64CA /* testutil.h in Headers */,
 				BF983D0715644F1AB0F23E68 /* NSData+GZIP.h in Headers */,
 				C6FF450832F5A645F9E9ECF9 /* NSFileManager+Tar.h in Headers */,
 				ECFAE4736B3C8EE254C6E149 /* ODRefreshControl.h in Headers */,
 				F1D4718E1D777C7C007B443D /* OnePasswordExtension.h in Headers */,
+				EB009BAF1E1BF44200680DB8 /* HashItem.h in Headers */,
 				E8A10AA61C5538355063C087 /* SwizzlingToHideSharePicker.h in Headers */,
 				61464FBEE20CE5E041C799A2 /* ABPFilterLibWrapper.h in Headers */,
 				B18C45C6E899AE3490F9B440 /* HttpsEverywhere.h in Headers */,
+				EB00A3091E1BF4CC00680DB8 /* hashFn.h in Headers */,
 				96C1D7CEFCE19E5B2EC3D373 /* HttpsEverywhereObjC.h in Headers */,
 				129F75A2C001AFAD31782003 /* JsonCpp.h in Headers */,
 				F237A2C22591D2085E22F775 /* RecentlyUsedCache.h in Headers */,
 				405935E0D61BE696766F34A4 /* TrackingProtectionCpp.h in Headers */,
 				91B616C06F625A75262F47D9 /* LegacyJSContext.h in Headers */,
 				0003A89A0675A5DA1F9B0752 /* WebViewDocScale.h in Headers */,
-				B7B5B27F05E78F55751580BF /* ABPFilterParser.h in Headers */,
-				658955A1457DA35A1878CB0C /* BloomFilter.h in Headers */,
-				510CCA37B412E8175AC029E4 /* hashFn.h in Headers */,
-				9E40A64898564A86FB8FE825 /* HashItem.h in Headers */,
-				3707DD80479CB3FC1CD7231F /* HashSet.h in Headers */,
-				92B5106CE3238BECC9CEF05A /* cosmeticFilter.h in Headers */,
 				49EC58027D98E205CF632DCF /* FirstPartyHost.h in Headers */,
 				7FB94B0D2DE4CE146F113E90 /* TPParser.h in Headers */,
 			);
@@ -3749,6 +3778,7 @@
 				002B85CD8B3F1E96C50DBAA1 /* options.cc in Sources */,
 				D974018CF8F1728469457616 /* status.cc in Sources */,
 				8C1EF9076148B5DE1EEC4A0B /* testharness.cc in Sources */,
+				EB00909F1E1BF23D00680DB8 /* filter.cpp in Sources */,
 				5F05A9BDFA985F96C2CFCA35 /* testutil.cc in Sources */,
 				23699E7ECA45D2C23FFEB992 /* NSData+GZIP.m in Sources */,
 				736EF030429F5288A4EDE179 /* NSFileManager+Tar.m in Sources */,
@@ -3803,11 +3833,6 @@
 				C5A2E6F2033E5897F1F43AD7 /* WebViewDocScale.m in Sources */,
 				5B352CB4FE3A4ED634975490 /* WebViewProgress.swift in Sources */,
 				968634F419DEA85A0922394A /* WebViewScripting.swift in Sources */,
-				592036CE6D10474A5F1A6A0F /* ABPFilterParser.cpp in Sources */,
-				1BCE28AC15D1870A4B2DE65A /* filter.cpp in Sources */,
-				306ED68A266F87F2F71F7F78 /* BloomFilter.cpp in Sources */,
-				CB4FAC73BBE8432291B82EEB /* HashSet.cpp in Sources */,
-				E7CFA1FE7C250B7864A900CE /* cosmeticFilter.cpp in Sources */,
 				CCAC3364419AA9AB527A29B9 /* TPParser.cpp in Sources */,
 				D50043B62400690CFBBB5859 /* AdjustIntegration.swift in Sources */,
 				5E6571D452F3C000461D2481 /* AppDelegate.swift in Sources */,
@@ -3837,13 +3862,16 @@
 				C1F07A6A18FC4630EA937E6B /* BrowserViewController+ReaderModeDelegate.swift in Sources */,
 				24F13EC5A582B77E0F00EB61 /* BrowserViewController+TabManagerDelegate.swift in Sources */,
 				969DAF9437DD60D2DE8021A0 /* BrowserViewController+ToolbarAndUrlbarDelegate.swift in Sources */,
+				EB009BB01E1BF44200680DB8 /* HashSet.cpp in Sources */,
 				2AC0D22C9C73296D030162EE /* BrowserViewController+WKNavigationDelegate.swift in Sources */,
 				10EAA024996482D72088EBEF /* BrowserViewController+WKUIDelegate.swift in Sources */,
 				0857095CBFE00F31F190C638 /* BrowserViewController.swift in Sources */,
 				A90DB45DF991E67B7130B8BB /* ContextMenuHelper.swift in Sources */,
 				DD024D7E481298ACAB9EF286 /* ErrorPageHelper.swift in Sources */,
+				EB00A3081E1BF4CC00680DB8 /* hashFn.cpp in Sources */,
 				91B903FBE39F640B651928D0 /* FaviconManager.swift in Sources */,
 				B12303762D2ADF302DF8F575 /* FindInPageBar.swift in Sources */,
+				EB00909D1E1BF23D00680DB8 /* cosmeticFilter.cpp in Sources */,
 				57A89B3DB802440164DBCA3E /* FindInPageHelper.swift in Sources */,
 				BAE512B7D2251A8207EBA7D4 /* LoginsHelper.swift in Sources */,
 				B2A8F582025AD68DE57BBCFB /* OpenPdfHelper.swift in Sources */,
@@ -3861,9 +3889,11 @@
 				5CFC706D1D9D9F30008A7B7A /* BraveTermsViewController.swift in Sources */,
 				D84AAF7ADCD719C5A45AFCEE /* SwipeAnimator.swift in Sources */,
 				3D25335ED4A5C9DA042516E9 /* TabManager.swift in Sources */,
+				EB0090781E1BF23D00680DB8 /* ABPFilterParser.cpp in Sources */,
 				EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */,
 				1A23068D5E66CD83B1512D15 /* URIFixup.swift in Sources */,
 				7A4740A67EFB857AA6E9944A /* URLBarView.swift in Sources */,
+				EB00A2F51E1BF4CC00680DB8 /* BloomFilter.cpp in Sources */,
 				5F4A4A111C9E46036CF35F76 /* WindowCloseHelper.swift in Sources */,
 				68450568B88EB41CBF2CF6B0 /* BookmarksPanel.swift in Sources */,
 				162A3AF42CC684A194F305D6 /* HistoryPanel.swift in Sources */,
@@ -4069,7 +4099,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
-				
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4097,7 +4126,6 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
-				
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4128,7 +4156,6 @@
 		2FCAE2381ABB51F900877008 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -4200,7 +4227,6 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;
-				
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4240,7 +4266,6 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
-				
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4291,7 +4316,6 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 5;
 				DEFINES_MODULE = YES;
-				
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4346,7 +4370,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4391,7 +4414,6 @@
 				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4442,7 +4464,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4474,7 +4495,6 @@
 				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 5;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -4502,7 +4522,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -4522,7 +4541,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -4556,7 +4574,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4583,7 +4600,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = BraveShareTo/BraveShareToInfo.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
@@ -4614,7 +4630,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -4643,7 +4658,6 @@
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -4665,7 +4679,6 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = brave/tests_src/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -4681,7 +4694,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -4705,7 +4717,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -4724,7 +4735,6 @@
 		EB8E9B691C7CB4E1003AA90E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -4799,7 +4809,6 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = brave/Brave.entitlements;
-				
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
