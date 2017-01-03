@@ -433,12 +433,7 @@
 		EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12F8F9AA927469C395A01A8 /* TabTrayController.swift */; };
 		EA57C937929B9D79638AE0C2 /* SupportUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2B94BA962519A13DDE91E3 /* SupportUtils.swift */; };
 		EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */ = {isa = PBXBuildFile; fileRef = 421F3D5F398D03429D10C994 /* thread_annotations.h */; };
-		EB0090781E1BF23D00680DB8 /* ABPFilterParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0088621E1BF23800680DB8 /* ABPFilterParser.cpp */; };
-		EB0090791E1BF23D00680DB8 /* ABPFilterParser.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0088631E1BF23800680DB8 /* ABPFilterParser.h */; };
 		EB0090841E1BF23D00680DB8 /* base.h in Headers */ = {isa = PBXBuildFile; fileRef = EB00886E1E1BF23800680DB8 /* base.h */; };
-		EB00909D1E1BF23D00680DB8 /* cosmeticFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0088951E1BF23800680DB8 /* cosmeticFilter.cpp */; };
-		EB00909E1E1BF23D00680DB8 /* cosmeticFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0088961E1BF23800680DB8 /* cosmeticFilter.h */; };
-		EB00909F1E1BF23D00680DB8 /* filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0088971E1BF23800680DB8 /* filter.cpp */; };
 		EB0090A01E1BF23D00680DB8 /* filter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0088981E1BF23800680DB8 /* filter.h */; };
 		EB009BAF1E1BF44200680DB8 /* HashItem.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0097E21E1BF44000680DB8 /* HashItem.h */; };
 		EB009BB01E1BF44200680DB8 /* HashSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0097E31E1BF44000680DB8 /* HashSet.cpp */; };
@@ -447,6 +442,11 @@
 		EB00A2F61E1BF4CC00680DB8 /* BloomFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB009F1F1E1BF4CA00680DB8 /* BloomFilter.h */; };
 		EB00A3081E1BF4CC00680DB8 /* hashFn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB009F391E1BF4CA00680DB8 /* hashFn.cpp */; };
 		EB00A3091E1BF4CC00680DB8 /* hashFn.h in Headers */ = {isa = PBXBuildFile; fileRef = EB009F3A1E1BF4CA00680DB8 /* hashFn.h */; };
+		EB00A6871E1C071000680DB8 /* ad_block_client.cc in Sources */ = {isa = PBXBuildFile; fileRef = EB00A6831E1C071000680DB8 /* ad_block_client.cc */; };
+		EB00A6881E1C071000680DB8 /* ad_block_client.h in Headers */ = {isa = PBXBuildFile; fileRef = EB00A6841E1C071000680DB8 /* ad_block_client.h */; };
+		EB00A6891E1C071000680DB8 /* cosmetic_filter.cc in Sources */ = {isa = PBXBuildFile; fileRef = EB00A6851E1C071000680DB8 /* cosmetic_filter.cc */; };
+		EB00A68A1E1C071000680DB8 /* cosmetic_filter.h in Headers */ = {isa = PBXBuildFile; fileRef = EB00A6861E1C071000680DB8 /* cosmetic_filter.h */; };
+		EB00A68C1E1C079800680DB8 /* filter.cc in Sources */ = {isa = PBXBuildFile; fileRef = EB00A68B1E1C079800680DB8 /* filter.cc */; };
 		EB1D65801DF7337100F2E3AE /* ReaderModeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */; };
 		EB1E55881D9EE37C008545DC /* IntroScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB36616C1D9C3CEC00445C92 /* IntroScreenTest.swift */; };
 		EB288679122425F037A1375C /* InnerStrokedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15432E6C3B2273969569F01D /* InnerStrokedView.swift */; };
@@ -1223,12 +1223,7 @@
 		EA85A2F9F4AF9C5BAB2EF608 /* SeparatorTableCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SeparatorTableCell.swift; path = ./Client/Frontend/Widgets/SeparatorTableCell.swift; sourceTree = "<group>"; };
 		EA9AEBF65F0394D67D7135DC /* CertStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CertStore.swift; path = ./Storage/CertStore.swift; sourceTree = "<group>"; };
 		EAF179D957607D89D4BDC9A3 /* crc32c.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = crc32c.h; path = ./brave/ThirdParty/leveldb/util/crc32c.h; sourceTree = "<group>"; };
-		EB0088621E1BF23800680DB8 /* ABPFilterParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ABPFilterParser.cpp; sourceTree = "<group>"; };
-		EB0088631E1BF23800680DB8 /* ABPFilterParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABPFilterParser.h; sourceTree = "<group>"; };
 		EB00886E1E1BF23800680DB8 /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
-		EB0088951E1BF23800680DB8 /* cosmeticFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cosmeticFilter.cpp; sourceTree = "<group>"; };
-		EB0088961E1BF23800680DB8 /* cosmeticFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cosmeticFilter.h; sourceTree = "<group>"; };
-		EB0088971E1BF23800680DB8 /* filter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter.cpp; sourceTree = "<group>"; };
 		EB0088981E1BF23800680DB8 /* filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filter.h; sourceTree = "<group>"; };
 		EB0097E21E1BF44000680DB8 /* HashItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HashItem.h; sourceTree = "<group>"; };
 		EB0097E31E1BF44000680DB8 /* HashSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HashSet.cpp; sourceTree = "<group>"; };
@@ -1237,6 +1232,11 @@
 		EB009F1F1E1BF4CA00680DB8 /* BloomFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BloomFilter.h; sourceTree = "<group>"; };
 		EB009F391E1BF4CA00680DB8 /* hashFn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hashFn.cpp; sourceTree = "<group>"; };
 		EB009F3A1E1BF4CA00680DB8 /* hashFn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashFn.h; sourceTree = "<group>"; };
+		EB00A6831E1C071000680DB8 /* ad_block_client.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ad_block_client.cc; sourceTree = "<group>"; };
+		EB00A6841E1C071000680DB8 /* ad_block_client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ad_block_client.h; sourceTree = "<group>"; };
+		EB00A6851E1C071000680DB8 /* cosmetic_filter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cosmetic_filter.cc; sourceTree = "<group>"; };
+		EB00A6861E1C071000680DB8 /* cosmetic_filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cosmetic_filter.h; sourceTree = "<group>"; };
+		EB00A68B1E1C079800680DB8 /* filter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filter.cc; sourceTree = "<group>"; };
 		EB0F42511C9A46D800676650 /* BraveShareTo.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BraveShareTo.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB1D657F1DF7337100F2E3AE /* ReaderModeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModeTest.swift; sourceTree = "<group>"; };
 		EB2EA75DA2EE7408103FF27D /* NSURLProtectionSpaceExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NSURLProtectionSpaceExtensions.swift; path = ./Utils/Extensions/NSURLProtectionSpaceExtensions.swift; sourceTree = "<group>"; };
@@ -2634,15 +2634,15 @@
 		EB00885E1E1BF23800680DB8 /* ad-block */ = {
 			isa = PBXGroup;
 			children = (
+				EB00A6831E1C071000680DB8 /* ad_block_client.cc */,
+				EB00A6841E1C071000680DB8 /* ad_block_client.h */,
+				EB00A6851E1C071000680DB8 /* cosmetic_filter.cc */,
+				EB00A6861E1C071000680DB8 /* cosmetic_filter.h */,
 				EB009F141E1BF4CA00680DB8 /* bloom-filter-cpp */,
 				EB0097C51E1BF44000680DB8 /* hashset-cpp */,
-				EB0088621E1BF23800680DB8 /* ABPFilterParser.cpp */,
-				EB0088631E1BF23800680DB8 /* ABPFilterParser.h */,
 				EB00886E1E1BF23800680DB8 /* base.h */,
-				EB0088951E1BF23800680DB8 /* cosmeticFilter.cpp */,
-				EB0088961E1BF23800680DB8 /* cosmeticFilter.h */,
-				EB0088971E1BF23800680DB8 /* filter.cpp */,
 				EB0088981E1BF23800680DB8 /* filter.h */,
+				EB00A68B1E1C079800680DB8 /* filter.cc */,
 			);
 			name = "ad-block";
 			path = "brave/node_modules/ad-block";
@@ -2939,16 +2939,15 @@
 				49B0DDB0C82A7C833ED598C0 /* atomic_pointer.h in Headers */,
 				99A8ED133A5230AFA8C7BEA2 /* port.h in Headers */,
 				F6E88652464919F38A8A93DA /* port_example.h in Headers */,
+				EB00A6881E1C071000680DB8 /* ad_block_client.h in Headers */,
 				E04B515A88DAC58FCCF4E991 /* port_posix.h in Headers */,
 				EAF3EC8A333CDF89EAF36E30 /* thread_annotations.h in Headers */,
 				B64FB3A60347666F539215A8 /* block_.h in Headers */,
 				56439B27AA657730554FE84A /* block_builder.h in Headers */,
 				F90CAD0FC189B7DC71007DA7 /* filter_block.h in Headers */,
 				9A3CF331365EA997C962DCF5 /* format.h in Headers */,
-				EB0090791E1BF23D00680DB8 /* ABPFilterParser.h in Headers */,
 				8C3AB1D6EF08514FD714B10A /* iterator_wrapper.h in Headers */,
 				EB0090841E1BF23D00680DB8 /* base.h in Headers */,
-				EB00909E1E1BF23D00680DB8 /* cosmeticFilter.h in Headers */,
 				07A2E57EFF8E47EB72D8FEE3 /* merger.h in Headers */,
 				678B238DB54F5D618481FEBE /* two_level_iterator.h in Headers */,
 				0A5B1B5CA22425374E4B314C /* arena.h in Headers */,
@@ -2972,6 +2971,7 @@
 				61464FBEE20CE5E041C799A2 /* ABPFilterLibWrapper.h in Headers */,
 				B18C45C6E899AE3490F9B440 /* HttpsEverywhere.h in Headers */,
 				EB00A3091E1BF4CC00680DB8 /* hashFn.h in Headers */,
+				EB00A68A1E1C071000680DB8 /* cosmetic_filter.h in Headers */,
 				96C1D7CEFCE19E5B2EC3D373 /* HttpsEverywhereObjC.h in Headers */,
 				129F75A2C001AFAD31782003 /* JsonCpp.h in Headers */,
 				F237A2C22591D2085E22F775 /* RecentlyUsedCache.h in Headers */,
@@ -3775,10 +3775,10 @@
 				9EAB0C6103188CF38E86ED36 /* hash.cc in Sources */,
 				E4CB04CE57189DE29391DA11 /* histogram.cc in Sources */,
 				E77C749FCE7245FCCE69C315 /* logging.cc in Sources */,
+				EB00A6891E1C071000680DB8 /* cosmetic_filter.cc in Sources */,
 				002B85CD8B3F1E96C50DBAA1 /* options.cc in Sources */,
 				D974018CF8F1728469457616 /* status.cc in Sources */,
 				8C1EF9076148B5DE1EEC4A0B /* testharness.cc in Sources */,
-				EB00909F1E1BF23D00680DB8 /* filter.cpp in Sources */,
 				5F05A9BDFA985F96C2CFCA35 /* testutil.cc in Sources */,
 				23699E7ECA45D2C23FFEB992 /* NSData+GZIP.m in Sources */,
 				736EF030429F5288A4EDE179 /* NSFileManager+Tar.m in Sources */,
@@ -3793,6 +3793,7 @@
 				6287F57212354177AA5D5F28 /* BraveURLBarView.swift in Sources */,
 				F1D4718F1D777C7C007B443D /* OnePasswordExtension.m in Sources */,
 				D36C19A448AA81DB6DFD701D /* BraveUX.swift in Sources */,
+				EB00A68C1E1C079800680DB8 /* filter.cc in Sources */,
 				3EB8444F3C93E29BB8817AF7 /* HistorySwiper.swift in Sources */,
 				86D123F20829658238ECF3A8 /* ODRefreshControl.m in Sources */,
 				778AC5C1DE79E2AE7550D92E /* PicklistSetting.swift in Sources */,
@@ -3871,7 +3872,6 @@
 				EB00A3081E1BF4CC00680DB8 /* hashFn.cpp in Sources */,
 				91B903FBE39F640B651928D0 /* FaviconManager.swift in Sources */,
 				B12303762D2ADF302DF8F575 /* FindInPageBar.swift in Sources */,
-				EB00909D1E1BF23D00680DB8 /* cosmeticFilter.cpp in Sources */,
 				57A89B3DB802440164DBCA3E /* FindInPageHelper.swift in Sources */,
 				BAE512B7D2251A8207EBA7D4 /* LoginsHelper.swift in Sources */,
 				B2A8F582025AD68DE57BBCFB /* OpenPdfHelper.swift in Sources */,
@@ -3889,7 +3889,6 @@
 				5CFC706D1D9D9F30008A7B7A /* BraveTermsViewController.swift in Sources */,
 				D84AAF7ADCD719C5A45AFCEE /* SwipeAnimator.swift in Sources */,
 				3D25335ED4A5C9DA042516E9 /* TabManager.swift in Sources */,
-				EB0090781E1BF23D00680DB8 /* ABPFilterParser.cpp in Sources */,
 				EA13B15D4D6AF3EAC2B3177D /* TabTrayController.swift in Sources */,
 				1A23068D5E66CD83B1512D15 /* URIFixup.swift in Sources */,
 				7A4740A67EFB857AA6E9944A /* URLBarView.swift in Sources */,
@@ -3939,6 +3938,7 @@
 				0A7F5B77B9A8F11B77C97932 /* SiteTableViewController.swift in Sources */,
 				7677FD8B0A94937517A4F68C /* SnackBar.swift in Sources */,
 				BC5B2AD9C9E60D1E150E93FE /* TabsButton.swift in Sources */,
+				EB00A6871E1C071000680DB8 /* ad_block_client.cc in Sources */,
 				BD9C531DFE96D6AAFAE33103 /* Theme.swift in Sources */,
 				10443C68C8505F7FDDE1C6F2 /* ThumbnailCell.swift in Sources */,
 				E9788E828C3C9FEF2E9BD34E /* ToggleButton.swift in Sources */,
