@@ -93,4 +93,29 @@ class BookmarksTest: XCTestCase {
         // close the panel (bug #448)
         app.coordinateWithNormalizedOffset(CGVector(dx: UIScreen.mainScreen().bounds.width, dy:  UIScreen.mainScreen().bounds.height)).tap()
     }
+    
+    func testBookmarkNameEncoding() {
+        UITestUtils.restart(["BRAVE-DELETE-BOOKMARKS"])
+        let app = XCUIApplication()
+        
+        addGoogleAsFirstBookmark()
+
+        let elementsQuery = app.scrollViews.otherElements
+        let toolbarsQuery = elementsQuery.toolbars
+        let googleText = "Google"
+        let testingText = " Te'sti\"ng"
+        
+        toolbarsQuery.buttons["Edit"].tap()
+        
+        elementsQuery.tables["SiteTable"].staticTexts[googleText].tap()
+        elementsQuery.tables.staticTexts["Name"].tap()
+        app.typeText(testingText)
+        
+        elementsQuery.navigationBars["Bookmarks"].buttons["Bookmarks"].tap()
+        toolbarsQuery.buttons["Done"].tap()
+
+        // Make sure single item (didn't duplicate)
+        XCTAssertEqual(app.scrollViews.otherElements.tables["SiteTable"].cells.count, 1)
+        XCTAssertTrue(elementsQuery.tables["SiteTable"].staticTexts[googleText + testingText].exists)
+    }
 }
