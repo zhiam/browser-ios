@@ -19,8 +19,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     let topButtonsView = UIView()
     let addBookmarkButton = UIButton()
 
-    let triangleView = UIImageView()
-
     let divider = UIView()
 
     override func viewDidLoad() {
@@ -37,7 +35,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         bookmarksNavController.view.backgroundColor = UIColor.whiteColor()
         containerView.addSubview(topButtonsView)
 
-        topButtonsView.addSubview(triangleView)
         topButtonsView.addSubview(bookmarksButton)
         topButtonsView.addSubview(historyButton)
         topButtonsView.addSubview(addBookmarkButton)
@@ -45,10 +42,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         topButtonsView.addSubview(divider)
 
         divider.backgroundColor = UIColor.grayColor()
-
-        triangleView.image = UIImage(named: "triangle-nub")
-        triangleView.contentMode = UIViewContentMode.Center
-        triangleView.alpha = 0.9
 
         settingsButton.setImage(UIImage(named: "settings")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         settingsButton.addTarget(self, action: #selector(onClickSettingsButton), forControlEvents: .TouchUpInside)
@@ -214,23 +207,11 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     func showBookmarks() {
         history.view.hidden = true
         bookmarksNavController.view.hidden = false
-        moveTabIndicator(bookmarksButton)
     }
 
     func showHistory() {
         bookmarksNavController.view.hidden = true
         history.view.hidden = false
-        moveTabIndicator(historyButton)
-    }
-
-    func moveTabIndicator(button: UIButton) {
-        triangleView.snp_remakeConstraints {
-            make in
-            make.width.equalTo(button)
-            make.height.equalTo(6)
-            make.left.equalTo(button)
-            make.top.equalTo(button.snp_bottom)
-        }
     }
 
     override func setHomePanelDelegate(delegate: HomePanelDelegate?) {
