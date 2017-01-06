@@ -127,4 +127,29 @@ class BookmarksTest: XCTestCase {
         XCTAssertEqual(app.scrollViews.otherElements.tables["SiteTable"].cells.count, 1)
         XCTAssertTrue(elementsQuery.tables["SiteTable"].staticTexts[googleText + testingText].exists)
     }
+    
+    func testAddingBookmarkToFolder() {
+        UITestUtils.restart(["BRAVE-DELETE-BOOKMARKS"])
+        let app = XCUIApplication()
+        let elementsQuery = app.scrollViews.otherElements
+        let toolbarsQuery = elementsQuery.toolbars
+        let name = "Foo"
+        
+        UITestUtils.loadSite(app, "www.google.com")
+        
+        openBookmarks()
+        createFolder(name)
+        
+        toolbarsQuery.buttons["Done"].tap()
+        elementsQuery.tables["SiteTable"].staticTexts[name].tap()
+
+        XCTAssertEqual(app.tables.element.cells.count, 0)
+        app.scrollViews.otherElements.buttons["Add Bookmark"].tap()
+        XCTAssertEqual(app.tables.element.cells.count, 1)
+        
+        elementsQuery.navigationBars[name].buttons["Bookmarks"].tap()
+        
+        // Should only be Foo
+        XCTAssertEqual(app.scrollViews.otherElements.tables["SiteTable"].cells.count, 1)
+    }
 }
