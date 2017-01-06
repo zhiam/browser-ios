@@ -5,19 +5,35 @@ import XCTest
 
 class BookmarksTest: XCTestCase {
 
+    private func openBookmarks() {
+        let app = XCUIApplication()
+        let bookmarksAndHistoryPanelButton = app.buttons["Bookmarks and History Panel"]
+        bookmarksAndHistoryPanelButton.tap()
+        
+        app.scrollViews.otherElements.buttons["Show Bookmarks"].tap()
+    }
+    
     private func addGoogleAsFirstBookmark() {
         let app = XCUIApplication()
         UITestUtils.loadSite(app, "www.google.com")
-
-        let bookmarksAndHistoryPanelButton = app.buttons["Bookmarks and History Panel"]
-        bookmarksAndHistoryPanelButton.tap()
-
-        let elementsQuery = app.scrollViews.otherElements
-        elementsQuery.buttons["Show Bookmarks"].tap()
+        openBookmarks()
 
         let bmCount = app.tables.element.cells.count
-        elementsQuery.buttons["Add Bookmark"].tap()
+        app.scrollViews.otherElements.buttons["Add Bookmark"].tap()
         XCTAssert(app.tables.element.cells.count > bmCount)
+    }
+    
+    // Requries bookmark page being open
+    private func createFolder(title: String) {
+        let app = XCUIApplication()
+        let toolbarsQuery = app.scrollViews.otherElements.toolbars
+        toolbarsQuery.buttons["Edit"].tap()
+        toolbarsQuery.buttons["New Folder"].tap()
+        
+        let collectionViewsQuery = app.alerts["New Folder"].collectionViews
+        collectionViewsQuery.textFields["<folder name>"].typeText("Foo")
+        app.buttons["OK"].tap()
+        // Stay in edit mode
     }
 
     func testAddDeleteBookmark() {
@@ -63,32 +79,25 @@ class BookmarksTest: XCTestCase {
 
     func testFolderNav() {
         UITestUtils.restart(["BRAVE-DELETE-BOOKMARKS"])
-        let app = XCUIApplication()
-
         addGoogleAsFirstBookmark()
-
-        let toolbarsQuery = app.scrollViews.otherElements.toolbars
-        toolbarsQuery.buttons["Edit"].tap()
-        toolbarsQuery.buttons["New Folder"].tap()
-
-        let collectionViewsQuery = app.alerts["New Folder"].collectionViews
-        collectionViewsQuery.textFields["<folder name>"].typeText("Foo")
-        app.buttons["OK"].tap()
-        app.scrollViews.otherElements.tables["SiteTable"].staticTexts["Google"].tap()
-
-
-        app.scrollViews.otherElements.tables.staticTexts["Root Folder"].tap()
-        app.pickerWheels.elementBoundByIndex(0).adjustToPickerWheelValue("Foo")
+        createFolder("Foo")
+        
+        let app = XCUIApplication()
         let elementsQuery = app.scrollViews.otherElements
+        let toolbarsQuery = elementsQuery.toolbars
+    
+        elementsQuery.tables["SiteTable"].staticTexts["Google"].tap()
+        elementsQuery.tables.staticTexts["Root Folder"].tap()
+        app.pickerWheels.elementBoundByIndex(0).adjustToPickerWheelValue("Foo")
         elementsQuery.navigationBars["Bookmarks"].buttons["Bookmarks"].tap()
 
         XCTAssert(app.scrollViews.otherElements.tables["SiteTable"].cells.count == 1)
 
         toolbarsQuery.buttons["Done"].tap()
 
-        app.scrollViews.otherElements.tables["SiteTable"].staticTexts["Foo"].tap()
+        elementsQuery.tables["SiteTable"].staticTexts["Foo"].tap()
         toolbarsQuery.buttons["Edit"].tap()
-        app.scrollViews.otherElements.tables["SiteTable"].staticTexts["Google"].tap()
+        elementsQuery.tables["SiteTable"].staticTexts["Google"].tap()
 
         // close the panel (bug #448)
         app.coordinateWithNormalizedOffset(CGVector(dx: UIScreen.mainScreen().bounds.width, dy:  UIScreen.mainScreen().bounds.height)).tap()
