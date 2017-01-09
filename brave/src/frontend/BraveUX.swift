@@ -81,7 +81,10 @@ struct BraveUX {
 
     static let CancelTextColor = LocationBarTextColor
     // The toolbar button color (for the Normal state). Using default highlight color ATM
-    static let ActionButtonTintColor = LocationBarTextColor
+    static let ActionButtonTintColor = UIColor.blackColor()
+    
+    // The toolbar button color when (for the Selected state).
+    static let ActionButtonSelectedTintColor = UIColor(red: 77/255.0, green: 169/255.0, blue: 245/255.0, alpha: 1.0)
 
     static let AutocompleteTextFieldHighlightColor = UIColor(colorLiteralRed: 0/255.0, green: 118/255.0, blue: 255/255.0, alpha: 1.0)
 
