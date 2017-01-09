@@ -330,7 +330,8 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         let toolbarHeight = CGFloat(44)
         editBookmarksToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: width, height: toolbarHeight))
         createEditBookmarksToolbar()
-        editBookmarksToolbar.barTintColor = UIColor(white: 225/255.0, alpha: 1.0)
+        editBookmarksToolbar.barTintColor = BraveUX.BackgroundColorForSidebarHeaders
+        editBookmarksToolbar.translucent = false
         
         self.view.addSubview(editBookmarksToolbar)
         
