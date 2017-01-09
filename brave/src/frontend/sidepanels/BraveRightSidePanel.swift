@@ -35,11 +35,12 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
     var siteNameContainerHeightConstraint: LayoutConstraint?
     var shieldsOverviewContainerHeightConstraint: LayoutConstraint?
 
-    let togglesContainer = UIView()
     let headerContainer = UIView()
+    // Shield description container on new tab page
+    let shieldsOverviewContainer = UIView()
     let siteNameContainer = UIView()
     let statsContainer = UIView()
-    let shieldsOverviewContainer = UIView()
+    let togglesContainer = UIView()
 
     let statAdsBlocked = UILabel()
     let statHttpsUpgrades = UILabel()
