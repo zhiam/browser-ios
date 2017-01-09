@@ -180,7 +180,7 @@ class BraveRightSidePanelViewController : SidePanelBaseViewController {
             })
         }
 
-        headerContainer.backgroundColor = UIColor(white: 93/255.0, alpha: 1.0)
+        headerContainer.backgroundColor = BraveUX.BackgroundColorForSidebarHeaders
         shieldsOverviewContainer.backgroundColor = UIColor.init(white: 252.0/255.0, alpha: 1.0)
         siteNameContainer.backgroundColor = UIColor(white: 230/255.0, alpha: 1.0)
         statsContainer.backgroundColor = UIColor(white: 244/255.0, alpha: 1.0)

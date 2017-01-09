@@ -28,9 +28,6 @@ class MainSidePanelViewController : SidePanelBaseViewController {
     override func setupUIElements() {
         super.setupUIElements()
         
-        //change the font used in the navigation controller header
-        let font = UIFont.boldSystemFontOfSize(14)
-        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName : font, NSForegroundColorAttributeName : UIColor.blackColor()];
         bookmarksNavController = UINavigationController(rootViewController: bookmarksPanel)
         bookmarksNavController.view.backgroundColor = UIColor.whiteColor()
         containerView.addSubview(topButtonsView)
@@ -41,7 +38,7 @@ class MainSidePanelViewController : SidePanelBaseViewController {
         topButtonsView.addSubview(settingsButton)
         topButtonsView.addSubview(divider)
 
-        divider.backgroundColor = UIColor.grayColor()
+        divider.backgroundColor = BraveUX.ColorForSidebarLineSeparators
 
         settingsButton.setImage(UIImage(named: "settings")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         settingsButton.addTarget(self, action: #selector(onClickSettingsButton), forControlEvents: .TouchUpInside)
@@ -166,10 +163,9 @@ class MainSidePanelViewController : SidePanelBaseViewController {
 
         divider.snp_remakeConstraints {
             make in
-            make.bottom.equalTo(self.topButtonsView).inset(8.0)
-            make.height.equalTo(UIConstants.ToolbarHeight - 18.0)
-            make.width.equalTo(2.0)
-            make.centerX.equalTo(self.topButtonsView).multipliedBy(0.5)
+            make.bottom.equalTo(self.topButtonsView)
+            make.width.equalTo(self.topButtonsView)
+            make.height.equalTo(1.0)
         }
 
         historyButton.snp_remakeConstraints {
