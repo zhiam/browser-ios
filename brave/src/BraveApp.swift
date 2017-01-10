@@ -79,10 +79,6 @@ class BraveApp {
                 }
             }
        #endif
-
-        postAsyncToMain(10) {
-            updateDauStat()
-        }
     }
 
     // Be aware: the Prefs object has not been created yet
@@ -198,6 +194,9 @@ class BraveApp {
     }
 
     @objc func willEnterForeground(_ : NSNotification) {
+        postAsyncToMain(10) {
+            BraveApp.updateDauStat()
+        }
     }
 
     class func shouldHandleOpenURL(components: NSURLComponents) -> Bool {

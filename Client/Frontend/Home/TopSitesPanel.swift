@@ -32,6 +32,7 @@ class TopSitesPanel: UIViewController {
     weak var homePanelDelegate: HomePanelDelegate?
     private lazy var emptyStateOverlayView: UIView = self.createEmptyStateOverlayView()
     private var collection: TopSitesCollectionView? = nil
+    private var braveShieldStatsView: BraveShieldStatsView? = nil
     private lazy var dataSource: TopSitesDataSource = {
         return TopSitesDataSource(profile: self.profile)
     }()
@@ -103,7 +104,9 @@ class TopSitesPanel: UIViewController {
         self.collection = collection
         
         let braveShieldStatsView = BraveShieldStatsView(frame: CGRectZero)
+        braveShieldStatsView.hidden = true
         collection.addSubview(braveShieldStatsView)
+        self.braveShieldStatsView = braveShieldStatsView
         
         // Could setup as section header but would need to use flow layout,
         // Auto-layout subview within collection doesn't work properly,
@@ -181,6 +184,7 @@ class TopSitesPanel: UIViewController {
             }
         } else {
             self.emptyStateOverlayView.removeFromSuperview()
+            self.braveShieldStatsView?.hidden = false
         }
     }
 

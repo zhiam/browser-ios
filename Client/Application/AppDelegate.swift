@@ -320,7 +320,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         shutdownProfileWhenNotActive()
         BraveGlobalShieldStats.singleton.save()
     }
-    
+
+    func applicationWillResignActive(application: UIApplication) {
+        BraveGlobalShieldStats.singleton.save()
+    }
+
     func applicationWillEnterForeground(application: UIApplication) {
         // The reason we need to call this method here instead of `applicationDidBecomeActive`
         // is that this method is only invoked whenever the application is entering the foreground where as 
