@@ -47,7 +47,7 @@ class SidePanelBaseViewController : UIViewController {
 
         view.addSubview(containerView)
         setupContainerViewSize()
-        containerView.backgroundColor = BraveUX.BackgroundColorForSidebarHeaders
+        containerView.backgroundColor = BraveUX.BackgroundColorForSideToolbars
 
         view.hidden = true
     }
