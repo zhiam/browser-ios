@@ -22,8 +22,8 @@ class BraveBrowserViewController : BrowserViewController {
         headerBackdrop.alpha = 0
         headerBackdrop.hidden = true
 
-        header.blurStyle = .Dark
-        footerBackground?.blurStyle = .Dark
+        header.blurStyle = .Light
+        footerBackground?.blurStyle = .Light
 
         toolbar?.applyTheme(themeName)
     }
