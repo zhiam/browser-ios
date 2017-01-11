@@ -25,14 +25,6 @@ struct TabTrayControllerUX {
     static let NumberOfColumnsThin = 1
     static let NumberOfColumnsWide = 3
     static let CompactNumberOfColumnsThin = 2
-
-    // Moved from UIConstants temporarily until animation code is merged
-    static var StatusBarHeight: CGFloat {
-        if UIScreen.mainScreen().traitCollection.verticalSizeClass == .Compact {
-            return 0
-        }
-        return 20
-    }
 }
 
 struct LightTabCellUX {
