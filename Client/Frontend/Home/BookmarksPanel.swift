@@ -321,11 +321,17 @@ class BookmarksPanel: SiteTableViewController, HomePanel {
         
         tableView.allowsSelectionDuringEditing = true
         
+        let navBar = self.navigationController?.navigationBar
+        navBar?.barTintColor = BraveUX.BackgroundColorForSidebarHeaders
+        navBar?.translucent = false
+        navBar?.titleTextAttributes = [NSFontAttributeName : UIFont.systemFontOfSize(20), NSForegroundColorAttributeName : UIColor.blackColor()]
+        
         let width = self.view.bounds.size.width
         let toolbarHeight = CGFloat(44)
         editBookmarksToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: width, height: toolbarHeight))
         createEditBookmarksToolbar()
-        editBookmarksToolbar.barTintColor = UIColor(white: 225/255.0, alpha: 1.0)
+        editBookmarksToolbar.barTintColor = BraveUX.BackgroundColorForSidebarHeaders
+        editBookmarksToolbar.translucent = false
         
         self.view.addSubview(editBookmarksToolbar)
         
