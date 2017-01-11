@@ -46,7 +46,7 @@ class TabsBarViewController: UIViewController {
         }
 
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            plusButton.setImage(UIImage(named: "add-16px")!.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+            plusButton.setImage(UIImage(named: "add")!.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
             plusButton.imageEdgeInsets = UIEdgeInsetsMake(6, 6, 6, 10)
             plusButton.tintColor = UIColor.whiteColor()
             plusButton.contentMode = .ScaleAspectFit
