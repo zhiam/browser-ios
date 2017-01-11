@@ -6,15 +6,31 @@ var urls = ["teads.tv",
 "tubemogul.com",
 "sitescout.com",
 "sharethrough.com"]
+  
+  var asyncLoop = function(o){
+    var i=-1;
 
-function reqListener () {
-  console.log(this.responseText);
+    var loop = function(){
+        i++;
+        if(i==o.length){o.callback(); return;}
+        o.functionToLoop(loop, i);
+    } 
+    loop();//init
 }
 
-for (int i = 0; i < urls.length; i++) {
- var oReq = new XMLHttpRequest();
- oReq.addEventListener("load", reqListener);
- oReq.open("GET", "http://" + urls[i]);
- oReq.send();
-}
+asyncLoop({
+    length : urls.length,
+    functionToLoop : function(loop, i){
+        setTimeout(function() {
+          
+  var img = document.createElement('img');
+  img.src='http://' + urls[i];
+  document.body.appendChild(img);
+            
+            loop();
+        },1000);
+    },
+    callback : function() {}    
+});
+
 </script>
