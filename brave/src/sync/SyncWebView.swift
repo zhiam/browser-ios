@@ -1,6 +1,20 @@
 import UIKit
 import WebKit
 
+/*
+ var http = new XMLHttpRequest();
+ var url = "https://sync-staging.brave.com/abcdefg/credentials";
+ var params = "";
+ http.open("POST", url, true);
+ http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ http.onreadystatechange = function() {
+     if(http.readyState == 4 && http.status == 200) {
+         alert(http.responseText);
+     }
+ }
+ http.send(params);
+ */
+
 class SyncWebView: UIViewController, WKScriptMessageHandler {
     var webView: WKWebView!
 
@@ -9,8 +23,8 @@ class SyncWebView: UIViewController, WKScriptMessageHandler {
             let webCfg = WKWebViewConfiguration()
             let userController = WKUserContentController()
 
-            ["fetch", "bundle", "ios-sync"].forEach() {
-                userController.addUserScript(WKUserScript(source: getScript($0), injectionTime: .AtDocumentStart, forMainFrameOnly: true))
+            ["fetch", "ios-sync", "bundle"].forEach() {
+                userController.addUserScript(WKUserScript(source: getScript($0), injectionTime: .AtDocumentEnd, forMainFrameOnly: true))
             }
 
             webCfg.userContentController = userController
@@ -33,7 +47,8 @@ class SyncWebView: UIViewController, WKScriptMessageHandler {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        webView.loadHTMLString("<body>TEST<body>", baseURL: NSURL(string: "http://localhost")!)
+        //webView.loadHTMLString("<body>TEST<body>", baseURL: NSURL(string: "http://localhost:8000")!)
+        webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://localhost:8000")!))
     }
 
     func webView(webView: WKWebView, didFinish navigation: WKNavigation!) {
