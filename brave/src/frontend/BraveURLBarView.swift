@@ -108,9 +108,9 @@ class BraveURLBarView : URLBarView {
         //ToolbarTextField.appearance().clearButtonTintColor = nil
 
         var theme = Theme()
-        theme.URLFontColor = .purpleColor() // BraveUX.LocationBarTextColor_URLBaseComponent
-        theme.hostFontColor = .greenColor() // BraveUX.LocationBarTextColor_URLHostComponent
-        theme.backgroundColor = BraveUX.LocationBarBackgroundColor // changed
+        theme.URLFontColor = BraveUX.LocationBarTextColor_URLBaseComponent
+        theme.hostFontColor = BraveUX.LocationBarTextColor_URLHostComponent
+        theme.backgroundColor = BraveUX.LocationBarBackgroundColor
         BrowserLocationViewUX.Themes[Theme.NormalMode] = theme
 
         theme = Theme()
@@ -120,8 +120,8 @@ class BraveURLBarView : URLBarView {
         BrowserLocationViewUX.Themes[Theme.PrivateMode] = theme
 
         theme = Theme()
-        theme.backgroundColor = .redColor() // BraveUX.LocationBarEditModeBackgroundColor
-        theme.textColor = .yellowColor() // BraveUX.LocationBarEditModeTextColor
+        theme.backgroundColor = BraveUX.LocationBarEditModeBackgroundColor
+        theme.textColor = BraveUX.LocationBarEditModeTextColor
         ToolbarTextField.Themes[Theme.NormalMode] = theme
 
         theme = Theme()
@@ -134,8 +134,8 @@ class BraveURLBarView : URLBarView {
         theme.borderColor = BraveUX.TextFieldBorderColor_NoFocus
         theme.activeBorderColor = BraveUX.TextFieldBorderColor_HasFocus
         theme.tintColor = URLBarViewUX.ProgressTintColor
-        theme.textColor = .orangeColor() // BraveUX.LocationBarTextColor
-        theme.buttonTintColor = .cyanColor() // BraveUX.ActionButtonTintColor
+        theme.textColor = BraveUX.LocationBarTextColor
+        theme.buttonTintColor = BraveUX.ActionButtonTintColor
         URLBarViewUX.Themes[Theme.NormalMode] = theme
 
         tabsBarController.view.alpha = 0.0
