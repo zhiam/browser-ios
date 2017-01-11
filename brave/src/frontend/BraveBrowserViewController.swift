@@ -96,21 +96,6 @@ class BraveBrowserViewController : BrowserViewController {
      //   scrollController.showToolbars(animated: true)
     }
 
-    var heightConstraint: Constraint?
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        if heightConstraint == nil {
-            webViewContainer.snp_makeConstraints { make in
-                make.left.right.equalTo(self.view)
-                heightConstraint = make.height.equalTo(self.view.snp_height).constraint
-                webViewContainerTopOffset = make.top.equalTo(self.statusBarOverlay.snp_bottom).offset(BraveURLBarView.CurrentHeight).constraint
-            }
-        }
-
-        heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
-    }
-
     override func updateViewConstraints() {
         super.updateViewConstraints()
 
@@ -118,24 +103,10 @@ class BraveBrowserViewController : BrowserViewController {
         toolbar?.snp_remakeConstraints { make in
             make.edges.equalTo(self.footerBackground!)
         }
-
-        heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        let h = BraveApp.isIPhoneLandscape() ? 0 : 20
-        statusBarOverlay.snp_remakeConstraints { make in
-            make.top.left.right.equalTo(self.view)
-            make.height.equalTo(h)
-        }
     }
     
     override func updateToolbarStateForTraitCollection(newCollection: UITraitCollection) {
         super.updateToolbarStateForTraitCollection(newCollection)
-
-        heightConstraint?.updateOffset(-BraveApp.statusBarHeight())
 
         postAsyncToMain(0) {
             self.urlBar.updateTabsBarShowing()

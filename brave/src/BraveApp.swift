@@ -219,13 +219,6 @@ class BraveApp {
         }
     }
 
-    static func statusBarHeight() -> CGFloat {
-        if UIScreen.mainScreen().traitCollection.verticalSizeClass == .Compact {
-            return 0
-        }
-        return 20
-    }
-
     static var isPasswordManagerInstalled: Bool?
 
     static func is3rdPartyPasswordManagerInstalled(refreshLookup refreshLookup: Bool) -> Deferred<Bool> {

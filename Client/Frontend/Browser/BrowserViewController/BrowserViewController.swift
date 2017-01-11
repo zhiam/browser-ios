@@ -367,21 +367,24 @@ class BrowserViewController: UIViewController {
         scrollController.header = header
         scrollController.footer = footer
         scrollController.snackBars = snackBars
-
-#if !BRAVE
-        log.debug("BVC updating toolbar state…")
-        self.updateToolbarStateForTraitCollection(self.traitCollection)
-
-        log.debug("BVC setting up constraints…")
-        setupConstraints()
-        log.debug("BVC done.")
-#endif
     }
 
     var headerHeightConstraint: Constraint?
     var webViewContainerTopOffset: Constraint?
 
     func setupConstraints() {
+        
+        statusBarOverlay.snp_makeConstraints { make in
+            make.top.right.left.equalTo(statusBarOverlay.superview!)
+            make.bottom.equalTo(topLayoutGuide)
+        }
+        
+        webViewContainer.snp_makeConstraints { make in
+            make.left.right.equalTo(self.view)
+            make.height.equalTo(self.view.snp_height).constraint
+            make.top.equalTo(statusBarOverlay.bottomAnchor)
+        }
+        
         header.snp_makeConstraints { make in
             scrollController.headerTopConstraint = make.top.equalTo(snp_topLayoutGuideBottom).constraint
             if let headerHeightConstraint = headerHeightConstraint {
@@ -551,31 +554,6 @@ class BrowserViewController: UIViewController {
             make.height.equalTo(BraveUX.ReaderModeBarHeight)
             make.leading.trailing.equalTo(self.view)
         }
-
-#if !BRAVE
-        webViewContainer.snp_remakeConstraints { make in
-            make.left.right.equalTo(self.view)
-
-            if let readerModeBarBottom = readerModeBar?.snp_bottom {
-                make.top.equalTo(readerModeBarBottom)
-            } else {
-                make.top.equalTo(self.header.snp_bottom)
-            }
-
-            let findInPageHeight = (findInPageBar == nil) ? 0 : UIConstants.ToolbarHeight
-            if let toolbar = self.toolbar {
-                make.bottom.equalTo(toolbar.snp_top).offset(-findInPageHeight)
-            } else {
-                make.bottom.equalTo(self.view).offset(-findInPageHeight)
-            }
-        }
-
-        // Setup the bottom toolbar
-        toolbar?.snp_remakeConstraints { make in
-            make.edges.equalTo(self.footerBackground!)
-            make.height.equalTo(UIConstants.ToolbarHeight)
-        }
-#endif
 
         footer.snp_remakeConstraints { make in
             scrollController.footerBottomConstraint = make.bottom.equalTo(self.view.snp_bottom).constraint
