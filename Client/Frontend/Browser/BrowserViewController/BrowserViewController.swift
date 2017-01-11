@@ -76,7 +76,6 @@ class BrowserViewController: UIViewController {
 
     // These views wrap the urlbar and toolbar to provide background effects on them
     var header: BlurWrapper!
-    var headerBackdrop: UIView!
     var footer: UIView!
     var footerBackdrop: UIView!
     var footerBackground: BlurWrapper?
@@ -295,9 +294,6 @@ class BrowserViewController: UIViewController {
         footerBackdrop = UIView()
         footerBackdrop.backgroundColor = UIColor.whiteColor()
         view.addSubview(footerBackdrop)
-        headerBackdrop = UIView()
-        headerBackdrop.backgroundColor = UIColor.whiteColor()
-        view.addSubview(headerBackdrop)
 
         log.debug("BVC setting up webViewContainer…")
         webViewContainerBackdrop = UIView()
@@ -399,10 +395,6 @@ class BrowserViewController: UIViewController {
                 // iPad layout is customized in BraveTopViewController for showing panels
                 make.left.right.equalTo(header.superview!)
             }
-        }
-
-        headerBackdrop.snp_makeConstraints { make in
-            make.edges.equalTo(self.header)
         }
 
         webViewContainerBackdrop.snp_makeConstraints { make in
@@ -548,8 +540,7 @@ class BrowserViewController: UIViewController {
         [header,
             footer,
             readerModeBar,
-            footerBackdrop,
-            headerBackdrop].forEach { view in
+            footerBackdrop].forEach { view in
                 view?.transform = CGAffineTransformIdentity
         }
     }

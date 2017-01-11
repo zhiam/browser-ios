@@ -66,7 +66,7 @@ private extension TrayToBrowserAnimator {
         bvc.urlBar.isTransitioning = true
 
         // Re-calculate the starting transforms for header/footer views in case we switch orientation
-        resetTransformsForViews([bvc.header, bvc.headerBackdrop, bvc.readerModeBar, bvc.footer, bvc.footerBackdrop])
+        resetTransformsForViews([bvc.header, bvc.readerModeBar, bvc.footer, bvc.footerBackdrop])
         transformHeaderFooterForBVC(bvc, toFrame: startingFrame, container: container)
 
         UIView.animateWithDuration(self.transitionDuration(transitionContext),
@@ -216,7 +216,6 @@ private func transformHeaderFooterForBVC(bvc: BrowserViewController, toFrame fin
     bvc.footerBackdrop.transform = footerForTransform
     bvc.header.transform = headerForTransform
     bvc.readerModeBar?.transform = headerForTransform
-    bvc.headerBackdrop.transform = headerForTransform
 }
 
 private func footerTransform( frame: CGRect, toFrame finalFrame: CGRect, container: UIView) -> CGAffineTransform {

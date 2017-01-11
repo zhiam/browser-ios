@@ -11,16 +11,10 @@ class BraveBrowserViewController : BrowserViewController {
         super.applyTheme(themeName)
 
         toolbar?.accessibilityLabel = "bottomToolbar"
-        headerBackdrop.accessibilityLabel = "headerBackdrop"
         webViewContainerBackdrop.accessibilityLabel = "webViewContainerBackdrop"
         webViewContainer.accessibilityLabel = "webViewContainer"
         statusBarOverlay.accessibilityLabel = "statusBarOverlay"
         urlBar.accessibilityLabel = "BraveUrlBar"
-
-        // TODO sorry, I am in a rush, but this needs to be removed from the view heirarchy properly
-        headerBackdrop.backgroundColor = UIColor.clearColor()
-        headerBackdrop.alpha = 0
-        headerBackdrop.hidden = true
 
         header.blurStyle = .Light
         footerBackground?.blurStyle = .Light
