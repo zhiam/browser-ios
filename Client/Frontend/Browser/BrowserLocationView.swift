@@ -24,6 +24,7 @@ protocol BrowserLocationViewDelegate {
 struct BrowserLocationViewUX {
     static let HostFontColor = UIColor.blackColor()
     static let BaseURLFontColor = UIColor.grayColor()
+    static let FullURLFontColor = UIColor.blackColor() // Currently also for placeholder
     static let BaseURLPitch = 0.75
     static let HostPitch = 1.0
     static let LocationContentInset = 8
@@ -57,6 +58,15 @@ class BrowserLocationView: UIView {
 
     dynamic var hostFontColor: UIColor = BrowserLocationViewUX.HostFontColor {
         didSet { updateTextWithURL() }
+    }
+    
+    // The color of the URL after it has loaded
+    dynamic var fullURLFontColor: UIColor = BrowserLocationViewUX.FullURLFontColor {
+        didSet {
+            updateTextWithURL()
+            // Reset placeholder text, which will auto-adjust based on this new color
+            self.urlTextField.attributedPlaceholder = self.placeholder
+        }
     }
 
     var url: NSURL? {
@@ -96,10 +106,11 @@ class BrowserLocationView: UIView {
         }
     }
 
-    lazy var placeholder: NSAttributedString = {
+    /// Returns constant placeholder text with current URL color
+    var placeholder: NSAttributedString {
         let placeholderText = Strings.Search_or_enter_address
-        return NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
-    }()
+        return NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName: self.fullURLFontColor])
+    }
 
     lazy var urlTextField: UITextField = {
         let urlTextField = DisplayTextField()
@@ -320,7 +331,7 @@ class BrowserLocationView: UIView {
             urlTextField.text = url?.absoluteString
         }
         postAsyncToMain(0.1) {
-            self.urlTextField.textColor = UIColor.whiteColor()
+            self.urlTextField.textColor = self.fullURLFontColor
         }
     }
 }
@@ -353,6 +364,9 @@ extension BrowserLocationView: Themeable {
         }
         baseURLFontColor = theme.URLFontColor!
         hostFontColor = theme.hostFontColor!
+        
+        // TODO: Add to theme
+//        fullURLFontColor =
         backgroundColor = theme.backgroundColor
     }
 }
