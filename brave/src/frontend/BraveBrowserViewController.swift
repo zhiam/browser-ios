@@ -16,6 +16,9 @@ class BraveBrowserViewController : BrowserViewController {
         statusBarOverlay.accessibilityLabel = "statusBarOverlay"
         urlBar.accessibilityLabel = "BraveUrlBar"
 
+        // TODO: Check if blur is enabled
+        // DeviceInfo.isBlurSupported()
+        statusBarOverlay.blurStyle = .Light
         header.blurStyle = .Light
         footerBackground?.blurStyle = .Light
 
@@ -54,10 +57,6 @@ class BraveBrowserViewController : BrowserViewController {
 
         footer.accessibilityLabel = "footer"
         footerBackdrop.accessibilityLabel = "footerBackdrop"
-
-        // With this color, it matches to default semi-transparent state of the toolbar
-        // The value is hand-picked to match the effect on the url bar, we don't have a color constant for this elsewhere
-        statusBarOverlay.backgroundColor = DeviceInfo.isBlurSupported() ? UIColor(white: 0.255, alpha: 1.0) : UIColor.blackColor()
     }
 
     func updateBraveShieldButtonState(animated animated: Bool) {

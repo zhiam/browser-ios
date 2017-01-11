@@ -47,7 +47,7 @@ class BrowserViewController: UIViewController {
     var urlBar: URLBarView!
     var readerModeBar: ReaderModeBarView?
     var readerModeCache: ReaderModeCache
-    var statusBarOverlay: UIView!
+    var statusBarOverlay: BlurWrapper!
     private(set) var toolbar: BraveBrowserBottomToolbar?
     var searchController: SearchViewController?
     var screenshotHelper: ScreenshotHelper!
@@ -307,8 +307,7 @@ class BrowserViewController: UIViewController {
 
         log.debug("BVC setting up status bar…")
         // Temporary work around for covering the non-clipped web view content
-        statusBarOverlay = UIView()
-        statusBarOverlay.backgroundColor = BrowserViewControllerUX.BackgroundColor
+        statusBarOverlay = BlurWrapper(view: UIView())
         view.addSubview(statusBarOverlay)
 
         log.debug("BVC setting up top touch area…")
@@ -410,12 +409,6 @@ class BrowserViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         log.debug("BVC viewDidLayoutSubviews…")
         super.viewDidLayoutSubviews()
-      #if !BRAVE
-        statusBarOverlay.snp_remakeConstraints { make in
-            make.top.left.right.equalTo(self.view)
-            make.height.equalTo(self.topLayoutGuide.length)
-        }
-      #endif
         log.debug("BVC done.")
     }
 
