@@ -375,12 +375,6 @@ class BrowserViewController: UIViewController {
             make.bottom.equalTo(topLayoutGuide)
         }
         
-        webViewContainer.snp_makeConstraints { make in
-            make.left.right.equalTo(self.view)
-            make.height.equalTo(self.view.snp_height).constraint
-            make.top.equalTo(statusBarOverlay.bottomAnchor)
-        }
-        
         header.snp_makeConstraints { make in
             scrollController.headerTopConstraint = make.top.equalTo(snp_topLayoutGuideBottom).constraint
             if let headerHeightConstraint = headerHeightConstraint {
@@ -393,6 +387,12 @@ class BrowserViewController: UIViewController {
                 // iPad layout is customized in BraveTopViewController for showing panels
                 make.left.right.equalTo(header.superview!)
             }
+        }
+        
+        webViewContainer.snp_makeConstraints { make in
+            make.left.right.equalTo(self.view)
+            make.height.equalTo(self.view.snp_height).constraint
+            make.top.equalTo(header.snp_bottom)
         }
 
         webViewContainerBackdrop.snp_makeConstraints { make in
