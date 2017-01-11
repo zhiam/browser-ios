@@ -446,10 +446,6 @@ class TabTrayController: UIViewController {
         }, completion: nil)
     }
 
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
-    }
-
     private func makeConstraints() {
         navBar.snp_makeConstraints { make in
             make.top.equalTo(snp_topLayoutGuideBottom)

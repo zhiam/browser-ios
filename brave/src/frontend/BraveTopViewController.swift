@@ -107,7 +107,7 @@ class BraveTopViewController : UIViewController {
     }
 
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.Default
     }
 
     func leftPanelShowing() -> Bool {
