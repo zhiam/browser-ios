@@ -198,7 +198,7 @@ class BrowserLocationView: UIView {
 
         braveProgressView.accessibilityLabel = "braveProgressView"
         braveProgressView.backgroundColor = BraveUX.ProgressBarColor
-        braveProgressView.layer.cornerRadius = CGFloat(BraveUX.TextFieldCornerRadius)
+        braveProgressView.layer.cornerRadius = BraveUX.TextFieldCornerRadius
         braveProgressView.layer.masksToBounds = true
         self.addSubview(braveProgressView)
         self.sendSubviewToBack(braveProgressView)

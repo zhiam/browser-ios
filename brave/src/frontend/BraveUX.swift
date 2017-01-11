@@ -75,7 +75,7 @@ struct BraveUX {
     static let LocationBarTextColor_URLBaseComponent = LocationBarTextColor
     static let LocationBarTextColor_URLHostComponent = LocationBarTextColor
 
-    static let TextFieldCornerRadius = 14.0
+    static let TextFieldCornerRadius: CGFloat = 6.0
     static let TextFieldBorderColor_HasFocus = UIColor.grayColor()
     static let TextFieldBorderColor_NoFocus = UIColor.blackColor()
 
