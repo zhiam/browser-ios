@@ -66,8 +66,6 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
     private static weak var currentInstance: BraveBrowserBottomToolbar?
 
-    //let backForwardUnderlay = UIImageView(image: UIImage(named: "backForwardUnderlay"))
-
     override init(frame: CGRect) {
 
         super.init(frame: frame)
@@ -78,9 +76,6 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
         tabsContainer.addSubview(tabsButton)
         addSubview(tabsContainer)
-        //addSubview(backForwardUnderlay)
-
-        //backForwardUnderlay.alpha = BraveUX.BackForwardEnabledButtonAlpha
 
         bringSubviewToFront(backButton)
         bringSubviewToFront(forwardButton)
