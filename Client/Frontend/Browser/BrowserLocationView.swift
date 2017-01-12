@@ -24,7 +24,6 @@ protocol BrowserLocationViewDelegate {
 struct BrowserLocationViewUX {
     static let HostFontColor = UIColor.blackColor()
     static let BaseURLFontColor = UIColor.grayColor()
-    static let FullURLFontColor = UIColor.blackColor() // Currently also for placeholder
     static let BaseURLPitch = 0.75
     static let HostPitch = 1.0
     static let LocationContentInset = 8
@@ -52,6 +51,7 @@ class BrowserLocationView: UIView {
     var longPressRecognizer: UILongPressGestureRecognizer!
     var tapRecognizer: UITapGestureRecognizer!
 
+    // Variable colors should be overwritten by theme
     dynamic var baseURLFontColor: UIColor = BrowserLocationViewUX.BaseURLFontColor {
         didSet { updateTextWithURL() }
     }
@@ -61,7 +61,7 @@ class BrowserLocationView: UIView {
     }
     
     // The color of the URL after it has loaded
-    dynamic var fullURLFontColor: UIColor = BrowserLocationViewUX.FullURLFontColor {
+    dynamic var fullURLFontColor: UIColor = BraveUX.LocationBarTextColor {
         didSet {
             updateTextWithURL()
             // Reset placeholder text, which will auto-adjust based on this new color
@@ -364,9 +364,7 @@ extension BrowserLocationView: Themeable {
         }
         baseURLFontColor = theme.URLFontColor!
         hostFontColor = theme.hostFontColor!
-        
-        // TODO: Add to theme
-//        fullURLFontColor =
+        fullURLFontColor = theme.textColor!
         backgroundColor = theme.backgroundColor
     }
 }
