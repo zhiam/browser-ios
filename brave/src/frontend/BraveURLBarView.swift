@@ -42,13 +42,13 @@ class ButtonWithUnderlayView : UIButton {
         return v
     }()
 
+    // Visible when button is selected
     lazy var underlay: UIView = {
         let v = UIView()
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             v.backgroundColor = BraveUX.ProgressBarColor
             v.layer.cornerRadius = 4
-            v.layer.borderWidth = 1
-            v.layer.borderColor = UIColor.clearColor().CGColor
+            v.layer.borderWidth = 0
             v.layer.masksToBounds = true
         }
         v.userInteractionEnabled = false
@@ -131,8 +131,6 @@ class BraveURLBarView : URLBarView {
         ToolbarTextField.Themes[Theme.PrivateMode] = theme
 
         theme = Theme()
-        theme.borderColor = BraveUX.TextFieldBorderColor_NoFocus
-        theme.activeBorderColor = BraveUX.TextFieldBorderColor_HasFocus
         theme.tintColor = URLBarViewUX.ProgressTintColor
         theme.textColor = BraveUX.LocationBarTextColor
         theme.buttonTintColor = BraveUX.ActionButtonTintColor

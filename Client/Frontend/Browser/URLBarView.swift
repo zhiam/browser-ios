@@ -11,14 +11,12 @@ import XCGLogger
 private let log = Logger.browserLogger
 
 struct URLBarViewUX {
-    static let TextFieldBorderColor = UIColor(rgb: 0xBBBBBB)
-    static let TextFieldActiveBorderColor = UIColor(rgb: 0x4A90E2)
     static let TextFieldContentInset = UIOffsetMake(9, 5)
     static let LocationLeftPadding = 5
     static let LocationHeight = 28
     static let LocationContentOffset: CGFloat = 8
     static let TextFieldCornerRadius: CGFloat = 3
-    static let TextFieldBorderWidth: CGFloat = 0 // BRAVE mod
+    static let TextFieldBorderWidth: CGFloat = 0
     // offset from edge of tabs button
     static let URLBarCurveOffset: CGFloat = 14
     static let URLBarCurveOffsetLeft: CGFloat = -10
@@ -33,16 +31,12 @@ struct URLBarViewUX {
     static var Themes: [String: Theme] = {
         var themes = [String: Theme]()
         var theme = Theme()
-        theme.borderColor = UIConstants.PrivateModeLocationBorderColor
-        theme.activeBorderColor = UIConstants.PrivateModePurple
         theme.tintColor = UIConstants.PrivateModePurple
         theme.textColor = UIColor.blackColor()
         theme.buttonTintColor = UIConstants.PrivateModeActionButtonTintColor
         themes[Theme.PrivateMode] = theme
 
         theme = Theme()
-        theme.borderColor = TextFieldBorderColor
-        theme.activeBorderColor = TextFieldActiveBorderColor
         theme.tintColor = ProgressTintColor
         theme.textColor = UIColor.blackColor()
         theme.buttonTintColor = UIColor.darkGrayColor()
@@ -74,21 +68,6 @@ protocol URLBarDelegate: class {
 }
 
 class URLBarView: UIView {
-    // Additional UIAppearance-configurable properties
-    dynamic var locationBorderColor: UIColor = URLBarViewUX.TextFieldBorderColor {
-        didSet {
-            if !inSearchMode {
-                locationContainer.layer.borderColor = locationBorderColor.CGColor
-            }
-        }
-    }
-    dynamic var locationActiveBorderColor: UIColor = URLBarViewUX.TextFieldActiveBorderColor {
-        didSet {
-            if inSearchMode {
-                locationContainer.layer.borderColor = locationActiveBorderColor.CGColor
-            }
-        }
-    }
 
     weak var delegate: URLBarDelegate?
     weak var browserToolbarDelegate: BrowserToolbarDelegate?
@@ -127,7 +106,6 @@ class URLBarView: UIView {
         // Enable clipping to apply the rounded edges to subviews.
         locationContainer.clipsToBounds = true
 
-        locationContainer.layer.borderColor = self.locationBorderColor.CGColor
         locationContainer.layer.cornerRadius = URLBarViewUX.TextFieldCornerRadius
         locationContainer.layer.borderWidth = URLBarViewUX.TextFieldBorderWidth
 
@@ -430,9 +408,6 @@ class URLBarView: UIView {
         self.forwardButton.alpha = inSearchMode ? 0 : 1
         self.backButton.alpha = inSearchMode ? 0 : 1
 
-        let borderColor = inSearchMode ? locationActiveBorderColor : locationBorderColor
-        locationContainer.layer.borderColor = borderColor.CGColor
-
         if inSearchMode {
             self.cancelButton.transform = CGAffineTransformIdentity
             let tabsButtonTransform = CGAffineTransformMakeTranslation(self.tabsButton.frame.width + URLBarViewUX.URLBarCurveOffset, 0)
@@ -624,8 +599,6 @@ extension URLBarView: Themeable {
         }
 
         currentTheme = themeName
-        locationBorderColor = theme.borderColor!
-        locationActiveBorderColor = theme.activeBorderColor!
         cancelTextColor = theme.textColor
         actionButtonTintColor = theme.buttonTintColor
 
