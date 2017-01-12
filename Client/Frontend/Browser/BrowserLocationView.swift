@@ -109,7 +109,7 @@ class BrowserLocationView: UIView {
     /// Returns constant placeholder text with current URL color
     var placeholder: NSAttributedString {
         let placeholderText = Strings.Search_or_enter_address
-        return NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName: self.fullURLFontColor])
+        return NSAttributedString(string: placeholderText, attributes: [NSForegroundColorAttributeName: self.fullURLFontColor.colorWithAlphaComponent(0.5)])
     }
 
     lazy var urlTextField: UITextField = {
