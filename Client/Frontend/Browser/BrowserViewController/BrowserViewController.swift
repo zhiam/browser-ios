@@ -1251,9 +1251,11 @@ extension BrowserViewController: Themeable {
 
         switch(themeName) {
         case Theme.NormalMode:
+            statusBarOverlay.blurStyle = .ExtraLight
             header.blurStyle = .ExtraLight
             footerBackground?.blurStyle = .ExtraLight
         case Theme.PrivateMode:
+            statusBarOverlay.blurStyle = .Dark
             header.blurStyle = .Dark
             footerBackground?.blurStyle = .Dark
         default:
