@@ -255,8 +255,7 @@ class URLBarView: UIView {
         locationTextField.font = UIConstants.DefaultChromeFont
         locationTextField.accessibilityIdentifier = "address"
         locationTextField.accessibilityLabel = Strings.Address_and_Search
-        locationTextField.attributedPlaceholder = NSAttributedString(string: self.locationView.placeholder.string, attributes: [NSForegroundColorAttributeName: UIColor.greenColor()])
-        locationTextField.textColor = UIColor.orangeColor() // does nothing
+        locationTextField.attributedPlaceholder = NSAttributedString(string: self.locationView.placeholder.string, attributes: [NSForegroundColorAttributeName: UIColor.grayColor()])
 
         locationContainer.addSubview(locationTextField)
 
@@ -624,7 +623,6 @@ extension URLBarView: Themeable {
             return
         }
 
-        //
         currentTheme = themeName
         locationBorderColor = theme.borderColor!
         locationActiveBorderColor = theme.activeBorderColor!
@@ -643,7 +641,7 @@ class ToolbarTextField: AutocompleteTextField {
         var themes = [String: Theme]()
         var theme = Theme()
         theme.backgroundColor = UIConstants.PrivateModeLocationBackgroundColor
-        theme.textColor = .purpleColor() // UIColor.whiteColor()
+        theme.textColor = UIColor.whiteColor()
         theme.buttonTintColor = UIColor.whiteColor()
         theme.highlightColor = UIConstants.PrivateModeTextHighlightColor
         themes[Theme.PrivateMode] = theme
