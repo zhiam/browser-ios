@@ -22,6 +22,12 @@ class SyncWebView: UIViewController, WKScriptMessageHandler {
         get {
             let webCfg = WKWebViewConfiguration()
             let userController = WKUserContentController()
+            #if DEBUG
+                let script = "const braveSyncConfig = {apiVersion: '0', serverUrl: 'https://sync-staging.brave.com'}"
+            #else
+                let script = "const braveSyncConfig = {apiVersion: '0', serverUrl: 'https://sync.brave.com'}"
+            #endif
+            userController.addUserScript(WKUserScript(source: script, injectionTime: .AtDocumentEnd, forMainFrameOnly: true))
 
             ["fetch", "ios-sync", "bundle"].forEach() {
                 userController.addUserScript(WKUserScript(source: getScript($0), injectionTime: .AtDocumentEnd, forMainFrameOnly: true))
@@ -39,7 +45,7 @@ class SyncWebView: UIViewController, WKScriptMessageHandler {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.frame = CGRectMake(20, 20, 100, 100)
+        view.frame = CGRectMake(20, 20, 300, 300)
         webView = WKWebView(frame: view.frame, configuration: webConfig)
         webView.navigationDelegate = self
         view.addSubview(webView)
@@ -47,8 +53,7 @@ class SyncWebView: UIViewController, WKScriptMessageHandler {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        //webView.loadHTMLString("<body>TEST<body>", baseURL: NSURL(string: "http://localhost:8000")!)
-        webView.loadRequest(NSURLRequest(URL: NSURL(string: "http://localhost:8000")!))
+        webView.loadHTMLString("<body>TEST</body>", baseURL: nil)
     }
 
     func webView(webView: WKWebView, didFinish navigation: WKNavigation!) {
