@@ -14,7 +14,6 @@ private let log = Logger.browserLogger
 protocol BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate? { get set }
     var shareButton: UIButton { get }
-    var pwdMgrButton: UIButton { get }
     var forwardButton: UIButton { get }
     var backButton: UIButton { get }
     var actionButtons: [UIButton] { get }
@@ -31,7 +30,6 @@ protocol BrowserToolbarDelegate: class {
     func browserToolbarDidPressForward(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidPressBookmark(browserToolbar: BrowserToolbarProtocol, button: UIButton)
     func browserToolbarDidPressShare(browserToolbar: BrowserToolbarProtocol, button: UIButton)
-    func browserToolbarDidPressPwdMgr(browserToolbar: BrowserToolbarProtocol, button: UIButton)
 }
 
 @objc
@@ -45,8 +43,7 @@ public class BrowserToolbarHelper: NSObject {
     }
 
     private func setTintColor(color: UIColor, forButtons buttons: [UIButton]) {
-      return
-        buttons.forEach { $0.tintColor = color }
+      buttons.forEach { $0.tintColor = UIColor.greenColor() }
     }
 
     init(toolbar: BrowserToolbarProtocol) {
@@ -69,12 +66,6 @@ public class BrowserToolbarHelper: NSObject {
 #endif
         toolbar.shareButton.accessibilityLabel = Strings.Share
         toolbar.shareButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickShare), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        toolbar.pwdMgrButton.setImage(UIImage(named: "passhelper_1pwd")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        toolbar.pwdMgrButton.hidden = true
-        toolbar.pwdMgrButton.tintColor = UIColor.whiteColor()
-        toolbar.pwdMgrButton.accessibilityLabel = Strings.PasswordManager
-        toolbar.pwdMgrButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickPwdMgr), forControlEvents: UIControlEvents.TouchUpInside)
 
         setTintColor(buttonTintColor, forButtons: toolbar.actionButtons)
     }
@@ -86,22 +77,16 @@ public class BrowserToolbarHelper: NSObject {
     func SELdidClickShare() {
         toolbar.browserToolbarDelegate?.browserToolbarDidPressShare(toolbar, button: toolbar.shareButton)
     }
-    
-    func SELdidClickPwdMgr() {
-        toolbar.browserToolbarDelegate?.browserToolbarDidPressPwdMgr(toolbar, button: toolbar.pwdMgrButton)
-    }
 
     func SELdidClickForward() {
         toolbar.browserToolbarDelegate?.browserToolbarDidPressForward(toolbar, button: toolbar.forwardButton)
     }
 }
 
-
 class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate?
 
     let shareButton: UIButton
-    let pwdMgrButton: UIButton
     let forwardButton: UIButton
     let backButton: UIButton
     let actionButtons: [UIButton]
@@ -136,8 +121,6 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
         forwardButton.accessibilityIdentifier = "BrowserToolbar.forwardButton"
         shareButton = UIButton()
         shareButton.accessibilityIdentifier = "BrowserToolbar.shareButton"
-        pwdMgrButton = UIButton()
-        pwdMgrButton.accessibilityIdentifier = "BrowserToolbar.pwdMgrButton"
         actionButtons = [backButton, forwardButton, shareButton]
 
         super.init(frame: frame)
