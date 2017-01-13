@@ -1249,11 +1249,13 @@ extension BrowserViewController: Themeable {
         toolbar?.applyTheme(themeName)
         //readerModeBar?.applyTheme(themeName)
 
+        // TODO: Check if blur is enabled
+        // Should be added to theme, instead of handled here
         switch(themeName) {
         case Theme.NormalMode:
-            statusBarOverlay.blurStyle = .ExtraLight
-            header.blurStyle = .ExtraLight
-            footerBackground?.blurStyle = .ExtraLight
+            statusBarOverlay.blurStyle = .Light
+            header.blurStyle = .Light
+            footerBackground?.blurStyle = .Light
         case Theme.PrivateMode:
             statusBarOverlay.blurStyle = .Dark
             header.blurStyle = .Dark

@@ -16,12 +16,6 @@ class BraveBrowserViewController : BrowserViewController {
         statusBarOverlay.accessibilityLabel = "statusBarOverlay"
         urlBar.accessibilityLabel = "BraveUrlBar"
 
-        // TODO: Check if blur is enabled
-        // DeviceInfo.isBlurSupported()
-        statusBarOverlay.blurStyle = .Light
-        header.blurStyle = .Light
-        footerBackground?.blurStyle = .Light
-
         toolbar?.applyTheme(themeName)
     }
 
