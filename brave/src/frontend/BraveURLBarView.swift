@@ -135,6 +135,7 @@ class BraveURLBarView : URLBarView {
         theme = Theme()
         theme.tintColor = URLBarViewUX.ProgressTintColor
         theme.textColor = BraveUX.LocationBarTextColor
+        // Only applies to iPad, iPhone uses non-tinted images
         theme.buttonTintColor = BraveUX.ActionButtonTintColor
         URLBarViewUX.Themes[Theme.NormalMode] = theme
 
