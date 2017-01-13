@@ -147,14 +147,12 @@ class URLBarView: UIView {
     
     lazy var pwdMgrButton: UIButton = { return UIButton() }()
 
-    lazy var bookmarkButton: UIButton = { return UIButton() }()
-
     lazy var forwardButton: UIButton = { return UIButton() }()
 
     lazy var backButton: UIButton = { return UIButton() }()
 
     lazy var actionButtons: [UIButton] = {
-        return [self.shareButton, self.bookmarkButton, self.forwardButton, self.backButton, self.pwdMgrButton]
+        return [self.shareButton, self.forwardButton, self.backButton, self.pwdMgrButton]
     }()
 
     // Used to temporarily store the cloned button so we can respond to layout changes during animation
@@ -196,7 +194,6 @@ class URLBarView: UIView {
 
         addSubview(shareButton)
         addSubview(pwdMgrButton)
-        addSubview(bookmarkButton)
         addSubview(forwardButton)
         addSubview(backButton)
 
@@ -396,7 +393,6 @@ class URLBarView: UIView {
         self.bringSubviewToFront(self.locationContainer)
         self.cancelButton.hidden = false
         self.shareButton.hidden = !self.bottomToolbarIsHidden
-        self.bookmarkButton.hidden = !self.bottomToolbarIsHidden
         self.forwardButton.hidden = !self.bottomToolbarIsHidden
         self.backButton.hidden = !self.bottomToolbarIsHidden
     }
@@ -404,7 +400,6 @@ class URLBarView: UIView {
     func transitionToSearch(didCancel: Bool = false) {
         self.cancelButton.alpha = inSearchMode ? 1 : 0
         self.shareButton.alpha = inSearchMode ? 0 : 1
-        self.bookmarkButton.alpha = inSearchMode ? 0 : 1
         self.forwardButton.alpha = inSearchMode ? 0 : 1
         self.backButton.alpha = inSearchMode ? 0 : 1
 
@@ -436,7 +431,6 @@ class URLBarView: UIView {
     func updateViewsForSearchModeAndToolbarChanges() {
         self.cancelButton.hidden = !inSearchMode
         self.shareButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
-        self.bookmarkButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
         self.forwardButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
         self.backButton.hidden = !self.bottomToolbarIsHidden || inSearchMode
     }
@@ -484,7 +478,6 @@ extension URLBarView: BrowserToolbarProtocol {
     }
 
     func updateBookmarkStatus(isBookmarked: Bool) {
-        bookmarkButton.selected = isBookmarked
         getApp().braveTopViewController.updateBookmarkStatus(isBookmarked)
     }
 
@@ -493,7 +486,6 @@ extension URLBarView: BrowserToolbarProtocol {
     }
 
     func updatePageStatus(isWebPage isWebPage: Bool) {
-        bookmarkButton.enabled = isWebPage
         locationView.stopReloadButton.enabled = isWebPage
         shareButton.enabled = isWebPage
     }
@@ -505,7 +497,7 @@ extension URLBarView: BrowserToolbarProtocol {
                 return [locationTextField, cancelButton]
             } else {
                 if bottomToolbarIsHidden {
-                    return [backButton, forwardButton, locationView, shareButton, bookmarkButton, tabsButton]
+                    return [backButton, forwardButton, locationView, shareButton, tabsButton]
                 } else {
                     return [locationView, tabsButton]
                 }

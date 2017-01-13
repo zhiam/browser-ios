@@ -251,26 +251,18 @@ class BraveURLBarView : URLBarView {
 
     override func updateViewsForSearchModeAndToolbarChanges() {
         super.updateViewsForSearchModeAndToolbarChanges()
-
-        if !self.bottomToolbarIsHidden {
-            self.tabsButton.hidden = true
-        } else {
-            self.tabsButton.hidden = false
-        }
-
-        bookmarkButton.hidden = true
+        
+        self.tabsButton.hidden = !self.bottomToolbarIsHidden
     }
 
     override func prepareSearchAnimation() {
         super.prepareSearchAnimation()
-        bookmarkButton.hidden = true
         braveButton.hidden = true
         readerModeToolbar?.hidden = true
     }
 
     override func transitionToSearch(didCancel: Bool = false) {
         super.transitionToSearch(didCancel)
-        bookmarkButton.hidden = true
         locationView.alpha = 0.0
 
         locationView.superview?.backgroundColor = locationTextField?.backgroundColor
@@ -320,8 +312,6 @@ class BraveURLBarView : URLBarView {
         }
 
         curveShape.hidden = true
-        bookmarkButton.hidden = true
-        bookmarkButton.snp_removeConstraints()
         curveShape.snp_removeConstraints()
 
         func pinLeftPanelButtonToLeft() {
