@@ -41,20 +41,9 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
     lazy var addTabButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "add")
+        button.setImage(UIImage(named: "add"), forState: .Normal)
         button.accessibilityLabel = Strings.Add_Tab
         button.addTarget(self, action: #selector(BraveBrowserBottomToolbar.onClickAddTab), forControlEvents: UIControlEvents.TouchUpInside)
-
-        // Button is grey without upping the brightness
-        // TODO remove this when the icon changes
-        func hackToMakeWhite(image: UIImage) -> UIImage {
-            let brightnessFilter = CIFilter(name: "CIColorControls")!
-            brightnessFilter.setValue(1.0, forKey: "inputBrightness")
-            brightnessFilter.setValue(CIImage(image: image), forKey: kCIInputImageKey)
-            return UIImage(CGImage: CIContext(options:nil).createCGImage(brightnessFilter.outputImage!, fromRect:brightnessFilter.outputImage!.extent)!, scale: image.scale, orientation: .Up)
-        }
-
-        button.setImage(hackToMakeWhite(image!), forState: .Normal)
         return button
     }()
 
