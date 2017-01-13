@@ -117,7 +117,7 @@ class BraveURLBarView : URLBarView {
         theme = Theme()
         theme.URLFontColor = BraveUX.LocationBarTextColor_URLBaseComponent
         theme.hostFontColor = BraveUX.LocationBarTextColor_URLHostComponent
-        // TODO: Add text color
+        theme.textColor = UIColor.lightGrayColor()
         theme.backgroundColor = BraveUX.LocationBarBackgroundColor_PrivateMode
         BrowserLocationViewUX.Themes[Theme.PrivateMode] = theme
 
