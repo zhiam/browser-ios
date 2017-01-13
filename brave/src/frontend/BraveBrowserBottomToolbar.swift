@@ -61,8 +61,6 @@ class BraveBrowserBottomToolbar : BrowserToolbar {
 
         BraveBrowserBottomToolbar.currentInstance = self
 
-        bookmarkButton.hidden = true
-
         tabsContainer.addSubview(tabsButton)
         addSubview(tabsContainer)
 

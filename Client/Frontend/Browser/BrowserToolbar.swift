@@ -15,7 +15,6 @@ protocol BrowserToolbarProtocol {
     weak var browserToolbarDelegate: BrowserToolbarDelegate? { get set }
     var shareButton: UIButton { get }
     var pwdMgrButton: UIButton { get }
-    var bookmarkButton: UIButton { get }
     var forwardButton: UIButton { get }
     var backButton: UIButton { get }
     var actionButtons: [UIButton] { get }
@@ -70,19 +69,12 @@ public class BrowserToolbarHelper: NSObject {
 #endif
         toolbar.shareButton.accessibilityLabel = Strings.Share
         toolbar.shareButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickShare), forControlEvents: UIControlEvents.TouchUpInside)
-        toolbar.bookmarkButton.contentMode = UIViewContentMode.Center
         
         toolbar.pwdMgrButton.setImage(UIImage(named: "passhelper_1pwd")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         toolbar.pwdMgrButton.hidden = true
         toolbar.pwdMgrButton.tintColor = UIColor.whiteColor()
         toolbar.pwdMgrButton.accessibilityLabel = Strings.PasswordManager
         toolbar.pwdMgrButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickPwdMgr), forControlEvents: UIControlEvents.TouchUpInside)
-
-        toolbar.bookmarkButton.setImage(UIImage(named: "bookmark"), forState: .Normal)
-        toolbar.bookmarkButton.setImage(UIImage(named: "bookmarked"), forState: UIControlState.Selected)
-        toolbar.bookmarkButton.setImage(UIImage(named: "bookmarkHighlighted"), forState: UIControlState.Highlighted)
-        toolbar.bookmarkButton.accessibilityLabel = Strings.Bookmark
-        toolbar.bookmarkButton.addTarget(self, action: #selector(BrowserToolbarHelper.SELdidClickBookmark), forControlEvents: UIControlEvents.TouchUpInside)
 
         setTintColor(buttonTintColor, forButtons: toolbar.actionButtons)
     }
@@ -102,10 +94,6 @@ public class BrowserToolbarHelper: NSObject {
     func SELdidClickForward() {
         toolbar.browserToolbarDelegate?.browserToolbarDidPressForward(toolbar, button: toolbar.forwardButton)
     }
-
-    func SELdidClickBookmark() {
-        toolbar.browserToolbarDelegate?.browserToolbarDidPressBookmark(toolbar, button: toolbar.bookmarkButton)
-    }
 }
 
 
@@ -114,7 +102,6 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
 
     let shareButton: UIButton
     let pwdMgrButton: UIButton
-    let bookmarkButton: UIButton
     let forwardButton: UIButton
     let backButton: UIButton
     let actionButtons: [UIButton]
@@ -151,15 +138,13 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
         shareButton.accessibilityIdentifier = "BrowserToolbar.shareButton"
         pwdMgrButton = UIButton()
         pwdMgrButton.accessibilityIdentifier = "BrowserToolbar.pwdMgrButton"
-        bookmarkButton = UIButton()
-        bookmarkButton.accessibilityIdentifier = "BrowserToolbar.bookmarkButton"
-        actionButtons = [backButton, forwardButton, shareButton, bookmarkButton]
+        actionButtons = [backButton, forwardButton, shareButton]
 
         super.init(frame: frame)
 
         self.helper = BrowserToolbarHelper(toolbar: self)
 
-        addButtons(backButton, forwardButton, shareButton, bookmarkButton)
+        addButtons(backButton, forwardButton, shareButton)
 
         accessibilityNavigationStyle = .Combined
         accessibilityLabel = Strings.Navigation_Toolbar
@@ -182,7 +167,6 @@ class BrowserToolbar: Toolbar, BrowserToolbarProtocol {
     }
 
     func updatePageStatus(isWebPage isWebPage: Bool) {
-        bookmarkButton.enabled = isWebPage
         stopReloadButton.enabled = isWebPage
         shareButton.enabled = isWebPage
     }
